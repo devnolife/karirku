@@ -1,0 +1,75 @@
+name: karirku-dev
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: karirku-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: karirku
+      POSTGRES_PASSWORD: karirku
+      POSTGRES_DB: karirku
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.docker/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U karirku -d karirku"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: karirku-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./.docker/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    container_name: karirku-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: karirku
+      MINIO_ROOT_PASSWORD: karirku-dev-secret
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./.docker/minio:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: karirku-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./.docker/ollama:/root/.ollama
+    # GPU opsional. Aktifkan kalau ada NVIDIA GPU di host + nvidia-container-toolkit.
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 10

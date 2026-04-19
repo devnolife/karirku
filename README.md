@@ -1,36 +1,126 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Karir.ai
 
-## Getting Started
+> **AI Career Copilot** untuk pasar kerja Indonesia — dari assess skill, roadmap belajar, course recommendation, sampai bantu apply ke lowongan/project.
+>
+> Blueprint produk lengkap ada di [`plan.md`](./plan.md).
 
-First, run the development server:
+---
+
+## Status
+
+**Sprint 1-2 Foundation** — setup dev env, schema, auth, AI abstraction, scraper skeleton.
+Fitur guidance loop aktif di Sprint 3-4.
+
+## Prasyarat
+
+- Node.js 20+
+- pnpm 10+ (`corepack enable pnpm`)
+- Docker + Docker Compose
+- **Akses Docker** — user harus anggota grup `docker`:
+  ```bash
+  sudo usermod -aG docker $USER
+  newgrp docker
+  ```
+- Disk ~10GB (model Ollama ~5GB)
+
+## Stack
+
+| Layer | Teknologi |
+|-------|-----------|
+| Framework | Next.js 16 (App Router) + TypeScript |
+| UI | TailwindCSS 4 |
+| Auth | NextAuth v5 (Auth.js) + Google |
+| DB | PostgreSQL 16 + pgvector |
+| ORM | Prisma 7 |
+| Cache / Queue | Redis 7 + BullMQ |
+| Storage | MinIO (S3-compatible) |
+| AI (dev) | **Ollama** — `llama3.1:8b` + `nomic-embed-text` |
+| AI (prod) | vLLM + LLaMA 3.3 70B + BGE-M3 (swap via env) |
+| Scraper | Crawlee + Playwright (skeleton) |
+
+## Quick start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# satu kali — start docker stack + migrate + seed + pull AI models
+./scripts/dev-setup.sh
+
+# development
+pnpm dev              # Next.js di http://localhost:3000
+pnpm worker           # BullMQ workers (terminal terpisah)
+
+# utility
+pnpm ai:smoke         # test koneksi AI
+pnpm db:studio        # Prisma Studio GUI
+pnpm typecheck        # TypeScript check
+pnpm lint
+pnpm build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Service endpoints (lokal)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Service | URL |
+|---------|-----|
+| Next.js | http://localhost:3000 |
+| Health check | http://localhost:3000/api/health |
+| Postgres | localhost:5432 (`karirku` / `karirku`) |
+| Redis | localhost:6379 |
+| MinIO console | http://localhost:9001 (`karirku` / `karirku-dev-secret`) |
+| Ollama | http://localhost:11434 |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Struktur
 
-## Learn More
+```
+src/
+├── app/                 Next.js App Router
+│   ├── (auth)/login
+│   ├── (app)/           layout authenticated
+│   │   ├── dashboard
+│   │   └── onboarding
+│   └── api/
+│       ├── auth         NextAuth handler
+│       └── health       cek DB/Redis/Ollama
+├── lib/
+│   ├── ai/              client + models + prompts
+│   ├── queue/           BullMQ queue definitions
+│   ├── scraper/         skeleton Jobstreet/Dicoding/Prakerja
+│   ├── auth.ts
+│   ├── db.ts
+│   └── redis.ts
+├── server/workers       BullMQ workers entrypoint
+└── middleware.ts
+prisma/
+├── schema.prisma        full schema (blueprint §8)
+└── seed.ts              skill taxonomy seed
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Setup Google OAuth
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Buka [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials)
+2. Create OAuth 2.0 Client ID (Web application)
+3. Authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
+4. Copy Client ID & Secret ke `.env.local`:
+   ```
+   GOOGLE_CLIENT_ID="..."
+   GOOGLE_CLIENT_SECRET="..."
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Troubleshooting
 
-## Deploy on Vercel
+### `permission denied` saat `docker compose up`
+User kamu belum di grup `docker`:
+```bash
+sudo usermod -aG docker $USER
+newgrp docker   # atau logout & login
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Ollama pull lambat / gagal
+- Pastikan container running: `docker ps | grep ollama`
+- Manual pull: `docker exec -it karirku-ollama ollama pull llama3.1:8b`
+- Model ~5GB — butuh koneksi stabil
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Embedding dimension mismatch
+Dev memakai `nomic-embed-text` (dim 768). Kalau ganti ke BGE-M3 (1024), edit `src/lib/ai/models.ts` **dan** `prisma/schema.prisma` (semua `vector(768)` → `vector(1024)`), lalu re-migrate + re-embed semua data.
+
+## Lisensi
+
+Private — internal Karir.ai.

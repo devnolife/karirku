@@ -1,0 +1,422 @@
+// Karir.ai - Prisma Schema
+// Sumber kebenaran: /plan.md section 8 (Database Schema)
+//
+// Catatan:
+// - pgvector dipakai untuk kolom `embedding`. Dimensi 768 (nomic-embed-text) untuk dev.
+//   Saat pindah ke BGE-M3, dimensi menjadi 1024 -- perlu migrasi re-embed semua data.
+// - Kolom vector direpresentasikan sebagai Unsupported("vector(768)") karena Prisma
+//   belum ada native vector type. Query vector dilakukan via $queryRaw.
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions", "driverAdapters"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  extensions = [pgvector(map: "vector", schema: "public")]
+}
+
+// ============================================================
+// AUTH & USERS
+// ============================================================
+
+enum UserRole {
+  jobseeker
+  freelancer
+  company
+  admin
+}
+
+model User {
+  id            String    @id @default(uuid()) @db.Uuid
+  email         String    @unique @db.VarChar(255)
+  name          String?   @db.VarChar(255)
+  image         String?
+  emailVerified DateTime? @map("email_verified")
+  role          UserRole  @default(jobseeker)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  accounts     Account[]
+  sessions     Session[]
+  profile      Profile?
+  skills       UserSkill[]
+  goals        CareerGoal[]
+  paths        LearningPath[]
+  applications Application[]
+  resumes      Resume[]
+  roadmaps     Roadmap[]
+
+  @@map("users")
+}
+
+// NextAuth v5 (Auth.js) adapter tables
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id") @db.Uuid
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id") @db.Uuid
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ============================================================
+// PROFILE
+// ============================================================
+
+model Profile {
+  id         String                      @id @default(uuid()) @db.Uuid
+  userId     String                      @unique @map("user_id") @db.Uuid
+  headline   String?                     @db.Text
+  summary    String?                     @db.Text
+  skills     String[]                    @db.Text
+  experience Json?
+  education  Json?
+  embedding  Unsupported("vector(768)")?
+  updatedAt  DateTime                    @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+// ============================================================
+// JOBS & PROJECTS
+// ============================================================
+
+enum JobType {
+  fulltime
+  parttime
+  contract
+  remote
+  hybrid
+  onsite
+}
+
+enum SeniorityLevel {
+  intern
+  junior
+  mid
+  senior
+  lead
+  manager
+}
+
+model Job {
+  id           String                      @id @default(uuid()) @db.Uuid
+  source       String                      @db.VarChar(100)
+  sourceUrl    String                      @unique @map("source_url") @db.Text
+  title        String                      @db.VarChar(255)
+  company      String?                     @db.VarChar(255)
+  location     String?                     @db.VarChar(255)
+  type         JobType?
+  level        SeniorityLevel?
+  description  String?                     @db.Text
+  requirements String[]                    @db.Text
+  skills       String[]                    @db.Text
+  salaryMin    Int?                        @map("salary_min")
+  salaryMax    Int?                        @map("salary_max")
+  currency     String                      @default("IDR") @db.VarChar(10)
+  embedding    Unsupported("vector(768)")?
+  isActive     Boolean                     @default(true) @map("is_active")
+  postedAt     DateTime?                   @map("posted_at")
+  scrapedAt    DateTime                    @default(now()) @map("scraped_at")
+
+  applications Application[]
+  resumes      Resume[]
+
+  @@index([isActive, postedAt(sort: Desc)])
+  @@index([source])
+  @@map("jobs")
+}
+
+model Project {
+  id           String                      @id @default(uuid()) @db.Uuid
+  source       String                      @db.VarChar(100)
+  sourceUrl    String                      @unique @map("source_url") @db.Text
+  title        String                      @db.VarChar(255)
+  client       String?                     @db.VarChar(255)
+  budgetMin    Int?                        @map("budget_min")
+  budgetMax    Int?                        @map("budget_max")
+  currency     String                      @default("IDR") @db.VarChar(10)
+  durationDays Int?                        @map("duration_days")
+  skills       String[]                    @db.Text
+  description  String?                     @db.Text
+  embedding    Unsupported("vector(768)")?
+  isActive     Boolean                     @default(true) @map("is_active")
+  postedAt     DateTime?                   @map("posted_at")
+  scrapedAt    DateTime                    @default(now()) @map("scraped_at")
+
+  @@index([isActive, postedAt(sort: Desc)])
+  @@map("projects")
+}
+
+// ============================================================
+// APPLICATIONS, RESUMES, LEGACY ROADMAP
+// ============================================================
+
+enum ApplicationStatus {
+  applied
+  screened
+  interview
+  offered
+  accepted
+  rejected
+  ghosted
+  withdrawn
+}
+
+model Application {
+  id          String            @id @default(uuid()) @db.Uuid
+  userId      String            @map("user_id") @db.Uuid
+  jobId       String            @map("job_id") @db.Uuid
+  resumeUsed  Json?             @map("resume_used")
+  coverLetter String?           @map("cover_letter") @db.Text
+  status      ApplicationStatus @default(applied)
+  appliedAt   DateTime          @default(now()) @map("applied_at")
+
+  user    User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job     Job                 @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  outcome ApplicationOutcome?
+
+  @@map("applications")
+}
+
+model ApplicationOutcome {
+  applicationId String   @id @map("application_id") @db.Uuid
+  stageReached  String?  @map("stage_reached") @db.VarChar(50)
+  feedback      String?  @db.Text
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@map("application_outcomes")
+}
+
+model Resume {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  jobId     String?  @map("job_id") @db.Uuid
+  content   Json
+  atsScore  Int?     @map("ats_score")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  Job? @relation(fields: [jobId], references: [id], onDelete: SetNull)
+
+  @@map("resumes")
+}
+
+model Roadmap {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  goal      String?  @db.Text
+  content   Json
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("roadmaps")
+}
+
+// ============================================================
+// GUIDANCE LOOP TABLES (inti produk)
+// ============================================================
+
+model SkillTaxonomy {
+  id            String                      @id @default(uuid()) @db.Uuid
+  name          String                      @unique @db.VarChar(100)
+  slug          String                      @unique @db.VarChar(100)
+  category      String?                     @db.VarChar(50)
+  aliases       String[]                    @db.Text
+  relatedSkills String[]                    @map("related_skills") @db.Uuid
+  demandScore   Float?                      @map("demand_score")
+  avgSalaryIdr  Int?                        @map("avg_salary_idr")
+  embedding     Unsupported("vector(768)")?
+
+  userSkills UserSkill[]
+
+  @@index([category])
+  @@map("skill_taxonomy")
+}
+
+model UserSkill {
+  userId      String    @map("user_id") @db.Uuid
+  skillId     String    @map("skill_id") @db.Uuid
+  proficiency Int       @default(1) @db.SmallInt
+  verified    Boolean   @default(false)
+  verifiedBy  String?   @map("verified_by") @db.VarChar(50)
+  evidenceUrl String?   @map("evidence_url") @db.Text
+  acquiredAt  DateTime? @map("acquired_at")
+
+  user  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill SkillTaxonomy @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([userId, skillId])
+  @@map("user_skills")
+}
+
+enum GoalStatus {
+  active
+  paused
+  achieved
+  abandoned
+}
+
+enum CareerTrack {
+  fulltime
+  freelance
+  both
+}
+
+model CareerGoal {
+  id          String      @id @default(uuid()) @db.Uuid
+  userId      String      @map("user_id") @db.Uuid
+  targetRole  String      @map("target_role") @db.VarChar(255)
+  targetTrack CareerTrack @default(fulltime) @map("target_track")
+  targetCity  String?     @map("target_city") @db.VarChar(100)
+  targetDate  DateTime?   @map("target_date") @db.Date
+  why         String?     @db.Text
+  weeklyHours Int?        @map("weekly_hours") @db.SmallInt
+  budgetIdr   Int?        @map("budget_idr")
+  status      GoalStatus  @default(active)
+  createdAt   DateTime    @default(now()) @map("created_at")
+
+  user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  paths LearningPath[]
+
+  @@map("career_goals")
+}
+
+enum CourseLevel {
+  beginner
+  intermediate
+  advanced
+}
+
+model Course {
+  id            String                      @id @default(uuid()) @db.Uuid
+  source        String                      @db.VarChar(50)
+  sourceUrl     String                      @unique @map("source_url") @db.Text
+  title         String                      @db.VarChar(500)
+  provider      String?                     @db.VarChar(255)
+  language      String                      @default("id") @db.VarChar(20)
+  level         CourseLevel?
+  skillsTaught  String[]                    @map("skills_taught") @db.Uuid
+  prerequisites String[]                    @db.Uuid
+  durationHours Float?                      @map("duration_hours")
+  priceIdr      Int                         @default(0) @map("price_idr")
+  isPrakerja    Boolean                     @default(false) @map("is_prakerja")
+  affiliateUrl  String?                     @map("affiliate_url") @db.Text
+  rating        Float?
+  enrollment    Int?
+  description   String?                     @db.Text
+  embedding     Unsupported("vector(768)")?
+  scrapedAt     DateTime                    @default(now()) @map("scraped_at")
+
+  @@index([isPrakerja, priceIdr])
+  @@index([source])
+  @@map("courses")
+}
+
+enum PathStatus {
+  active
+  paused
+  completed
+  abandoned
+}
+
+model LearningPath {
+  id               String     @id @default(uuid()) @db.Uuid
+  userId           String     @map("user_id") @db.Uuid
+  goalId           String     @map("goal_id") @db.Uuid
+  phases           Json
+  totalWeeks       Int?       @map("total_weeks")
+  progressPct      Float      @default(0) @map("progress_pct")
+  readinessScore   Int        @default(0) @map("readiness_score")
+  status           PathStatus @default(active)
+  generatedByModel String?    @map("generated_by_model") @db.VarChar(50)
+  createdAt        DateTime   @default(now()) @map("created_at")
+  updatedAt        DateTime   @updatedAt @map("updated_at")
+
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal       CareerGoal      @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  milestones PathMilestone[]
+
+  @@map("learning_paths")
+}
+
+enum MilestoneStatus {
+  pending
+  in_progress
+  done
+  skipped
+}
+
+model PathMilestone {
+  id            String          @id @default(uuid()) @db.Uuid
+  pathId        String          @map("path_id") @db.Uuid
+  weekNumber    Int             @map("week_number")
+  title         String          @db.VarChar(255)
+  skillIds      String[]        @map("skill_ids") @db.Uuid
+  courseIds     String[]        @map("course_ids") @db.Uuid
+  projectBrief  String?         @map("project_brief") @db.Text
+  status        MilestoneStatus @default(pending)
+  submissionUrl String?         @map("submission_url") @db.Text
+  aiFeedback    String?         @map("ai_feedback") @db.Text
+  completedAt   DateTime?       @map("completed_at")
+
+  path LearningPath @relation(fields: [pathId], references: [id], onDelete: Cascade)
+
+  @@index([pathId, weekNumber])
+  @@map("path_milestones")
+}
+
+model RoleMarketStat {
+  id            String   @id @default(uuid()) @db.Uuid
+  roleName      String   @map("role_name") @db.VarChar(255)
+  city          String   @db.VarChar(100)
+  snapshotDate  DateTime @map("snapshot_date") @db.Date
+  topSkills     Json     @map("top_skills")
+  salaryP25     Int?     @map("salary_p25")
+  salaryP50     Int?     @map("salary_p50")
+  salaryP75     Int?     @map("salary_p75")
+  openPositions Int?     @map("open_positions")
+  trend3mo      Float?   @map("trend_3mo")
+  topCompanies  String[] @map("top_companies") @db.Text
+
+  @@unique([roleName, city, snapshotDate])
+  @@index([roleName])
+  @@map("role_market_stats")
+}
