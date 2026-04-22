@@ -163,6 +163,96 @@ export function LandingAnimator() {
       }
 
       ScrollTrigger.refresh();
+
+      /* ---------- Continuous float (ambient shapes) ---------- */
+      gsap.utils.toArray<HTMLElement>("[data-gs='float']").forEach((el, i) => {
+        const yAmp = 10 + (i % 3) * 6;
+        const rAmp = 2 + (i % 4);
+        const dur = 5 + (i % 5) * 1.2;
+        gsap.to(el, {
+          y: `+=${yAmp}`,
+          rotation: `+=${rAmp}`,
+          duration: dur,
+          ease: "sine.inOut",
+          repeat: -1,
+          yoyo: true,
+          delay: i * 0.15,
+        });
+      });
+
+      /* ---------- Continuous orbit rotation ---------- */
+      gsap.utils.toArray<HTMLElement>("[data-gs='orbit']").forEach((el) => {
+        const dur = parseFloat(el.dataset.dur ?? "30");
+        const dir = el.dataset.dir === "ccw" ? -360 : 360;
+        gsap.to(el, {
+          rotation: dir,
+          duration: dur,
+          ease: "none",
+          repeat: -1,
+          transformOrigin: "50% 50%",
+        });
+      });
+
+      /* ---------- Counter-rotate to keep content upright inside orbits ---------- */
+      gsap.utils.toArray<HTMLElement>("[data-gs='orbit-item']").forEach((el) => {
+        const dur = parseFloat(el.dataset.dur ?? "30");
+        const dir = el.dataset.dir === "ccw" ? 360 : -360;
+        gsap.to(el, {
+          rotation: dir,
+          duration: dur,
+          ease: "none",
+          repeat: -1,
+          transformOrigin: "50% 50%",
+        });
+      });
+
+      /* ---------- SVG path draw on scroll ---------- */
+      gsap.utils
+        .toArray<SVGPathElement | SVGLineElement>("[data-gs='draw']")
+        .forEach((p) => {
+          let len = 0;
+          try {
+            len = (p as SVGPathElement).getTotalLength?.() ?? 0;
+          } catch {
+            len = 0;
+          }
+          if (!len) {
+            const bbox = (p as SVGGraphicsElement).getBBox?.();
+            len = bbox ? bbox.width + bbox.height : 400;
+          }
+          gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
+          gsap.to(p, {
+            strokeDashoffset: 0,
+            duration: 1.4,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: p,
+              start: "top 85%",
+              toggleActions: "play none none none",
+            },
+          });
+        });
+
+      /* ---------- Typing effect ---------- */
+      gsap.utils.toArray<HTMLElement>("[data-gs='type']").forEach((el) => {
+        const original = el.dataset.text ?? el.textContent ?? "";
+        el.dataset.text = original;
+        el.textContent = "";
+        const obj = { i: 0 };
+        gsap.to(obj, {
+          i: original.length,
+          duration: Math.max(1.2, original.length * 0.035),
+          ease: "none",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+          onUpdate: () => {
+            el.textContent = original.slice(0, Math.round(obj.i));
+          },
+        });
+      });
     });
 
     return () => ctx.revert();

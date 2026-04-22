@@ -20,11 +20,13 @@ export default function LandingV2() {
       }}
     >
       <Grid />
+      <AmbientShapes />
       <Nav />
       <Hero />
       <LogosStrip />
       <Bento />
       <Flow />
+      <Orbit />
       <Stats />
       <Voices />
       <FaqBlock />
@@ -204,8 +206,8 @@ function TerminalCard() {
           ))}
         </div>
         <div className="mt-5 rounded-lg border border-lime-300/20 bg-lime-300/5 p-3 text-[12px] text-lime-200">
-          <span className="text-lime-300">ai:</span> lu butuh 6 jam/minggu. gue
-          susunin slot Rabu & Sabtu. confirm?
+          <span className="text-lime-300">ai:</span>{" "}
+          <span data-gs="type">lu butuh 6 jam/minggu. gue susunin slot Rabu & Sabtu. confirm?</span>
         </div>
         <p className="mt-3 text-lime-300">
           $ <span className="ml-1 inline-block h-3.5 w-2 translate-y-0.5 animate-[blink_1s_steps(2)_infinite] bg-lime-300 align-baseline" />
@@ -531,6 +533,29 @@ function Flow() {
             </div>
           ))}
         </div>
+
+        {/* Animated connector squiggle — draws on scroll */}
+        <div className="relative mx-auto mt-10 hidden h-14 max-w-[860px] md:block">
+          <svg viewBox="0 0 860 60" fill="none" className="h-full w-full">
+            <path
+              data-gs="draw"
+              d="M10 30 Q 120 0 220 30 T 430 30 T 640 30 T 850 30"
+              stroke="rgb(190 242 100)"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            <path
+              data-gs="draw"
+              d="M850 30 l -10 -5 M850 30 l -10 5"
+              stroke="rgb(190 242 100)"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            {[10, 220, 430, 640, 850].map((x, i) => (
+              <circle key={i} cx={x} cy="30" r="4" fill="#07090d" stroke="rgb(190 242 100)" strokeWidth="2" />
+            ))}
+          </svg>
+        </div>
       </div>
     </section>
   );
@@ -711,6 +736,45 @@ function FinalCTA() {
             "radial-gradient(800px 400px at 50% 50%, rgba(190,242,100,0.18), transparent 70%)",
         }}
       />
+      {/* animated starburst */}
+      <svg
+        data-gs="orbit"
+        data-dur="90"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 text-lime-300/20"
+        viewBox="0 0 400 400"
+        aria-hidden
+      >
+        {Array.from({ length: 32 }).map((_, i) => {
+          const a = (i / 32) * 2 * Math.PI;
+          const x1 = 200 + Math.cos(a) * 140;
+          const y1 = 200 + Math.sin(a) * 140;
+          const x2 = 200 + Math.cos(a) * (160 + (i % 3) * 12);
+          const y2 = 200 + Math.sin(a) * (160 + (i % 3) * 12);
+          return (
+            <line
+              key={i}
+              x1={x1}
+              y1={y1}
+              x2={x2}
+              y2={y2}
+              stroke="currentColor"
+              strokeWidth="1"
+              strokeLinecap="round"
+            />
+          );
+        })}
+      </svg>
+      <svg
+        data-gs="orbit"
+        data-dir="ccw"
+        data-dur="120"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 text-cyan-300/15"
+        viewBox="0 0 400 400"
+        fill="none"
+        aria-hidden
+      >
+        <circle cx="200" cy="200" r="180" stroke="currentColor" strokeWidth="1" strokeDasharray="4 10" />
+      </svg>
       <div className="mx-auto max-w-[1400px] px-6 py-20 text-center md:py-28">
         <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-lime-300">
           ready when you are
@@ -766,7 +830,222 @@ function FootLine() {
   );
 }
 
-/* ---------------- icons ---------------- */
+/* ---------------- ambient floating shapes ---------------- */
+function AmbientShapes() {
+  return (
+    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      {/* top-right blob */}
+      <svg
+        data-gs="float"
+        className="absolute -right-10 top-24 h-56 w-56 text-lime-300/10"
+        viewBox="0 0 200 200"
+        aria-hidden
+      >
+        <path
+          fill="currentColor"
+          d="M42.3 -64.5C55.2 -57.9 66.8 -47.3 72.4 -34.1C78 -20.8 77.7 -4.9 74.2 9.6C70.7 24.1 64.1 37.3 53.9 47.3C43.6 57.3 29.8 64.2 14.7 68.3C-0.4 72.4 -16.9 73.8 -30.4 68.3C-43.9 62.8 -54.4 50.5 -62.1 37C-69.8 23.4 -74.7 8.7 -74.2 -6.1C-73.7 -20.9 -67.8 -35.8 -58 -47C-48.2 -58.2 -34.5 -65.7 -20.3 -70.8C-6.1 -75.9 8.7 -78.5 22.5 -75.6C36.3 -72.7 49.1 -64.2 42.3 -64.5Z"
+          transform="translate(100 100)"
+        />
+      </svg>
+      {/* wavy line */}
+      <svg
+        data-gs="float"
+        className="absolute left-8 top-[38%] h-20 w-40 text-cyan-300/25"
+        viewBox="0 0 160 80"
+        fill="none"
+        aria-hidden
+      >
+        <path
+          d="M2 40 Q 20 10 40 40 T 80 40 T 120 40 T 158 40"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+      {/* dotted circle */}
+      <svg
+        data-gs="orbit"
+        data-dur="60"
+        className="absolute -left-16 top-[72%] h-48 w-48 text-lime-300/15"
+        viewBox="0 0 200 200"
+        fill="none"
+        aria-hidden
+      >
+        <circle
+          cx="100"
+          cy="100"
+          r="80"
+          stroke="currentColor"
+          strokeWidth="1"
+          strokeDasharray="2 6"
+        />
+        <circle cx="100" cy="20" r="4" fill="currentColor" />
+      </svg>
+      {/* triangle */}
+      <svg
+        data-gs="float"
+        className="absolute right-[14%] top-[56%] h-16 w-16 text-amber-300/20"
+        viewBox="0 0 60 60"
+        aria-hidden
+      >
+        <polygon points="30,6 56,54 4,54" stroke="currentColor" strokeWidth="1.5" fill="none" />
+      </svg>
+      {/* plus */}
+      <svg
+        data-gs="float"
+        className="absolute right-[22%] top-[14%] h-10 w-10 text-rose-300/25"
+        viewBox="0 0 40 40"
+        aria-hidden
+      >
+        <path d="M20 6v28M6 20h28" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+      {/* dot cluster */}
+      <svg
+        data-gs="float"
+        className="absolute left-[40%] top-[28%] h-24 w-24 text-lime-300/20"
+        viewBox="0 0 80 80"
+        aria-hidden
+      >
+        {Array.from({ length: 16 }).map((_, i) => (
+          <circle
+            key={i}
+            cx={(i % 4) * 20 + 10}
+            cy={Math.floor(i / 4) * 20 + 10}
+            r="1.5"
+            fill="currentColor"
+          />
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+/* ---------------- orbit section ---------------- */
+function Orbit() {
+  const roles = [
+    { l: "Product Designer", c: "text-lime-300" },
+    { l: "Frontend Engineer", c: "text-cyan-300" },
+    { l: "Data Analyst", c: "text-amber-300" },
+    { l: "Product Manager", c: "text-rose-300" },
+    { l: "UX Researcher", c: "text-violet-300" },
+    { l: "Growth Marketer", c: "text-emerald-300" },
+  ];
+  const radius = 230;
+  return (
+    <section className="relative border-t border-white/[0.06]" data-gs="section">
+      <div className="mx-auto max-w-[1400px] px-6 py-20 md:py-28">
+        <div className="mb-16 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
+          <div className="max-w-xl">
+            <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-lime-300">
+              // paths
+            </span>
+            <h2 className="mt-3 text-3xl font-medium tracking-tight md:text-5xl">
+              Banyak jalur. <span className="text-zinc-500">Satu copilot.</span>
+            </h2>
+            <p className="mt-4 text-sm leading-relaxed text-zinc-400 md:text-base">
+              Karir.ai bukan cuma buat satu tipe. Roadmap, skill-gap, dan job
+              match di-adaptasi per jalur — dari design sampai data, marketing
+              sampai engineering.
+            </p>
+          </div>
+          <span className="font-mono text-xs text-zinc-500">
+            supported_paths = 24+
+          </span>
+        </div>
+
+        <div className="relative mx-auto flex aspect-square w-full max-w-[620px] items-center justify-center">
+          {/* outer dotted ring */}
+          <svg
+            className="absolute inset-0 h-full w-full text-white/10"
+            viewBox="0 0 600 600"
+            aria-hidden
+          >
+            <circle
+              cx="300"
+              cy="300"
+              r={radius + 40}
+              stroke="currentColor"
+              strokeWidth="1"
+              strokeDasharray="2 8"
+              fill="none"
+            />
+            <circle
+              cx="300"
+              cy="300"
+              r={radius - 40}
+              stroke="currentColor"
+              strokeWidth="1"
+              strokeDasharray="2 8"
+              fill="none"
+            />
+          </svg>
+
+          {/* rotating middle ring with role chips */}
+          <div
+            data-gs="orbit"
+            data-dur="48"
+            className="relative h-full w-full"
+          >
+            {roles.map((r, i) => {
+              const angle = (i / roles.length) * 2 * Math.PI;
+              const x = Math.cos(angle) * radius;
+              const y = Math.sin(angle) * radius;
+              return (
+                <div
+                  key={r.l}
+                  className="absolute left-1/2 top-1/2"
+                  style={{ transform: `translate(calc(${x}px - 50%), calc(${y}px - 50%))` }}
+                >
+                  <div
+                    data-gs="orbit-item"
+                    data-dur="48"
+                    className="rounded-full border border-white/15 bg-[#0a0d12]/90 px-4 py-2 font-mono text-xs backdrop-blur-sm shadow-[0_10px_40px_-15px_rgba(0,0,0,0.8)]"
+                  >
+                    <span className={`mr-1.5 ${r.c}`}>●</span>
+                    <span className="text-zinc-200">{r.l}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* inner counter-orbit with pips */}
+          <div
+            data-gs="orbit"
+            data-dir="ccw"
+            data-dur="24"
+            className="absolute h-[260px] w-[260px] rounded-full border border-lime-300/20"
+          >
+            {Array.from({ length: 8 }).map((_, i) => {
+              const a = (i / 8) * 2 * Math.PI;
+              const x = Math.cos(a) * 130;
+              const y = Math.sin(a) * 130;
+              return (
+                <span
+                  key={i}
+                  className="absolute left-1/2 top-1/2 h-1.5 w-1.5 rounded-full bg-lime-300/70"
+                  style={{ transform: `translate(calc(${x}px - 50%), calc(${y}px - 50%))` }}
+                />
+              );
+            })}
+          </div>
+
+          {/* core */}
+          <div className="relative z-10 flex h-32 w-32 flex-col items-center justify-center rounded-full border border-lime-300/40 bg-gradient-to-b from-lime-300/20 to-transparent shadow-[0_0_80px_-10px_rgba(190,242,100,0.5)]">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-lime-300">
+              <svg viewBox="0 0 24 24" className="h-6 w-6 text-zinc-950" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+              </svg>
+            </div>
+            <span className="mt-2 font-mono text-[10px] text-lime-200">core.ai</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
 function Logo() {
   return (
     <svg width="22" height="22" viewBox="0 0 40 40" fill="none" aria-hidden>
