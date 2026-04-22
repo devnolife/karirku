@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LandingAnimator } from "@/components/LandingAnimator";
 
 export default function LandingPage() {
   return (
@@ -15,6 +16,7 @@ export default function LandingPage() {
       <FAQ />
       <CTA />
       <Footer />
+      <LandingAnimator />
     </main>
   );
 }
@@ -122,7 +124,7 @@ function Hero() {
             Live · Beta program terbuka
           </div>
 
-          <h1 className="text-[44px] font-medium leading-[0.92] tracking-[-0.03em] sm:text-[76px] md:text-[108px] lg:text-[128px]">
+          <h1 data-gs="hero-line" className="text-[44px] font-medium leading-[0.92] tracking-[-0.03em] sm:text-[76px] md:text-[108px] lg:text-[128px]">
             Karir <span className="ed-serif text-pop">yang ngerti</span>
             <br />
             kamu,{" "}
@@ -136,14 +138,14 @@ function Hero() {
           </h1>
 
           <div className="mt-12 grid grid-cols-12 gap-6">
-            <p className="col-span-12 md:col-span-6 text-lg leading-relaxed text-ink-soft">
+            <p data-gs="hero-fade" className="col-span-12 md:col-span-6 text-lg leading-relaxed text-ink-soft">
               Tentukan goal, AI susun <em className="ed-serif not-italic-[false] text-ink">roadmap</em>,
               potret <em className="ed-serif text-ink">skill-gap</em>, kasih{" "}
               <em className="ed-serif text-ink">job match</em> + kursus prioritas.
               Dalam bahasa manusia — bukan corporate speak.
             </p>
 
-            <div className="col-span-12 md:col-span-6 md:col-start-8 flex flex-col items-start gap-4">
+            <div data-gs="hero-fade" className="col-span-12 md:col-span-6 md:col-start-8 flex flex-col items-start gap-4">
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/onboarding"
@@ -169,7 +171,7 @@ function Hero() {
       </div>
 
       {/* Preview strip */}
-      <div className="ed-hairline-t bg-paper-2">
+      <div className="ed-hairline-t bg-paper-2" data-gs="hero-preview">
         <div className="mx-auto grid max-w-[1400px] grid-cols-12 items-stretch px-6">
           <div className="col-span-12 md:col-span-3 py-6 md:border-r md:ed-rule">
             <span className="ed-label">Preview</span>
@@ -255,7 +257,7 @@ function MiniCell({ k, v, serifAccent }: { k: string; v: string; serifAccent: st
    ===================================================== */
 function Manifesto() {
   return (
-    <section className="ed-hairline-b">
+    <section className="ed-hairline-b" data-gs="section">
       <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-20 md:py-24">
         <div className="col-span-12 md:col-span-2">
           <span className="ed-label">01 / Manifesto</span>
@@ -313,13 +315,13 @@ function HowItWorks() {
     },
   ];
   return (
-    <section id="how" className="ed-hairline-b">
+    <section id="how" className="ed-hairline-b" data-gs="section">
       <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-20 md:py-28">
         <SectionHeader num="02" kicker="Cara kerja" title={<>Tiga langkah — <span className="ed-serif">itu doang.</span></>} />
-        <div className="col-span-12 md:col-span-10 md:col-start-3">
+        <div className="col-span-12 md:col-span-10 md:col-start-3" data-gs="stagger-parent">
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[var(--rule)] border-y border-[var(--rule)]">
             {steps.map((s) => (
-              <div key={s.n} className="p-8">
+              <div key={s.n} className="p-8" data-gs="stagger-child">
                 <div className="flex items-baseline justify-between">
                   <span className="ed-mono text-xs font-medium tracking-[0.14em] text-pop">{s.n}</span>
                   <span className="ed-label">STEP</span>
@@ -342,7 +344,7 @@ function HowItWorks() {
    ===================================================== */
 function Features() {
   return (
-    <section id="features" className="ed-hairline-b bg-paper-2">
+    <section id="features" className="ed-hairline-b bg-paper-2" data-gs="section">
       <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-20 md:py-28">
         <SectionHeader
           num="03"
@@ -352,7 +354,7 @@ function Features() {
         />
 
         <div className="col-span-12 md:col-span-10 md:col-start-3">
-          <div className="grid grid-cols-12 gap-px bg-ink border border-ink overflow-hidden rounded-xl">
+          <div className="grid grid-cols-12 gap-px bg-ink border border-ink overflow-hidden rounded-xl" data-gs="stagger-parent">
             <FeatureTile
               className="col-span-12 md:col-span-7 row-span-2"
               num="01"
@@ -421,7 +423,7 @@ function FeatureTile({
   const dot =
     accent === "pop" ? "bg-pop" : accent === "acid" ? "bg-acid" : accent === "blush" ? "bg-blush" : "bg-ink";
   return (
-    <div className={`relative bg-surface p-7 md:p-8 ${className}`}>
+    <div className={`relative bg-surface p-7 md:p-8 ${className}`} data-gs="stagger-child">
       <div className="flex items-center justify-between">
         <span className="ed-mono text-xs font-medium tracking-[0.14em] text-ink-soft">{num}</span>
         <span className={`h-2.5 w-2.5 rounded-full ${dot}`} aria-hidden />
@@ -514,7 +516,7 @@ function ForWho() {
     { t: "Freelancer & indie", s: "Positioning skill stack buat dapetin klien premium." },
   ];
   return (
-    <section id="who" className="ed-hairline-b">
+    <section id="who" className="ed-hairline-b" data-gs="section">
       <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-20 md:py-28">
         <SectionHeader
           num="04"
@@ -522,10 +524,11 @@ function ForWho() {
           title={<>Di mana kamu <span className="ed-serif">sekarang?</span></>}
         />
         <div className="col-span-12 md:col-span-10 md:col-start-3">
-          <ol className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
+          <ol className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]" data-gs="stagger-parent">
             {list.map((it, i) => (
               <li
                 key={it.t}
+                data-gs="stagger-child"
                 className="grid grid-cols-12 items-baseline gap-6 py-7 transition-colors hover:bg-paper-2"
               >
                 <span className="col-span-2 md:col-span-1 ed-mono text-sm font-medium text-pop ed-num">
@@ -558,7 +561,7 @@ function Stats() {
     { v: "60", u: "dtk", l: "setup time" },
   ];
   return (
-    <section className="ed-hairline-b bg-ink text-paper">
+    <section className="ed-hairline-b bg-ink text-paper" data-gs="section">
       <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-20">
         <div className="col-span-12 md:col-span-2">
           <span className="ed-label !text-paper/60">05 / Numbers</span>
@@ -567,7 +570,11 @@ function Stats() {
           {stats.map((s, i) => (
             <div key={s.l} className={`${i > 0 ? "md:pl-8" : ""} ${i < 3 ? "md:pr-4" : ""}`}>
               <div className="flex items-baseline">
-                <span className="text-6xl font-medium tracking-tight ed-num md:text-7xl">
+                <span
+                  data-gs="count"
+                  data-to={s.v}
+                  className="text-6xl font-medium tracking-tight ed-num md:text-7xl"
+                >
                   {s.v}
                 </span>
                 <span className="ed-serif text-3xl text-acid md:text-4xl">{s.u}</span>
@@ -603,16 +610,16 @@ function Testimonials() {
     },
   ];
   return (
-    <section className="ed-hairline-b">
+    <section className="ed-hairline-b" data-gs="section">
       <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-20 md:py-28">
         <SectionHeader
           num="06"
           kicker="Testimoni"
           title={<>Real talk <span className="ed-serif">dari real people.</span></>}
         />
-        <div className="col-span-12 md:col-span-10 md:col-start-3 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[var(--rule)] border-y border-[var(--rule)]">
+        <div className="col-span-12 md:col-span-10 md:col-start-3 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[var(--rule)] border-y border-[var(--rule)]" data-gs="stagger-parent">
           {items.map((t) => (
-            <blockquote key={t.n} className="p-8">
+            <blockquote key={t.n} className="p-8" data-gs="stagger-child">
               <Quote className="h-5 w-5 text-pop" />
               <p className="mt-5 ed-serif text-xl leading-snug text-ink">
                 &ldquo;{t.q}&rdquo;
@@ -652,7 +659,7 @@ function FAQ() {
     },
   ];
   return (
-    <section id="faq" className="ed-hairline-b">
+    <section id="faq" className="ed-hairline-b" data-gs="section">
       <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-20 md:py-28">
         <SectionHeader num="07" kicker="FAQ" title={<>Pertanyaan <span className="ed-serif">yang sering muncul.</span></>} />
         <div className="col-span-12 md:col-span-10 md:col-start-3 border-y border-[var(--rule)] divide-y divide-[var(--rule)]">
@@ -687,7 +694,7 @@ function FAQ() {
    ===================================================== */
 function CTA() {
   return (
-    <section className="relative ed-hairline-b bg-ink text-paper overflow-hidden">
+    <section className="relative ed-hairline-b bg-ink text-paper overflow-hidden" data-gs="section">
       <div aria-hidden className="absolute inset-0 ed-grain" />
       <div className="relative mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-24 md:py-32">
         <div className="col-span-12 md:col-span-2">
@@ -695,7 +702,7 @@ function CTA() {
         </div>
         <div className="col-span-12 md:col-span-10">
           <p className="ed-label !text-acid">Ready. Set. Go.</p>
-          <h2 className="mt-6 text-6xl font-medium leading-[0.9] tracking-[-0.03em] sm:text-7xl md:text-[132px]">
+          <h2 data-gs="hero-line" className="mt-6 text-6xl font-medium leading-[0.9] tracking-[-0.03em] sm:text-7xl md:text-[132px]">
             Stop <span className="ed-serif text-blush">nebak-nebak</span>
             <br />
             karir <span className="ed-serif">kamu.</span>
