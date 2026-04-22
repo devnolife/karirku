@@ -167,8 +167,19 @@ body {
 }
 .ed-blink { animation: ed-blink 1.1s steps(2) infinite; }
 
+/* Generic aliases for arbitrary Tailwind animate-[...] usage on v2 */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ed-marquee, .ed-fade-up, .ed-blink { animation: none !important; }
+  [class*="animate-[marquee"], [class*="animate-[blink"] { animation: none !important; }
   .ed-underline { transition: none; }
 }
 
