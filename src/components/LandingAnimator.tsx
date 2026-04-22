@@ -49,7 +49,7 @@ export function LandingAnimator() {
                 frag.appendChild(outer);
               }
             });
-          } else {
+          } else if (node.nodeType === Node.ELEMENT_NODE) {
             const elNode = node as HTMLElement;
             if (elNode.tagName === "BR") {
               frag.appendChild(node.cloneNode(true));
@@ -59,7 +59,7 @@ export function LandingAnimator() {
             outer.style.display = "inline-block";
             outer.style.overflow = "hidden";
             outer.style.verticalAlign = "top";
-            const clone = node.cloneNode(true) as HTMLElement;
+            const clone = elNode.cloneNode(true) as HTMLElement;
             clone.style.display = "inline-block";
             clone.classList.add("gs-word");
             outer.appendChild(clone);
