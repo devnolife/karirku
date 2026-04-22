@@ -27,80 +27,86 @@ export default async function OnboardingPage() {
   const current = await getGoal();
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-12">
-      <div className="mb-8">
-        <span className="inline-block rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300">
-          Step 1 dari 3
-        </span>
-        <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-          Set career goal
+    <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-16">
+      <aside className="col-span-12 md:col-span-4 md:sticky md:top-24 md:self-start">
+        <span className="ed-label">01 / Onboarding · step 1 of 3</span>
+        <h1 className="mt-6 text-5xl font-medium leading-[0.95] tracking-[-0.025em] md:text-6xl">
+          Set career <span className="ed-serif text-pop">goal.</span>
         </h1>
-        <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-          AI butuh tahu kamu mau kemana. Jawaban ini bisa diubah kapan saja.
+        <p className="mt-5 text-ink-soft max-w-md">
+          AI butuh tahu kamu mau kemana. Jawaban ini bisa diubah kapan aja —
+          roadmap akan otomatis re-generate.
         </p>
-      </div>
+        <div className="mt-8 ed-hairline-t pt-4">
+          <span className="ed-label">Tips</span>
+          <ul className="mt-3 space-y-2 text-sm text-ink-soft">
+            <li className="flex gap-2.5">
+              <span className="text-pop mt-0.5">→</span>
+              Role spesifik (bukan &ldquo;tech&rdquo; doang) bikin analisis lebih tajam.
+            </li>
+            <li className="flex gap-2.5">
+              <span className="text-pop mt-0.5">→</span>
+              Jujur soal jam belajar. Roadmap nyesuaiin ke kapasitas kamu.
+            </li>
+          </ul>
+        </div>
+      </aside>
 
-      <form
-        action={saveGoalAction}
-        className="space-y-6 rounded-2xl border border-zinc-200 bg-white p-6 sm:p-8 dark:border-zinc-800 dark:bg-zinc-950"
-      >
-        <Field
-          label="Target role"
-          name="targetRole"
-          placeholder="Contoh: Frontend Engineer"
-          defaultValue={current?.targetRole}
-          required
-          helper="Role spesifik lebih baik dari role umum — ini bikin market scan & gap analysis lebih akurat."
-        />
+      <form action={saveGoalAction} className="col-span-12 md:col-span-8">
+        <div className="border border-[var(--rule)] rounded-xl bg-surface divide-y divide-[var(--rule)]">
+          <FormRow label="Target role" required helper="Role spesifik bikin skill-gap analysis lebih akurat.">
+            <Input
+              name="targetRole"
+              placeholder="Contoh: Frontend Engineer"
+              defaultValue={current?.targetRole}
+              required
+            />
+          </FormRow>
 
-        <TrackPicker defaultValue={current?.targetTrack ?? "fulltime"} />
+          <FormRow label="Mode karir" helper="Pilih salah satu.">
+            <TrackPicker defaultValue={current?.targetTrack ?? "fulltime"} />
+          </FormRow>
 
-        <Field
-          label="Kota target"
-          name="targetCity"
-          placeholder="Jakarta / Remote"
-          defaultValue={current?.targetCity ?? undefined}
-          helper="Opsional. Isi kalau kamu punya preferensi lokasi."
-        />
+          <FormRow label="Kota target" helper="Opsional. Kosongin kalau bebas.">
+            <Input
+              name="targetCity"
+              placeholder="Jakarta / Remote"
+              defaultValue={current?.targetCity ?? undefined}
+            />
+          </FormRow>
 
-        <div className="grid gap-5 sm:grid-cols-2">
-          <Field
-            label="Jam belajar per minggu"
-            name="weeklyHours"
-            type="number"
-            placeholder="10"
-            defaultValue={current?.weeklyHours ? String(current.weeklyHours) : undefined}
-            suffix="jam"
-            helper="Karir.ai akan mengatur beban roadmap sesuai kapasitas kamu."
-          />
-          <Field
-            label="Budget course per bulan"
-            name="budgetIdr"
-            type="number"
-            placeholder="200000"
-            defaultValue={current?.budgetIdr ? String(current.budgetIdr) : undefined}
-            prefix="Rp"
-            helper="Isi 0 kalau cuma mau pakai course gratis (Prakerja, YouTube, Dicoding free)."
-          />
+          <FormRow label="Jam belajar / minggu" helper="Karir.ai nyesuaiin beban roadmap ke kapasitas kamu.">
+            <Input
+              type="number"
+              name="weeklyHours"
+              placeholder="10"
+              suffix="jam"
+              defaultValue={current?.weeklyHours ? String(current.weeklyHours) : undefined}
+            />
+          </FormRow>
+
+          <FormRow label="Budget course / bulan" helper="Isi 0 kalau cuma mau course gratis.">
+            <Input
+              type="number"
+              name="budgetIdr"
+              placeholder="200000"
+              prefix="Rp"
+              defaultValue={current?.budgetIdr ? String(current.budgetIdr) : undefined}
+            />
+          </FormRow>
         </div>
 
-        <div className="flex flex-col-reverse items-stretch gap-3 border-t border-zinc-200 pt-6 sm:flex-row sm:items-center sm:justify-between dark:border-zinc-800">
-          <p className="text-xs text-zinc-500">
-            Mode demo: data disimpan di cookie browser kamu, bukan server.
-          </p>
+        <div className="mt-8 flex flex-col-reverse items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <span className="ed-label">
+            Demo · data disimpan di cookie browser, bukan server.
+          </span>
           <button
             type="submit"
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 px-8 text-sm font-medium text-white shadow-lg shadow-indigo-500/30 transition hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+            className="group inline-flex h-12 items-center justify-center gap-2 rounded-full bg-ink px-8 text-base font-medium text-paper hover:bg-pop transition-colors"
           >
-            Simpan & lanjut
-            <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden>
-              <path
-                d="M5 12h14M13 5l7 7-7 7"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+            Simpan &amp; lanjut
+            <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M5 12h14M13 5l7 7-7 7" />
             </svg>
           </button>
         </div>
@@ -109,82 +115,93 @@ export default async function OnboardingPage() {
   );
 }
 
-function TrackPicker({ defaultValue }: { defaultValue: MockGoal["targetTrack"] }) {
-  const options: { value: MockGoal["targetTrack"]; title: string; desc: string }[] = [
-    { value: "fulltime", title: "Full-time", desc: "Karyawan tetap di perusahaan." },
-    { value: "freelance", title: "Freelance", desc: "Project based, remote klien." },
-    { value: "both", title: "Dua-duanya", desc: "Fleksibel, apa yang ketemu duluan." },
-  ];
+function FormRow({
+  label,
+  required,
+  helper,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  helper?: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div>
-      <label className="mb-2 block text-sm font-medium">Mode karir</label>
-      <div className="grid gap-3 sm:grid-cols-3">
-        {options.map((o) => (
-          <label
-            key={o.value}
-            className="relative cursor-pointer rounded-xl border border-zinc-200 bg-white p-4 transition hover:border-indigo-300 has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50/60 has-[:checked]:ring-2 has-[:checked]:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-indigo-700 dark:has-[:checked]:bg-indigo-950/30"
-          >
-            <input
-              type="radio"
-              name="targetTrack"
-              value={o.value}
-              defaultChecked={o.value === defaultValue}
-              className="peer absolute inset-0 cursor-pointer opacity-0"
-            />
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">{o.title}</span>
-              <span className="flex h-4 w-4 items-center justify-center rounded-full border border-zinc-300 peer-checked:border-indigo-600 peer-checked:bg-indigo-600 dark:border-zinc-600">
-                <span className="h-1.5 w-1.5 rounded-full bg-white opacity-0 peer-checked:opacity-100" />
-              </span>
-            </div>
-            <p className="mt-1.5 text-xs text-zinc-500">{o.desc}</p>
-          </label>
-        ))}
+    <div className="grid grid-cols-12 gap-4 p-6">
+      <div className="col-span-12 md:col-span-4">
+        <label className="text-base font-medium flex items-center gap-1">
+          {label}
+          {required && <span className="text-blush">*</span>}
+        </label>
+        {helper && <p className="mt-1.5 text-xs text-ink-muted">{helper}</p>}
       </div>
+      <div className="col-span-12 md:col-span-8">{children}</div>
     </div>
   );
 }
 
-function Field({
-  label,
+function Input({
   name,
   type = "text",
   placeholder,
+  defaultValue,
   required,
-  helper,
   prefix,
   suffix,
-  defaultValue,
 }: {
-  label: string;
   name: string;
   type?: string;
   placeholder?: string;
+  defaultValue?: string;
   required?: boolean;
-  helper?: string;
   prefix?: string;
   suffix?: string;
-  defaultValue?: string;
 }) {
   return (
-    <div>
-      <label className="mb-1.5 flex items-center gap-1 text-sm font-medium">
-        {label}
-        {required && <span className="text-rose-500">*</span>}
-      </label>
-      <div className="relative flex items-center rounded-lg border border-zinc-300 bg-white transition focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-900">
-        {prefix && <span className="pl-3 text-sm text-zinc-500">{prefix}</span>}
-        <input
-          type={type}
-          name={name}
-          placeholder={placeholder}
-          required={required}
-          defaultValue={defaultValue}
-          className="w-full bg-transparent px-3 py-2.5 text-sm outline-none placeholder:text-zinc-400"
-        />
-        {suffix && <span className="pr-3 text-sm text-zinc-500">{suffix}</span>}
-      </div>
-      {helper && <p className="mt-1.5 text-xs text-zinc-500">{helper}</p>}
+    <div className="flex items-center border-b border-ink pb-1 transition-colors focus-within:border-pop">
+      {prefix && <span className="ed-mono text-sm text-ink-muted mr-2">{prefix}</span>}
+      <input
+        type={type}
+        name={name}
+        placeholder={placeholder}
+        required={required}
+        defaultValue={defaultValue}
+        className="w-full bg-transparent py-2 text-lg font-medium outline-none placeholder:font-normal placeholder:text-ink-muted"
+      />
+      {suffix && <span className="ed-mono text-sm text-ink-muted ml-2">{suffix}</span>}
+    </div>
+  );
+}
+
+function TrackPicker({ defaultValue }: { defaultValue: MockGoal["targetTrack"] }) {
+  const options: { value: MockGoal["targetTrack"]; title: string; desc: string }[] = [
+    { value: "fulltime", title: "Full-time", desc: "Karyawan tetap." },
+    { value: "freelance", title: "Freelance", desc: "Project based." },
+    { value: "both", title: "Dua-duanya", desc: "Fleksibel." },
+  ];
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[var(--rule)] border border-[var(--rule)] rounded-lg overflow-hidden">
+      {options.map((o) => (
+        <label
+          key={o.value}
+          className="relative flex cursor-pointer flex-col gap-1 p-4 transition-colors has-[:checked]:bg-pop has-[:checked]:text-pop-ink"
+        >
+          <input
+            type="radio"
+            name="targetTrack"
+            value={o.value}
+            defaultChecked={o.value === defaultValue}
+            className="peer sr-only"
+          />
+          <span className="flex items-center justify-between">
+            <span className="text-base font-medium">{o.title}</span>
+            <span className="flex h-4 w-4 items-center justify-center rounded-full border border-current">
+              <span className="h-1.5 w-1.5 rounded-full bg-current opacity-0 peer-checked:opacity-100 transition-opacity" />
+            </span>
+          </span>
+          <span className="text-xs opacity-75">{o.desc}</span>
+        </label>
+      ))}
     </div>
   );
 }
