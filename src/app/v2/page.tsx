@@ -920,21 +920,50 @@ function AmbientShapes() {
   );
 }
 
-/* ---------------- orbit section ---------------- */
+/* ---------------- paths marquee ---------------- */
 function Orbit() {
-  const roles = [
-    { l: "Product Designer", c: "text-lime-300" },
-    { l: "Frontend Engineer", c: "text-cyan-300" },
-    { l: "Data Analyst", c: "text-amber-300" },
-    { l: "Product Manager", c: "text-rose-300" },
-    { l: "UX Researcher", c: "text-violet-300" },
-    { l: "Growth Marketer", c: "text-emerald-300" },
+  const rowA = [
+    { l: "Product Designer", a: "lime", i: "◆" },
+    { l: "Frontend Engineer", a: "cyan", i: "◇" },
+    { l: "Data Analyst", a: "amber", i: "▲" },
+    { l: "Product Manager", a: "rose", i: "●" },
+    { l: "UX Researcher", a: "violet", i: "■" },
+    { l: "Growth Marketer", a: "emerald", i: "★" },
+    { l: "Backend Engineer", a: "cyan", i: "◆" },
+    { l: "Content Writer", a: "amber", i: "◇" },
   ];
-  const radius = 230;
+  const rowB = [
+    { l: "Brand Designer", a: "rose", i: "◆" },
+    { l: "DevOps Engineer", a: "lime", i: "▲" },
+    { l: "Business Analyst", a: "amber", i: "■" },
+    { l: "Copywriter", a: "violet", i: "◇" },
+    { l: "Operations Lead", a: "emerald", i: "●" },
+    { l: "Motion Designer", a: "cyan", i: "★" },
+    { l: "Finance Associate", a: "rose", i: "◆" },
+    { l: "Customer Success", a: "lime", i: "●" },
+  ];
+
+  const tone: Record<string, string> = {
+    lime: "text-lime-300",
+    cyan: "text-cyan-300",
+    amber: "text-amber-300",
+    rose: "text-rose-300",
+    violet: "text-violet-300",
+    emerald: "text-emerald-300",
+  };
+
+  const Chip = ({ l, a, i }: { l: string; a: string; i: string }) => (
+    <div className="group flex shrink-0 items-center gap-3 rounded-full border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] px-4 py-2 backdrop-blur-sm transition-colors hover:border-white/25">
+      <span className={`text-sm ${tone[a]}`}>{i}</span>
+      <span className="font-mono text-xs text-zinc-300">{l}</span>
+      <span className="font-mono text-[10px] text-zinc-600">/path</span>
+    </div>
+  );
+
   return (
     <section className="relative border-t border-white/[0.06]" data-gs="section">
-      <div className="mx-auto max-w-[1400px] px-6 py-20 md:py-28">
-        <div className="mb-16 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
+      <div className="mx-auto max-w-[1400px] px-6 py-14 md:py-20">
+        <div className="mb-10 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
           <div className="max-w-xl">
             <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-lime-300">
               // paths
@@ -942,103 +971,95 @@ function Orbit() {
             <h2 className="mt-3 text-3xl font-medium tracking-tight md:text-5xl">
               Banyak jalur. <span className="text-zinc-500">Satu copilot.</span>
             </h2>
-            <p className="mt-4 text-sm leading-relaxed text-zinc-400 md:text-base">
-              Karir.ai bukan cuma buat satu tipe. Roadmap, skill-gap, dan job
-              match di-adaptasi per jalur — dari design sampai data, marketing
-              sampai engineering.
+            <p className="mt-4 max-w-lg text-sm leading-relaxed text-zinc-400 md:text-base">
+              Roadmap, skill-gap, dan job match di-adaptasi per jalur — dari
+              design sampai data, marketing sampai engineering.
             </p>
           </div>
-          <span className="font-mono text-xs text-zinc-500">
-            supported_paths = 24+
-          </span>
+          <div className="flex items-center gap-3">
+            <div className="flex -space-x-2">
+              <span className="h-6 w-6 rounded-full border-2 border-[#05070a] bg-lime-300" />
+              <span className="h-6 w-6 rounded-full border-2 border-[#05070a] bg-cyan-300" />
+              <span className="h-6 w-6 rounded-full border-2 border-[#05070a] bg-amber-300" />
+              <span className="h-6 w-6 rounded-full border-2 border-[#05070a] bg-rose-300" />
+            </div>
+            <span className="font-mono text-xs text-zinc-500">
+              24+ paths · terus bertambah
+            </span>
+          </div>
         </div>
 
-        <div className="relative mx-auto flex aspect-square w-full max-w-[620px] items-center justify-center">
-          {/* outer dotted ring */}
-          <svg
-            className="absolute inset-0 h-full w-full text-white/10"
-            viewBox="0 0 600 600"
-            aria-hidden
-          >
-            <circle
-              cx="300"
-              cy="300"
-              r={radius + 40}
-              stroke="currentColor"
-              strokeWidth="1"
-              strokeDasharray="2 8"
-              fill="none"
-            />
-            <circle
-              cx="300"
-              cy="300"
-              r={radius - 40}
-              stroke="currentColor"
-              strokeWidth="1"
-              strokeDasharray="2 8"
-              fill="none"
-            />
-          </svg>
+        {/* Spotlight card */}
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.025] to-transparent py-10">
+          {/* fade mask edges */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-[#05070a] to-transparent md:w-40" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-[#05070a] to-transparent md:w-40" />
 
-          {/* rotating middle ring with role chips */}
-          <div
-            data-gs="orbit"
-            data-dur="48"
-            className="relative h-full w-full"
-          >
-            {roles.map((r, i) => {
-              const angle = (i / roles.length) * 2 * Math.PI;
-              const x = Math.cos(angle) * radius;
-              const y = Math.sin(angle) * radius;
-              return (
-                <div
-                  key={r.l}
-                  className="absolute left-1/2 top-1/2"
-                  style={{ transform: `translate(calc(${x}px - 50%), calc(${y}px - 50%))` }}
-                >
-                  <div
-                    data-gs="orbit-item"
-                    data-dur="48"
-                    className="rounded-full border border-white/15 bg-[#0a0d12]/90 px-4 py-2 font-mono text-xs backdrop-blur-sm shadow-[0_10px_40px_-15px_rgba(0,0,0,0.8)]"
-                  >
-                    <span className={`mr-1.5 ${r.c}`}>●</span>
-                    <span className="text-zinc-200">{r.l}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* inner counter-orbit with pips */}
-          <div
-            data-gs="orbit"
-            data-dir="ccw"
-            data-dur="24"
-            className="absolute h-[260px] w-[260px] rounded-full border border-lime-300/20"
-          >
-            {Array.from({ length: 8 }).map((_, i) => {
-              const a = (i / 8) * 2 * Math.PI;
-              const x = Math.cos(a) * 130;
-              const y = Math.sin(a) * 130;
-              return (
-                <span
-                  key={i}
-                  className="absolute left-1/2 top-1/2 h-1.5 w-1.5 rounded-full bg-lime-300/70"
-                  style={{ transform: `translate(calc(${x}px - 50%), calc(${y}px - 50%))` }}
-                />
-              );
-            })}
-          </div>
-
-          {/* core */}
-          <div className="relative z-10 flex h-32 w-32 flex-col items-center justify-center rounded-full border border-lime-300/40 bg-gradient-to-b from-lime-300/20 to-transparent shadow-[0_0_80px_-10px_rgba(190,242,100,0.5)]">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-lime-300">
-              <svg viewBox="0 0 24 24" className="h-6 w-6 text-zinc-950" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-              </svg>
+          {/* row A — left to right */}
+          <div className="relative flex">
+            <div className="flex animate-[marquee_40s_linear_infinite] gap-3 whitespace-nowrap pr-3">
+              {[...rowA, ...rowA].map((r, i) => (
+                <Chip key={`a${i}`} {...r} />
+              ))}
             </div>
-            <span className="mt-2 font-mono text-[10px] text-lime-200">core.ai</span>
           </div>
+
+          {/* featured row — selected path card */}
+          <div className="relative my-8 flex items-center justify-center">
+            <div className="absolute left-1/2 top-1/2 h-px w-full -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-transparent via-lime-300/40 to-transparent" />
+            <div className="relative z-10 flex items-center gap-4 rounded-2xl border border-lime-300/30 bg-[#07090d] px-5 py-4 shadow-[0_0_60px_-20px_rgba(190,242,100,0.6)]">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-lime-300 text-lg text-zinc-950">
+                ◆
+              </span>
+              <div className="min-w-0">
+                <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-lime-300">
+                  current match
+                </p>
+                <p className="mt-0.5 text-sm font-medium text-zinc-100">
+                  <span data-gs="type">Senior Product Designer @ Remote</span>
+                </p>
+              </div>
+              <div className="hidden items-baseline gap-1 border-l border-white/10 pl-4 md:flex">
+                <span className="font-mono text-xl font-medium text-lime-300 tabular-nums">87</span>
+                <span className="font-mono text-xs text-zinc-500">% fit</span>
+              </div>
+              <span className="hidden rounded-full bg-lime-300/15 px-2.5 py-1 font-mono text-[10px] text-lime-200 md:inline-block">
+                +12 wk
+              </span>
+            </div>
+          </div>
+
+          {/* row B — right to left */}
+          <div className="relative flex">
+            <div
+              className="flex animate-[marquee_48s_linear_infinite] gap-3 whitespace-nowrap pr-3"
+              style={{ animationDirection: "reverse" }}
+            >
+              {[...rowB, ...rowB].map((r, i) => (
+                <Chip key={`b${i}`} {...r} />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* footnote strip */}
+        <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+          {[
+            { k: "Tech", v: "8 paths" },
+            { k: "Design", v: "5 paths" },
+            { k: "Business", v: "7 paths" },
+            { k: "Creative", v: "4 paths" },
+          ].map((it) => (
+            <div
+              key={it.k}
+              className="flex items-baseline justify-between rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3"
+            >
+              <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-zinc-500">
+                {it.k}
+              </span>
+              <span className="font-mono text-sm text-zinc-200">{it.v}</span>
+            </div>
+          ))}
         </div>
       </div>
     </section>
