@@ -57,7 +57,7 @@ function Ticker() {
 function Header() {
   return (
     <header className="sticky top-0 z-30 bg-paper/85 backdrop-blur ed-hairline-b">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-12 items-center gap-4 px-6 py-4">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-12 items-center gap-4 px-6 py-3">
         <Link href="/" className="col-span-4 inline-flex items-center gap-2">
           <Monogram />
           <span className="text-[17px] font-semibold tracking-tight">
@@ -109,7 +109,7 @@ function Header() {
 function Hero() {
   return (
     <section className="relative ed-hairline-b">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 pt-16 pb-20 md:pt-24 md:pb-28">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 pt-10 pb-12 md:pt-16 md:pb-16">
         {/* Section marker */}
         <div className="col-span-12 md:col-span-2">
           <div className="flex md:flex-col items-start md:gap-10">
@@ -124,7 +124,7 @@ function Hero() {
             Live · Beta program terbuka
           </div>
 
-          <h1 data-gs="hero-line" className="text-[44px] font-medium leading-[0.92] tracking-[-0.03em] sm:text-[76px] md:text-[108px] lg:text-[128px]">
+          <h1 data-gs="hero-line" className="text-[40px] font-medium leading-[0.92] tracking-[-0.03em] sm:text-[64px] md:text-[88px] lg:text-[104px]">
             Karir <span className="ed-serif text-pop">yang ngerti</span>
             <br />
             kamu,{" "}
@@ -137,7 +137,7 @@ function Hero() {
             job <span className="ed-highlight">board.</span>
           </h1>
 
-          <div className="mt-12 grid grid-cols-12 gap-6">
+          <div className="mt-8 grid grid-cols-12 gap-6">
             <p data-gs="hero-fade" className="col-span-12 md:col-span-6 text-lg leading-relaxed text-ink-soft">
               Tentukan goal, AI susun <em className="ed-serif not-italic-[false] text-ink">roadmap</em>,
               potret <em className="ed-serif text-ink">skill-gap</em>, kasih{" "}
@@ -258,7 +258,7 @@ function MiniCell({ k, v, serifAccent }: { k: string; v: string; serifAccent: st
 function Manifesto() {
   return (
     <section className="ed-hairline-b" data-gs="section">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-20 md:py-24">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-10 md:py-16">
         <div className="col-span-12 md:col-span-2">
           <span className="ed-label">01 / Manifesto</span>
         </div>
@@ -316,7 +316,7 @@ function HowItWorks() {
   ];
   return (
     <section id="how" className="ed-hairline-b" data-gs="section">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-20 md:py-28">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-12 md:py-20">
         <SectionHeader num="02" kicker="Cara kerja" title={<>Tiga langkah — <span className="ed-serif">itu doang.</span></>} />
         <div className="col-span-12 md:col-span-10 md:col-start-3" data-gs="stagger-parent">
           <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[var(--rule)] border-y border-[var(--rule)]">
@@ -345,7 +345,7 @@ function HowItWorks() {
 function Features() {
   return (
     <section id="features" className="ed-hairline-b bg-paper-2" data-gs="section">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-20 md:py-28">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-12 md:py-20">
         <SectionHeader
           num="03"
           kicker="Fitur"
@@ -517,7 +517,7 @@ function ForWho() {
   ];
   return (
     <section id="who" className="ed-hairline-b" data-gs="section">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-20 md:py-28">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-12 md:py-20">
         <SectionHeader
           num="04"
           kicker="Untuk siapa"
@@ -529,7 +529,7 @@ function ForWho() {
               <li
                 key={it.t}
                 data-gs="stagger-child"
-                className="grid grid-cols-12 items-baseline gap-6 py-7 transition-colors hover:bg-paper-2"
+                className="grid grid-cols-12 items-baseline gap-6 py-5 transition-colors hover:bg-paper-2"
               >
                 <span className="col-span-2 md:col-span-1 ed-mono text-sm font-medium text-pop ed-num">
                   0{i + 1}
@@ -562,7 +562,7 @@ function Stats() {
   ];
   return (
     <section className="ed-hairline-b bg-ink text-paper" data-gs="section">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-20">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-10 md:py-14">
         <div className="col-span-12 md:col-span-2">
           <span className="ed-label !text-paper/60">05 / Numbers</span>
         </div>
@@ -611,7 +611,7 @@ function Testimonials() {
   ];
   return (
     <section className="ed-hairline-b" data-gs="section">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-20 md:py-28">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-12 md:py-20">
         <SectionHeader
           num="06"
           kicker="Testimoni"
@@ -660,27 +660,25 @@ function FAQ() {
   ];
   return (
     <section id="faq" className="ed-hairline-b" data-gs="section">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-20 md:py-28">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-12 md:py-20">
         <SectionHeader num="07" kicker="FAQ" title={<>Pertanyaan <span className="ed-serif">yang sering muncul.</span></>} />
-        <div className="col-span-12 md:col-span-10 md:col-start-3 border-y border-[var(--rule)] divide-y divide-[var(--rule)]">
+        <div className="col-span-12 md:col-span-10 md:col-start-3 grid grid-cols-1 md:grid-cols-2 gap-x-8 border-y border-[var(--rule)]">
           {qa.map((item, i) => (
-            <details key={i} className="group">
-              <summary className="flex cursor-pointer list-none items-baseline gap-6 py-6">
+            <details key={i} className={`group border-t border-[var(--rule)] first:border-t-0 md:[&:nth-child(2)]:border-t-0 ${i % 2 === 0 ? "md:border-r md:pr-4 md:border-[var(--rule)]" : "md:pl-4"}`}>
+              <summary className="flex cursor-pointer list-none items-baseline gap-4 py-5">
                 <span className="ed-mono text-sm font-medium text-ink-muted ed-num">
                   0{i + 1}
                 </span>
-                <span className="flex-1 text-xl font-medium md:text-2xl tracking-tight">
+                <span className="flex-1 text-lg font-medium md:text-xl tracking-tight">
                   {item.q}
                 </span>
-                <span className="flex h-7 w-7 items-center justify-center rounded-full border border-ink transition-all group-open:bg-ink group-open:text-paper group-open:rotate-45">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-ink transition-all group-open:bg-ink group-open:text-paper group-open:rotate-45">
                   <Plus className="h-3 w-3" />
                 </span>
               </summary>
-              <div className="grid grid-cols-12 gap-6 pb-6 -mt-2">
-                <p className="col-span-12 md:col-start-3 md:col-span-9 text-ink-soft leading-relaxed">
-                  {item.a}
-                </p>
-              </div>
+              <p className="pb-5 pl-9 pr-2 text-sm text-ink-soft leading-relaxed">
+                {item.a}
+              </p>
             </details>
           ))}
         </div>
@@ -696,13 +694,13 @@ function CTA() {
   return (
     <section className="relative ed-hairline-b bg-ink text-paper overflow-hidden" data-gs="section">
       <div aria-hidden className="absolute inset-0 ed-grain" />
-      <div className="relative mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-24 md:py-32">
+      <div className="relative mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-16 md:py-24">
         <div className="col-span-12 md:col-span-2">
           <span className="ed-label !text-paper/60">08 / Start</span>
         </div>
         <div className="col-span-12 md:col-span-10">
           <p className="ed-label !text-acid">Ready. Set. Go.</p>
-          <h2 data-gs="hero-line" className="mt-6 text-6xl font-medium leading-[0.9] tracking-[-0.03em] sm:text-7xl md:text-[132px]">
+          <h2 data-gs="hero-line" className="mt-6 text-5xl font-medium leading-[0.9] tracking-[-0.03em] sm:text-6xl md:text-[96px]">
             Stop <span className="ed-serif text-blush">nebak-nebak</span>
             <br />
             karir <span className="ed-serif">kamu.</span>
