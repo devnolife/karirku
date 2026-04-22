@@ -8,8 +8,28 @@
 
 ## Status
 
-**Sprint 1-2 Foundation** — setup dev env, schema, auth, AI abstraction, scraper skeleton.
-Fitur guidance loop aktif di Sprint 3-4.
+**UI/UX Mock Mode** — project saat ini fokus di presentasi UI/UX. Semua data di-mock di
+[`src/lib/mock/data.ts`](./src/lib/mock/data.ts); `prisma` dan `next-auth` di-stub di
+[`src/lib/db.ts`](./src/lib/db.ts) & [`src/lib/auth.ts`](./src/lib/auth.ts) supaya
+aplikasi bisa jalan **tanpa** database, Redis, Ollama, atau Google OAuth.
+
+Quick start (mode mock):
+
+```bash
+pnpm install
+pnpm dev     # → http://localhost:3000
+```
+
+Login page punya tombol **"Masuk sebagai demo user"** yang langsung set cookie
+demo dan redirect ke dashboard. Dashboard, roadmap, job match, course rec, dan
+market trend semuanya pakai fixtures — zero backend dependency.
+
+Untuk kembali ke mode full-stack (DB + auth), kembalikan `src/lib/db.ts` &
+`src/lib/auth.ts` dari git history dan jalankan `./scripts/dev-setup.sh` sesuai
+Quick Start di bawah.
+
+Blueprint produk lengkap ada di [`plan.md`](./plan.md).
+Fitur guidance loop (AI roadmap, scraper, worker) aktif di Sprint 3-4.
 
 ## Prasyarat
 

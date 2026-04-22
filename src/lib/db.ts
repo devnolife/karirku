@@ -1,24 +1,25 @@
-import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
+/**
+ * MOCK MODE — tidak ada koneksi DB.
+ * Export stub `prisma` supaya import lama ga crash.
+ * Semua call akan melempar error yang jelas.
+ */
 
-declare global {
-  var __prisma: PrismaClient | undefined;
-}
+const STUB_MESSAGE =
+  "[karir.ai] Running in UI/UX mock mode — prisma tidak tersedia. " +
+  "Gunakan helper di src/lib/mock/ untuk data.";
 
-function createPrismaClient(): PrismaClient {
-  const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) {
-    throw new Error("DATABASE_URL is not set");
-  }
-  const adapter = new PrismaPg({ connectionString });
-  return new PrismaClient({
-    adapter,
-    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
+// Loose typing: banyak consumer lama memakai method chain prisma.xxx.yyy().
+// Proxy rekursif yang selalu throw begitu dipanggil.
+function makeStub(): any {
+  return new Proxy(function () {
+    throw new Error(STUB_MESSAGE);
+  }, {
+    get: () => makeStub(),
+    apply: () => {
+      throw new Error(STUB_MESSAGE);
+    },
   });
 }
 
-export const prisma = globalThis.__prisma ?? createPrismaClient();
-
-if (process.env.NODE_ENV !== "production") {
-  globalThis.__prisma = prisma;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const prisma: any = makeStub();
