@@ -4,6 +4,7 @@
  */
 
 import { PlaywrightCrawler, type PlaywrightCrawlerOptions } from "crawlee";
+import { prisma } from "@/lib/db";
 
 export const DEFAULT_USER_AGENT =
   "KarirkuBot/0.1 (+https://karirku.id/bot; contact@karirku.id)";
@@ -31,7 +32,9 @@ export function createCrawler(config: ScraperConfig): PlaywrightCrawler {
 }
 
 export async function isDuplicate(sourceUrl: string): Promise<boolean> {
-  // TODO (Sprint 3): prisma.job.findUnique({ where: { sourceUrl } }).
-  void sourceUrl;
-  return false;
+  const existing = await prisma.job.findUnique({
+    where: { sourceUrl },
+    select: { id: true },
+  });
+  return existing != null;
 }

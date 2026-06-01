@@ -70,11 +70,38 @@ pnpm worker           # BullMQ workers (terminal terpisah)
 
 # utility
 pnpm ai:smoke         # test koneksi AI
+pnpm scan             # enqueue scan lowongan (portal ATS) → scraperQueue
 pnpm db:studio        # Prisma Studio GUI
 pnpm typecheck        # TypeScript check
 pnpm lint
 pnpm build
 ```
+
+## Job scanner (portal ATS)
+
+Scanner "zero-token" menarik daftar lowongan langsung dari JSON API publik
+**Greenhouse / Ashby / Lever** — tanpa scraping HTML, tanpa token AI. Provider
+ada di [`src/lib/scraper/providers/`](./src/lib/scraper/providers); tambah portal
+target di [`src/lib/scraper/portals.ts`](./src/lib/scraper/portals.ts).
+
+```bash
+# 1) set enabled:true + slug perusahaan di src/lib/scraper/portals.ts
+pnpm scan       # enqueue job ke scraperQueue
+pnpm worker     # worker memproses: scan → dedupe (Job.sourceUrl) → enrichQueue
+```
+
+Provider mendeteksi portal otomatis dari pola URL (`job-boards.greenhouse.io/<slug>`,
+`jobs.ashbyhq.com/<slug>`, `jobs.lever.co/<slug>`) dan punya allowlist hostname
+(proteksi SSRF). Scraper HTML untuk portal Indonesia (Jobstreet/Dicoding/Prakerja)
+masih skeleton.
+
+**Filosofi**: Karir.ai = **1 platform agregasi + pengukur kecocokan**, bukan
+otomasi lamaran. Setiap lowongan menyimpan `sourceUrl` (link posting asli) —
+user melamar langsung di website perusahaan. Yang kita bantu adalah *mengukur*:
+[`src/lib/match/score.ts`](./src/lib/match/score.ts) → `skillCoverageScore(userSkills, jobSkills)`
+menghasilkan `matchPct` + daftar skill `matched`/`missing` (deterministik, untuk
+skill-gap & rekomendasi course). Nanti dapat dilengkapi semantic similarity via
+`Job.embedding` sebagai composite score.
 
 ## Service endpoints (lokal)
 
@@ -102,7 +129,7 @@ src/
 ├── lib/
 │   ├── ai/              client + models + prompts
 │   ├── queue/           BullMQ queue definitions
-│   ├── scraper/         skeleton Jobstreet/Dicoding/Prakerja
+│   ├── scraper/         providers/ (Greenhouse/Ashby/Lever) + skeleton Jobstreet/Dicoding/Prakerja
 │   ├── auth.ts
 │   ├── db.ts
 │   └── redis.ts

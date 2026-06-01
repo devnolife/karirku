@@ -1,6 +1,7 @@
 import { Worker } from "bullmq";
 import { createQueueConnection } from "@/lib/redis";
 import { QUEUE_NAMES } from "@/lib/queue";
+import { runScrape, type ScrapeJobData } from "@/lib/scraper/run";
 
 /**
  * BullMQ workers entrypoint.
@@ -13,11 +14,19 @@ import { QUEUE_NAMES } from "@/lib/queue";
 
 const connection = createQueueConnection();
 
-const scraperWorker = new Worker(
+const scraperWorker = new Worker<ScrapeJobData>(
   QUEUE_NAMES.scraper,
   async (job) => {
     console.log(`[scraper] job ${job.id} — ${job.name}`, job.data);
-    // TODO: dispatch ke module scraper sesuai job.data.source
+    const summary = await runScrape(job.data);
+    console.log(
+      `[scraper] job ${job.id} done — scanned=${summary.scanned} found=${summary.found} ` +
+        `enqueued=${summary.enqueued} duplicates=${summary.duplicates} errors=${summary.errors.length}`,
+    );
+    if (summary.errors.length) {
+      for (const e of summary.errors) console.warn(`[scraper]   ⚠ ${e.portal}: ${e.message}`);
+    }
+    return summary;
   },
   { connection, concurrency: 1 }
 );

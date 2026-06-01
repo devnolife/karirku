@@ -202,3 +202,452 @@ select, input, textarea { font-family: inherit; }
     transparent 6px
   );
 }
+
+/* =========================================================
+   /v2 — Risograph Almanac aesthetic
+   Hand-printed zine: cream stock, tangerine ink,
+   oxblood shadow, ultramarine accent. Wonky serif display.
+   ========================================================= */
+:root {
+  --riso-cream: #f3ecd9;
+  --riso-cream-2: #ebe1c6;
+  --riso-stock: #faf3e0;
+  --riso-ink: #1a140d;
+  --riso-ink-soft: #4a3f2e;
+  --riso-ink-mute: #8a7a5e;
+  --riso-tangerine: #ff5b1f;
+  --riso-oxblood: #7a1d1a;
+  --riso-ultramarine: #1d3aff;
+  --riso-mustard: #e8b923;
+  --riso-sage: #6b7d4a;
+  --riso-rule: #1a140d;
+}
+
+.riso-page {
+  background:
+    radial-gradient(1200px 600px at 12% -10%, rgba(255, 91, 31, 0.08), transparent 60%),
+    radial-gradient(900px 700px at 95% 105%, rgba(29, 58, 255, 0.05), transparent 65%),
+    var(--riso-cream);
+  color: var(--riso-ink);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01", "kern";
+}
+
+/* Paper grain — heavier than v1 */
+.riso-grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.08  0 0 0 0 0.05  0 0 0 0.18 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+}
+
+/* Riso misregistration — duplicate text offset to fake CMY overprint */
+.riso-mis {
+  position: relative;
+  display: inline-block;
+}
+.riso-mis::before,
+.riso-mis::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+.riso-mis::before {
+  color: var(--riso-tangerine);
+  transform: translate(-3px, 2px);
+  opacity: 0.85;
+}
+.riso-mis::after {
+  color: var(--riso-ultramarine);
+  transform: translate(3px, -2px);
+  opacity: 0.55;
+}
+
+/* Display serif used in /v2 */
+.riso-serif {
+  font-family: var(--font-fraunces), "Fraunces", ui-serif, Georgia, serif;
+  font-variation-settings: "SOFT" 50, "WONK" 1, "opsz" 144;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+.riso-serif-italic {
+  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+  font-style: italic;
+  font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
+}
+.riso-mono {
+  font-family: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-feature-settings: "ss01", "ss02", "zero";
+}
+
+/* Newspaper drop cap */
+.riso-dropcap::first-letter {
+  font-family: var(--font-fraunces), serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 4.5em;
+  line-height: 0.85;
+  float: left;
+  margin: 0.08em 0.12em 0 -0.04em;
+  color: var(--riso-tangerine);
+  font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
+}
+
+/* Hand-stamp seal rotation */
+@keyframes riso-stamp-spin {
+  to { transform: rotate(360deg); }
+}
+.riso-stamp { animation: riso-stamp-spin 32s linear infinite; }
+
+/* Riso ticker */
+@keyframes riso-ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.riso-ticker { animation: riso-ticker 60s linear infinite; }
+
+/* Hatch overlay block */
+.riso-hatch {
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--riso-ink) 0,
+    var(--riso-ink) 1px,
+    transparent 1px,
+    transparent 5px
+  );
+}
+.riso-hatch-tang {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--riso-tangerine) 0,
+    var(--riso-tangerine) 1.5px,
+    transparent 1.5px,
+    transparent 7px
+  );
+}
+
+/* Hairline ruled box like ledger paper */
+.riso-ledger {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 27px,
+    rgba(26, 20, 13, 0.12) 27px,
+    rgba(26, 20, 13, 0.12) 28px
+  );
+}
+
+/* Square stamp sticker */
+.riso-stick {
+  background: var(--riso-tangerine);
+  color: var(--riso-stock);
+  display: inline-block;
+  padding: 4px 8px;
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+  box-shadow: 3px 3px 0 var(--riso-oxblood);
+}
+
+/* Underline scribble */
+@keyframes riso-scribble {
+  from { stroke-dashoffset: var(--len, 400); }
+  to { stroke-dashoffset: 0; }
+}
+
+.riso-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.4rem;
+  background: var(--riso-ink);
+  color: var(--riso-cream);
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1.5px solid var(--riso-ink);
+  box-shadow: 5px 5px 0 var(--riso-tangerine);
+  transition: transform 160ms ease-out, box-shadow 160ms ease-out;
+}
+.riso-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--riso-tangerine);
+}
+.riso-btn-ghost {
+  background: transparent;
+  color: var(--riso-ink);
+  box-shadow: 5px 5px 0 var(--riso-ultramarine);
+}
+.riso-btn-ghost:hover {
+  box-shadow: 7px 7px 0 var(--riso-ultramarine);
+}
+
+/* =========================================================
+   /v3 — Black Chrome / Studio Edition
+   Y2K-luxe: jet black, oil-slick iridescent, brushed chrome.
+   Display: Bricolage Grotesque (variable). Mono: JetBrains.
+   ========================================================= */
+:root {
+  --chr-void: #0a0a0c;
+  --chr-pitch: #050507;
+  --chr-graphite: #16161a;
+  --chr-steel: #1f1f25;
+  --chr-bone: #f4f3ee;
+  --chr-bone-soft: #c8c5bd;
+  --chr-mute: #6a6973;
+  --chr-line: rgba(244, 243, 238, 0.12);
+  --chr-line-2: rgba(244, 243, 238, 0.06);
+  --chr-cyan: #6df4d4;
+  --chr-amber: #ffb24a;
+  --chr-magenta: #ff5cc8;
+  --chr-blue: #5ca0ff;
+}
+
+.chr-page {
+  background: var(--chr-void);
+  color: var(--chr-bone);
+  font-family: var(--font-bricolage), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01", "kern";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Mouse-tracking glow on hero — bound by JS to --mx/--my (0..100) */
+.chr-spot {
+  background:
+    radial-gradient(
+      600px 600px at calc(var(--mx, 50) * 1%) calc(var(--my, 50) * 1%),
+      rgba(255, 178, 74, 0.18),
+      rgba(255, 92, 200, 0.12) 30%,
+      rgba(92, 160, 255, 0.08) 55%,
+      transparent 70%
+    ),
+    radial-gradient(
+      900px 600px at 80% -10%,
+      rgba(109, 244, 212, 0.06),
+      transparent 60%
+    ),
+    var(--chr-void);
+}
+
+/* Subtle film grain over everything */
+.chr-grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  mix-blend-mode: screen;
+  opacity: 0.6;
+}
+
+/* Bricolage display — wonky narrow */
+.chr-display {
+  font-family: var(--font-bricolage), ui-sans-serif, sans-serif;
+  font-variation-settings: "opsz" 96, "wdth" 100;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 0.86;
+}
+.chr-display-tight {
+  font-variation-settings: "opsz" 96, "wdth" 75;
+  font-weight: 600;
+  letter-spacing: -0.05em;
+}
+.chr-display-wide {
+  font-variation-settings: "opsz" 96, "wdth" 200;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+.chr-mono {
+  font-family: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-feature-settings: "ss01", "ss02", "zero";
+}
+.chr-serif {
+  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+  font-style: italic;
+  font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144;
+}
+
+/* Chrome text — brushed silver gradient */
+.chr-text-chrome {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #d8d8da 18%,
+    #6e6e72 48%,
+    #2a2a2e 52%,
+    #6e6e72 56%,
+    #c4c4c6 86%,
+    #ffffff 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.06);
+}
+
+/* Oil-slick iridescent text */
+.chr-text-oil {
+  background: conic-gradient(
+    from 220deg at 50% 50%,
+    #6df4d4 0deg,
+    #5ca0ff 60deg,
+    #ff5cc8 130deg,
+    #ffb24a 200deg,
+    #6df4d4 290deg,
+    #6df4d4 360deg
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: chr-oil-shift 12s ease-in-out infinite;
+}
+@keyframes chr-oil-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Hairline rules and surfaces */
+.chr-hairline { border-color: var(--chr-line); }
+.chr-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
+  border: 1px solid var(--chr-line);
+  position: relative;
+}
+.chr-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 30%);
+  border-radius: inherit;
+}
+
+/* Chrome pill button — bevel illusion */
+.chr-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.4rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f6f5f0 0%, #d6d4cc 50%, #f6f5f0 100%);
+  color: var(--chr-pitch);
+  font-family: var(--font-bricolage), sans-serif;
+  font-variation-settings: "opsz" 14, "wdth" 90;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 -8px 14px rgba(0, 0, 0, 0.18) inset,
+    0 6px 20px -6px rgba(255, 178, 74, 0.5),
+    0 0 0 1px rgba(0, 0, 0, 0.4);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.chr-pill:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 -8px 14px rgba(0, 0, 0, 0.18) inset,
+    0 14px 32px -6px rgba(255, 92, 200, 0.6),
+    0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+.chr-pill-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.4rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0));
+  color: var(--chr-bone);
+  font-family: var(--font-bricolage), sans-serif;
+  font-variation-settings: "opsz" 14, "wdth" 90;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  border: 1px solid var(--chr-line);
+  transition: border-color 200ms ease, background 200ms ease;
+}
+.chr-pill-ghost:hover {
+  border-color: rgba(244, 243, 238, 0.35);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0));
+}
+
+/* Tag chip */
+.chr-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--chr-line);
+  border-radius: 999px;
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--chr-bone-soft);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+}
+.chr-tag-live::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--chr-cyan);
+  box-shadow: 0 0 10px var(--chr-cyan);
+  animation: chr-pulse 1.6s ease-in-out infinite;
+}
+@keyframes chr-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* Marquee */
+@keyframes chr-marq {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.chr-marq { animation: chr-marq 50s linear infinite; }
+
+/* Slow conic spin for orb */
+@keyframes chr-orb-spin {
+  to { transform: rotate(360deg); }
+}
+.chr-orb-spin { animation: chr-orb-spin 18s linear infinite; }
+
+/* Glitch effect for STUDIO wordmark */
+@keyframes chr-glitch {
+  0%, 92%, 100% { transform: translate(0, 0); filter: none; }
+  93% { transform: translate(-1px, 1px); filter: hue-rotate(20deg); }
+  95% { transform: translate(2px, -1px); filter: hue-rotate(-20deg); }
+  97% { transform: translate(-1px, 0); }
+}
+.chr-glitch { animation: chr-glitch 7s steps(1, end) infinite; }
+
+/* Grid backdrop */
+.chr-grid {
+  background-image:
+    linear-gradient(to right, var(--chr-line-2) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--chr-line-2) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 35%, black 40%, transparent 90%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chr-orb-spin, .chr-glitch, .chr-marq, .chr-text-oil, .chr-tag-live::before {
+    animation: none !important;
+  }
+}

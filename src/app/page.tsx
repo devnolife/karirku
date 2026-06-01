@@ -56,9 +56,10 @@ function Ticker() {
    ===================================================== */
 function Header() {
   return (
-    <header className="sticky top-0 z-30 bg-paper/85 backdrop-blur ed-hairline-b">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-12 items-center gap-4 px-6 py-3">
-        <Link href="/" className="col-span-4 inline-flex items-center gap-2">
+    <header className="sticky top-0 z-30 bg-paper/60 backdrop-blur-xl ed-hairline-b transition-colors duration-300">
+      <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-4">
+        {/* Brand */}
+        <Link href="/" className="inline-flex items-center gap-2">
           <Monogram />
           <span className="text-[17px] font-semibold tracking-tight">
             Karir<span className="text-pop">.ai</span>
@@ -66,7 +67,8 @@ function Header() {
           <span className="ed-label ml-2 hidden sm:inline">v1.0</span>
         </Link>
 
-        <nav className="col-span-4 hidden md:flex items-center justify-center gap-7 text-sm">
+        {/* Translucent navigation list */}
+        <nav className="hidden md:flex items-center gap-8 text-sm">
           {[
             ["Fitur", "#features"],
             ["Cara kerja", "#how"],
@@ -76,14 +78,49 @@ function Header() {
             <a
               key={h}
               href={h}
-              className="font-medium text-ink-soft transition-colors hover:text-ink"
+              className="font-medium text-ink-soft transition-colors hover:text-ink relative group"
             >
               {l}
+              <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-pop transition-all group-hover:w-full" />
             </a>
           ))}
         </nav>
 
-        <div className="col-span-8 md:col-span-4 flex items-center justify-end gap-2.5">
+        {/* Social interactions and actions */}
+        <div className="flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-2 mr-2">
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram Karir.ai"
+              title="Instagram"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-ink/[0.08] bg-surface/30 hover:bg-surface/80 hover:scale-105 backdrop-blur-md text-ink-soft hover:text-ink transition-all duration-300"
+            >
+              <InstagramIcon className="h-4 w-4" />
+            </a>
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn Karir.ai"
+              title="LinkedIn"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-ink/[0.08] bg-surface/30 hover:bg-surface/80 hover:scale-105 backdrop-blur-md text-ink-soft hover:text-ink transition-all duration-300"
+            >
+              <LinkedInIcon className="h-4 w-4" />
+            </a>
+            <a
+              href="https://x.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="X (Twitter) Karir.ai"
+              title="X"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-ink/[0.08] bg-surface/30 hover:bg-surface/80 hover:scale-105 backdrop-blur-md text-ink-soft hover:text-ink transition-all duration-300"
+            >
+              <XIcon className="h-3 w-3" />
+            </a>
+          </div>
+
           <Link
             href="/login"
             className="hidden sm:inline-flex items-center text-sm font-medium text-ink-soft hover:text-ink"
@@ -92,7 +129,7 @@ function Header() {
           </Link>
           <Link
             href="/onboarding"
-            className="group inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper hover:bg-pop transition-colors"
+            className="group inline-flex items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper hover:bg-pop transition-colors shadow-xs"
           >
             Mulai gratis
             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -108,82 +145,146 @@ function Header() {
    ===================================================== */
 function Hero() {
   return (
-    <section className="relative ed-hairline-b">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 pt-10 pb-12 md:pt-16 md:pb-16">
-        {/* Section marker */}
-        <div className="col-span-12 md:col-span-2">
-          <div className="flex md:flex-col items-start md:gap-10">
-            <span className="ed-label">00 / Index</span>
-            <span className="ed-label hidden md:block">Apr 2026</span>
-          </div>
-        </div>
+    <section className="relative min-h-[95vh] flex flex-col justify-between overflow-hidden ed-hairline-b bg-paper">
 
-        <div className="col-span-12 md:col-span-10">
-          <div className="flex items-center gap-2 ed-label mb-6">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-pop ed-blink" />
-            Live · Beta program terbuka
-          </div>
+      {/* Absolute background image layer with double overlay */}
+      <div className="absolute inset-0 -z-20 overflow-hidden">
+        {/* The beautiful anime meadow background image */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 scale-[1.02]"
+          style={{ backgroundImage: "url('/hero/bg-hero.png')" }}
+        />
 
-          <h1 data-gs="hero-line" className="text-[40px] font-medium leading-[0.92] tracking-[-0.03em] sm:text-[64px] md:text-[88px] lg:text-[104px]">
-            Karir <span className="ed-serif text-pop">yang ngerti</span>
-            <br />
-            kamu,{" "}
-            <span className="relative inline-block">
-              bukan
-              <Strike className="absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 text-blush" />
-            </span>{" "}
-            <span className="ed-serif">generic</span>
-            <br />
-            job <span className="ed-highlight">board.</span>
-          </h1>
+        {/* Soft atmospheric overlay */}
+        {/* Soft morning sun sky color overlay to simulate the warm dawn sky glow of Mindloop */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-linear-to-tr from-[#ffecef]/35 via-transparent to-[#e1f0ff]/25 mix-blend-color-burn"
+        />
 
-          <div className="mt-8 grid grid-cols-12 gap-6">
-            <p data-gs="hero-fade" className="col-span-12 md:col-span-6 text-lg leading-relaxed text-ink-soft">
-              Tentukan goal, AI susun <em className="ed-serif not-italic-[false] text-ink">roadmap</em>,
-              potret <em className="ed-serif text-ink">skill-gap</em>, kasih{" "}
-              <em className="ed-serif text-ink">job match</em> + kursus prioritas.
-              Dalam bahasa manusia — bukan corporate speak.
-            </p>
+        {/* Dreamy radial glow spotlight behind content */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full bg-linear-to-r from-pop/5 via-acid/5 to-transparent blur-[120px] opacity-70"
+        />
 
-            <div data-gs="hero-fade" className="col-span-12 md:col-span-6 md:col-start-8 flex flex-col items-start gap-4">
-              <div className="flex flex-wrap gap-3">
-                <Link
-                  href="/onboarding"
-                  className="group inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-[15px] font-medium text-paper hover:bg-pop transition-colors"
-                >
-                  Bikin roadmap-ku
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </Link>
-                <Link
-                  href="#features"
-                  className="inline-flex items-center gap-2 rounded-full border border-ink px-6 py-3.5 text-[15px] font-medium text-ink hover:bg-ink hover:text-paper transition-colors"
-                >
-                  <Play className="h-3 w-3" />
-                  Lihat demo
-                </Link>
-              </div>
-              <p className="ed-label">
-                Gratis mulai · Tanpa kartu kredit · Setup 60 detik
-              </p>
-            </div>
-          </div>
-        </div>
+        {/* Glass readability layers to blend background toward theme canvas colors */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-linear-to-r from-paper/92 via-paper/50 to-paper/15"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-linear-to-b from-paper/30 via-transparent to-paper"
+        />
       </div>
 
-      {/* Preview strip */}
-      <div className="ed-hairline-t bg-paper-2" data-gs="hero-preview">
+      {/* Main hero contents container */}
+      <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-center px-6 pt-16 pb-20 text-center relative z-10 flex-1">
+
+        {/* Glass subscriber count banner with overlapping gradient avatars */}
+        <div
+          data-gs="hero-fade"
+          className="mb-8 inline-flex items-center gap-3 rounded-full border border-ink/[0.08] bg-surface/30 px-4 py-1.5 backdrop-blur-md shadow-xs hover:border-ink/15 hover:bg-surface/50 transition-all duration-300 animate-fade-in"
+        >
+          {/* Avatar circles stack with premium pastel gradients mimicking faces */}
+          <div className="flex -space-x-2">
+            <span className="inline-block h-6 w-6 rounded-full border border-paper bg-gradient-to-br from-pop to-violet-300 shadow-xs" />
+            <span className="inline-block h-6 w-6 rounded-full border border-paper bg-gradient-to-br from-blush to-orange-200 shadow-xs" />
+            <span className="inline-block h-6 w-6 rounded-full border border-paper bg-gradient-to-br from-[#d9ff3c] to-emerald-400 shadow-xs" />
+          </div>
+          <span className="ed-mono text-[11px] font-medium tracking-wide text-ink-soft">
+            <span className="text-ink font-semibold">12,000+</span> profesional karir telah bergabung
+          </span>
+        </div>
+
+        {/* Breathtaking headline typeset with high styling detail */}
+        <h1
+          data-gs="hero-line"
+          className="max-w-5xl text-center font-semibold tracking-tight text-[44px] leading-[1.02] sm:text-[68px] md:text-[84px] lg:text-[100px] text-ink filter drop-shadow-[0_2px_4px_rgba(255,255,255,0.05)]"
+        >
+          Karir <span className="ed-serif text-pop">yang ngerti</span> kamu,
+          <br className="hidden sm:block" />
+          bukan <span className="relative inline-block px-1">
+            generic
+            <Strike className="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 text-blush/80" />
+          </span> <span className="ed-serif">job board.</span>
+        </h1>
+
+        {/* Sophisticated supporting description */}
+        <p
+          data-gs="hero-fade"
+          className="mt-8 max-w-3xl text-center text-lg md:text-[20px] leading-relaxed text-ink-soft/90 md:leading-[1.6]"
+        >
+          Tentukan goal, AI susun <em className="ed-serif not-italic text-ink font-medium">roadmap</em>,
+          potret <em className="ed-serif text-ink font-medium">skill-gap</em>, kasih{" "}
+          <em className="ed-serif text-ink font-medium">job match</em> + kursus prioritas.
+          Rapi, terarah, dan ramah manusia — bukan corporate-speak.
+        </p>
+
+        {/* Interactive, premium glassmorphism email waitlist input */}
+        <div data-gs="hero-fade" className="mt-10 w-full max-w-lg">
+          <form
+            onSubmit={(e) => { e.preventDefault(); }}
+            className="relative flex items-center justify-between p-1.5 rounded-full border border-ink/10 bg-surface/30 hover:border-ink/20 focus-within:border-pop/40 focus-within:ring-4 focus-within:ring-pop/5 backdrop-blur-lg shadow-[0_8px_32px_-4px_rgba(0,0,0,0.03)] transition-all duration-300"
+          >
+            <div className="flex-1 flex items-center gap-3 pl-4">
+              <svg viewBox="0 0 24 24" className="h-4 w-4 text-ink-muted shrink-0" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M12 2a5 5 0 0 0-5 5v4h10V7a5 5 0 0 0-5-5z" />
+              </svg>
+              <input
+                type="email"
+                required
+                placeholder="Ketik email kamu..."
+                className="w-full bg-transparent text-[15px] outline-none text-ink placeholder:text-ink-muted/80 py-1"
+              />
+            </div>
+
+            {/* Extremely detailed high-fidelity glass-glow CTA button */}
+            <button
+              type="submit"
+              className="group relative flex items-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm font-medium text-paper overflow-hidden hover:bg-pop active:scale-95 transition-all duration-300 cursor-pointer shadow-md"
+            >
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
+              Bikin Roadmap-ku
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </button>
+          </form>
+
+          {/* Social Proof subtext */}
+          <div className="mt-4 flex items-center justify-center gap-4 text-xs text-ink-muted">
+            <span className="flex items-center gap-1">
+              <span className="h-1.5 w-1.5 rounded-full bg-ok" /> Gratis mulai
+            </span>
+            <span className="opacity-30">·</span>
+            <span>Setup 60 detik</span>
+            <span className="opacity-30">·</span>
+            <span>Khusus Indonesia 🇮🇩</span>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Floating preview strip, simplified and visually styled just like the Mindloop preview */}
+      <div
+        className="relative z-10 w-full ed-hairline-t bg-surface/25 backdrop-blur-md"
+        data-gs="hero-preview"
+      >
         <div className="mx-auto grid max-w-[1400px] grid-cols-12 items-stretch px-6">
-          <div className="col-span-12 md:col-span-3 py-6 md:border-r md:ed-rule">
-            <span className="ed-label">Preview</span>
-            <p className="mt-2 text-sm text-ink-soft">
-              Dashboard demo — data mock, ga perlu daftar dulu.
+          <div className="col-span-12 md:col-span-3 py-5 md:border-r md:ed-rule flex flex-col justify-center">
+            <span className="ed-label">Interactive Preview</span>
+            <p className="mt-1 text-xs text-ink-soft">
+              Real-time career progress tracker, click demo below.
             </p>
           </div>
-          <div className="col-span-12 md:col-span-9 py-6 md:pl-8">
+          <div className="col-span-12 md:col-span-9 py-5 md:pl-8">
             <HeroPreview />
           </div>
         </div>
       </div>
+
     </section>
   );
 }
@@ -905,6 +1006,34 @@ function Strike({ className = "" }: { className?: string }) {
       className={className}
     >
       <path d="M0 2 L200 2" stroke="currentColor" strokeWidth="4" fill="none" />
+    </svg>
+  );
+}
+
+function InstagramIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
+
+function LinkedInIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect x="2" y="9" width="4" height="12" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  );
+}
+
+function XIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M18.244 2.25h3.308l-7.227 7.69 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.235L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
     </svg>
   );
 }
