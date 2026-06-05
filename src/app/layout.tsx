@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif, Fraunces, JetBrains_Mono, Bricolage_Grotesque } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif, Fraunces, JetBrains_Mono, Bricolage_Grotesque, Plus_Jakarta_Sans, Caveat } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -39,6 +39,21 @@ const bricolage = Bricolage_Grotesque({
   axes: ["opsz", "wdth"],
 });
 
+// Used by /v4 — "Clean Paper Desk" aesthetic.
+// Display/heading -> Bricolage Grotesque (above). Body/UI -> Plus Jakarta Sans
+// (made in Indonesia — fitting for a Jakarta-built product).
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+const caveat = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+  weight: ["600", "700"],
+});
+
 export const metadata: Metadata = {
   title: "Karir.ai — AI Career Copilot",
   description:
@@ -53,9 +68,12 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} ${fraunces.variable} ${jetbrainsMono.variable} ${bricolage.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} ${fraunces.variable} ${jetbrainsMono.variable} ${bricolage.variable} ${jakarta.variable} ${caveat.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-paper text-ink">
+      <body
+        className="min-h-full flex flex-col bg-paper text-ink"
+        suppressHydrationWarning
+      >
         {children}
       </body>
     </html>

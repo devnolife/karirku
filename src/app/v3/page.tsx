@@ -45,6 +45,7 @@ function Topband() {
           <span className="hidden sm:inline">v3 · studio edition · 04/26</span>
           <Link href="/" className="hover:text-white">↩ v1</Link>
           <Link href="/v2" className="hover:text-white">↩ v2</Link>
+          <Link href="/v4" className="hover:text-white">↩ v4</Link>
         </div>
       </div>
     </div>

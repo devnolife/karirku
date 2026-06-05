@@ -651,3 +651,230 @@ select, input, textarea { font-family: inherit; }
     animation: none !important;
   }
 }
+
+/* =========================================================
+   /v4 — "Clean Paper Desk" — Acctual design system
+   Near-monochrome paper neutrals. White surfaces, whisper-gray
+   sections, hairline borders. Chromatic color only as small
+   functional punctuation. Soft 20–32px radii, pill controls.
+   Open Runde (Onest substitute) carries the page; Caveat signs.
+   ========================================================= */
+:root {
+  --act-paper: #ffffff;
+  --act-mist: #f7fafc;
+  --act-stone: #afb0b1;
+  --act-graphite: #8d8d8d;
+  --act-charcoal: #1e1e1e;
+  --act-ink: #0f0f0f;
+  --act-onyx: #0d111b;
+  --act-shadow: #242628;
+  --act-blue: #0098f2;
+  --act-magenta: #f200ca;
+  --act-iris: #6d56fc;
+  --act-wash-sky: #cfeafa;
+  --act-wash-lilac: #e1e0fc;
+  --act-wash-petal: #f6d2f4;
+  --act-cta-shadow: rgb(36, 38, 40) 0px 0px 0px 1px,
+    rgba(27, 28, 29, 0.48) 0px 1px 2px 0px;
+  --act-soft-shadow: rgba(0, 0, 0, 0.06) 0px 2.5px 2.5px 0px;
+  --act-card-shadow: rgba(15, 23, 42, 0.04) 0px 1px 1px,
+    rgba(15, 23, 42, 0.05) 0px 8px 24px -12px;
+}
+
+.act-page {
+  background:
+    radial-gradient(1100px 520px at 8% -8%, rgba(0, 152, 242, 0.05), transparent 60%),
+    radial-gradient(900px 600px at 100% 0%, rgba(109, 86, 252, 0.045), transparent 62%),
+    var(--act-mist);
+  color: var(--act-ink);
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  font-feature-settings: "ss01", "kern";
+  -webkit-font-smoothing: antialiased;
+}
+
+.act-sans {
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+.act-script {
+  font-family: var(--font-caveat), ui-serif, "Comic Sans MS", cursive;
+  font-weight: 600;
+}
+
+/* Display heading — Bricolage Grotesque, tight tracking */
+.act-display {
+  font-family: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  font-variation-settings: "opsz" 40, "wdth" 100;
+}
+.act-heading {
+  font-family: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  line-height: 1.16;
+  letter-spacing: -0.022em;
+  font-variation-settings: "opsz" 24, "wdth" 100;
+}
+
+/* Eyebrow — the only saturated label */
+.act-eyebrow {
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  color: var(--act-blue);
+}
+
+/* Primary dark pill — the only filled button in the system */
+.act-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--act-onyx);
+  color: #ffffff;
+  font-family: var(--font-jakarta), sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 13px 24px;
+  border-radius: 100px;
+  box-shadow: var(--act-cta-shadow);
+  transition: background 200ms ease, transform 200ms ease;
+}
+.act-pill:hover {
+  background: #05080f;
+  transform: translateY(-1px);
+}
+.act-pill:active { transform: translateY(0); }
+
+/* Ghost text link */
+.act-pill-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--act-ink);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 13px 18px;
+  border-radius: 100px;
+  transition: background 180ms ease, color 180ms ease;
+}
+.act-pill-ghost:hover { background: rgba(15, 15, 15, 0.04); }
+
+/* Card surface — the only true white, 20px radius, soft 6% shadow */
+.act-card {
+  background: var(--act-paper);
+  border-radius: 20px;
+  box-shadow: var(--act-card-shadow);
+}
+
+/* Pastel washes — the only chromatic surfaces */
+.act-wash-sky { background: var(--act-wash-sky); }
+.act-wash-lilac { background: var(--act-wash-lilac); }
+.act-wash-petal { background: var(--act-wash-petal); }
+
+/* Pill tag (1250px radius reads as full pill) */
+.act-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 1250px;
+  background: rgba(0, 152, 242, 0.08);
+  color: var(--act-blue);
+  font-weight: 500;
+  font-size: 13px;
+  padding: 5px 12px;
+}
+
+/* Feature check pill — checkmark is the only chromatic signal */
+.act-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--act-charcoal);
+}
+.act-check svg { color: var(--act-blue); flex: none; }
+
+/* Hairline FAQ row — the only border that carries weight */
+.act-hairline { border-top: 1px solid var(--act-stone); }
+
+/* Avatar tiles inside product mockups */
+.act-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  color: #ffffff;
+}
+.act-avatar-magenta { background: var(--act-magenta); }
+.act-avatar-iris { background: var(--act-iris); }
+.act-avatar-blue { background: var(--act-blue); }
+
+/* FAQ native accordion plus/minus */
+.act-faq summary { list-style: none; cursor: pointer; }
+.act-faq summary::-webkit-details-marker { display: none; }
+.act-faq .act-faq-sign { transition: transform 240ms ease; }
+.act-faq[open] .act-faq-sign { transform: rotate(45deg); }
+
+/* Soft floating loop for decorative stationery props */
+@keyframes act-float {
+  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+  50% { transform: translateY(-10px) rotate(var(--r, 0deg)); }
+}
+.act-float { animation: act-float 7s ease-in-out infinite; }
+
+/* Marquee for desaturated logo cloud */
+@keyframes act-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.act-marquee { display: inline-flex; white-space: nowrap; animation: act-marquee 38s linear infinite; }
+
+/* Hero landscape — full-bleed backdrop, the winding-path roadmap */
+.act-hero-full {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+/* Dark scrim — keeps the white header + hero copy legible over the bright
+   landscape, denser at the very top (nav) and bottom (separation), then
+   resolves to the light canvas below */
+.act-hero-scrim {
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(9, 12, 20, 0.62) 0%,
+      rgba(9, 12, 20, 0.34) 26%,
+      rgba(9, 12, 20, 0.3) 52%,
+      rgba(9, 12, 20, 0.5) 82%,
+      rgba(247, 250, 252, 0.96) 100%
+    );
+}
+/* White-filled pill for use on the dark hero — inverse of the onyx CTA */
+.act-pill-light {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  color: var(--act-onyx);
+  font-family: var(--font-jakarta), sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 13px 24px;
+  border-radius: 100px;
+  box-shadow: rgba(0, 0, 0, 0.18) 0px 6px 18px -6px;
+  transition: background 200ms ease, transform 200ms ease;
+}
+.act-pill-light:hover {
+  background: #f1f5f9;
+  transform: translateY(-1px);
+}
+.act-pill-light:active { transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .act-float, .act-marquee { animation: none !important; }
+  .act-pill, .act-pill-light { transition: none; }
+}
