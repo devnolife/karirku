@@ -1,32 +1,64 @@
 import { cookies } from "next/headers";
-import { MOCK_GOAL, MOCK_USER, type MockGoal, type MockUser } from "./data";
+import {
+  MOCK_GOAL,
+  MOCK_USERS,
+  ROLE_LABEL,
+  type MockGoal,
+  type MockUser,
+  type UserRole,
+} from "./data";
 
 const DEMO_COOKIE = "kai_demo";
+const ROLE_COOKIE = "kai_demo_role";
 const GOAL_COOKIE = "kai_demo_goal";
 
 export type MockSession = {
   user: MockUser;
 };
 
-/** Selalu kembalikan mock session — tidak ada auth di mode demo. */
-export async function getMockSession(): Promise<MockSession> {
-  return { user: MOCK_USER };
+const VALID_ROLES: UserRole[] = ["jobseeker", "freelancer", "company", "admin"];
+
+export function isValidRole(value: string | undefined | null): value is UserRole {
+  return !!value && (VALID_ROLES as string[]).includes(value);
 }
 
-/** Tandai bahwa user sudah "masuk" (demo) — dipakai oleh halaman login. */
-export async function signInDemo(): Promise<void> {
+/** Home route default per role. */
+export function homeForRole(role: UserRole): string {
+  return role === "admin" ? "/admin" : "/dashboard";
+}
+
+export { ROLE_LABEL };
+
+/** Ambil role aktif dari cookie. Default jobseeker. */
+export async function getRole(): Promise<UserRole> {
   const jar = await cookies();
-  jar.set(DEMO_COOKIE, "1", {
+  const raw = jar.get(ROLE_COOKIE)?.value;
+  return isValidRole(raw) ? raw : "jobseeker";
+}
+
+/** Kembalikan mock session sesuai role yang dipilih saat login (demo). */
+export async function getMockSession(): Promise<MockSession> {
+  const role = await getRole();
+  return { user: MOCK_USERS[role] };
+}
+
+/** Tandai user "masuk" (demo) sebagai role tertentu — dipakai halaman login. */
+export async function signInDemo(role: UserRole = "jobseeker"): Promise<void> {
+  const jar = await cookies();
+  const opts = {
     httpOnly: false,
-    sameSite: "lax",
+    sameSite: "lax" as const,
     path: "/",
     maxAge: 60 * 60 * 24 * 30,
-  });
+  };
+  jar.set(DEMO_COOKIE, "1", opts);
+  jar.set(ROLE_COOKIE, role, opts);
 }
 
 export async function signOutDemo(): Promise<void> {
   const jar = await cookies();
   jar.delete(DEMO_COOKIE);
+  jar.delete(ROLE_COOKIE);
   jar.delete(GOAL_COOKIE);
 }
 

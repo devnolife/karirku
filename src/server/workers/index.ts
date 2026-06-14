@@ -77,4 +77,4 @@ const shutdown = async () => {
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
 
-console.log("🚀 Karir.ai workers started. Press Ctrl+C to stop.");
+console.log("🚀 CraftWorks workers started. Press Ctrl+C to stop.");

@@ -143,24 +143,42 @@ export function LandingAnimator() {
         });
       });
 
-      /* ---------- Hero preview subtle scrub parallax ---------- */
-      const preview = document.querySelector<HTMLElement>("[data-gs='hero-preview']");
-      if (preview) {
+      /* ---------- Progress bars grow on scroll ---------- */
+      gsap.utils.toArray<HTMLElement>("[data-gs='bar']").forEach((el) => {
+        const w = parseFloat(el.dataset.w ?? "100");
         gsap.fromTo(
-          preview,
+          el,
+          { width: "0%" },
+          {
+            width: `${w}%`,
+            duration: 1.1,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: el,
+              start: "top 92%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      });
+
+      /* ---------- Preview cards: subtle scrub parallax ---------- */
+      gsap.utils.toArray<HTMLElement>("[data-gs='hero-preview']").forEach((el, i) => {
+        gsap.fromTo(
+          el,
           { y: 0 },
           {
-            y: -24,
+            y: -(20 + (i % 3) * 6),
             ease: "none",
             scrollTrigger: {
-              trigger: preview,
+              trigger: el,
               start: "top bottom",
               end: "bottom top",
               scrub: 0.6,
             },
           }
         );
-      }
+      });
 
       ScrollTrigger.refresh();
 

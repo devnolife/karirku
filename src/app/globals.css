@@ -674,6 +674,11 @@ select, input, textarea { font-family: inherit; }
   --act-wash-sky: #cfeafa;
   --act-wash-lilac: #e1e0fc;
   --act-wash-petal: #f6d2f4;
+  /* Sky thread — pulls the hero sky down through the page below */
+  --act-sky-50: #f3faff;
+  --act-sky-100: #e3f3fe;
+  --act-sky-bright: #38bdf8;
+  --act-sky-deep: #0098f2;
   --act-cta-shadow: rgb(36, 38, 40) 0px 0px 0px 1px,
     rgba(27, 28, 29, 0.48) 0px 1px 2px 0px;
   --act-soft-shadow: rgba(0, 0, 0, 0.06) 0px 2.5px 2.5px 0px;
@@ -771,6 +776,32 @@ select, input, textarea { font-family: inherit; }
 .act-wash-sky { background: var(--act-wash-sky); }
 .act-wash-lilac { background: var(--act-wash-lilac); }
 .act-wash-petal { background: var(--act-wash-petal); }
+
+/* Soft sky wash — a gentler, atmospheric version for floating cards */
+.act-wash-sky-soft {
+  background:
+    radial-gradient(120% 130% at 50% 0%, var(--act-sky-100), var(--act-wash-sky) 78%);
+}
+
+/* Full-width sky band — replaces flat mist on select sections, echoing the
+   hero sky. A high cool-light wash up top resolving to the paper canvas, held
+   by the faintest blue hairlines. */
+.act-band-sky {
+  background:
+    radial-gradient(820px 360px at 50% -12%, rgba(56, 189, 248, 0.16), transparent 70%),
+    linear-gradient(180deg, var(--act-sky-50) 0%, #ffffff 58%, var(--act-mist) 100%);
+  border-top: 1px solid rgba(0, 152, 242, 0.12);
+  border-bottom: 1px solid rgba(0, 152, 242, 0.10);
+}
+
+/* Sky-gradient numerals — used for hero-scale figures so the sky reads as
+   data, not decoration */
+.act-sky-text {
+  background: linear-gradient(176deg, var(--act-sky-bright) 4%, var(--act-sky-deep) 72%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
 
 /* Pill tag (1250px radius reads as full pill) */
 .act-tag {
@@ -878,3 +909,554 @@ select, input, textarea { font-family: inherit; }
   .act-float, .act-marquee { animation: none !important; }
   .act-pill, .act-pill-light { transition: none; }
 }
+
+/* =========================================================
+   App shell — dashboard / login / onboarding adopt the modern
+   "Clean Paper Desk" (Acctual) language, with a touch of depth
+   so the product feels like one continuous, premium surface.
+   ========================================================= */
+
+/* Glassy sticky header */
+.act-glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.07);
+}
+
+/* Elevated white card with a soft hairline + shadow */
+.act-card-2 {
+  background: var(--act-paper);
+  border: 1px solid rgba(15, 23, 42, 0.07);
+  border-radius: 20px;
+  box-shadow: rgba(15, 23, 42, 0.04) 0px 1px 2px,
+    rgba(15, 23, 42, 0.07) 0px 12px 30px -14px;
+}
+
+/* App canvas — a soft cool-grey desk so the white cards read as elevated.
+   Distinct from the pure-white landing sections; keeps the sky/iris accents. */
+.app-canvas {
+  background:
+    radial-gradient(1100px 520px at 6% -8%, rgba(0, 152, 242, 0.07), transparent 58%),
+    radial-gradient(900px 600px at 100% 0%, rgba(109, 86, 252, 0.06), transparent 60%),
+    #eaeef4;
+  color: var(--act-ink);
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  font-feature-settings: "ss01", "kern";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hover lift — for interactive cards / rows */
+.act-lift {
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 260ms ease;
+}
+.act-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: rgba(15, 23, 42, 0.06) 0px 2px 4px,
+    rgba(15, 23, 42, 0.1) 0px 18px 42px -16px;
+}
+
+/* Row hover wash inside lists */
+.act-rowhover { transition: background 160ms ease; }
+.act-rowhover:hover { background: var(--act-sky-50); }
+
+/* Uppercase kicker — the modern replacement for the mono ed-label */
+.act-kicker {
+  font-family: var(--font-jakarta), ui-sans-serif, sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--act-graphite);
+}
+
+/* Modern form field */
+.act-field {
+  width: 100%;
+  background: var(--act-mist);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--act-ink);
+  transition: border-color 160ms ease, box-shadow 160ms ease,
+    background 160ms ease;
+}
+.act-field::placeholder {
+  color: var(--act-graphite);
+  font-weight: 400;
+}
+.act-field:focus {
+  outline: none;
+  background: #fff;
+  border-color: var(--act-blue);
+  box-shadow: 0 0 0 4px rgba(0, 152, 242, 0.12);
+}
+
+/* Field wrapper (for prefix/suffix affixes) */
+.act-field-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: var(--act-mist);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  border-radius: 14px;
+  padding: 0 16px;
+  transition: border-color 160ms ease, box-shadow 160ms ease,
+    background 160ms ease;
+}
+.act-field-wrap:focus-within {
+  background: #fff;
+  border-color: var(--act-blue);
+  box-shadow: 0 0 0 4px rgba(0, 152, 242, 0.12);
+}
+.act-field-wrap input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: none;
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--act-ink);
+}
+.act-field-wrap input::placeholder {
+  color: var(--act-graphite);
+  font-weight: 400;
+}
+
+/* Progress track */
+.act-track {
+  position: relative;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+.act-track > i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: block;
+  border-radius: 999px;
+}
+
+/* Soft pastel status chips */
+.act-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.act-chip-blue { background: rgba(0, 152, 242, 0.1); color: var(--act-blue); }
+.act-chip-iris { background: rgba(109, 86, 252, 0.1); color: var(--act-iris); }
+.act-chip-green { background: rgba(31, 157, 85, 0.12); color: #15803d; }
+.act-chip-magenta { background: rgba(242, 0, 202, 0.1); color: var(--act-magenta); }
+.act-chip-amber { background: rgba(217, 119, 6, 0.14); color: #b45309; }
+.act-chip-mute { background: rgba(15, 23, 42, 0.06); color: var(--act-graphite); }
+
+/* Soft pastel wash surfaces — the colorful card / section backgrounds */
+.act-wash-iris-soft {
+  background: radial-gradient(120% 130% at 50% 0%, #efecff, var(--act-wash-lilac) 82%);
+}
+.act-wash-petal-soft {
+  background: radial-gradient(120% 130% at 50% 0%, #fde6fb, var(--act-wash-petal) 86%);
+}
+.act-wash-mint-soft {
+  background: radial-gradient(120% 130% at 50% 0%, #dcf7e8, #c6f1da 86%);
+}
+.act-wash-amber-soft {
+  background: radial-gradient(120% 130% at 50% 0%, #fdf0d9, #fbe6bf 86%);
+}
+
+/* Section index badge — a small colored numeral tile */
+.act-numbadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  font-family: var(--font-bricolage), sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: #fff;
+}
+.act-num-blue { background: linear-gradient(140deg, #38bdf8, var(--act-blue)); }
+.act-num-iris { background: linear-gradient(140deg, #8b78ff, var(--act-iris)); }
+.act-num-magenta { background: linear-gradient(140deg, #ff5cd6, var(--act-magenta)); }
+.act-num-mint { background: linear-gradient(140deg, #34d399, #059669); }
+
+/* Colored accent rail at a card's top edge */
+.act-rail { position: relative; }
+.act-rail::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  border-radius: 20px 20px 0 0;
+}
+.act-rail-blue::before { background: linear-gradient(90deg, #38bdf8, var(--act-blue)); }
+.act-rail-iris::before { background: linear-gradient(90deg, #8b78ff, var(--act-iris)); }
+.act-rail-mint::before { background: linear-gradient(90deg, #34d399, #059669); }
+.act-rail-magenta::before { background: linear-gradient(90deg, #ff5cd6, var(--act-magenta)); }
+.act-rail-rainbow::before { background: linear-gradient(90deg, var(--act-blue), var(--act-iris) 55%, var(--act-magenta)); }
+
+/* Small colored provider/avatar tile */
+.act-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  color: #fff;
+  flex: none;
+}
+
+/* Staggered rise-in for app content */
+@keyframes act-rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+.act-rise { animation: act-rise 660ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .act-rise { animation: none !important; }
+  .act-lift, .act-rowhover { transition: none; }
+}
+
+/* Hide scrollbar but keep scroll — for clean dashboard panels */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* =========================================================
+   v4.1 — "Cinematic Paper" section refresh
+   The hero's alpine light pulled down through the page:
+   glass surfaces, gradient hairlines, photographic dark
+   bands with film grain, and tiles that read like
+   miniature heroes. Light sections gain depth; dark bands
+   bookend the journey.
+   ========================================================= */
+
+/* ---- Glass chip — captions/tags sitting on photography ---- */
+.act-glass-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  background: rgba(13, 17, 27, 0.38);
+  color: #fff;
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  padding: 6px 13px;
+}
+
+/* ---- Light glass chip — floating badges over light sections ---- */
+.act-glass-chip-light {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--act-ink);
+  -webkit-backdrop-filter: blur(14px) saturate(170%);
+  backdrop-filter: blur(14px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    rgba(15, 23, 42, 0.06) 0px 1px 2px,
+    rgba(15, 23, 42, 0.18) 0px 18px 40px -18px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 7px 14px;
+}
+
+/* ---- Light glass strip — the proof bar overlapping the hero ---- */
+.act-proofbar {
+  background: rgba(255, 255, 255, 0.78);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  backdrop-filter: blur(18px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    rgba(15, 23, 42, 0.05) 0px 1px 2px,
+    rgba(15, 23, 42, 0.16) 0px 28px 70px -28px;
+}
+
+/* ---- Gradient hairline card — white surface, 1px sky→iris border ---- */
+.act-card-line {
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: 24px;
+  background:
+    linear-gradient(var(--act-paper), var(--act-paper)) padding-box,
+    linear-gradient(
+        135deg,
+        rgba(56, 189, 248, 0.6),
+        rgba(109, 86, 252, 0.32) 38%,
+        rgba(15, 23, 42, 0.08) 72%,
+        rgba(56, 189, 248, 0.25)
+      )
+      border-box;
+  box-shadow:
+    rgba(15, 23, 42, 0.05) 0px 1px 2px,
+    rgba(15, 23, 42, 0.1) 0px 28px 64px -30px;
+}
+
+/* ---- Photo-tile scrim — gallery tiles read as miniature heroes ---- */
+.act-scrim-up {
+  background: linear-gradient(
+    to top,
+    rgba(9, 12, 20, 0.82) 0%,
+    rgba(9, 12, 20, 0.46) 36%,
+    rgba(9, 12, 20, 0.1) 62%,
+    transparent 100%
+  );
+}
+
+/* ---- Cinematic dark band — photographic mid-page + CTA bookends ---- */
+.act-cinema {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--act-onyx);
+}
+.act-cinema-scrim {
+  background:
+    radial-gradient(900px 420px at 50% 0%, rgba(56, 189, 248, 0.16), transparent 64%),
+    linear-gradient(
+      to bottom,
+      rgba(9, 12, 20, 0.88) 0%,
+      rgba(9, 12, 20, 0.72) 46%,
+      rgba(9, 12, 20, 0.9) 100%
+    );
+}
+/* CTA variant — brighter center so the landscape shows through */
+.act-cinema-scrim-cta {
+  background:
+    radial-gradient(720px 320px at 50% 110%, rgba(56, 189, 248, 0.2), transparent 64%),
+    linear-gradient(
+      to bottom,
+      rgba(9, 12, 20, 0.72) 0%,
+      rgba(9, 12, 20, 0.5) 48%,
+      rgba(9, 12, 20, 0.78) 100%
+    );
+}
+/* Footer finale — landscape breathes up top, near-black floor for the link grid */
+.act-cinema-scrim-footer {
+  background:
+    radial-gradient(980px 440px at 50% 20%, rgba(56, 189, 248, 0.24), transparent 64%),
+    linear-gradient(
+      to bottom,
+      rgba(9, 12, 20, 0.55) 0%,
+      rgba(9, 12, 20, 0.36) 26%,
+      rgba(9, 12, 20, 0.66) 56%,
+      rgba(9, 12, 20, 0.96) 100%
+    );
+}
+
+/* ---- Film grain — breaks the flatness of large dark surfaces ---- */
+.act-grain::after {
+  content: "";
+  position: absolute;
+  inset: -2%;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.55;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+}
+
+/* ---- Slow Ken Burns for photographic bands ---- */
+@keyframes act-kenburns {
+  from { transform: scale(1.02); }
+  to { transform: scale(1.1); }
+}
+.act-kenburns {
+  animation: act-kenburns 22s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* ---- Ghost pill for dark/photographic surfaces ---- */
+.act-pill-ghost-light {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  color: #fff;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 12px 22px;
+  border-radius: 100px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: background 200ms ease, border-color 200ms ease;
+}
+.act-pill-ghost-light:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.62);
+}
+
+/* ---- Finale CTA pair — bigger, glowing, with arrow micro-interaction ---- */
+.act-pill-hero {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  color: var(--act-onyx);
+  font-family: var(--font-jakarta), sans-serif;
+  font-weight: 600;
+  font-size: 15.5px;
+  padding: 16px 30px;
+  border-radius: 100px;
+  box-shadow:
+    rgba(56, 189, 248, 0.4) 0px 12px 36px -10px,
+    rgba(0, 0, 0, 0.28) 0px 4px 14px;
+  transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
+}
+.act-pill-hero svg { transition: transform 200ms ease; }
+.act-pill-hero:hover {
+  background: #f8fafc;
+  transform: translateY(-2px);
+  box-shadow:
+    rgba(56, 189, 248, 0.55) 0px 18px 44px -10px,
+    rgba(0, 0, 0, 0.32) 0px 6px 18px;
+}
+.act-pill-hero:hover svg { transform: translateX(3px); }
+.act-pill-hero:active { transform: translateY(0); }
+.act-pill-ghost-hero {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-weight: 500;
+  font-size: 15.5px;
+  padding: 15px 28px;
+  border-radius: 100px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  transition: background 200ms ease, border-color 200ms ease;
+}
+.act-pill-ghost-hero:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.68);
+}
+
+/* ---- Feature bento tile — gradient rail sweeps in on hover ---- */
+.act-feature {
+  position: relative;
+  overflow: hidden;
+  background: var(--act-paper);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  border-radius: 22px;
+  box-shadow: var(--act-card-shadow);
+  transition:
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 320ms ease,
+    border-color 320ms ease;
+}
+.act-feature::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--rail-from, #38bdf8), var(--rail-to, #0098f2));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.act-feature:hover {
+  transform: translateY(-4px);
+  border-color: rgba(15, 23, 42, 0.1);
+  box-shadow:
+    rgba(15, 23, 42, 0.06) 0px 2px 4px,
+    rgba(15, 23, 42, 0.14) 0px 24px 52px -20px;
+}
+.act-feature:hover::before { transform: scaleX(1); }
+
+/* ---- Gradient icon tile ---- */
+.act-icon-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  color: #fff;
+  background: linear-gradient(140deg, var(--tile-from, #38bdf8), var(--tile-to, #0098f2));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 10px 22px -10px var(--tile-glow, rgba(0, 152, 242, 0.55));
+}
+
+/* ---- Modern FAQ card accordion ---- */
+.act-faq-card {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 18px;
+  background: var(--act-paper);
+  transition: border-color 240ms ease, box-shadow 240ms ease;
+}
+.act-faq-card summary { list-style: none; cursor: pointer; }
+.act-faq-card summary::-webkit-details-marker { display: none; }
+.act-faq-card .act-faq-sign {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.05);
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), background 240ms ease, color 240ms ease;
+}
+.act-faq-card:hover { border-color: rgba(0, 152, 242, 0.22); }
+.act-faq-card[open] {
+  border-color: rgba(0, 152, 242, 0.3);
+  box-shadow:
+    0 0 0 4px rgba(0, 152, 242, 0.07),
+    var(--act-card-shadow);
+}
+.act-faq-card[open] .act-faq-sign {
+  transform: rotate(45deg);
+  background: rgba(0, 152, 242, 0.12);
+  color: var(--act-blue);
+}
+
+/* ---- Dark footer canvas ---- */
+.act-footer-dark {
+  background:
+    radial-gradient(760px 340px at 10% 0%, rgba(56, 189, 248, 0.12), transparent 62%),
+    radial-gradient(620px 320px at 92% 8%, rgba(109, 86, 252, 0.1), transparent 60%),
+    linear-gradient(180deg, #0b0f19 0%, #090c14 100%);
+}
+
+/* ---- Marquee pauses on hover ---- */
+.act-marquee:hover { animation-play-state: paused; }
+
+@media (prefers-reduced-motion: reduce) {
+  .act-kenburns { animation: none !important; }
+  .act-feature, .act-feature::before, .act-pill-ghost-light, .act-faq-card .act-faq-sign,
+  .act-pill-hero, .act-pill-hero svg, .act-pill-ghost-hero {
+    transition: none;
+  }
+}
+

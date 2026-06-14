@@ -1,0 +1,53 @@
+<svg width="760" height="620" viewBox="0 0 760 620" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ilustrasi puncak gunung yang juga membentuk grafik batang skill yang menanjak">
+  <defs>
+    <linearGradient id="pk-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eef7ff"/>
+      <stop offset="1" stop-color="#d2eafb"/>
+    </linearGradient>
+    <linearGradient id="pk-bar" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#0098f2"/>
+      <stop offset="1" stop-color="#7fd2fb"/>
+    </linearGradient>
+    <clipPath id="pk-clip"><rect width="760" height="620"/></clipPath>
+  </defs>
+  <g clip-path="url(#pk-clip)">
+    <rect width="760" height="620" fill="url(#pk-sky)"/>
+
+    <g fill="#ffffff" opacity="0.65">
+      <ellipse cx="180" cy="120" rx="62" ry="16"/>
+      <ellipse cx="560" cy="90" rx="50" ry="13"/>
+    </g>
+
+    <!-- back range -->
+    <path d="M0 430 L150 300 L300 410 L470 250 L640 400 L760 320 L760 620 L0 620 Z" fill="#bfe0f3"/>
+
+    <!-- ascending peaks doubling as bars -->
+    <g>
+      <path d="M70 620 L150 410 L230 620 Z" fill="url(#pk-bar)" opacity="0.55"/>
+      <path d="M250 620 L350 330 L450 620 Z" fill="url(#pk-bar)" opacity="0.78"/>
+      <path d="M470 620 L600 210 L730 620 Z" fill="url(#pk-bar)"/>
+      <!-- snow caps -->
+      <path d="M600 210 L640 335 L600 320 L560 335 Z" fill="#ffffff" opacity="0.92"/>
+      <path d="M350 330 L378 422 L350 410 L322 422 Z" fill="#ffffff" opacity="0.85"/>
+    </g>
+
+    <!-- skill tags -->
+    <g font-family="ui-sans-serif, system-ui, sans-serif" font-weight="600">
+      <g>
+        <rect x="118" y="372" width="64" height="30" rx="15" fill="#ffffff"/>
+        <text x="150" y="392" font-size="15" fill="#0098f2" text-anchor="middle">40%</text>
+      </g>
+      <g>
+        <rect x="316" y="292" width="68" height="30" rx="15" fill="#ffffff"/>
+        <text x="350" y="312" font-size="15" fill="#6d56fc" text-anchor="middle">72%</text>
+      </g>
+      <g>
+        <rect x="566" y="172" width="68" height="30" rx="15" fill="#ffffff"/>
+        <text x="600" y="192" font-size="15" fill="#0d111b" text-anchor="middle">95%</text>
+      </g>
+    </g>
+
+    <!-- baseline -->
+    <line x1="40" y1="620" x2="720" y2="620" stroke="#ffffff" stroke-width="3" opacity="0.6"/>
+  </g>
+</svg>

@@ -1,7 +1,7 @@
 /**
  * Pengukuran kecocokan skill (job-fit) — deterministik, tanpa DB/AI.
  *
- * Fokus produk Karir.ai: agregasi lowongan + **mengukur** kesiapan kandidat,
+ * Fokus produk CraftWorks: agregasi lowongan + **mengukur** kesiapan kandidat,
  * sementara proses melamar tetap di website asli (lihat Job.sourceUrl). Modul
  * ini menjawab "seberapa siap user dari sisi skill" dan skill apa yang masih
  * kurang (untuk rekomendasi course / skill gap).

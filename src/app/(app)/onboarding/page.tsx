@@ -27,33 +27,33 @@ export default async function OnboardingPage() {
   const current = await getGoal();
 
   return (
-    <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-6 px-6 py-16">
-      <aside className="col-span-12 md:col-span-4 md:sticky md:top-24 md:self-start">
-        <span className="ed-label">01 / Onboarding · step 1 of 3</span>
-        <h1 className="mt-6 text-5xl font-medium leading-[0.95] tracking-[-0.025em] md:text-6xl">
-          Set career <span className="ed-serif text-pop">goal.</span>
+    <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-8 px-6 py-16">
+      <aside className="act-rise col-span-12 md:col-span-4 md:sticky md:top-24 md:self-start">
+        <span className="act-eyebrow">Onboarding · atur goal</span>
+        <h1 className="act-display mt-4 text-5xl leading-[1.04] md:text-6xl">
+          Set career <span className="act-sky-text">goal.</span>
         </h1>
-        <p className="mt-5 text-ink-soft max-w-md">
+        <p className="mt-5 max-w-md text-[15px] leading-relaxed text-[var(--act-charcoal)]">
           AI butuh tahu kamu mau kemana. Jawaban ini bisa diubah kapan aja —
           roadmap akan otomatis re-generate.
         </p>
-        <div className="mt-8 ed-hairline-t pt-4">
-          <span className="ed-label">Tips</span>
-          <ul className="mt-3 space-y-2 text-sm text-ink-soft">
+        <div className="act-card-2 act-wash-iris-soft mt-8 border-[rgba(109,86,252,0.18)] p-5">
+          <span className="act-kicker">Tips</span>
+          <ul className="mt-3 space-y-3 text-sm text-[var(--act-charcoal)]">
             <li className="flex gap-2.5">
-              <span className="text-pop mt-0.5">→</span>
+              <CheckIcon />
               Role spesifik (bukan &ldquo;tech&rdquo; doang) bikin analisis lebih tajam.
             </li>
             <li className="flex gap-2.5">
-              <span className="text-pop mt-0.5">→</span>
+              <CheckIcon />
               Jujur soal jam belajar. Roadmap nyesuaiin ke kapasitas kamu.
             </li>
           </ul>
         </div>
       </aside>
 
-      <form action={saveGoalAction} className="col-span-12 md:col-span-8">
-        <div className="border border-[var(--rule)] rounded-xl bg-surface divide-y divide-[var(--rule)]">
+      <form action={saveGoalAction} className="act-rise col-span-12 md:col-span-8">
+        <div className="act-card-2 act-rail act-rail-rainbow divide-y divide-[rgba(15,23,42,0.07)] overflow-hidden pt-1">
           <FormRow label="Target role" required helper="Role spesifik bikin skill-gap analysis lebih akurat.">
             <Input
               name="targetRole"
@@ -75,7 +75,7 @@ export default async function OnboardingPage() {
             />
           </FormRow>
 
-          <FormRow label="Jam belajar / minggu" helper="Karir.ai nyesuaiin beban roadmap ke kapasitas kamu.">
+          <FormRow label="Jam belajar / minggu" helper="CraftWorks nyesuaiin beban roadmap ke kapasitas kamu.">
             <Input
               type="number"
               name="weeklyHours"
@@ -97,12 +97,12 @@ export default async function OnboardingPage() {
         </div>
 
         <div className="mt-8 flex flex-col-reverse items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <span className="ed-label">
+          <span className="text-xs text-[var(--act-graphite)]">
             Demo · data disimpan di cookie browser, bukan server.
           </span>
           <button
             type="submit"
-            className="group inline-flex h-12 items-center justify-center gap-2 rounded-full bg-ink px-8 text-base font-medium text-paper hover:bg-pop transition-colors"
+            className="act-pill group justify-center !px-8 !py-3.5 !text-[15px]"
           >
             Simpan &amp; lanjut
             <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -112,6 +112,14 @@ export default async function OnboardingPage() {
         </div>
       </form>
     </div>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="mt-0.5 h-4 w-4 flex-none text-[var(--act-blue)]" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
   );
 }
 
@@ -129,11 +137,11 @@ function FormRow({
   return (
     <div className="grid grid-cols-12 gap-4 p-6">
       <div className="col-span-12 md:col-span-4">
-        <label className="text-base font-medium flex items-center gap-1">
+        <label className="flex items-center gap-1 text-base font-semibold text-[var(--act-ink)]">
           {label}
-          {required && <span className="text-blush">*</span>}
+          {required && <span className="text-[var(--act-magenta)]">*</span>}
         </label>
-        {helper && <p className="mt-1.5 text-xs text-ink-muted">{helper}</p>}
+        {helper && <p className="mt-1.5 text-xs leading-relaxed text-[var(--act-graphite)]">{helper}</p>}
       </div>
       <div className="col-span-12 md:col-span-8">{children}</div>
     </div>
@@ -157,19 +165,30 @@ function Input({
   prefix?: string;
   suffix?: string;
 }) {
+  if (prefix || suffix) {
+    return (
+      <div className="act-field-wrap">
+        {prefix && <span className="text-sm font-medium text-[var(--act-graphite)]">{prefix}</span>}
+        <input
+          type={type}
+          name={name}
+          placeholder={placeholder}
+          required={required}
+          defaultValue={defaultValue}
+        />
+        {suffix && <span className="text-sm font-medium text-[var(--act-graphite)]">{suffix}</span>}
+      </div>
+    );
+  }
   return (
-    <div className="flex items-center border-b border-ink pb-1 transition-colors focus-within:border-pop">
-      {prefix && <span className="ed-mono text-sm text-ink-muted mr-2">{prefix}</span>}
-      <input
-        type={type}
-        name={name}
-        placeholder={placeholder}
-        required={required}
-        defaultValue={defaultValue}
-        className="w-full bg-transparent py-2 text-lg font-medium outline-none placeholder:font-normal placeholder:text-ink-muted"
-      />
-      {suffix && <span className="ed-mono text-sm text-ink-muted ml-2">{suffix}</span>}
-    </div>
+    <input
+      type={type}
+      name={name}
+      placeholder={placeholder}
+      required={required}
+      defaultValue={defaultValue}
+      className="act-field"
+    />
   );
 }
 
@@ -180,11 +199,11 @@ function TrackPicker({ defaultValue }: { defaultValue: MockGoal["targetTrack"] }
     { value: "both", title: "Dua-duanya", desc: "Fleksibel." },
   ];
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[var(--rule)] border border-[var(--rule)] rounded-lg overflow-hidden">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
       {options.map((o) => (
         <label
           key={o.value}
-          className="relative flex cursor-pointer flex-col gap-1 p-4 transition-colors has-[:checked]:bg-pop has-[:checked]:text-pop-ink"
+          className="relative flex cursor-pointer flex-col gap-1 rounded-2xl border border-[rgba(15,23,42,0.1)] bg-[var(--act-mist)] p-4 transition-all hover:border-[rgba(0,152,242,0.4)] has-[:checked]:border-[var(--act-blue)] has-[:checked]:bg-[var(--act-sky-50)] has-[:checked]:shadow-[0_0_0_3px_rgba(0,152,242,0.12)]"
         >
           <input
             type="radio"
@@ -194,12 +213,12 @@ function TrackPicker({ defaultValue }: { defaultValue: MockGoal["targetTrack"] }
             className="peer sr-only"
           />
           <span className="flex items-center justify-between">
-            <span className="text-base font-medium">{o.title}</span>
-            <span className="flex h-4 w-4 items-center justify-center rounded-full border border-current">
-              <span className="h-1.5 w-1.5 rounded-full bg-current opacity-0 peer-checked:opacity-100 transition-opacity" />
+            <span className="text-base font-semibold text-[var(--act-ink)]">{o.title}</span>
+            <span className="flex h-5 w-5 items-center justify-center rounded-full border border-[rgba(15,23,42,0.25)] peer-checked:border-[var(--act-blue)]">
+              <span className="h-2 w-2 rounded-full bg-[var(--act-blue)] opacity-0 transition-opacity peer-checked:opacity-100" />
             </span>
           </span>
-          <span className="text-xs opacity-75">{o.desc}</span>
+          <span className="text-xs text-[var(--act-graphite)]">{o.desc}</span>
         </label>
       ))}
     </div>

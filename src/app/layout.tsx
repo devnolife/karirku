@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif, Fraunces, JetBrains_Mono, Bricolage_Grotesque, Plus_Jakarta_Sans, Caveat } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif, Bricolage_Grotesque, Plus_Jakarta_Sans, Caveat } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -19,29 +19,15 @@ const instrumentSerif = Instrument_Serif({
   style: ["normal", "italic"],
 });
 
-// Used by /v2 — editorial risograph zine aesthetic
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  axes: ["SOFT", "WONK", "opsz"],
-  style: ["normal", "italic"],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains",
-  subsets: ["latin"],
-});
-
-// Used by /v3 — black chrome / studio aesthetic
+// Used by /v4 (default) — "Clean Paper Desk" aesthetic.
+// Display/heading -> Bricolage Grotesque. Body/UI -> Plus Jakarta Sans
+// (made in Indonesia — fitting for a Jakarta-built product).
 const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
   subsets: ["latin"],
   axes: ["opsz", "wdth"],
 });
 
-// Used by /v4 — "Clean Paper Desk" aesthetic.
-// Display/heading -> Bricolage Grotesque (above). Body/UI -> Plus Jakarta Sans
-// (made in Indonesia — fitting for a Jakarta-built product).
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
   subsets: ["latin"],
@@ -55,9 +41,9 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "Karir.ai — AI Career Copilot",
+  title: "CraftWorks — Career Studio & Talent Marketplace",
   description:
-    "Pelatih karir AI yang nemenin kamu dari nol sampai dapat kerja atau project pertama.",
+    "Craft your career, and it works. Bangun profil karirmu di studio, lalu ketemu lowongan & talent yang cocok lewat AI matching.",
 };
 
 export default function RootLayout({
@@ -68,7 +54,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} ${fraunces.variable} ${jetbrainsMono.variable} ${bricolage.variable} ${jakarta.variable} ${caveat.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} ${bricolage.variable} ${jakarta.variable} ${caveat.variable} h-full antialiased`}
     >
       <body
         className="min-h-full flex flex-col bg-paper text-ink"

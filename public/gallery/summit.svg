@@ -1,0 +1,51 @@
+<svg width="760" height="620" viewBox="0 0 760 620" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ilustrasi bendera di puncak saat fajar dengan lingkaran dari posisi sekarang menuju tujuan">
+  <defs>
+    <linearGradient id="sm-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fdf3ff"/>
+      <stop offset="0.45" stop-color="#eaf0ff"/>
+      <stop offset="1" stop-color="#d7ecfb"/>
+    </linearGradient>
+    <radialGradient id="sm-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="sm-clip"><rect width="760" height="620"/></clipPath>
+  </defs>
+  <g clip-path="url(#sm-clip)">
+    <rect width="760" height="620" fill="url(#sm-sky)"/>
+
+    <!-- dawn glow behind summit -->
+    <circle cx="500" cy="250" r="220" fill="url(#sm-glow)"/>
+
+    <!-- concentric journey rings -->
+    <g stroke="#0098f2" fill="none" opacity="0.5">
+      <circle cx="500" cy="250" r="70" stroke-width="1.5" stroke-dasharray="3 9"/>
+      <circle cx="500" cy="250" r="120" stroke-width="1.5" stroke-dasharray="3 9"/>
+      <circle cx="500" cy="250" r="172" stroke-width="1.5" stroke-dasharray="3 9"/>
+    </g>
+
+    <!-- "you are here" dot -->
+    <g>
+      <circle cx="332" cy="372" r="11" fill="#ffffff"/>
+      <circle cx="332" cy="372" r="5" fill="#6d56fc"/>
+    </g>
+
+    <!-- back peaks -->
+    <path d="M0 470 L180 330 L330 450 L520 300 L700 440 L760 400 L760 620 L0 620 Z" fill="#bfe0f3"/>
+    <!-- front summit -->
+    <path d="M280 620 L500 250 L720 620 Z" fill="#9bd2e8"/>
+    <path d="M500 250 L548 360 L500 344 L452 360 Z" fill="#ffffff" opacity="0.92"/>
+
+    <!-- flag at summit -->
+    <g>
+      <line x1="500" y1="250" x2="500" y2="178" stroke="#0d111b" stroke-width="5" stroke-linecap="round"/>
+      <path d="M500 182 L560 198 L500 218 Z" fill="#0098f2"/>
+    </g>
+
+    <!-- destination label -->
+    <g font-family="ui-sans-serif, system-ui, sans-serif" font-weight="600">
+      <rect x="430" y="118" width="150" height="32" rx="16" fill="#ffffff"/>
+      <text x="505" y="139" font-size="15" fill="#0d111b" text-anchor="middle">Posisi impian</text>
+    </g>
+  </g>
+</svg>

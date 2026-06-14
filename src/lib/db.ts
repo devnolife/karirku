@@ -5,7 +5,7 @@
  */
 
 const STUB_MESSAGE =
-  "[karir.ai] Running in UI/UX mock mode — prisma tidak tersedia. " +
+  "[craftworks] Running in UI/UX mock mode — prisma tidak tersedia. " +
   "Gunakan helper di src/lib/mock/ untuk data.";
 
 // Loose typing: banyak consumer lama memakai method chain prisma.xxx.yyy().

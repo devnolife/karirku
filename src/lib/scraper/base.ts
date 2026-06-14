@@ -7,7 +7,7 @@ import { PlaywrightCrawler, type PlaywrightCrawlerOptions } from "crawlee";
 import { prisma } from "@/lib/db";
 
 export const DEFAULT_USER_AGENT =
-  "KarirkuBot/0.1 (+https://karirku.id/bot; contact@karirku.id)";
+  "CraftWorksBot/0.1 (+https://craft.works/bot; contact@craft.works)";
 
 export interface ScraperConfig extends PlaywrightCrawlerOptions {
   source: string;
