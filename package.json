@@ -16,6 +16,7 @@
     "worker": "tsx watch src/server/workers/index.ts",
     "scan": "tsx scripts/scan.ts",
     "ai:smoke": "tsx scripts/ai-smoke.ts",
+    "match:check": "tsx scripts/match-check.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
