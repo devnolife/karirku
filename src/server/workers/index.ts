@@ -3,6 +3,7 @@ import { createQueueConnection } from "@/lib/redis";
 import { QUEUE_NAMES } from "@/lib/queue";
 import { runScrape, type ScrapeJobData } from "@/lib/scraper/run";
 import { handleEmbed, type EmbedData } from "./handlers/embed";
+import { handleEnrichListing, type EnrichListingData } from "./handlers/enrich";
 
 /**
  * BullMQ workers entrypoint.
@@ -32,13 +33,13 @@ const scraperWorker = new Worker<ScrapeJobData>(
   { connection, concurrency: 1 }
 );
 
-const enrichWorker = new Worker(
+const enrichWorker = new Worker<EnrichListingData>(
   QUEUE_NAMES.enrich,
   async (job) => {
-    console.log(`[enrich] job ${job.id}`, job.data);
-    // TODO: normalize → AI extract skill → update DB
+    console.log(`[enrich] job ${job.id} — ${job.data.title}`);
+    await handleEnrichListing(job.data);
   },
-  { connection, concurrency: 5 }
+  { connection, concurrency: 3 }
 );
 
 const embedWorker = new Worker<EmbedData>(

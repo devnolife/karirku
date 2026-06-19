@@ -1,11 +1,18 @@
 import { requireUser } from "@/lib/auth";
 import { getRoadmap } from "@/server/queries/roadmap";
+import { hasAnyPath } from "@/server/services/learning-path";
+import { getActiveGoal } from "@/server/queries/goal";
 import { PageHeader, MilestoneRow } from "../_dash/parts";
 import { Empty } from "@/components/ui/empty";
+import { RegenerateRoadmapButton } from "@/components/RegenerateRoadmapButton";
 
 export default async function RoadmapPage() {
   const user = await requireUser();
-  const roadmap = await getRoadmap(user.id);
+  const [roadmap, hasPath, goal] = await Promise.all([
+    getRoadmap(user.id),
+    hasAnyPath(user.id),
+    getActiveGoal(user.id),
+  ]);
   const toGo = Math.max(0, roadmap.weeksTotal - roadmap.weeksDone);
 
   return (
@@ -13,16 +20,23 @@ export default async function RoadmapPage() {
       <PageHeader
         kicker="Roadmap"
         title={<>Next moves <span className="text-[var(--act-iris)]">kamu.</span></>}
-        meta={`${roadmap.weeksDone} selesai · ${toGo} to go`}
-        action={<span className="act-chip act-chip-iris">{roadmap.weeksDone}/{roadmap.weeksTotal}</span>}
+        meta={goal ? `Target: ${goal.targetRole} · ${roadmap.weeksDone}/${roadmap.weeksTotal} selesai` : `${roadmap.weeksDone} selesai · ${toGo} to go`}
+        action={<RegenerateRoadmapButton hasPath={hasPath} />}
       />
       {roadmap.milestones.length === 0 ? (
-        <Empty
-          title="Belum ada roadmap"
-          description="Atur target role di Goal untuk membuat learning path mingguan otomatis."
-          actionLabel="Atur goal"
-          actionHref="/onboarding"
-        />
+        goal ? (
+          <Empty
+            title="Belum ada roadmap"
+            description={"Klik \u201cGenerate roadmap (AI)\u201d di atas untuk menyusun learning path mingguan personal berdasarkan skill-gap kamu."}
+          />
+        ) : (
+          <Empty
+            title="Belum ada roadmap"
+            description="Atur target role di Goal dulu, lalu generate roadmap belajar otomatis."
+            actionLabel="Atur goal"
+            actionHref="/onboarding"
+          />
+        )
       ) : (
         <ol className="act-card-2 divide-y divide-[rgba(15,23,42,0.07)] overflow-hidden">
           {roadmap.milestones.map((m) => <MilestoneRow key={m.week} milestone={m} />)}
