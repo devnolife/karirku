@@ -2,6 +2,7 @@ import { Worker } from "bullmq";
 import { createQueueConnection } from "@/lib/redis";
 import { QUEUE_NAMES } from "@/lib/queue";
 import { runScrape, type ScrapeJobData } from "@/lib/scraper/run";
+import { handleEmbed, type EmbedData } from "./handlers/embed";
 
 /**
  * BullMQ workers entrypoint.
@@ -40,13 +41,13 @@ const enrichWorker = new Worker(
   { connection, concurrency: 5 }
 );
 
-const embedWorker = new Worker(
+const embedWorker = new Worker<EmbedData>(
   QUEUE_NAMES.embed,
   async (job) => {
-    console.log(`[embed] job ${job.id}`, job.data);
-    // TODO: call ai.embeddings + update row
+    console.log(`[embed] job ${job.id} — ${job.data.table}:${job.data.id}`);
+    await handleEmbed(job.data);
   },
-  { connection, concurrency: 10 }
+  { connection, concurrency: 4 }
 );
 
 const marketIntelWorker = new Worker(

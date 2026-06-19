@@ -1,7 +1,10 @@
-import { MOCK_COMPANY_JOBS } from "@/lib/mock/data";
+import { requireUser } from "@/lib/auth";
+import { getCompanyJobs } from "@/server/queries/company";
+import { Empty } from "@/components/ui/empty";
 
-export default function CompanyJobsPage() {
-  const jobs = MOCK_COMPANY_JOBS;
+export default async function CompanyJobsPage() {
+  const user = await requireUser();
+  const jobs = await getCompanyJobs(user.id);
   const active = jobs.filter((j) => j.status === "active").length;
 
   return (
@@ -13,7 +16,7 @@ export default function CompanyJobsPage() {
             Lowongan <span className="act-sky-text">saya.</span>
           </h1>
           <p className="mt-3 max-w-xl text-sm text-[var(--act-graphite)]">
-            Kelola lowongan terpasang & statusnya. Data ilustratif (mode demo).
+            Kelola lowongan terpasang & statusnya.
           </p>
         </div>
         <button className="act-pill group !text-sm">
@@ -29,37 +32,41 @@ export default function CompanyJobsPage() {
         <span className="act-chip act-chip-green">{active} aktif</span>
       </div>
 
-      <div className="act-card-2 overflow-hidden">
-        <div className="hidden grid-cols-12 gap-3 border-b border-[rgba(15,23,42,0.07)] px-5 py-3 md:grid">
-          <span className="act-kicker !text-[11px] col-span-5">Posisi</span>
-          <span className="act-kicker !text-[11px] col-span-2">Tipe</span>
-          <span className="act-kicker !text-[11px] col-span-2">Pelamar</span>
-          <span className="act-kicker !text-[11px] col-span-2">Status</span>
-          <span className="act-kicker !text-[11px] col-span-1 text-right">Aksi</span>
+      {jobs.length === 0 ? (
+        <Empty title="Belum ada lowongan" description="Posting lowongan pertamamu untuk mulai menerima kandidat." />
+      ) : (
+        <div className="act-card-2 overflow-hidden">
+          <div className="hidden grid-cols-12 gap-3 border-b border-[rgba(15,23,42,0.07)] px-5 py-3 md:grid">
+            <span className="act-kicker !text-[11px] col-span-5">Posisi</span>
+            <span className="act-kicker !text-[11px] col-span-2">Tipe</span>
+            <span className="act-kicker !text-[11px] col-span-2">Pelamar</span>
+            <span className="act-kicker !text-[11px] col-span-2">Status</span>
+            <span className="act-kicker !text-[11px] col-span-1 text-right">Aksi</span>
+          </div>
+          <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
+            {jobs.map((j) => (
+              <li key={j.id} className="act-rowhover grid grid-cols-12 items-center gap-3 px-5 py-4">
+                <div className="col-span-12 md:col-span-5">
+                  <div className="text-sm font-semibold text-[var(--act-ink)]">{j.title}</div>
+                  <div className="text-xs text-[var(--act-graphite)]">{j.location} · {j.posted}</div>
+                </div>
+                <div className="col-span-4 md:col-span-2">
+                  <span className="act-chip act-chip-mute">{j.type}</span>
+                </div>
+                <div className="col-span-4 text-sm text-[var(--act-charcoal)] md:col-span-2">
+                  {j.applicants > 0 ? `${j.applicants} pelamar` : "—"}
+                </div>
+                <div className="col-span-4 md:col-span-2">
+                  <span className={`act-chip ${j.status === "active" ? "act-chip-green" : "act-chip-amber"}`}>{j.status === "active" ? "aktif" : "draft"}</span>
+                </div>
+                <div className="col-span-12 text-left md:col-span-1 md:text-right">
+                  <button className="text-xs font-semibold text-[var(--act-blue)] hover:underline">Edit</button>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
-        <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
-          {jobs.map((j) => (
-            <li key={j.id} className="act-rowhover grid grid-cols-12 items-center gap-3 px-5 py-4">
-              <div className="col-span-12 md:col-span-5">
-                <div className="text-sm font-semibold text-[var(--act-ink)]">{j.title}</div>
-                <div className="text-xs text-[var(--act-graphite)]">{j.location} · {j.posted}</div>
-              </div>
-              <div className="col-span-4 md:col-span-2">
-                <span className="act-chip act-chip-mute">{j.type}</span>
-              </div>
-              <div className="col-span-4 text-sm text-[var(--act-charcoal)] md:col-span-2">
-                {j.applicants > 0 ? `${j.applicants} pelamar` : "—"}
-              </div>
-              <div className="col-span-4 md:col-span-2">
-                <span className={`act-chip ${j.status === "active" ? "act-chip-green" : j.status === "draft" ? "act-chip-amber" : "act-chip-mute"}`}>{j.status}</span>
-              </div>
-              <div className="col-span-12 text-left md:col-span-1 md:text-right">
-                <button className="text-xs font-semibold text-[var(--act-blue)] hover:underline">Edit</button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+      )}
     </div>
   );
 }

@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getMockSession, signOutDemo } from "@/lib/mock/session";
+import { getSession, signOut as authSignOut } from "@/lib/auth";
 import { AdminSidebarNav } from "./_nav";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const session = await getMockSession();
+  const session = await getSession();
 
   // Guard kedua (selain middleware): non-admin tidak boleh di sini.
   if (session.user.role !== "admin") {
@@ -48,8 +48,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <form
               action={async () => {
                 "use server";
-                await signOutDemo();
-                redirect("/login");
+                await authSignOut({ redirectTo: "/login" });
               }}
               className="mt-3 px-2"
             >
@@ -70,8 +69,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <form
               action={async () => {
                 "use server";
-                await signOutDemo();
-                redirect("/login");
+                await authSignOut({ redirectTo: "/login" });
               }}
               className="ml-auto"
             >

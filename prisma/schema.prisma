@@ -2,10 +2,10 @@
 // Sumber kebenaran: docs/superpowers/specs/2026-06-14-craftworks-career-studio-design.md
 //
 // Catatan:
-// - pgvector dipakai untuk kolom `embedding`. Dimensi DIKUNCI ke 1024 (BGE-M3) untuk
-//   dukungan Bahasa Indonesia yang lebih kuat. Jangan campur dengan 768 (nomic) —
-//   ganti model = re-embed semua data.
-// - Kolom vector direpresentasikan sebagai Unsupported("vector(1024)") karena Prisma
+// - pgvector dipakai untuk kolom `embedding`. Dimensi 768 (nomic-embed-text) — model
+//   embedding yang ter-install di Ollama. Jangan campur dengan 1024 (BGE-M3) —
+//   ganti model = re-embed semua data + ubah dimensi kolom.
+// - Kolom vector direpresentasikan sebagai Unsupported("vector(768)") karena Prisma
 //   belum ada native vector type. Query vector dilakukan via $queryRaw.
 
 generator client {
@@ -105,7 +105,7 @@ model Profile {
   skills     String[]                    @db.Text
   experience Json?
   education  Json?
-  embedding  Unsupported("vector(1024)")?
+  embedding  Unsupported("vector(768)")?
   updatedAt  DateTime                    @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -175,7 +175,7 @@ model Job {
   salaryMin    Int?                        @map("salary_min")
   salaryMax    Int?                        @map("salary_max")
   currency     String                      @default("IDR") @db.VarChar(10)
-  embedding    Unsupported("vector(1024)")?
+  embedding    Unsupported("vector(768)")?
   isActive     Boolean                     @default(true) @map("is_active")
   postedAt     DateTime?                   @map("posted_at")
   scrapedAt    DateTime                    @default(now()) @map("scraped_at")
@@ -202,7 +202,7 @@ model Project {
   durationDays Int?                        @map("duration_days")
   skills       String[]                    @db.Text
   description  String?                     @db.Text
-  embedding    Unsupported("vector(1024)")?
+  embedding    Unsupported("vector(768)")?
   isActive     Boolean                     @default(true) @map("is_active")
   postedAt     DateTime?                   @map("posted_at")
   scrapedAt    DateTime                    @default(now()) @map("scraped_at")
@@ -300,7 +300,7 @@ model SkillTaxonomy {
   relatedSkills String[]                    @map("related_skills") @db.Uuid
   demandScore   Float?                      @map("demand_score")
   avgSalaryIdr  Int?                        @map("avg_salary_idr")
-  embedding     Unsupported("vector(1024)")?
+  embedding     Unsupported("vector(768)")?
 
   userSkills UserSkill[]
 
@@ -380,7 +380,7 @@ model Course {
   rating        Float?
   enrollment    Int?
   description   String?                     @db.Text
-  embedding     Unsupported("vector(1024)")?
+  embedding     Unsupported("vector(768)")?
   scrapedAt     DateTime                    @default(now()) @map("scraped_at")
 
   @@index([isPrakerja, priceIdr])

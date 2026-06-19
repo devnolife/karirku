@@ -1,18 +1,19 @@
 import Link from "next/link";
-import { getMockSession } from "@/lib/mock/session";
+import { requireUser } from "@/lib/auth";
 import {
-  MOCK_COMPANY,
-  MOCK_CANDIDATES,
+  getCompanyStats,
+  getCompanyCandidates,
   CANDIDATE_STAGES,
-  type CandidateStage,
-} from "@/lib/mock/data";
+} from "@/server/queries/company";
 import { Kpi } from "../_dash/parts";
 
 export async function CompanyOverview() {
-  const session = await getMockSession();
-  const c = MOCK_COMPANY;
-  const byStage = (s: CandidateStage) => MOCK_CANDIDATES.filter((k) => k.stage === s);
-  const topCandidates = [...MOCK_CANDIDATES].sort((a, b) => b.matchPct - a.matchPct).slice(0, 4);
+  const user = await requireUser();
+  const [c, candidates] = await Promise.all([
+    getCompanyStats(user.id),
+    getCompanyCandidates(user.id),
+  ]);
+  const topCandidates = candidates.slice(0, 4);
 
   return (
     <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-8 md:px-10">
@@ -21,7 +22,7 @@ export async function CompanyOverview() {
         <div className="col-span-12 lg:col-span-8">
           <span className="act-eyebrow">Overview · Company</span>
           <h1 className="act-display mt-3 text-4xl leading-[1.04] md:text-5xl">
-            Hai, <span className="act-sky-text">{session.user.name}.</span>
+            Hai, <span className="act-sky-text">{user.name}.</span>
           </h1>
           <p className="mt-3 max-w-xl text-[15px] text-[var(--act-charcoal)]">
             {c.openJobs} lowongan aktif · {c.totalCandidates} kandidat · {c.interviews} interview terjadwal.
@@ -38,10 +39,10 @@ export async function CompanyOverview() {
         </div>
         <div className="col-span-12 lg:col-span-4">
           <div className="act-card-2 act-wash-petal-soft border-[rgba(242,0,202,0.16)] p-5">
-            <span className="act-kicker">Profil dilihat (30 hari)</span>
-            <div className="act-display mt-2 text-5xl text-[var(--act-magenta)]">{c.profileViews.toLocaleString("id-ID")}</div>
+            <span className="act-kicker">Total kandidat</span>
+            <div className="act-display mt-2 text-5xl text-[var(--act-magenta)]">{c.totalCandidates.toLocaleString("id-ID")}</div>
             <div className="mt-4 grid grid-cols-2 gap-3 border-t border-[rgba(15,23,42,0.08)] pt-4">
-              <MiniStat label="Hires" value={`${c.hires}`} />
+              <MiniStat label="Offer" value={`${c.offers}`} />
               <MiniStat label="Interview" value={`${c.interviews}`} />
             </div>
           </div>
@@ -53,7 +54,7 @@ export async function CompanyOverview() {
         <Kpi label="Lowongan aktif" value={c.openJobs} caption="sedang hiring" tone="blue" />
         <Kpi label="Total kandidat" value={c.totalCandidates} caption="semua lowongan" tone="iris" />
         <Kpi label="Interview" value={c.interviews} caption="terjadwal" tone="magenta" />
-        <Kpi label="Hires" value={c.hires} caption="bulan ini" tone="mint" />
+        <Kpi label="Offer" value={c.offers} caption="dikirim" tone="mint" />
       </section>
 
       {/* Pipeline + top candidates */}
@@ -65,11 +66,11 @@ export async function CompanyOverview() {
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {CANDIDATE_STAGES.map((st) => {
-              const items = byStage(st.key);
+              const n = candidates.filter((k) => k.stage === st.key).length;
               return (
                 <div key={st.key} className="act-card-2 p-4">
                   <span className="act-kicker !text-[11px]">{st.label}</span>
-                  <div className="act-display mt-1 text-2xl text-[var(--act-ink)]">{items.length}</div>
+                  <div className="act-display mt-1 text-2xl text-[var(--act-ink)]">{n}</div>
                 </div>
               );
             })}
@@ -77,22 +78,26 @@ export async function CompanyOverview() {
         </div>
         <div className="act-card-2 overflow-hidden lg:col-span-2">
           <div className="border-b border-[rgba(15,23,42,0.07)] px-5 py-3.5">
-            <span className="act-kicker">Top kandidat (AI)</span>
+            <span className="act-kicker">Top kandidat</span>
           </div>
-          <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
-            {topCandidates.map((k) => (
-              <li key={k.id} className="flex items-center gap-3 px-5 py-3.5">
-                <span className="inline-flex h-9 w-9 flex-none items-center justify-center rounded-xl bg-[var(--act-onyx)] text-xs font-semibold text-white">
-                  {k.name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase()}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <h4 className="truncate text-sm font-semibold text-[var(--act-ink)]">{k.name}</h4>
-                  <p className="truncate text-xs text-[var(--act-graphite)]">{k.appliedFor}</p>
-                </div>
-                <span className="text-sm font-bold text-[var(--act-magenta)]">{k.matchPct}%</span>
-              </li>
-            ))}
-          </ul>
+          {topCandidates.length === 0 ? (
+            <p className="px-5 py-6 text-sm text-[var(--act-graphite)]">Belum ada kandidat.</p>
+          ) : (
+            <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
+              {topCandidates.map((k) => (
+                <li key={k.id} className="flex items-center gap-3 px-5 py-3.5">
+                  <span className="inline-flex h-9 w-9 flex-none items-center justify-center rounded-xl bg-[var(--act-onyx)] text-xs font-semibold text-white">
+                    {k.name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase()}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="truncate text-sm font-semibold text-[var(--act-ink)]">{k.name}</h4>
+                    <p className="truncate text-xs text-[var(--act-graphite)]">{k.appliedFor}</p>
+                  </div>
+                  <span className="text-sm font-bold text-[var(--act-magenta)]">{k.matchPct}%</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </section>
     </div>

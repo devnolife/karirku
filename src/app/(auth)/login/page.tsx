@@ -1,12 +1,10 @@
-import { signInDemo, homeForRole } from "@/lib/mock/session";
-import type { UserRole } from "@/lib/mock/data";
-import { redirect } from "next/navigation";
+import { signIn } from "@/lib/auth";
+import type { UserRole } from "@/lib/roles";
 import Link from "next/link";
 
 async function signInAction(role: UserRole) {
   "use server";
-  await signInDemo(role);
-  redirect(homeForRole(role));
+  await signIn(role);
 }
 
 const ROLE_OPTIONS: {

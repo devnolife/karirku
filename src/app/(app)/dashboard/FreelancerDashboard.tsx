@@ -1,19 +1,20 @@
 import Link from "next/link";
-import { getMockSession, getGoal } from "@/lib/mock/session";
-import {
-  MOCK_FREELANCER,
-  MOCK_PROJECTS,
-  MOCK_PROPOSALS,
-} from "@/lib/mock/data";
+import { requireUser } from "@/lib/auth";
+import { getActiveGoal } from "@/server/queries/goal";
+import { getFreelancerMeta, getFreelanceProjects } from "@/server/queries/freelance";
 import { Kpi, PreviewCard } from "../_dash/parts";
 
 export async function FreelancerOverview() {
-  const session = await getMockSession();
-  const goal = await getGoal();
-  const firstName = session.user.name.split(" ")[0];
-  const f = MOCK_FREELANCER;
-  const won = MOCK_PROPOSALS.filter((p) => p.status === "won").length;
-  const topProject = [...MOCK_PROJECTS].sort((a, b) => b.matchPct - a.matchPct)[0];
+  const user = await requireUser();
+  const [goal, meta, projects] = await Promise.all([
+    getActiveGoal(user.id),
+    getFreelancerMeta(user.id),
+    getFreelanceProjects(user.id, 5),
+  ]);
+  const firstName = user.name.split(" ")[0];
+  const f = meta.stats;
+  const won = meta.proposals.filter((p) => p.status === "won").length;
+  const topProject = projects[0] ?? null;
 
   return (
     <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-8 md:px-10">
@@ -52,26 +53,30 @@ export async function FreelancerOverview() {
       {/* KPI */}
       <section className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <Kpi label="Total earnings" value={`Rp ${(f.earningsIdr / 1_000_000).toFixed(1)} jt`} caption="lifetime" tone="blue" />
-        <Kpi label="Proposal won" value={won} caption={`dari ${MOCK_PROPOSALS.length} kirim`} tone="mint" />
-        <Kpi label="Match terbaik" value={`${topProject.matchPct}%`} caption={`${MOCK_PROJECTS.length} project baru`} tone="iris" />
+        <Kpi label="Proposal won" value={won} caption={`dari ${meta.proposals.length} kirim`} tone="mint" />
+        <Kpi label="Match terbaik" value={`${topProject?.matchPct ?? 0}%`} caption={`${projects.length} project baru`} tone="iris" />
         <Kpi label="Rating" value={f.rating} caption={`${f.reviews} ulasan`} tone="magenta" />
       </section>
 
       {/* Preview cards */}
       <section className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <PreviewCard href="/projects" kicker="Project match" title="Project paling cocok" tone="blue">
-          <div className="flex items-center gap-4">
-            <div className="act-display text-4xl text-[var(--act-blue)]">{topProject.matchPct}<span className="text-lg">%</span></div>
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-[var(--act-ink)]">{topProject.title}</p>
-              <p className="truncate text-xs text-[var(--act-graphite)]">{topProject.client} · {topProject.budget}</p>
+          {topProject ? (
+            <div className="flex items-center gap-4">
+              <div className="act-display text-4xl text-[var(--act-blue)]">{topProject.matchPct}<span className="text-lg">%</span></div>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-[var(--act-ink)]">{topProject.title}</p>
+                <p className="truncate text-xs text-[var(--act-graphite)]">{topProject.client} · {topProject.budget}</p>
+              </div>
             </div>
-          </div>
+          ) : (
+            <p className="text-sm text-[var(--act-graphite)]">Belum ada project cocok.</p>
+          )}
         </PreviewCard>
         <PreviewCard href="/proposals" kicker="Apply" title="Proposal & portofolio" tone="iris">
           <div className="rounded-xl bg-[var(--act-mist)] p-3.5">
             <p className="text-sm text-[var(--act-charcoal)]">
-              <span className="font-semibold text-[var(--act-ink)]">{won} won</span> · {MOCK_PROPOSALS.length} proposal terkirim
+              <span className="font-semibold text-[var(--act-ink)]">{won} won</span> · {meta.proposals.length} proposal terkirim
             </p>
             <p className="mt-1 text-xs text-[var(--act-graphite)]">Generate proposal AI & kelola portofolio.</p>
           </div>

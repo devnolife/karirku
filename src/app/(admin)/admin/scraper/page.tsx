@@ -1,57 +1,75 @@
-import { MOCK_SCRAPER_RUNS, MOCK_QUEUE_STATS } from "@/lib/mock/data";
+import { getQueueStats, getRecentIngest } from "@/server/queries/admin";
 import { PageHead, StatusDot } from "../../_ui";
 
-export default function AdminScraperPage() {
-  const runs = MOCK_SCRAPER_RUNS;
-  const q = MOCK_QUEUE_STATS;
+export default async function AdminScraperPage() {
+  const [queues, ingest] = await Promise.all([getQueueStats(), getRecentIngest(10)]);
+
+  const total = queues.reduce(
+    (a, q) => ({
+      waiting: a.waiting + q.waiting,
+      active: a.active + q.active,
+      completed: a.completed + q.completed,
+      failed: a.failed + q.failed,
+    }),
+    { waiting: 0, active: 0, completed: 0, failed: 0 },
+  );
 
   return (
     <div className="act-rise space-y-8">
       <PageHead
         kicker="Admin · Scraper"
         title="Monitoring pipeline"
-        desc="Status scraping & enrichment job/course. Data ilustratif (mode demo)."
-        action={<span className="act-chip act-chip-blue">{q.active} aktif</span>}
+        desc="Status antrian scraping & enrichment (BullMQ, real-time)."
+        action={<span className="act-chip act-chip-blue">{total.active} aktif</span>}
       />
 
-      {/* Queue stats */}
+      {/* Queue stats — agregat semua antrian */}
       <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Q label="Menunggu" value={q.waiting} tone="amber" />
-        <Q label="Berjalan" value={q.active} tone="blue" />
-        <Q label="Selesai" value={q.completed} tone="green" />
-        <Q label="Gagal" value={q.failed} tone="magenta" />
+        <Q label="Menunggu" value={total.waiting} tone="amber" />
+        <Q label="Berjalan" value={total.active} tone="blue" />
+        <Q label="Selesai" value={total.completed} tone="green" />
+        <Q label="Gagal" value={total.failed} tone="magenta" />
       </section>
 
-      {/* Runs table */}
+      {/* Per-queue breakdown */}
       <div className="act-card-2 overflow-hidden">
         <div className="flex items-center justify-between border-b border-[rgba(15,23,42,0.07)] px-5 py-3.5">
-          <span className="act-kicker">Run terbaru</span>
-          <span className="act-chip act-chip-mute">{runs.length} entri</span>
+          <span className="act-kicker">Antrian (BullMQ)</span>
+          <span className="act-chip act-chip-mute">{queues.length} queue</span>
         </div>
         <div className="hidden grid-cols-12 gap-3 border-b border-[rgba(15,23,42,0.07)] px-5 py-3 md:grid">
-          <span className="act-kicker !text-[11px] col-span-3">Sumber</span>
-          <span className="act-kicker !text-[11px] col-span-2">Tipe</span>
-          <span className="act-kicker !text-[11px] col-span-2">Item</span>
-          <span className="act-kicker !text-[11px] col-span-2">Durasi</span>
-          <span className="act-kicker !text-[11px] col-span-3">Status</span>
+          <span className="act-kicker !text-[11px] col-span-4">Queue</span>
+          <span className="act-kicker !text-[11px] col-span-2">Menunggu</span>
+          <span className="act-kicker !text-[11px] col-span-2">Berjalan</span>
+          <span className="act-kicker !text-[11px] col-span-2">Selesai</span>
+          <span className="act-kicker !text-[11px] col-span-2">Gagal</span>
         </div>
         <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
-          {runs.map((r) => (
-            <li key={r.id} className="act-rowhover grid grid-cols-12 items-center gap-3 px-5 py-4">
-              <div className="col-span-12 text-sm font-semibold text-[var(--act-ink)] md:col-span-3">{r.source}</div>
-              <div className="col-span-4 md:col-span-2">
-                <span className="act-chip act-chip-mute">{r.type}</span>
-              </div>
-              <div className="col-span-4 text-sm text-[var(--act-charcoal)] md:col-span-2">
-                {r.items.toLocaleString("id-ID")}
-              </div>
-              <div className="col-span-4 text-sm text-[var(--act-graphite)] md:col-span-2">{r.duration}</div>
-              <div className="col-span-12 flex items-center gap-2 md:col-span-3">
-                <StatusDot
-                  tone={r.status === "success" ? "green" : r.status === "running" ? "blue" : "magenta"}
-                  label={r.status}
-                />
-                <span className="text-xs text-[var(--act-graphite)]">{r.finishedAt}</span>
+          {queues.map((q) => (
+            <li key={q.name} className="act-rowhover grid grid-cols-12 items-center gap-3 px-5 py-4">
+              <div className="col-span-12 text-sm font-semibold text-[var(--act-ink)] md:col-span-4">{q.name}</div>
+              <div className="col-span-3 text-sm text-[#b45309] md:col-span-2">{q.waiting}</div>
+              <div className="col-span-3 text-sm text-[var(--act-blue)] md:col-span-2">{q.active}</div>
+              <div className="col-span-3 text-sm text-[#059669] md:col-span-2">{q.completed}</div>
+              <div className="col-span-3 text-sm text-[var(--act-magenta)] md:col-span-2">{q.failed}</div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Ingest per sumber */}
+      <div className="act-card-2 overflow-hidden">
+        <div className="flex items-center justify-between border-b border-[rgba(15,23,42,0.07)] px-5 py-3.5">
+          <span className="act-kicker">Ter-index per sumber</span>
+          <span className="act-chip act-chip-mute">{ingest.length} sumber</span>
+        </div>
+        <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
+          {ingest.map((r) => (
+            <li key={r.source} className="act-rowhover grid grid-cols-12 items-center gap-3 px-5 py-4">
+              <div className="col-span-6 text-sm font-semibold text-[var(--act-ink)] md:col-span-6">{r.source}</div>
+              <div className="col-span-3 text-sm text-[var(--act-charcoal)] md:col-span-3">{r.items.toLocaleString("id-ID")} item</div>
+              <div className="col-span-3 md:col-span-3">
+                <StatusDot tone="green" label={r.lastAt} />
               </div>
             </li>
           ))}

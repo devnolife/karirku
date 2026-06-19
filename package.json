@@ -17,6 +17,8 @@
     "scan": "tsx scripts/scan.ts",
     "ai:smoke": "tsx scripts/ai-smoke.ts",
     "match:check": "tsx scripts/match-check.ts",
+    "embed:all": "tsx scripts/embed-all.ts",
+    "ingest:live": "tsx scripts/ingest-live.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -1,6 +1,5 @@
-import { getMockSession, signOutDemo } from "@/lib/mock/session";
-import { ROLE_LABEL, type UserRole } from "@/lib/mock/data";
-import { redirect } from "next/navigation";
+import { getSession, signOut as authSignOut } from "@/lib/auth";
+import { ROLE_LABEL, type UserRole } from "@/lib/roles";
 import { type SideItem } from "./_sidebar";
 import { AppShell } from "./_shell";
 
@@ -15,20 +14,25 @@ const IC = {
   projects: "M12 2l9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5",
   proposals: "M7 3h7l5 5v13H7zM14 3v5h5",
   candidates: "M9 11a4 4 0 100-8 4 4 0 000 8zm-7 9a7 7 0 0114 0M17 11a4 4 0 000-8",
+  profile: "M12 14a4 4 0 100-8 4 4 0 000 8zM5 20a7 7 0 0114 0",
+  applications: "M9 11l3 3 8-8M5 12a7 7 0 0011 5.7",
 };
 
 const NAV_BY_ROLE: Record<UserRole, SideItem[]> = {
   jobseeker: [
     { href: "/dashboard", label: "Overview", icon: IC.overview },
+    { href: "/profile", label: "Profil", icon: IC.profile },
     { href: "/skills", label: "Skill-gap", icon: IC.skills },
     { href: "/roadmap", label: "Roadmap", icon: IC.roadmap },
     { href: "/jobs", label: "Lowongan", icon: IC.jobs },
+    { href: "/applications", label: "Lamaran", icon: IC.applications },
     { href: "/learn", label: "Belajar", icon: IC.learn },
     { href: "/onboarding", label: "Goal", icon: IC.goal },
     { href: "/guides", label: "Panduan", icon: IC.guides },
   ],
   freelancer: [
     { href: "/dashboard", label: "Overview", icon: IC.overview },
+    { href: "/profile", label: "Profil", icon: IC.profile },
     { href: "/projects", label: "Projects", icon: IC.projects },
     { href: "/proposals", label: "Proposal", icon: IC.proposals },
     { href: "/onboarding", label: "Goal", icon: IC.goal },
@@ -44,14 +48,13 @@ const NAV_BY_ROLE: Record<UserRole, SideItem[]> = {
 };
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const session = await getMockSession();
+  const session = await getSession();
   const role = session.user.role;
   const items = NAV_BY_ROLE[role];
 
   async function signOut() {
     "use server";
-    await signOutDemo();
-    redirect("/login");
+    await authSignOut({ redirectTo: "/login" });
   }
 
   return (
