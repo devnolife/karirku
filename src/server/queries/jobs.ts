@@ -8,7 +8,7 @@ import { skillCoverageScore } from "@/lib/match/score";
 import type { JobView } from "@/lib/view-models";
 import { loadUserContext } from "./context";
 import { getAppliedJobIds } from "./applications";
-import { classifyJobRegion, regionRank, type JobRegion } from "@/lib/location";
+import { classifyJobRegion, regionRank, parseLocation, type JobRegion } from "@/lib/location";
 
 /**
  * Kemiripan semantik (pgvector) antara embedding profil user dan tiap lowongan.
@@ -127,18 +127,21 @@ export async function getJobMatches(
     return r !== 0 ? r : b.matchPct - a.matchPct;
   });
 
-  return scored.slice(0, limit).map(({ job, matchPct }) => ({
-    id: job.id,
-    title: job.title,
-    company: job.company ?? "—",
-    location: job.location ?? "Remote",
-    salary: formatSalary(job.salaryMin, job.salaryMax, job.currency),
-    posted: relativeTime(job.postedAt),
-    matchPct,
-    skills: job.skills.slice(0, 4),
-    applyUrl: EXTERNAL_SOURCES.has(job.source) ? job.sourceUrl : undefined,
-    applied: applied.has(job.id),
-  }));
+  return scored.slice(0, limit).map(({ job, matchPct }) => {
+    const loc = parseLocation(job.location);
+    return {
+      id: job.id,
+      title: job.title,
+      company: job.company ?? "—",
+      location: `${loc.flag} ${loc.primary}${loc.extraCount > 0 ? ` +${loc.extraCount}` : ""}`,
+      salary: formatSalary(job.salaryMin, job.salaryMax, job.currency),
+      posted: relativeTime(job.postedAt),
+      matchPct,
+      skills: job.skills.slice(0, 4),
+      applyUrl: EXTERNAL_SOURCES.has(job.source) ? job.sourceUrl : undefined,
+      applied: applied.has(job.id),
+    };
+  });
 }
 
 /**

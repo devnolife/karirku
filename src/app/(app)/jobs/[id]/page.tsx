@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { CSSProperties, ReactNode } from "react";
 import { requireUser } from "@/lib/auth";
 import { getJobDetail } from "@/server/queries/jobs";
+import { parseLocation, locationFlag } from "@/lib/location";
 import { ApplyButton } from "@/components/ApplyButton";
 
 const REGION_BADGE: Record<string, { label: string; cls: string }> = {
@@ -56,6 +57,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
   const ringColor =
     job.matchPct >= 70 ? "var(--act-magenta)" : job.matchPct >= 40 ? "var(--act-iris)" : "var(--act-blue)";
   const region = REGION_BADGE[job.region];
+  const loc = parseLocation(job.location);
   const descParas = job.description.split(/\n{1,}/).map((p) => p.trim()).filter(Boolean);
   const avatarTone = AVATAR_TONES[(job.company.charCodeAt(0) || 0) % AVATAR_TONES.length];
 
@@ -80,7 +82,14 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
               <h1 className="act-display mt-3 text-3xl leading-[1.08] md:text-[40px]">{job.title}</h1>
               <p className="mt-2 text-[15px] text-[var(--act-charcoal)]">
                 <span className="font-semibold text-[var(--act-ink)]">{job.company}</span>
-                <span className="text-[var(--act-graphite)]"> · {job.location} · diposting {job.posted}</span>
+                <span className="text-[var(--act-graphite)]"> · diposting {job.posted}</span>
+              </p>
+              <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[15px] font-medium text-[var(--act-ink)]">
+                <span className="text-[var(--act-blue)]">{ICONS.pin}</span>
+                <span>{loc.flag} {loc.primary}</span>
+                {loc.extraCount > 0 && (
+                  <span className="text-[13px] font-normal text-[var(--act-graphite)]">+{loc.extraCount} lokasi lain</span>
+                )}
               </p>
             </div>
           </div>
@@ -119,11 +128,25 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
 
       {/* Facts strip */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <Fact icon={ICONS.pin} tone="blue" label="Lokasi" value={job.location} />
+        <Fact icon={ICONS.pin} tone="blue" label="Lokasi" value={`${loc.flag} ${loc.primary}${loc.extraCount > 0 ? ` +${loc.extraCount}` : ""}`} />
         <Fact icon={ICONS.briefcase} tone="iris" label="Tipe" value={job.type ?? "—"} />
         <Fact icon={ICONS.layers} tone="magenta" label="Level" value={job.level ?? "—"} />
         <Fact icon={ICONS.wallet} tone="mint" label="Gaji" value={job.salary} />
       </div>
+
+      {/* All locations (jobs with multiple offices/regions) */}
+      {loc.all.length > 1 && (
+        <div className="act-card-2 flex flex-wrap items-center gap-x-3 gap-y-2 p-4">
+          <span className="act-kicker !text-[10px]">Lokasi asli ({loc.all.length})</span>
+          <div className="flex flex-wrap gap-1.5">
+            {loc.all.map((l) => (
+              <span key={l} className="rounded-md bg-[var(--act-mist)] px-2.5 py-1 text-xs font-medium text-[var(--act-charcoal)] ring-1 ring-[rgba(15,23,42,0.06)]">
+                {locationFlag(l)} {l}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Description + requirements */}
@@ -210,7 +233,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
               <span className={`act-avatar ${avatarTone} flex-none font-bold`}>{job.company.slice(0, 1).toUpperCase()}</span>
               <div className="min-w-0">
                 <p className="truncate font-semibold text-[var(--act-ink)]">{job.company}</p>
-                <p className="truncate text-xs text-[var(--act-graphite)]">{job.location}</p>
+                <p className="truncate text-xs text-[var(--act-graphite)]">{loc.flag} {loc.primary}</p>
               </div>
             </div>
             <div className="mt-4 flex items-center gap-2 border-t border-[rgba(15,23,42,0.07)] pt-4 text-xs text-[var(--act-graphite)]">
