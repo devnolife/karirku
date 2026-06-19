@@ -12,6 +12,7 @@
 import { config as loadEnv } from "dotenv";
 loadEnv({ path: ".env" });
 loadEnv({ path: ".env.local", override: true });
+import { cleanRichText } from "@/lib/html";
 
 // Perusahaan asli dengan board Greenhouse publik.
 // `prioritizeIndonesia`: kalau true, hanya simpan lowongan Indonesia/SEA.
@@ -48,17 +49,8 @@ type GhJob = {
 };
 
 function stripHtml(html: string): string {
-  return html
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&#39;|&rsquo;|&lsquo;/g, "'")
-    .replace(/&quot;|&ldquo;|&rdquo;/g, '"')
-    .replace(/&nbsp;/g, " ")
-    .replace(/&[a-z]+;/gi, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+  // Pakai helper bersama dengan urutan benar (decode entity → strip tag).
+  return cleanRichText(html);
 }
 
 function escapeRegExp(s: string): string {

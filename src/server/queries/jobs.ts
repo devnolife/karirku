@@ -175,3 +175,85 @@ export async function getRoleMarket(
     trend: levels.map((l) => ({ label: l.label, value: counts.get(l.key) ?? 0 })),
   };
 }
+
+// ============================================================
+// JOB DETAIL
+// ============================================================
+
+const JOB_TYPE_LABEL: Record<string, string> = {
+  fulltime: "Full-time",
+  parttime: "Part-time",
+  contract: "Contract",
+  remote: "Remote",
+  hybrid: "Hybrid",
+  onsite: "Onsite",
+};
+
+const LEVEL_LABEL: Record<string, string> = {
+  intern: "Intern",
+  junior: "Junior",
+  mid: "Mid-level",
+  senior: "Senior",
+  lead: "Lead",
+  manager: "Manager",
+};
+
+export type JobDetail = {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  type: string | null;
+  level: string | null;
+  salary: string;
+  description: string;
+  requirements: string[];
+  skills: string[];
+  matchedSkills: string[];
+  missingSkills: string[];
+  matchPct: number;
+  posted: string;
+  source: string;
+  applyUrl: string | null;
+  isNative: boolean;
+  applied: boolean;
+  region: JobRegion;
+};
+
+/** Detail lengkap satu lowongan + info match untuk user aktif. null kalau tak ada. */
+export async function getJobDetail(userId: string, jobId: string): Promise<JobDetail | null> {
+  const job = await prisma.job.findUnique({ where: { id: jobId } });
+  if (!job) return null;
+
+  const ctx = await loadUserContext(userId);
+  const cov = skillCoverageScore(ctx.skillNames, job.skills);
+
+  const applied = await prisma.application.findFirst({
+    where: { userId, jobId },
+    select: { id: true },
+  });
+
+  const EXTERNAL_SOURCES = new Set(["greenhouse", "lever", "ashby", "http"]);
+
+  return {
+    id: job.id,
+    title: job.title,
+    company: job.company ?? "—",
+    location: job.location ?? "Remote",
+    type: job.type ? JOB_TYPE_LABEL[job.type] ?? job.type : null,
+    level: job.level ? LEVEL_LABEL[job.level] ?? job.level : null,
+    salary: formatSalary(job.salaryMin, job.salaryMax, job.currency),
+    description: job.description ?? "",
+    requirements: job.requirements,
+    skills: job.skills,
+    matchedSkills: cov.matched,
+    missingSkills: cov.missing,
+    matchPct: cov.matchPct,
+    posted: relativeTime(job.postedAt),
+    source: job.source,
+    applyUrl: EXTERNAL_SOURCES.has(job.source) ? job.sourceUrl : null,
+    isNative: !!job.companyProfileId,
+    applied: !!applied,
+    region: classifyJobRegion(job.location, job.source),
+  };
+}

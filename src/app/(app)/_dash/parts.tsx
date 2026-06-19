@@ -184,7 +184,9 @@ export function JobRow({ job: j }: { job: JobView }) {
         <div className="act-kicker !text-[10px]">match</div>
       </div>
       <div className="col-span-8 min-w-0">
-        <h4 className="truncate font-semibold text-[var(--act-ink)]">{j.title}</h4>
+        <h4 className="truncate font-semibold text-[var(--act-ink)]">
+          <Link href={`/jobs/${j.id}`} className="hover:text-[var(--act-magenta)] hover:underline">{j.title}</Link>
+        </h4>
         <p className="text-xs text-[var(--act-graphite)]">
           <span className="font-semibold text-[var(--act-charcoal)]">{j.company}</span> · {j.location}
         </p>
