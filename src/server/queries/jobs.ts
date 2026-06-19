@@ -8,6 +8,7 @@ import { skillCoverageScore } from "@/lib/match/score";
 import type { JobView } from "@/lib/view-models";
 import { loadUserContext } from "./context";
 import { getAppliedJobIds } from "./applications";
+import { classifyJobRegion, regionRank, type JobRegion } from "@/lib/location";
 
 /**
  * Kemiripan semantik (pgvector) antara embedding profil user dan tiap lowongan.
@@ -65,8 +66,16 @@ export async function getJobsCount(): Promise<number> {
 /**
  * Top-N lowongan paling cocok dengan skill user. Coverage dihitung deterministik
  * via skillCoverageScore (bukan mock matchPct).
+ *
+ * Ranking sadar-lokasi: lowongan Indonesia tampil lebih dulu (sesuai target user
+ * yang umumnya berbasis di Indonesia), lalu remote, lalu luar negeri — masing-
+ * masing diurutkan by match. `region` opsional mempersempit ke satu region saja.
  */
-export async function getJobMatches(userId: string, limit = 12): Promise<JobView[]> {
+export async function getJobMatches(
+  userId: string,
+  limit = 12,
+  region?: JobRegion,
+): Promise<JobView[]> {
   const ctx = await loadUserContext(userId);
 
   const [jobs, semantic] = await Promise.all([
@@ -85,7 +94,7 @@ export async function getJobMatches(userId: string, limit = 12): Promise<JobView
         source: true,
         sourceUrl: true,
       },
-      take: 400,
+      take: 600,
     }),
     semanticJobScores(userId),
   ]);
@@ -97,7 +106,7 @@ export async function getJobMatches(userId: string, limit = 12): Promise<JobView
 
   const hasSemantic = semantic.size > 0;
 
-  const scored = jobs.map((j) => {
+  let scored = jobs.map((j) => {
     const coverage = skillCoverageScore(ctx.skillNames, j.skills).matchPct;
     // Coverage skill = sinyal utama (0.75); kemiripan semantik = sekunder (0.25).
     const sim = semantic.get(j.id);
@@ -105,10 +114,18 @@ export async function getJobMatches(userId: string, limit = 12): Promise<JobView
       hasSemantic && sim !== undefined
         ? Math.round(coverage * 0.75 + sim * 0.25)
         : coverage;
-    return { job: j, matchPct };
+    const jobRegion = classifyJobRegion(j.location, j.source);
+    return { job: j, matchPct, region: jobRegion };
   });
 
-  scored.sort((a, b) => b.matchPct - a.matchPct);
+  // Filter region kalau diminta.
+  if (region) scored = scored.filter((s) => s.region === region);
+
+  // Urutkan: region (Indonesia dulu) → match desc.
+  scored.sort((a, b) => {
+    const r = regionRank(b.region) - regionRank(a.region);
+    return r !== 0 ? r : b.matchPct - a.matchPct;
+  });
 
   return scored.slice(0, limit).map(({ job, matchPct }) => ({
     id: job.id,

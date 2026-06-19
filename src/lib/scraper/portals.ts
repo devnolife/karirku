@@ -16,6 +16,11 @@ import type { PortalEntry } from "./providers";
 
 export const DEFAULT_PORTALS: PortalEntry[] = [
   {
+    name: "Xendit",
+    careersUrl: "https://job-boards.greenhouse.io/xendit",
+    enabled: true,
+  },
+  {
     name: "GitLab",
     careersUrl: "https://job-boards.greenhouse.io/gitlab",
     enabled: true,

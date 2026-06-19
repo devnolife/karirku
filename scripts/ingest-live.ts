@@ -13,12 +13,28 @@ import { config as loadEnv } from "dotenv";
 loadEnv({ path: ".env" });
 loadEnv({ path: ".env.local", override: true });
 
-// Perusahaan asli dengan board Greenhouse publik (banyak role remote).
+// Perusahaan asli dengan board Greenhouse publik.
+// `prioritizeIndonesia`: kalau true, hanya simpan lowongan Indonesia/SEA.
 const COMPANIES = [
-  { name: "GitLab", slug: "gitlab" },
-  { name: "Figma", slug: "figma" },
-  { name: "Dropbox", slug: "dropbox" },
+  // Indonesia/SEA — fintech Indonesia (Xendit), banyak posisi Jakarta.
+  { name: "Xendit", slug: "xendit", prioritizeIndonesia: true },
+  // Global remote (tetap diingest sebagai pelengkap, tampil di bawah loker ID).
+  { name: "GitLab", slug: "gitlab", prioritizeIndonesia: false },
+  { name: "Figma", slug: "figma", prioritizeIndonesia: false },
+  { name: "Dropbox", slug: "dropbox", prioritizeIndonesia: false },
 ];
+
+// Kota/keyword untuk memilih lowongan Indonesia + SEA terdekat.
+const SEA_KEYWORDS = [
+  "indonesia", "jakarta", "bandung", "surabaya", "remote",
+  "singapore", "malaysia", "kuala lumpur", "philippines", "manila",
+  "thailand", "bangkok", "vietnam", "ho chi minh", "asia",
+];
+
+function isSeaLocation(location: string): boolean {
+  const l = location.toLowerCase();
+  return SEA_KEYWORDS.some((k) => l.includes(k));
+}
 
 const MAX_PER_COMPANY = 80;
 const EMBED_CONCURRENCY = 4;
@@ -120,12 +136,21 @@ async function main() {
     console.log(`${jobs.length} lowongan`);
 
     let taken = 0;
+    let skippedRegion = 0;
     for (const j of jobs) {
       if (taken >= MAX_PER_COMPANY) break;
       const title = (j.title ?? "").trim();
       const url = j.absolute_url;
       if (!title || !url) continue;
       scanned += 1;
+
+      const location = j.location?.name ?? "Remote";
+
+      // Untuk perusahaan SEA (Xendit), hanya simpan lowongan Indonesia/SEA.
+      if (co.prioritizeIndonesia && !isSeaLocation(location)) {
+        skippedRegion += 1;
+        continue;
+      }
 
       const desc = stripHtml(j.content ?? "");
       const skills = extractSkills(`${title}. ${desc}`, matcher);
@@ -135,7 +160,6 @@ async function main() {
       }
       taken += 1;
 
-      const location = j.location?.name ?? "Remote";
       const job = await prisma.job.upsert({
         where: { sourceUrl: url },
         create: {
@@ -162,7 +186,8 @@ async function main() {
       });
       newJobIds.push(job.id);
     }
-    console.log(`  ✓ ${co.name}: ${taken} role teknologi disimpan`);
+    const regionNote = co.prioritizeIndonesia ? ` (lewati ${skippedRegion} non-SEA)` : "";
+    console.log(`  ✓ ${co.name}: ${taken} role teknologi disimpan${regionNote}`);
   }
 
   console.log(`\n📊 Discan ${scanned}, dilewati (non-tech) ${skippedNoSkill}, disimpan ${newJobIds.length}`);
