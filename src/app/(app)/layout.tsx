@@ -41,6 +41,7 @@ const NAV_BY_ROLE: Record<UserRole, SideItem[]> = {
   company: [
     { href: "/dashboard", label: "Overview", icon: IC.overview },
     { href: "/company/jobs", label: "Lowongan", icon: IC.jobs },
+    { href: "/company/talent", label: "Cari Talent", icon: IC.profile },
     { href: "/company/candidates", label: "Kandidat", icon: IC.candidates },
     { href: "/guides", label: "Panduan", icon: IC.guides },
   ],

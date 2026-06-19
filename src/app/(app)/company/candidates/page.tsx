@@ -1,5 +1,6 @@
 import { requireUser } from "@/lib/auth";
 import { getCompanyCandidates, CANDIDATE_STAGES } from "@/server/queries/company";
+import { StageControl } from "@/components/StageControl";
 import { Empty } from "@/components/ui/empty";
 
 export default async function CompanyCandidatesPage() {
@@ -75,7 +76,7 @@ export default async function CompanyCandidatesPage() {
                     <span className={`act-chip ${stageCls}`}>{stageLabel}</span>
                   </div>
                   <div className="col-span-3 text-right md:col-span-2">
-                    <button className="text-xs font-semibold text-[var(--act-blue)] hover:underline">Lihat</button>
+                    <StageControl applicationId={k.id} current={k.rawStatus} />
                   </div>
                 </li>
               );

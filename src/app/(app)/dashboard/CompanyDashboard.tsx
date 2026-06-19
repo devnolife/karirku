@@ -28,7 +28,7 @@ export async function CompanyOverview() {
             {c.openJobs} lowongan aktif · {c.totalCandidates} kandidat · {c.interviews} interview terjadwal.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
-            <Link href="/company/jobs" className="act-pill group !text-sm">
+            <Link href="/company/jobs/new" className="act-pill group !text-sm">
               Posting lowongan
               <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M12 5v14M5 12h14" />

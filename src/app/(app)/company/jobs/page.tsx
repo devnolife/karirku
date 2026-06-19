@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { getCompanyJobs } from "@/server/queries/company";
 import { Empty } from "@/components/ui/empty";
@@ -19,12 +20,12 @@ export default async function CompanyJobsPage() {
             Kelola lowongan terpasang & statusnya.
           </p>
         </div>
-        <button className="act-pill group !text-sm">
+        <Link href="/company/jobs/new" className="act-pill group !text-sm">
           Posting lowongan
           <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M12 5v14M5 12h14" />
           </svg>
-        </button>
+        </Link>
       </div>
 
       <div className="flex gap-2">
