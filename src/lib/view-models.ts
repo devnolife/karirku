@@ -31,6 +31,7 @@ export type JobView = {
   skills: string[];
   applyUrl?: string;
   applied?: boolean;
+  sourceLabel?: string;
 };
 
 export type CourseView = {

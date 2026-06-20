@@ -189,6 +189,9 @@ export function JobRow({ job: j }: { job: JobView }) {
         </h4>
         <p className="text-xs text-[var(--act-graphite)]">
           <span className="font-semibold text-[var(--act-charcoal)]">{j.company}</span> · {j.location}
+          {j.sourceLabel && (
+            <span className="ml-1.5 rounded bg-[var(--act-mist)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--act-graphite)] ring-1 ring-[rgba(15,23,42,0.06)]">{j.sourceLabel}</span>
+          )}
         </p>
         <div className="mt-1.5 flex flex-wrap gap-1.5">
           {j.skills.map((s) => (

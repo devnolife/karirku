@@ -9,6 +9,7 @@ import type { JobView } from "@/lib/view-models";
 import { loadUserContext } from "./context";
 import { getAppliedJobIds } from "./applications";
 import { classifyJobRegion, regionRank, parseLocation, type JobRegion } from "@/lib/location";
+import { describeJobSource } from "@/lib/source";
 
 /**
  * Kemiripan semantik (pgvector) antara embedding profil user dan tiap lowongan.
@@ -93,6 +94,7 @@ export async function getJobMatches(
         postedAt: true,
         source: true,
         sourceUrl: true,
+        companyProfileId: true,
       },
       take: 600,
     }),
@@ -129,6 +131,10 @@ export async function getJobMatches(
 
   return scored.slice(0, limit).map(({ job, matchPct }) => {
     const loc = parseLocation(job.location);
+    const applyUrl = EXTERNAL_SOURCES.has(job.source) ? job.sourceUrl : undefined;
+    const src = describeJobSource(job.source, applyUrl, !!job.companyProfileId);
+    const sourceLabel =
+      src.kind === "external" ? `via ${src.platform}` : src.kind === "native" ? "KarirKu" : "Contoh";
     return {
       id: job.id,
       title: job.title,
@@ -138,8 +144,9 @@ export async function getJobMatches(
       posted: relativeTime(job.postedAt),
       matchPct,
       skills: job.skills.slice(0, 4),
-      applyUrl: EXTERNAL_SOURCES.has(job.source) ? job.sourceUrl : undefined,
+      applyUrl,
       applied: applied.has(job.id),
+      sourceLabel,
     };
   });
 }

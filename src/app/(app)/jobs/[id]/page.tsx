@@ -4,6 +4,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { requireUser } from "@/lib/auth";
 import { getJobDetail } from "@/server/queries/jobs";
 import { parseLocation, locationFlag } from "@/lib/location";
+import { describeJobSource } from "@/lib/source";
 import { ApplyButton } from "@/components/ApplyButton";
 
 const REGION_BADGE: Record<string, { label: string; cls: string }> = {
@@ -34,6 +35,15 @@ const ICONS: Record<string, ReactNode> = {
   wallet: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2" /><path d="M21 11h-6a2 2 0 0 0 0 4h6Z" /></svg>
   ),
+  link: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
+  ),
+  shield: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" /><path d="m9 12 2 2 4-4" /></svg>
+  ),
+  info: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></svg>
+  ),
 };
 
 function Fact({ icon, tone, label, value }: { icon: ReactNode; tone: string; label: string; value: string }) {
@@ -58,6 +68,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
     job.matchPct >= 70 ? "var(--act-magenta)" : job.matchPct >= 40 ? "var(--act-iris)" : "var(--act-blue)";
   const region = REGION_BADGE[job.region];
   const loc = parseLocation(job.location);
+  const src = describeJobSource(job.source, job.applyUrl, job.isNative);
   const descParas = job.description.split(/\n{1,}/).map((p) => p.trim()).filter(Boolean);
   const avatarTone = AVATAR_TONES[(job.company.charCodeAt(0) || 0) % AVATAR_TONES.length];
 
@@ -112,16 +123,36 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
         </div>
 
         {/* CTA */}
-        <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-[rgba(15,23,42,0.08)] pt-6">
-          <ApplyButton jobId={job.id} alreadyApplied={job.applied} isExternal={!!job.applyUrl} />
-          <span className="text-sm text-[var(--act-graphite)]">
-            <span className="font-semibold text-[var(--act-ink)]">{job.matchedSkills.length}</span> dari{" "}
-            <span className="font-semibold text-[var(--act-ink)]">{job.skills.length || "—"}</span> skill kamu cocok
-          </span>
-          {job.applyUrl && (
-            <a href={job.applyUrl} target="_blank" rel="noopener noreferrer" className="ml-auto text-xs font-medium text-[var(--act-blue)] hover:underline">
-              Lihat di situs asli ↗
-            </a>
+        <div className="mt-7 border-t border-[rgba(15,23,42,0.08)] pt-6">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+            <ApplyButton jobId={job.id} alreadyApplied={job.applied} isExternal={!!job.applyUrl} />
+            <span className="text-sm text-[var(--act-graphite)]">
+              <span className="font-semibold text-[var(--act-ink)]">{job.matchedSkills.length}</span> dari{" "}
+              <span className="font-semibold text-[var(--act-ink)]">{job.skills.length || "—"}</span> skill kamu cocok
+            </span>
+            {job.applyUrl && (
+              <a href={job.applyUrl} target="_blank" rel="noopener noreferrer" className="ml-auto text-xs font-medium text-[var(--act-blue)] hover:underline">
+                Lihat di situs asli ↗
+              </a>
+            )}
+          </div>
+          {/* Redirect notice: jelaskan ke mana lamaran resmi diarahkan */}
+          {src.redirectsOut ? (
+            <p className="mt-3 flex items-center gap-1.5 text-xs text-[var(--act-graphite)]">
+              <span className="text-[var(--act-blue)]">{ICONS.link}</span>
+              Klik <span className="font-semibold text-[var(--act-ink)]">Lamar</span> → diarahkan ke situs resmi{" "}
+              <span className="font-semibold text-[var(--act-ink)]">{src.host}</span> via {src.platform}.
+            </p>
+          ) : src.kind === "native" ? (
+            <p className="mt-3 flex items-center gap-1.5 text-xs text-[var(--act-graphite)]">
+              <span className="text-[#059669]">{ICONS.shield}</span>
+              Lamar langsung di KarirKu — lamaranmu tercatat & dikelola di sini.
+            </p>
+          ) : (
+            <p className="mt-3 flex items-center gap-1.5 text-xs text-[var(--act-graphite)]">
+              <span className="text-[var(--act-graphite)]">{ICONS.info}</span>
+              Lowongan contoh (data internal) — belum ada tautan lamaran resmi.
+            </p>
           )}
         </div>
       </div>
@@ -236,8 +267,29 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                 <p className="truncate text-xs text-[var(--act-graphite)]">{loc.flag} {loc.primary}</p>
               </div>
             </div>
-            <div className="mt-4 flex items-center gap-2 border-t border-[rgba(15,23,42,0.07)] pt-4 text-xs text-[var(--act-graphite)]">
-              <span className="act-chip act-chip-mute !text-[10px]">{job.isNative ? "Mitra platform" : "Sumber eksternal"}</span>
+            <div className="mt-4 border-t border-[rgba(15,23,42,0.07)] pt-4">
+              <span className="act-kicker !text-[10px]">Sumber lowongan</span>
+              <div className="mt-2 flex items-center gap-2">
+                <span className={`act-chip !text-[10px] ${src.kind === "native" ? "act-chip-iris" : src.kind === "external" ? "act-chip-blue" : "act-chip-mute"}`}>
+                  {src.kind === "external" ? `via ${src.platform}` : src.kind === "native" ? "KarirKu (native)" : "Data contoh"}
+                </span>
+              </div>
+              {src.redirectsOut && src.host && (
+                <p className="mt-2 text-xs leading-relaxed text-[var(--act-graphite)]">
+                  Lamaran resmi diarahkan ke{" "}
+                  <span className="break-all font-semibold text-[var(--act-ink)]">{src.host}</span>.
+                </p>
+              )}
+              {src.kind === "native" && (
+                <p className="mt-2 text-xs leading-relaxed text-[var(--act-graphite)]">
+                  Diposting langsung oleh perusahaan di KarirKu.
+                </p>
+              )}
+              {job.applyUrl && (
+                <a href={job.applyUrl} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-[var(--act-blue)] hover:underline">
+                  Buka tautan asli ↗
+                </a>
+              )}
             </div>
           </div>
         </div>
