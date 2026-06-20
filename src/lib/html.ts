@@ -7,7 +7,8 @@
  * 4. Decode entity sekali lagi (untuk entity di dalam teks) + rapikan whitespace.
  */
 
-function decodeEntities(s: string): string {
+/** Decode entity HTML (&lt; → <, &amp; → &, dst). Berguna utk parsing tag yg ter-encode. */
+export function decodeEntities(s: string): string {
   return s
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
