@@ -23,6 +23,7 @@ const PLATFORM_BY_SOURCE: Record<string, string> = {
   greenhouse: "Greenhouse",
   lever: "Lever",
   ashby: "Ashby",
+  kalibrr: "Kalibrr",
   http: "Situs perusahaan",
 };
 

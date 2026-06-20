@@ -16,7 +16,7 @@ loadEnv({ path: ".env" });
 loadEnv({ path: ".env.local", override: true });
 import { cleanRichText, cleanText, decodeEntities } from "@/lib/html";
 
-type Provider = "greenhouse" | "lever" | "ashby";
+type Provider = "greenhouse" | "lever" | "ashby" | "kalibrr";
 
 type Company = {
   name: string;
@@ -24,10 +24,14 @@ type Company = {
   provider: Provider;
   /** Kalau true, hanya simpan lowongan Indonesia/SEA/remote-APAC (terdekat utk user ID). */
   prioritizeSea?: boolean;
+  /** Batas job yang diambil dari sumber ini (default MAX_PER_COMPANY). */
+  maxJobs?: number;
 };
 
 // Perusahaan asli dengan board publik. Diutamakan yang punya posisi Indonesia/SEA.
 const COMPANIES: Company[] = [
+  // ── Job board Indonesia (banyak perusahaan lokal) ──
+  { name: "Kalibrr", slug: "kalibrr", provider: "kalibrr", prioritizeSea: true, maxJobs: 300 },
   // ── Indonesia / SEA (prioritizeSea: hanya lowongan terdekat) ──
   { name: "Xendit", slug: "xendit", provider: "greenhouse", prioritizeSea: true },
   { name: "Ninja Van", slug: "ninjavan", provider: "lever", prioritizeSea: true },
@@ -79,6 +83,11 @@ type NormalizedJob = {
   requirements: string[];
   type: JobTypeValue;
   postedAt: Date;
+  /** Khusus job board agregat (Kalibrr): nama perusahaan per-job. */
+  company?: string;
+  salaryMin?: number | null;
+  salaryMax?: number | null;
+  currency?: string;
 };
 
 function escapeRegExp(s: string): string {
@@ -281,10 +290,83 @@ async function fetchAshby(slug: string): Promise<NormalizedJob[]> {
   return out;
 }
 
+// Kalibrr — job board Indonesia (banyak perusahaan). Agregat via search API publik.
+type KalibrrJob = {
+  id?: number;
+  name?: string;
+  slug?: string;
+  company_name?: string;
+  company?: { code?: string; name?: string };
+  google_location?: { address_components?: { city?: string; region?: string; country?: string } };
+  description?: string;
+  qualifications?: string;
+  activation_date?: string;
+  is_work_from_home?: boolean;
+  is_hybrid?: boolean;
+  base_salary?: number | null;
+  maximum_salary?: number | null;
+  salary_currency?: string | null;
+  salary_shown?: boolean;
+};
+
+// Keyword teknologi untuk men-query board Kalibrr (di-dedupe by id).
+const KALIBRR_KEYWORDS = [
+  "engineer", "developer", "programmer", "software", "data", "devops",
+  "frontend", "backend", "mobile", "android", "ios", "designer",
+  "product manager", "qa", "analyst", "machine learning", "ui ux", "cloud",
+];
+
+const KALIBRR_UA =
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36";
+
+async function fetchKalibrr(): Promise<NormalizedJob[]> {
+  const byId = new Map<number, NormalizedJob>();
+  for (const kw of KALIBRR_KEYWORDS) {
+    const url = `https://www.kalibrr.com/kjs/job_board/search?limit=100&offset=0&country=Indonesia&text=${encodeURIComponent(kw)}`;
+    let jobs: KalibrrJob[] = [];
+    try {
+      const res = await fetch(url, {
+        headers: { "User-Agent": KALIBRR_UA, Accept: "application/json" },
+        signal: AbortSignal.timeout(30_000),
+      });
+      const json = (await res.json()) as { jobs?: KalibrrJob[] };
+      jobs = Array.isArray(json.jobs) ? json.jobs : [];
+    } catch {
+      continue; // keyword gagal → lanjut
+    }
+    for (const j of jobs) {
+      if (!j.id || byId.has(j.id)) continue;
+      const title = (j.name ?? "").trim();
+      const code = j.company?.code;
+      if (!title || !code || !j.slug) continue;
+      const ac = j.google_location?.address_components ?? {};
+      const city = ac.city ?? ac.region ?? "";
+      const location = city ? `${city}, Indonesia` : "Indonesia";
+      const type: JobTypeValue = j.is_work_from_home ? "remote" : j.is_hybrid ? "hybrid" : "fulltime";
+      const salaryShown = Boolean(j.salary_shown && (j.base_salary || j.maximum_salary));
+      byId.set(j.id, {
+        title,
+        url: `https://www.kalibrr.com/c/${code}/jobs/${j.id}/${j.slug}`,
+        location,
+        company: j.company_name ?? j.company?.name ?? "Kalibrr",
+        description: cleanRichText(j.description ?? ""),
+        requirements: liItems(decodeEntities(j.qualifications ?? "")).slice(0, 8),
+        type,
+        postedAt: j.activation_date ? new Date(j.activation_date) : new Date(),
+        salaryMin: salaryShown ? j.base_salary ?? null : null,
+        salaryMax: salaryShown ? j.maximum_salary ?? null : null,
+        currency: salaryShown ? j.salary_currency ?? "IDR" : undefined,
+      });
+    }
+  }
+  return [...byId.values()];
+}
+
 async function fetchCompany(co: Company): Promise<NormalizedJob[]> {
   if (co.provider === "greenhouse") return fetchGreenhouse(co.slug);
   if (co.provider === "lever") return fetchLever(co.slug);
-  return fetchAshby(co.slug);
+  if (co.provider === "ashby") return fetchAshby(co.slug);
+  return fetchKalibrr();
 }
 
 async function main() {
@@ -312,8 +394,9 @@ async function main() {
 
     let taken = 0;
     let skippedRegion = 0;
+    const maxJobs = co.maxJobs ?? MAX_PER_COMPANY;
     for (const j of jobs) {
-      if (taken >= MAX_PER_COMPANY) break;
+      if (taken >= maxJobs) break;
       scanned += 1;
 
       if (co.prioritizeSea && !isSeaLocation(j.location)) {
@@ -334,18 +417,22 @@ async function main() {
           source: co.provider,
           sourceUrl: j.url,
           title: j.title,
-          company: co.name,
+          company: j.company ?? co.name,
           location: j.location,
           type: j.type,
           level: inferLevel(j.title),
           description: j.description.slice(0, 4000),
           requirements: j.requirements,
           skills,
+          salaryMin: j.salaryMin ?? null,
+          salaryMax: j.salaryMax ?? null,
+          currency: j.currency ?? "IDR",
           isActive: true,
           postedAt: j.postedAt,
         },
         update: {
           title: j.title,
+          company: j.company ?? co.name,
           location: j.location,
           type: j.type,
           skills,
@@ -382,8 +469,8 @@ async function main() {
   }
   process.stdout.write("\n");
 
-  const live = await prisma.job.count({ where: { source: { in: ["greenhouse", "lever", "ashby"] } } });
-  console.log(`\n✅ Total lowongan live (greenhouse+lever+ashby) di DB: ${live}`);
+  const live = await prisma.job.count({ where: { source: { in: ["greenhouse", "lever", "ashby", "kalibrr"] } } });
+  console.log(`\n✅ Total lowongan live (greenhouse+lever+ashby+kalibrr) di DB: ${live}`);
   await prisma.$disconnect();
   process.exit(0);
 }

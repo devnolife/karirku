@@ -104,7 +104,7 @@ export async function getJobMatches(
   const applied = await getAppliedJobIds(userId);
 
   // Sumber dengan URL apply asli (bukan seed sintetis / native in-platform).
-  const EXTERNAL_SOURCES = new Set(["greenhouse", "lever", "ashby", "http"]);
+  const EXTERNAL_SOURCES = new Set(["greenhouse", "lever", "ashby", "kalibrr", "http"]);
 
   const hasSemantic = semantic.size > 0;
 
@@ -243,7 +243,7 @@ export async function getJobDetail(userId: string, jobId: string): Promise<JobDe
     select: { id: true },
   });
 
-  const EXTERNAL_SOURCES = new Set(["greenhouse", "lever", "ashby", "http"]);
+  const EXTERNAL_SOURCES = new Set(["greenhouse", "lever", "ashby", "kalibrr", "http"]);
 
   return {
     id: job.id,

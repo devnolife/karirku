@@ -11,7 +11,7 @@
 
 import { prisma } from "@/lib/db";
 
-const EXTERNAL_SOURCES = new Set(["greenhouse", "lever", "ashby", "http"]);
+const EXTERNAL_SOURCES = new Set(["greenhouse", "lever", "ashby", "kalibrr", "http"]);
 
 export type ApplyResult =
   | { ok: true; mode: "native" }
