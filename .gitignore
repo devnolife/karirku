@@ -58,3 +58,6 @@ next-env.d.ts
 /AGENTS.md
 
 /src/generated/prisma
+
+# brainstorm visual companion sessions
+.superpowers/
