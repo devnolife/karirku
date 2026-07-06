@@ -273,6 +273,57 @@ export function CourseRow({ course: c, idx }: { course: MockCourse; idx: number 
   );
 }
 
+/* ---------------- Empty state ---------------- */
+const EMPTY_GLYPHS = {
+  jobs: "M4 7h16v12H4zM9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M4 12h16",
+  courses: "M3 5l9-2 9 2-9 2-9-2zm0 0v9m9 7c-3-2-6-2.5-9-2.5V14m18-9v9c-3 0-6 .5-9 2.5",
+  milestones: "M9 6h11M9 12h11M9 18h11M5 6h.01M5 12h.01M5 18h.01",
+  proposals: "M7 3h7l5 5v13H7zM14 3v5h5M10 13h5M10 17h5",
+  projects: "M12 2l9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5",
+  candidates: "M9 11a4 4 0 100-8 4 4 0 000 8zm-7 9a7 7 0 0114 0M17 11a4 4 0 000-8",
+  activity: "M12 8v4l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+} as const;
+
+export function EmptyState({
+  glyph,
+  title,
+  desc,
+  action,
+  compact,
+}: {
+  glyph: keyof typeof EMPTY_GLYPHS;
+  title: string;
+  desc: string;
+  action?: React.ReactNode;
+  compact?: boolean;
+}) {
+  return (
+    <div
+      className={`flex flex-col items-center justify-center rounded-[18px] border border-dashed border-[rgba(15,23,42,0.14)] bg-[var(--act-mist)] text-center ${
+        compact ? "px-6 py-10" : "px-8 py-16"
+      }`}
+    >
+      <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[rgba(0,152,242,0.09)] text-[var(--act-blue)]">
+        <svg
+          viewBox="0 0 24 24"
+          className="h-[22px] w-[22px]"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden
+        >
+          <path d={EMPTY_GLYPHS[glyph]} />
+        </svg>
+      </span>
+      <h3 className="act-heading mt-4 text-lg text-[var(--act-ink)]">{title}</h3>
+      <p className="mt-1.5 max-w-sm text-sm leading-relaxed text-[var(--act-graphite)]">{desc}</p>
+      {action && <div className="mt-5">{action}</div>}
+    </div>
+  );
+}
+
 /* ---------------- Overview preview card ---------------- */
 export function PreviewCard({
   href,
@@ -304,5 +355,186 @@ export function PreviewCard({
       <h3 className="act-heading mt-1.5 text-lg text-[var(--act-ink)]">{title}</h3>
       <div className="mt-3">{children}</div>
     </Link>
+  );
+}
+
+/* =====================================================================
+   Donezo-style kit — StatCard (featured), DonutProgress, HatchedBars
+   ===================================================================== */
+
+/* ---------------- StatCard ---------------- */
+export function StatCard({
+  label,
+  value,
+  delta,
+  href,
+  featured = false,
+}: {
+  label: string;
+  value: React.ReactNode;
+  /** Teks kecil di bawah angka, mis. "Naik dari bulan lalu". */
+  delta?: string;
+  /** Bila diisi, seluruh kartu menjadi tautan + panah aktif. */
+  href?: string;
+  /** Kartu highlight gelap (onyx solid, teks putih). */
+  featured?: boolean;
+}) {
+  const base = featured
+    ? "bg-[var(--act-onyx)] text-white border-transparent"
+    : "act-card-2";
+  const inner = (
+    <>
+      <div className="flex items-start justify-between gap-2">
+        <span
+          className={
+            "act-kicker " + (featured ? "!text-white/70" : "")
+          }
+        >
+          {label}
+        </span>
+        <span
+          className={
+            "grid h-7 w-7 flex-none place-items-center rounded-full border transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 " +
+            (featured
+              ? "border-white/25 text-white"
+              : "border-[rgba(15,23,42,0.12)] text-[var(--act-graphite)]")
+          }
+        >
+          <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M7 17 17 7M8 7h9v9" />
+          </svg>
+        </span>
+      </div>
+      <div className={"act-display mt-4 text-5xl " + (featured ? "text-white" : "text-[var(--act-ink)]")}>
+        {value}
+      </div>
+      {delta && (
+        <div className="mt-3 flex items-center gap-1.5">
+          <span
+            className={
+              "inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold " +
+              (featured ? "bg-white/15 text-white" : "bg-[rgba(5,150,105,0.12)] text-[#15803d]")
+            }
+          >
+            <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M7 14l5-5 5 5" />
+            </svg>
+          </span>
+          <span className={"text-xs " + (featured ? "text-white/70" : "text-[var(--act-graphite)]")}>
+            {delta}
+          </span>
+        </div>
+      )}
+    </>
+  );
+  const cls = `group block rounded-[20px] p-5 ${base} ` + (featured ? "" : "act-rowhover");
+  return href ? (
+    <Link href={href} className={cls}>{inner}</Link>
+  ) : (
+    <div className={cls}>{inner}</div>
+  );
+}
+
+/* ---------------- DonutProgress (with legend) ---------------- */
+export type DonutSegment = { label: string; color: string };
+
+export function DonutProgress({
+  primaryPct,
+  primaryLabel,
+  segments,
+}: {
+  primaryPct: number;
+  primaryLabel: string;
+  segments: DonutSegment[];
+}) {
+  const r = 52;
+  const c = 2 * Math.PI * r;
+  const dash = (primaryPct / 100) * c;
+  return (
+    <div className="flex flex-col items-center">
+      <div className="relative h-[150px] w-[150px]">
+        <svg viewBox="0 0 128 128" className="h-full w-full -rotate-90">
+          <defs>
+            <linearGradient id="donut" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="var(--act-sky-bright)" />
+              <stop offset="100%" stopColor="var(--act-sky-deep)" />
+            </linearGradient>
+          </defs>
+          <circle cx="64" cy="64" r={r} fill="none" stroke="rgba(15,23,42,0.07)" strokeWidth="14" />
+          <circle
+            cx="64"
+            cy="64"
+            r={r}
+            fill="none"
+            stroke="url(#donut)"
+            strokeWidth="14"
+            strokeDasharray={`${dash} ${c}`}
+            strokeLinecap="round"
+          />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="act-display text-4xl text-[var(--act-ink)]">{primaryPct}%</span>
+          <span className="text-xs text-[var(--act-graphite)]">{primaryLabel}</span>
+        </div>
+      </div>
+      <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+        {segments.map((s) => (
+          <span key={s.label} className="flex items-center gap-1.5 text-xs text-[var(--act-charcoal)]">
+            <span className="h-2.5 w-2.5 rounded-full" style={{ background: s.color }} />
+            {s.label}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- HatchedBars ---------------- */
+export type BarDatum = { label: string; value: number; active?: boolean };
+
+export function HatchedBars({
+  data,
+  max,
+  height = 150,
+}: {
+  data: BarDatum[];
+  /** Nilai maksimum untuk skala; default = nilai terbesar. */
+  max?: number;
+  height?: number;
+}) {
+  const peak = max ?? Math.max(...data.map((d) => d.value), 1);
+  return (
+    <div className="flex items-stretch gap-3" style={{ height }}>
+      {data.map((d, i) => {
+        const h = Math.max(6, (d.value / peak) * 100);
+        const filled = d.value > 0;
+        return (
+          <div key={i} className="flex h-full flex-1 flex-col items-center gap-2">
+            <div className="relative flex w-full flex-1 items-end justify-center">
+              {d.active && (
+                <span
+                  className="absolute z-10 rounded-md bg-[var(--act-ink)] px-1.5 py-0.5 text-[10px] font-semibold text-white"
+                  style={{ bottom: `calc(${h}% + 4px)` }}
+                >
+                  {Math.round((d.value / peak) * 100)}%
+                </span>
+              )}
+              <div
+                className={
+                  "w-full max-w-[38px] rounded-full " +
+                  (d.active
+                    ? "bg-[linear-gradient(180deg,var(--act-sky-bright),var(--act-sky-deep))]"
+                    : filled
+                      ? "bg-[rgba(0,152,242,0.25)]"
+                      : "act-hatch")
+                }
+                style={{ height: `${h}%` }}
+              />
+            </div>
+            <span className="text-xs text-[var(--act-graphite)]">{d.label}</span>
+          </div>
+        );
+      })}
+    </div>
   );
 }

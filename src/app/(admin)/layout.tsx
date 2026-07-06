@@ -4,6 +4,10 @@ import { getMockSession } from "@/lib/mock/session";
 import { AdminSidebarNav } from "./_nav";
 import { AdminMobileNav } from "./_mobile-nav";
 import { signOutAdmin } from "./_actions";
+import { SidebarPromo } from "../(app)/_promo";
+
+const PANEL =
+  "rounded-[22px] bg-[var(--act-paper)] border border-[rgba(15,23,42,0.07)] shadow-[0_18px_40px_-24px_rgba(15,40,60,0.28)]";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getMockSession();
@@ -14,60 +18,61 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="app-canvas act-sans min-h-screen text-[var(--act-ink)]">
-      <div className="mx-auto flex max-w-[1500px]">
-        {/* Sidebar */}
-        <aside className="sticky top-0 hidden h-screen w-[252px] flex-none flex-col border-r border-[rgba(15,23,42,0.08)] bg-[var(--act-paper)] px-4 py-5 md:flex">
-          <Link href="/admin" className="flex items-center gap-2.5 px-2">
-            <Wordmark />
-            <span className="act-heading text-[18px]">
-              Craft<span className="text-[var(--act-graphite)]">Works</span>
-            </span>
-            <span className="act-chip act-chip-magenta ml-0.5 !text-[10px] !tracking-[0.1em] uppercase">
-              admin
-            </span>
-          </Link>
+    <div className="app-canvas act-sans flex h-screen w-full overflow-hidden text-[var(--act-ink)] lg:gap-3 lg:p-3">
+      {/* Desktop sidebar (floating) */}
+      <aside className={"hidden w-[252px] flex-none flex-col py-5 md:flex " + PANEL + " px-4"}>
+        <Link href="/admin" className="flex items-center gap-2.5 px-2">
+          <Wordmark />
+          <span className="act-heading text-[18px]">
+            Craft<span className="text-[var(--act-graphite)]">Works</span>
+          </span>
+          <span className="act-chip act-chip-magenta ml-0.5 !text-[10px] !tracking-[0.1em] uppercase">
+            admin
+          </span>
+        </Link>
 
-          <div className="mt-7 px-2">
-            <span className="act-kicker">Panel</span>
-          </div>
-          <div className="mt-3 flex-1">
-            <AdminSidebarNav />
-          </div>
-
-          <div className="border-t border-[rgba(15,23,42,0.08)] pt-4">
-            <div className="flex items-center gap-2.5 px-2">
-              <Avatar name={session.user.name} />
-              <div className="min-w-0">
-                <div className="truncate text-sm font-semibold text-[var(--act-ink)]">
-                  {session.user.name}
-                </div>
-                <div className="truncate text-xs text-[var(--act-graphite)]">
-                  {session.user.email}
-                </div>
-              </div>
-            </div>
-            <form action={signOutAdmin} className="mt-3 px-2">
-              <button type="submit" className="act-pill-ghost !w-full justify-center !text-sm">
-                Keluar
-              </button>
-            </form>
-          </div>
-        </aside>
-
-        {/* Content */}
-        <div className="min-w-0 flex-1">
-          {/* Mobile topbar */}
-          <header className="act-glass sticky top-0 z-30 flex items-center gap-3 px-5 py-3 md:hidden">
-            <AdminMobileNav
-              user={{ name: session.user.name, email: session.user.email }}
-            />
-            <Wordmark />
-            <span className="act-heading text-[17px]">CraftWorks</span>
-            <span className="act-chip act-chip-magenta !text-[10px] uppercase">admin</span>
-          </header>
-          <main className="px-6 py-8 md:px-10">{children}</main>
+        <div className="no-scrollbar mt-6 flex-1 overflow-y-auto">
+          <AdminSidebarNav />
         </div>
+
+        <div className="mt-4">
+          <SidebarPromo />
+        </div>
+        <div className="mt-4 flex items-center gap-2.5 border-t border-[rgba(15,23,42,0.08)] pt-4 px-1">
+          <Avatar name={session.user.name} />
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-sm font-semibold text-[var(--act-ink)]">
+              {session.user.name}
+            </div>
+            <div className="truncate text-xs text-[var(--act-graphite)]">
+              {session.user.email}
+            </div>
+          </div>
+          <form action={signOutAdmin}>
+            <button
+              type="submit"
+              title="Keluar"
+              className="grid h-8 w-8 place-items-center rounded-xl text-[var(--act-graphite)] transition hover:bg-[rgba(15,15,15,0.05)]"
+            >
+              <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3" />
+                <path d="M10 17l-5-5 5-5M5 12h11" />
+              </svg>
+            </button>
+          </form>
+        </div>
+      </aside>
+
+      {/* Content */}
+      <div className="no-scrollbar min-w-0 flex-1 overflow-y-auto">
+        {/* Mobile topbar */}
+        <header className="act-glass sticky top-0 z-30 flex items-center gap-3 px-5 py-3 md:hidden">
+          <AdminMobileNav user={{ name: session.user.name, email: session.user.email }} />
+          <Wordmark />
+          <span className="act-heading text-[17px]">CraftWorks</span>
+          <span className="act-chip act-chip-magenta !text-[10px] uppercase">admin</span>
+        </header>
+        <main className="px-6 py-8 md:px-8">{children}</main>
       </div>
     </div>
   );

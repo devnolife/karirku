@@ -2,25 +2,27 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { AppSidebarNav, type SideItem } from "./_sidebar";
+import { AppSidebarNav, type NavGroup } from "./_sidebar";
+import { SidebarPromo } from "./_promo";
 
 const PANEL =
   "rounded-[22px] bg-[var(--act-paper)] border border-[rgba(15,23,42,0.07)] shadow-[0_18px_40px_-24px_rgba(15,40,60,0.28)]";
 
 export function AppShell({
   roleLabel,
-  items,
+  groups,
   user,
   signOut,
   children,
 }: {
   roleLabel: string;
-  items: SideItem[];
+  groups: NavGroup[];
   user: { name: string; email: string };
   signOut: () => Promise<void>;
   children: React.ReactNode;
 }) {
   const [collapsed, setCollapsed] = useState(false);
+  const flatItems = groups.flatMap((g) => g.items);
 
   return (
     <div className="app-canvas act-sans flex h-screen w-full overflow-hidden text-[var(--act-ink)] lg:gap-3 lg:p-3">
@@ -46,18 +48,17 @@ export function AppShell({
           )}
         </Link>
 
-        {!collapsed && (
-          <div className="mt-7 px-2">
-            <span className="act-kicker">{roleLabel}</span>
-          </div>
-        )}
-
-        <div className="no-scrollbar mt-3 flex-1 overflow-y-auto">
-          <AppSidebarNav items={items} collapsed={collapsed} />
+        <div className="no-scrollbar mt-6 flex-1 overflow-y-auto">
+          <AppSidebarNav groups={groups} collapsed={collapsed} />
         </div>
 
-        {/* user + sign out */}
-        <div className="border-t border-[rgba(15,23,42,0.08)] pt-4">
+        {/* promo + user + sign out */}
+        {!collapsed && (
+          <div className="mt-4">
+            <SidebarPromo />
+          </div>
+        )}
+        <div className="mt-4 border-t border-[rgba(15,23,42,0.08)] pt-4">
           {collapsed ? (
             <div className="flex flex-col items-center gap-2">
               <Avatar name={user.name} />
@@ -72,25 +73,27 @@ export function AppShell({
               </form>
             </div>
           ) : (
-            <>
-              <div className="flex items-center gap-2.5 px-2">
-                <Avatar name={user.name} />
-                <div className="min-w-0">
-                  <div className="truncate text-sm font-semibold text-[var(--act-ink)]">{user.name}</div>
-                  <div className="truncate text-xs text-[var(--act-graphite)]">{user.email}</div>
-                </div>
+            <div className="flex items-center gap-2.5 px-1">
+              <Avatar name={user.name} />
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-sm font-semibold text-[var(--act-ink)]">{user.name}</div>
+                <div className="truncate text-xs text-[var(--act-graphite)]">{user.email}</div>
               </div>
-              <form action={signOut} className="mt-3 px-2">
-                <button type="submit" className="act-pill-ghost !w-full justify-center !text-sm">
-                  Keluar
+              <form action={signOut}>
+                <button
+                  type="submit"
+                  title="Keluar"
+                  className="grid h-8 w-8 place-items-center rounded-xl text-[var(--act-graphite)] transition hover:bg-[rgba(15,15,15,0.05)]"
+                >
+                  <Ico.Logout />
                 </button>
               </form>
-            </>
+            </div>
           )}
         </div>
       </aside>
 
-      {/* ---------------- Content scroll column (header scrolls with it) ---------------- */}
+      {/* ---------------- Content scroll column ---------------- */}
       <div className="no-scrollbar min-w-0 flex-1 overflow-y-auto">
         {/* Mobile top bar */}
         <header className="act-glass sticky top-0 z-30 flex items-center gap-3 px-5 py-3 lg:hidden">
@@ -103,18 +106,20 @@ export function AppShell({
             </button>
           </form>
         </header>
-        <div className="border-b border-[rgba(15,23,42,0.08)] lg:hidden">
-          <div className="flex gap-1 overflow-x-auto px-4 py-2">
-            <AppSidebarNav items={items} />
+        {/* Mobile search + tabs */}
+        <div className="border-b border-[rgba(15,23,42,0.08)] px-4 py-2.5 lg:hidden">
+          <SearchPill className="w-full" />
+          <div className="mt-2 flex gap-1 overflow-x-auto">
+            <MobileTabs items={flatItems} />
           </div>
         </div>
 
-        {/* Desktop floating header — slim, scrolls away */}
+        {/* Desktop persistent topbar */}
         <div className="flex flex-col gap-3">
           <header
             className={
-              "hidden flex-none items-center gap-3 px-4 py-2.5 backdrop-blur-sm lg:flex " +
-              "rounded-[18px] border border-[rgba(15,23,42,0.06)] bg-[rgba(255,255,255,0.85)] " +
+              "sticky top-3 z-20 hidden flex-none items-center gap-3 px-4 py-2.5 backdrop-blur-md lg:flex " +
+              "rounded-[18px] border border-[rgba(15,23,42,0.06)] bg-[rgba(255,255,255,0.9)] " +
               "shadow-[0_10px_28px_-22px_rgba(15,40,60,0.3)]"
             }
           >
@@ -126,18 +131,23 @@ export function AppShell({
               <PanelIcon collapsed={collapsed} />
             </button>
 
-            <div className="hidden items-center gap-2 rounded-full bg-[var(--act-mist)] px-3.5 py-1.5 text-[12.5px] text-[var(--act-graphite)] md:flex md:w-[260px]">
-              <Ico.Search /> Cari…
-            </div>
+            <SearchPill className="w-[320px]" showHint />
 
             <div className="ml-auto flex items-center gap-1.5">
-              <button className="grid h-8 w-8 place-items-center rounded-full text-[var(--act-graphite)] transition hover:bg-[rgba(15,15,15,0.05)]">
+              <button className="grid h-9 w-9 place-items-center rounded-full text-[var(--act-graphite)] transition hover:bg-[rgba(15,15,15,0.05)]">
+                <Ico.Mail />
+                <span className="sr-only">Pesan</span>
+              </button>
+              <button className="grid h-9 w-9 place-items-center rounded-full text-[var(--act-graphite)] transition hover:bg-[rgba(15,15,15,0.05)]">
                 <Ico.Bell />
                 <span className="sr-only">Notifikasi</span>
               </button>
-              <div className="ml-1 flex items-center gap-2 rounded-full bg-[var(--act-mist)] py-1 pl-1 pr-3">
-                <Avatar name={user.name} sm />
-                <span className="hidden text-[13px] font-semibold sm:block">{user.name.split(" ")[0]}</span>
+              <div className="ml-1 flex items-center gap-2.5 border-l border-[rgba(15,23,42,0.08)] pl-3">
+                <Avatar name={user.name} />
+                <div className="hidden min-w-0 leading-tight sm:block">
+                  <div className="truncate text-[13px] font-semibold text-[var(--act-ink)]">{user.name}</div>
+                  <div className="truncate text-[11px] text-[var(--act-graphite)]">{user.email}</div>
+                </div>
               </div>
             </div>
           </header>
@@ -150,6 +160,42 @@ export function AppShell({
 }
 
 /* ------------------------------ bits ------------------------------ */
+
+function SearchPill({ className = "", showHint }: { className?: string; showHint?: boolean }) {
+  return (
+    <div
+      className={
+        "flex items-center gap-2 rounded-full bg-[var(--act-mist)] px-3.5 py-2 text-[12.5px] text-[var(--act-graphite)] " +
+        className
+      }
+    >
+      <Ico.Search />
+      <span className="flex-1">Cari tugas, lowongan, skill…</span>
+      {showHint && (
+        <span className="act-chip act-chip-mute !px-1.5 !py-0.5 !text-[10px] font-semibold">⌘F</span>
+      )}
+    </div>
+  );
+}
+
+function MobileTabs({ items }: { items: { href: string; label: string; icon: string }[] }) {
+  return (
+    <>
+      {items.map((item) => (
+        <Link
+          key={item.href}
+          href={item.href}
+          className="flex flex-none items-center gap-1.5 rounded-full px-3 py-1.5 text-[12.5px] font-medium text-[var(--act-charcoal)] hover:bg-[rgba(15,15,15,0.05)]"
+        >
+          <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d={item.icon} />
+          </svg>
+          {item.label}
+        </Link>
+      ))}
+    </>
+  );
+}
 
 function Avatar({ name, sm }: { name: string; sm?: boolean }) {
   const initials = name
@@ -202,6 +248,12 @@ const Ico = {
     <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M18 16V11a6 6 0 1 0-12 0v5l-1.5 2h15z" />
       <path d="M10 20a2 2 0 0 0 4 0" />
+    </svg>
+  ),
+  Mail: () => (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="5" width="18" height="14" rx="2.5" />
+      <path d="m3.5 7 8.5 6 8.5-6" />
     </svg>
   ),
   Logout: () => (

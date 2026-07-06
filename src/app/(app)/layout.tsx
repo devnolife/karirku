@@ -1,7 +1,7 @@
 import { getMockSession, signOutDemo } from "@/lib/mock/session";
 import { ROLE_LABEL, type UserRole } from "@/lib/mock/data";
 import { redirect } from "next/navigation";
-import { type SideItem } from "./_sidebar";
+import { type NavGroup } from "./_sidebar";
 import { AppShell } from "./_shell";
 
 const IC = {
@@ -17,36 +17,69 @@ const IC = {
   candidates: "M9 11a4 4 0 100-8 4 4 0 000 8zm-7 9a7 7 0 0114 0M17 11a4 4 0 000-8",
 };
 
-const NAV_BY_ROLE: Record<UserRole, SideItem[]> = {
+const NAV_BY_ROLE: Record<UserRole, NavGroup[]> = {
   jobseeker: [
-    { href: "/dashboard", label: "Overview", icon: IC.overview },
-    { href: "/skills", label: "Skill-gap", icon: IC.skills },
-    { href: "/roadmap", label: "Roadmap", icon: IC.roadmap },
-    { href: "/jobs", label: "Lowongan", icon: IC.jobs },
-    { href: "/learn", label: "Belajar", icon: IC.learn },
-    { href: "/onboarding", label: "Goal", icon: IC.goal },
-    { href: "/guides", label: "Panduan", icon: IC.guides },
+    {
+      label: "Menu",
+      items: [
+        { href: "/dashboard", label: "Overview", icon: IC.overview },
+        { href: "/skills", label: "Skill-gap", icon: IC.skills },
+        { href: "/roadmap", label: "Roadmap", icon: IC.roadmap },
+        { href: "/jobs", label: "Lowongan", icon: IC.jobs },
+        { href: "/learn", label: "Belajar", icon: IC.learn },
+      ],
+    },
+    {
+      label: "General",
+      items: [
+        { href: "/onboarding", label: "Goal", icon: IC.goal },
+        { href: "/guides", label: "Panduan", icon: IC.guides },
+      ],
+    },
   ],
   freelancer: [
-    { href: "/dashboard", label: "Overview", icon: IC.overview },
-    { href: "/projects", label: "Projects", icon: IC.projects },
-    { href: "/proposals", label: "Proposal", icon: IC.proposals },
-    { href: "/onboarding", label: "Goal", icon: IC.goal },
-    { href: "/guides", label: "Panduan", icon: IC.guides },
+    {
+      label: "Menu",
+      items: [
+        { href: "/dashboard", label: "Overview", icon: IC.overview },
+        { href: "/projects", label: "Projects", icon: IC.projects },
+        { href: "/proposals", label: "Proposal", icon: IC.proposals },
+      ],
+    },
+    {
+      label: "General",
+      items: [
+        { href: "/onboarding", label: "Goal", icon: IC.goal },
+        { href: "/guides", label: "Panduan", icon: IC.guides },
+      ],
+    },
   ],
   company: [
-    { href: "/dashboard", label: "Overview", icon: IC.overview },
-    { href: "/company/jobs", label: "Lowongan", icon: IC.jobs },
-    { href: "/company/candidates", label: "Kandidat", icon: IC.candidates },
-    { href: "/guides", label: "Panduan", icon: IC.guides },
+    {
+      label: "Menu",
+      items: [
+        { href: "/dashboard", label: "Overview", icon: IC.overview },
+        { href: "/company/jobs", label: "Lowongan", icon: IC.jobs },
+        { href: "/company/candidates", label: "Kandidat", icon: IC.candidates },
+      ],
+    },
+    {
+      label: "General",
+      items: [{ href: "/guides", label: "Panduan", icon: IC.guides }],
+    },
   ],
-  admin: [{ href: "/dashboard", label: "Overview", icon: IC.overview }],
+  admin: [
+    {
+      label: "Menu",
+      items: [{ href: "/dashboard", label: "Overview", icon: IC.overview }],
+    },
+  ],
 };
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await getMockSession();
   const role = session.user.role;
-  const items = NAV_BY_ROLE[role];
+  const groups = NAV_BY_ROLE[role];
 
   async function signOut() {
     "use server";
@@ -57,7 +90,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <AppShell
       roleLabel={ROLE_LABEL[role]}
-      items={items}
+      groups={groups}
       user={{ name: session.user.name, email: session.user.email }}
       signOut={signOut}
     >
