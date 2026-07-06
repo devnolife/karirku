@@ -489,6 +489,57 @@ export function DonutProgress({
   );
 }
 
+/* ---------------- GaugeProgress (semicircle) ---------------- */
+export function GaugeProgress({
+  pct,
+  label,
+  segments,
+}: {
+  pct: number;
+  label: string;
+  segments: DonutSegment[];
+}) {
+  const R = 84;
+  const len = Math.PI * R;
+  const dash = (pct / 100) * len;
+  const path = "M16,104 A84,84 0 0 1 184,104";
+  return (
+    <div className="flex flex-col items-center">
+      <div className="relative w-[220px]">
+        <svg viewBox="0 0 200 118" className="w-full">
+          <defs>
+            <linearGradient id="gauge" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="var(--act-sky-bright)" />
+              <stop offset="100%" stopColor="var(--act-sky-deep)" />
+            </linearGradient>
+          </defs>
+          <path d={path} fill="none" stroke="rgba(15,23,42,0.07)" strokeWidth="18" strokeLinecap="round" />
+          <path
+            d={path}
+            fill="none"
+            stroke="url(#gauge)"
+            strokeWidth="18"
+            strokeLinecap="round"
+            strokeDasharray={`${dash} ${len}`}
+          />
+        </svg>
+        <div className="absolute inset-x-0 bottom-1 flex flex-col items-center">
+          <span className="act-display text-4xl text-[var(--act-ink)]">{pct}%</span>
+          <span className="text-xs text-[var(--act-graphite)]">{label}</span>
+        </div>
+      </div>
+      <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+        {segments.map((s) => (
+          <span key={s.label} className="flex items-center gap-1.5 text-xs text-[var(--act-charcoal)]">
+            <span className="h-2.5 w-2.5 rounded-full" style={{ background: s.color }} />
+            {s.label}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ---------------- HatchedBars ---------------- */
 export type BarDatum = { label: string; value: number; active?: boolean };
 
