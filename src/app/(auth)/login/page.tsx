@@ -5,7 +5,12 @@ import Link from "next/link";
 
 async function signInAction(role: UserRole) {
   "use server";
-  await signInDemo(role);
+  try {
+    await signInDemo(role);
+  } catch {
+    // Gagal set cookie/session — kembali dengan error yang bisa dijelaskan.
+    redirect("/login?error=signin");
+  }
   redirect(homeForRole(role));
 }
 
@@ -21,7 +26,12 @@ const ROLE_OPTIONS: {
   { role: "admin", title: "Admin", desc: "Kelola users, jobs, courses, & pipeline.", email: "admin@craft.works" },
 ];
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
   return (
     <main className="app-canvas act-sans relative flex min-h-screen flex-1 items-stretch text-[var(--act-ink)]">
       {/* Left — brand context */}
@@ -62,24 +72,51 @@ export default function LoginPage() {
       {/* Right — form */}
       <section className="flex flex-1 items-center justify-center px-6 py-16">
         <div className="act-rise act-card-2 act-rail act-rail-rainbow w-full max-w-md p-8 pt-9 md:p-10">
-          <Link
-            href="/"
-            className="mb-9 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--act-graphite)] transition-colors hover:text-[var(--act-ink)]"
-          >
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-            Kembali
-          </Link>
+          <div className="mb-9 flex items-center justify-between">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--act-graphite)] transition-colors hover:text-[var(--act-ink)]"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+              Kembali
+            </Link>
+            {/* Wordmark hanya tampil di mobile — desktop sudah punya panel brand kiri. */}
+            <Link href="/" className="flex items-center gap-2 md:hidden">
+              <Wordmark />
+              <span className="act-heading text-[15px]">
+                Craft<span className="text-[var(--act-graphite)]">Works</span>
+              </span>
+            </Link>
+          </div>
 
-          <span className="act-eyebrow block">Sign in</span>
-          <h1 className="act-display mt-3 text-[44px] leading-[1.04]">
+          <h1 className="act-display text-[36px] leading-[1.06] md:text-[44px] md:leading-[1.04]">
             Masuk ke <span className="act-sky-text">CraftWorks</span>
           </h1>
           <p className="mt-4 text-[15px] leading-relaxed text-[var(--act-charcoal)]">
             Versi demo — jalan tanpa database &amp; OAuth. Pilih role untuk
             explore alur &amp; dashboard masing-masing.
           </p>
+
+          {error === "signin" && (
+            <div
+              role="alert"
+              className="mt-6 flex items-start gap-2.5 rounded-xl border border-[rgba(242,0,202,0.22)] bg-[rgba(242,0,202,0.06)] px-4 py-3"
+            >
+              <svg viewBox="0 0 24 24" className="mt-0.5 h-4 w-4 flex-none text-[var(--act-magenta)]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 8v4M12 16h.01" />
+              </svg>
+              <div>
+                <p className="text-sm font-semibold text-[var(--act-ink)]">Gagal masuk</p>
+                <p className="mt-0.5 text-xs leading-relaxed text-[var(--act-graphite)]">
+                  Sesi demo tidak bisa dibuat — kemungkinan cookie diblokir browser.
+                  Izinkan cookie untuk situs ini lalu coba lagi.
+                </p>
+              </div>
+            </div>
+          )}
 
           <form className="mt-8 space-y-2.5">
             {ROLE_OPTIONS.map((o) => (
