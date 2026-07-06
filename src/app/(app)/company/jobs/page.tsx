@@ -1,4 +1,5 @@
 import { MOCK_COMPANY_JOBS } from "@/lib/mock/data";
+import { EmptyState } from "../../_dash/parts";
 
 export default function CompanyJobsPage() {
   const jobs = MOCK_COMPANY_JOBS;
@@ -8,8 +9,7 @@ export default function CompanyJobsPage() {
     <div className="act-rise mx-auto max-w-[1400px] space-y-8 px-6 py-12">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <span className="act-eyebrow">Company · Lowongan</span>
-          <h1 className="act-display mt-3 text-4xl leading-[1.05] md:text-5xl">
+          <h1 className="act-display text-4xl leading-[1.05] md:text-5xl">
             Lowongan <span className="act-sky-text">saya.</span>
           </h1>
           <p className="mt-3 max-w-xl text-sm text-[var(--act-graphite)]">
@@ -38,7 +38,18 @@ export default function CompanyJobsPage() {
           <span className="act-kicker !text-[11px] col-span-1 text-right">Aksi</span>
         </div>
         <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
-          {jobs.map((j) => (
+          {jobs.length === 0 ? (
+            <li className="p-4">
+              <EmptyState
+                compact
+                glyph="jobs"
+                title="Belum ada lowongan terpasang"
+                desc="Posting lowongan pertamamu — AI bantu susun deskripsi & syarat skill yang jelas."
+                action={<button className="act-pill !text-sm">Posting lowongan</button>}
+              />
+            </li>
+          ) : (
+          jobs.map((j) => (
             <li key={j.id} className="act-rowhover grid grid-cols-12 items-center gap-3 px-5 py-4">
               <div className="col-span-12 md:col-span-5">
                 <div className="text-sm font-semibold text-[var(--act-ink)]">{j.title}</div>
@@ -57,7 +68,8 @@ export default function CompanyJobsPage() {
                 <button className="text-xs font-semibold text-[var(--act-blue)] hover:underline">Edit</button>
               </div>
             </li>
-          ))}
+          ))
+          )}
         </ul>
       </div>
     </div>

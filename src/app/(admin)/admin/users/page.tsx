@@ -10,9 +10,8 @@ export default async function AdminUsersPage() {
   const active = users.filter((u) => u.status === "active").length;
 
   return (
-    <div className="act-rise space-y-8">
+    <div className="act-rise space-y-6">
       <PageHead
-        kicker="Admin · Users"
         title="Kelola pengguna"
         desc="Daftar akun, role, & status. Data ilustratif (mode demo)."
         action={

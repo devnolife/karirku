@@ -29,8 +29,7 @@ export default async function OnboardingPage() {
   return (
     <div className="mx-auto grid max-w-[1400px] grid-cols-12 gap-8 px-6 py-16">
       <aside className="act-rise col-span-12 md:col-span-4 md:sticky md:top-24 md:self-start">
-        <span className="act-eyebrow">Onboarding · atur goal</span>
-        <h1 className="act-display mt-4 text-5xl leading-[1.04] md:text-6xl">
+        <h1 className="act-display text-5xl leading-[1.04] md:text-6xl">
           Set career <span className="act-sky-text">goal.</span>
         </h1>
         <p className="mt-5 max-w-md text-[15px] leading-relaxed text-[var(--act-charcoal)]">

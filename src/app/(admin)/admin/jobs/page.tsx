@@ -10,9 +10,8 @@ export default async function AdminJobsPage() {
   const activeCount = jobs.filter((j) => j.status === "active").length;
 
   return (
-    <div className="act-rise space-y-8">
+    <div className="act-rise space-y-6">
       <PageHead
-        kicker="Admin · Jobs"
         title="Kelola lowongan"
         desc="Lowongan hasil scraping & manual. Data ilustratif (mode demo)."
         action={

@@ -26,7 +26,6 @@ export default function AdminOverviewPage() {
   return (
     <div className="act-rise space-y-6">
       <PageHead
-        kicker="Admin · Overview"
         title="Ringkasan platform"
         desc="Metrik utama CraftWorks — data ilustratif (mode demo)."
       />

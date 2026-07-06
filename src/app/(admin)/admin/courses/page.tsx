@@ -6,9 +6,8 @@ export default function AdminCoursesPage() {
   const prakerja = courses.filter((c) => c.isPrakerja).length;
 
   return (
-    <div className="act-rise space-y-8">
+    <div className="act-rise space-y-6">
       <PageHead
-        kicker="Admin · Courses"
         title="Kelola course"
         desc="Katalog course multi-provider. Data ilustratif (mode demo)."
         action={

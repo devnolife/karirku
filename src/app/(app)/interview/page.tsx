@@ -15,8 +15,7 @@ export default function InterviewPage() {
       </Link>
 
       <header className="mt-6">
-        <span className="act-eyebrow">Latihan interview</span>
-        <h1 className="act-display mt-3 text-4xl leading-[1.05] md:text-5xl">
+        <h1 className="act-display text-4xl leading-[1.05] md:text-5xl">
           Latih jawabanmu <span className="act-sky-text">dulu.</span>
         </h1>
         <p className="mt-4 text-[15px] leading-relaxed text-[var(--act-charcoal)]">

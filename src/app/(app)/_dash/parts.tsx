@@ -8,12 +8,10 @@ import type {
 
 /* ---------------- Page header ---------------- */
 export function PageHeader({
-  kicker,
   title,
   meta,
   action,
 }: {
-  kicker: string;
   title: React.ReactNode;
   meta?: string;
   action?: React.ReactNode;
@@ -21,8 +19,7 @@ export function PageHeader({
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <span className="act-eyebrow">{kicker}</span>
-        <h1 className="act-display mt-3 text-3xl leading-[1.05] md:text-4xl">{title}</h1>
+        <h1 className="act-display text-3xl leading-[1.05] md:text-4xl">{title}</h1>
         {meta && <p className="mt-2 text-sm text-[var(--act-graphite)]">{meta}</p>}
       </div>
       {action}

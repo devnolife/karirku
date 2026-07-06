@@ -1,10 +1,8 @@
 export function PageHead({
-  kicker,
   title,
   desc,
   action,
 }: {
-  kicker: string;
   title: string;
   desc?: string;
   action?: React.ReactNode;
@@ -12,8 +10,7 @@ export function PageHead({
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <span className="act-eyebrow">{kicker}</span>
-        <h1 className="act-display mt-3 text-3xl leading-[1.05] md:text-4xl">{title}</h1>
+        <h1 className="act-display text-3xl leading-[1.05] md:text-4xl">{title}</h1>
         {desc && <p className="mt-2 max-w-xl text-sm text-[var(--act-graphite)]">{desc}</p>}
       </div>
       {action}

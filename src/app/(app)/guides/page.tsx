@@ -16,8 +16,7 @@ export default async function GuidesPage() {
   return (
     <div className="act-rise mx-auto max-w-[1400px] space-y-8 px-6 py-12">
       <div className="max-w-2xl">
-        <span className="act-eyebrow">Panduan & belajar</span>
-        <h1 className="act-display mt-3 text-4xl leading-[1.05] md:text-5xl">
+        <h1 className="act-display text-4xl leading-[1.05] md:text-5xl">
           Dituntun dari{" "}
           <span className="act-sky-text">daftar sampai diterima.</span>
         </h1>

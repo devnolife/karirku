@@ -1,4 +1,5 @@
 import { MOCK_CANDIDATES, CANDIDATE_STAGES } from "@/lib/mock/data";
+import { EmptyState, StatCard } from "../../_dash/parts";
 
 export default function CompanyCandidatesPage() {
   const candidates = [...MOCK_CANDIDATES].sort((a, b) => b.matchPct - a.matchPct);
@@ -7,8 +8,7 @@ export default function CompanyCandidatesPage() {
     <div className="act-rise mx-auto max-w-[1400px] space-y-8 px-6 py-12">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <span className="act-eyebrow">Company · Kandidat</span>
-          <h1 className="act-display mt-3 text-4xl leading-[1.05] md:text-5xl">
+          <h1 className="act-display text-4xl leading-[1.05] md:text-5xl">
             Kandidat <span className="act-sky-text">terscreening.</span>
           </h1>
           <p className="mt-3 max-w-xl text-sm text-[var(--act-graphite)]">
@@ -19,15 +19,10 @@ export default function CompanyCandidatesPage() {
       </div>
 
       {/* Stage summary */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {CANDIDATE_STAGES.map((st) => {
           const n = MOCK_CANDIDATES.filter((k) => k.stage === st.key).length;
-          return (
-            <div key={st.key} className="act-card-2 p-4">
-              <span className="act-kicker">{st.label}</span>
-              <div className="act-display mt-1 text-2xl text-[var(--act-ink)]">{n}</div>
-            </div>
-          );
+          return <StatCard key={st.key} label={st.label} value={n} />;
         })}
       </div>
 
@@ -40,7 +35,17 @@ export default function CompanyCandidatesPage() {
           <span className="act-kicker !text-[11px] col-span-2 text-right">Aksi</span>
         </div>
         <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
-          {candidates.map((k) => {
+          {candidates.length === 0 ? (
+            <li className="p-4">
+              <EmptyState
+                compact
+                glyph="candidates"
+                title="Belum ada pelamar masuk"
+                desc="Begitu lowonganmu tayang dan dilamar, AI menyaring & memberi skor kandidat di sini."
+              />
+            </li>
+          ) : (
+          candidates.map((k) => {
             const matchClass = k.matchPct >= 85 ? "text-[var(--act-magenta)]" : k.matchPct >= 75 ? "text-[var(--act-iris)]" : "text-[var(--act-graphite)]";
             const stageCls = { applied: "act-chip-mute", screening: "act-chip-blue", interview: "act-chip-iris", offer: "act-chip-green" }[k.stage];
             const stageLabel = CANDIDATE_STAGES.find((s) => s.key === k.stage)?.label ?? k.stage;
@@ -73,7 +78,8 @@ export default function CompanyCandidatesPage() {
                 </div>
               </li>
             );
-          })}
+          })
+          )}
         </ul>
       </div>
     </div>

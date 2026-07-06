@@ -4,7 +4,7 @@ import {
   MOCK_FREELANCER_ACTIVITY,
   type Proposal,
 } from "@/lib/mock/data";
-import { PageHeader } from "../_dash/parts";
+import { PageHeader, EmptyState } from "../_dash/parts";
 import { GuideTeaser } from "../_GuideTeaser";
 
 export default function ProposalsPage() {
@@ -12,7 +12,6 @@ export default function ProposalsPage() {
   return (
     <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-8 md:px-10">
       <PageHeader
-        kicker="Apply"
         title={<>Proposal <span className="text-[var(--act-iris)]">& portofolio.</span></>}
         meta={`${won} won · ${MOCK_PROPOSALS.length} proposal terkirim`}
         action={
@@ -32,16 +31,27 @@ export default function ProposalsPage() {
             <span className="act-chip act-chip-mute">{MOCK_PROPOSALS.length}</span>
           </div>
           <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
-            {MOCK_PROPOSALS.map((pr) => (
-              <li key={pr.id} className="act-rowhover grid grid-cols-12 items-center gap-3 px-5 py-4">
-                <div className="col-span-7 min-w-0">
-                  <h4 className="truncate text-sm font-semibold text-[var(--act-ink)]">{pr.project}</h4>
-                  <p className="text-xs text-[var(--act-graphite)]">{pr.client} · {pr.sentAt}</p>
-                </div>
-                <div className="col-span-2 text-sm font-semibold text-[var(--act-ink)]">{pr.amount}</div>
-                <div className="col-span-3 text-right"><ProposalChip status={pr.status} /></div>
+            {MOCK_PROPOSALS.length === 0 ? (
+              <li className="p-4">
+                <EmptyState
+                  compact
+                  glyph="proposals"
+                  title="Belum ada proposal terkirim"
+                  desc="Pilih project yang match, lalu generate draf proposal pertamamu dengan AI."
+                />
               </li>
-            ))}
+            ) : (
+              MOCK_PROPOSALS.map((pr) => (
+                <li key={pr.id} className="act-rowhover grid grid-cols-12 items-center gap-3 px-5 py-4">
+                  <div className="col-span-7 min-w-0">
+                    <h4 className="truncate text-sm font-semibold text-[var(--act-ink)]">{pr.project}</h4>
+                    <p className="text-xs text-[var(--act-graphite)]">{pr.client} · {pr.sentAt}</p>
+                  </div>
+                  <div className="col-span-2 text-sm font-semibold text-[var(--act-ink)]">{pr.amount}</div>
+                  <div className="col-span-3 text-right"><ProposalChip status={pr.status} /></div>
+                </li>
+              ))
+            )}
           </ul>
         </div>
         <div className="act-card-2 overflow-hidden lg:col-span-2">

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { MOCK_PROJECTS } from "@/lib/mock/data";
+import { EmptyState } from "../_dash/parts";
 
 export default function ProjectsPage() {
   const projects = MOCK_PROJECTS;
@@ -7,8 +8,7 @@ export default function ProjectsPage() {
     <div className="act-rise mx-auto max-w-[1400px] space-y-8 px-6 py-12">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <span className="act-eyebrow">Freelancer · Projects</span>
-          <h1 className="act-display mt-3 text-4xl leading-[1.05] md:text-5xl">
+          <h1 className="act-display text-4xl leading-[1.05] md:text-5xl">
             Project <span className="act-sky-text">match.</span>
           </h1>
           <p className="mt-3 max-w-xl text-sm text-[var(--act-graphite)]">
@@ -18,6 +18,18 @@ export default function ProjectsPage() {
         <span className="act-chip act-chip-blue">{projects.length} project baru</span>
       </div>
 
+      {projects.length === 0 ? (
+        <EmptyState
+          glyph="projects"
+          title="Belum ada project yang match"
+          desc="Lengkapi skill & rate kamu supaya scanner bisa menjodohkan project freelance yang sepadan."
+          action={
+            <Link href="/onboarding" className="act-pill !text-sm">
+              Lengkapi profil
+            </Link>
+          }
+        />
+      ) : (
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         {projects.map((p) => {
           const matchClass = p.matchPct >= 85 ? "text-[var(--act-magenta)]" : p.matchPct >= 75 ? "text-[var(--act-iris)]" : "text-[var(--act-graphite)]";
@@ -58,6 +70,7 @@ export default function ProjectsPage() {
           );
         })}
       </div>
+      )}
 
       <div className="flex justify-center pt-2">
         <Link href="/dashboard" className="act-pill-ghost !text-sm">Kembali ke dashboard</Link>

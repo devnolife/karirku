@@ -1,14 +1,14 @@
 import { MOCK_SCRAPER_RUNS, MOCK_QUEUE_STATS } from "@/lib/mock/data";
 import { PageHead, StatusDot } from "../../_ui";
+import { StatCard } from "../../../(app)/_dash/parts";
 
 export default function AdminScraperPage() {
   const runs = MOCK_SCRAPER_RUNS;
   const q = MOCK_QUEUE_STATS;
 
   return (
-    <div className="act-rise space-y-8">
+    <div className="act-rise space-y-6">
       <PageHead
-        kicker="Admin · Scraper"
         title="Monitoring pipeline"
         desc="Status scraping & enrichment job/course. Data ilustratif (mode demo)."
         action={<span className="act-chip act-chip-blue">{q.active} aktif</span>}
@@ -16,10 +16,10 @@ export default function AdminScraperPage() {
 
       {/* Queue stats */}
       <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Q label="Menunggu" value={q.waiting} tone="amber" />
-        <Q label="Berjalan" value={q.active} tone="blue" />
-        <Q label="Selesai" value={q.completed} tone="green" />
-        <Q label="Gagal" value={q.failed} tone="magenta" />
+        <StatCard label="Berjalan" value={q.active} delta="antrean aktif" featured />
+        <StatCard label="Menunggu" value={q.waiting} delta="dalam antrean" />
+        <StatCard label="Selesai" value={q.completed} delta="run sukses" />
+        <StatCard label="Gagal" value={q.failed} delta="perlu ditinjau" />
       </section>
 
       {/* Runs table */}
@@ -57,21 +57,6 @@ export default function AdminScraperPage() {
           ))}
         </ul>
       </div>
-    </div>
-  );
-}
-
-function Q({ label, value, tone }: { label: string; value: number; tone: "amber" | "blue" | "green" | "magenta" }) {
-  const valueColor = {
-    amber: "text-[#b45309]",
-    blue: "text-[var(--act-blue)]",
-    green: "text-[#059669]",
-    magenta: "text-[var(--act-magenta)]",
-  }[tone];
-  return (
-    <div className="act-card-2 p-5">
-      <span className="act-kicker">{label}</span>
-      <div className={`act-display mt-2 text-3xl ${valueColor}`}>{value.toLocaleString("id-ID")}</div>
     </div>
   );
 }
