@@ -1,27 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif, Bricolage_Grotesque, Plus_Jakarta_Sans, Caveat } from "next/font/google";
+import { Bricolage_Grotesque, Plus_Jakarta_Sans, Caveat } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-});
-
-// Used by /v4 (default) — "Clean Paper Desk" aesthetic.
+// v4 "Clean Paper Desk" — the active design system.
 // Display/heading -> Bricolage Grotesque. Body/UI -> Plus Jakarta Sans
-// (made in Indonesia — fitting for a Jakarta-built product).
+// (made in Indonesia — fitting for a Jakarta-built product). Caveat signs.
 const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
   subsets: ["latin"],
@@ -54,10 +37,10 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} ${bricolage.variable} ${jakarta.variable} ${caveat.variable} h-full antialiased`}
+      className={`${bricolage.variable} ${jakarta.variable} ${caveat.variable} h-full antialiased`}
     >
       <body
-        className="min-h-full flex flex-col bg-paper text-ink"
+        className="min-h-full flex flex-col"
         suppressHydrationWarning
       >
         {children}

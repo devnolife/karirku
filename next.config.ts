@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Hunter engine loads better-sqlite3 (native addon) at runtime.
+  serverExternalPackages: ["better-sqlite3"],
   // Skip type-checking during `next build` to save RAM/time.
   // Run `npm run typecheck` separately instead.
   typescript: {

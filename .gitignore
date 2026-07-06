@@ -48,6 +48,10 @@ next-env.d.ts
 /storage/
 /.crawlee/
 
+# Hunter engine local data
+/data/
+/hunter/secrets/
+
 # editor
 .vscode/
 .idea/

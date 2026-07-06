@@ -8,8 +8,6 @@
 
 ## Status
 
-## Status
-
 **Full-stack mode** — aplikasi memakai **data real dari PostgreSQL** (pgvector) untuk
 semua halaman: dashboard, skill-gap, job match, roadmap, course rec, kandidat,
 project, dan admin. Auth memakai **sesi ber-DB** (tabel `sessions`); tidak ada lagi
@@ -17,15 +15,16 @@ mock data.
 
 Fitur premium (add-on terpisah dari tier Pro, mis. **Auto-Apply**) dikontrol lewat
 tabel `entitlements` (`src/lib/entitlements.ts`) — admin toggle per user di
-`/admin/users`. Env `ADMIN_EMAIL` di `.env.local` di-upsert jadi `role=admin` saat
-`pnpm db:seed` (lihat `prisma/seed.ts`). Detail desain:
+`/admin/users`. Akun admin (`admin@craft.works`) sudah ter-seed via
+`seedUsers()` (lihat `prisma/seed/users.ts`); login lewat tombol role di
+halaman login (`signInAs`), tidak perlu Google OAuth. Detail desain:
 `docs/superpowers/specs/2026-07-06-hunter-premium-foundation-design.md`.
 
 Quick start:
 
 ```bash
 pnpm install
-cp .env.example .env.local   # isi DATABASE_URL, REDIS_URL, OLLAMA_*, ADMIN_EMAIL, dst.
+cp .env.example .env.local   # isi DATABASE_URL, REDIS_URL, OLLAMA_*, dst.
 docker compose up -d         # Postgres + Redis + MinIO + Ollama
 pnpm exec prisma migrate deploy
 pnpm db:seed                 # skill taxonomy + 4 user (1/role) + marketplace + admin
