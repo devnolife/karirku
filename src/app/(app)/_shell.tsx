@@ -5,9 +5,6 @@ import { useState } from "react";
 import { AppSidebarNav, type NavGroup } from "./_sidebar";
 import { SidebarPromo } from "./_promo";
 
-const PANEL =
-  "rounded-[22px] bg-[var(--act-paper)] border border-[rgba(15,23,42,0.07)] shadow-[0_18px_40px_-24px_rgba(15,40,60,0.28)]";
-
 export function AppShell({
   roleLabel,
   groups,
@@ -25,104 +22,97 @@ export function AppShell({
   const flatItems = groups.flatMap((g) => g.items);
 
   return (
-    <div className="app-canvas act-sans flex h-screen w-full overflow-hidden text-[var(--act-ink)] lg:gap-3 lg:p-3">
-      {/* ---------------- Desktop sidebar (floating, collapsible) ---------------- */}
-      <aside
-        className={
-          "hidden flex-none flex-col py-5 transition-[width] duration-300 ease-out lg:flex " +
-          PANEL +
-          " " +
-          (collapsed ? "w-[76px] px-2.5" : "w-[248px] px-4")
-        }
-      >
-        {/* brand */}
-        <Link
-          href="/dashboard"
-          className={"flex items-center gap-2.5 " + (collapsed ? "justify-center px-0" : "px-2")}
+    <div className="app-canvas act-sans flex h-screen w-full justify-center overflow-hidden text-[var(--act-ink)] lg:p-4">
+      {/* ---------------- One unified frame: sidebar + topbar + content ---------------- */}
+      <div className="flex h-full w-full max-w-[1560px] overflow-hidden lg:rounded-[28px] lg:border lg:border-[rgba(15,23,42,0.07)] lg:shadow-[0_28px_70px_-32px_rgba(15,40,60,0.38)]">
+        {/* Desktop sidebar (part of the same frame, no own shadow) */}
+        <aside
+          className={
+            "hidden flex-none flex-col border-r border-[rgba(15,23,42,0.08)] bg-[var(--act-paper)] py-5 transition-[width] duration-300 ease-out lg:flex " +
+            (collapsed ? "w-[76px] px-2.5" : "w-[248px] px-4")
+          }
         >
-          <Wordmark />
-          {!collapsed && (
-            <span className="act-heading text-[18px]">
-              Craft<span className="text-[var(--act-graphite)]">Works</span>
-            </span>
-          )}
-        </Link>
-
-        <div className="no-scrollbar mt-6 flex-1 overflow-y-auto">
-          <AppSidebarNav groups={groups} collapsed={collapsed} />
-        </div>
-
-        {/* promo + user + sign out */}
-        {!collapsed && (
-          <div className="mt-4">
-            <SidebarPromo />
-          </div>
-        )}
-        <div className="mt-4 border-t border-[rgba(15,23,42,0.08)] pt-4">
-          {collapsed ? (
-            <div className="flex flex-col items-center gap-2">
-              <Avatar name={user.name} />
-              <form action={signOut}>
-                <button
-                  type="submit"
-                  title="Keluar"
-                  className="grid h-9 w-9 place-items-center rounded-xl text-[var(--act-graphite)] transition hover:bg-[rgba(15,15,15,0.05)]"
-                >
-                  <Ico.Logout />
-                </button>
-              </form>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2.5 px-1">
-              <Avatar name={user.name} />
-              <div className="min-w-0 flex-1">
-                <div className="truncate text-sm font-semibold text-[var(--act-ink)]">{user.name}</div>
-                <div className="truncate text-xs text-[var(--act-graphite)]">{user.email}</div>
-              </div>
-              <form action={signOut}>
-                <button
-                  type="submit"
-                  title="Keluar"
-                  className="grid h-8 w-8 place-items-center rounded-xl text-[var(--act-graphite)] transition hover:bg-[rgba(15,15,15,0.05)]"
-                >
-                  <Ico.Logout />
-                </button>
-              </form>
-            </div>
-          )}
-        </div>
-      </aside>
-
-      {/* ---------------- Content scroll column ---------------- */}
-      <div className="no-scrollbar min-w-0 flex-1 overflow-y-auto">
-        {/* Mobile top bar */}
-        <header className="act-glass sticky top-0 z-30 flex items-center gap-3 px-5 py-3 lg:hidden">
-          <Wordmark />
-          <span className="act-heading text-[17px]">CraftWorks</span>
-          <span className="act-chip act-chip-blue ml-auto !text-[10px]">{roleLabel}</span>
-          <form action={signOut}>
-            <button type="submit" className="act-pill-ghost !text-xs">
-              Keluar
-            </button>
-          </form>
-        </header>
-        {/* Mobile search + tabs */}
-        <div className="border-b border-[rgba(15,23,42,0.08)] px-4 py-2.5 lg:hidden">
-          <SearchPill className="w-full" />
-          <div className="mt-2 flex gap-1 overflow-x-auto">
-            <MobileTabs items={flatItems} />
-          </div>
-        </div>
-
-        {/* Desktop persistent topbar */}
-        <div className="flex flex-col gap-3">
-          <header
-            className={
-              "sticky top-3 z-20 hidden flex-none items-center gap-3 px-4 py-2.5 backdrop-blur-md lg:flex " +
-              "rounded-[18px] border border-[rgba(15,23,42,0.06)] bg-[rgba(255,255,255,0.9)] " +
-              "shadow-[0_10px_28px_-22px_rgba(15,40,60,0.3)]"
-            }
+          {/* brand */}
+          <Link
+            href="/dashboard"
+            className={"flex items-center gap-2.5 " + (collapsed ? "justify-center px-0" : "px-2")}
           >
+            <Wordmark />
+            {!collapsed && (
+              <span className="act-heading text-[18px]">
+                Craft<span className="text-[var(--act-graphite)]">Works</span>
+              </span>
+            )}
+          </Link>
+
+          <div className="no-scrollbar mt-6 flex-1 overflow-y-auto">
+            <AppSidebarNav groups={groups} collapsed={collapsed} />
+          </div>
+
+          {/* promo + user + sign out */}
+          {!collapsed && (
+            <div className="mt-4">
+              <SidebarPromo />
+            </div>
+          )}
+          <div className="mt-4 border-t border-[rgba(15,23,42,0.08)] pt-4">
+            {collapsed ? (
+              <div className="flex flex-col items-center gap-2">
+                <Avatar name={user.name} />
+                <form action={signOut}>
+                  <button
+                    type="submit"
+                    title="Keluar"
+                    className="grid h-9 w-9 place-items-center rounded-xl text-[var(--act-graphite)] transition hover:bg-[rgba(15,15,15,0.05)]"
+                  >
+                    <Ico.Logout />
+                  </button>
+                </form>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2.5 px-1">
+                <Avatar name={user.name} />
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-semibold text-[var(--act-ink)]">{user.name}</div>
+                  <div className="truncate text-xs text-[var(--act-graphite)]">{user.email}</div>
+                </div>
+                <form action={signOut}>
+                  <button
+                    type="submit"
+                    title="Keluar"
+                    className="grid h-8 w-8 place-items-center rounded-xl text-[var(--act-graphite)] transition hover:bg-[rgba(15,15,15,0.05)]"
+                  >
+                    <Ico.Logout />
+                  </button>
+                </form>
+              </div>
+            )}
+          </div>
+        </aside>
+
+        {/* ---------------- Content column (light canvas zone within the frame) ---------------- */}
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden bg-[var(--act-mist)]">
+          {/* Mobile top bar */}
+          <header className="act-glass sticky top-0 z-30 flex flex-none items-center gap-3 px-5 py-3 lg:hidden">
+            <Wordmark />
+            <span className="act-heading text-[17px]">CraftWorks</span>
+            <span className="act-chip act-chip-blue ml-auto !text-[10px]">{roleLabel}</span>
+            <form action={signOut}>
+              <button type="submit" className="act-pill-ghost !text-xs">
+                Keluar
+              </button>
+            </form>
+          </header>
+          {/* Mobile search + tabs */}
+          <div className="flex-none border-b border-[rgba(15,23,42,0.08)] bg-[var(--act-paper)] px-4 py-2.5 lg:hidden">
+            <SearchPill className="w-full" />
+            <div className="mt-2 flex gap-1 overflow-x-auto">
+              <MobileTabs items={flatItems} />
+            </div>
+          </div>
+
+          {/* Desktop topbar — docked in-frame, not a separate floating card */}
+          <header className="hidden flex-none items-center gap-3 border-b border-[rgba(15,23,42,0.07)] bg-[var(--act-paper)] px-6 py-3.5 lg:flex">
             <button
               onClick={() => setCollapsed((c) => !c)}
               aria-label="Toggle sidebar"
@@ -152,7 +142,7 @@ export function AppShell({
             </div>
           </header>
 
-          <main className="min-w-0">{children}</main>
+          <main className="no-scrollbar min-w-0 flex-1 overflow-y-auto">{children}</main>
         </div>
       </div>
     </div>
