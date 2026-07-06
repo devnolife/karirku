@@ -51,6 +51,7 @@ model User {
   roadmaps        Roadmap[]
   extensionTokens ExtensionToken[]
   autofillLogs    AutofillLog[]
+  entitlements    Entitlement[]
 
   @@map("users")
 }
@@ -93,6 +94,39 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
+}
+
+// ============================================================
+// ENTITLEMENTS (fitur premium — spec: 2026-07-06-hunter-premium-foundation-design.md)
+// ============================================================
+
+enum EntitlementStatus {
+  active
+  revoked
+}
+
+enum EntitlementSource {
+  manual
+  payment
+}
+
+// Generic per-feature access flag (mis. feature="hunter_auto_apply") —
+// bukan tabel Subscription bertingkat, supaya gampang menambah fitur
+// premium lain nanti tanpa migration ulang.
+model Entitlement {
+  id          String            @id @default(cuid())
+  userId      String            @map("user_id") @db.Uuid
+  feature     String
+  status      EntitlementStatus @default(active)
+  source      EntitlementSource @default(manual)
+  activatedAt DateTime          @default(now()) @map("activated_at")
+  expiresAt   DateTime?         @map("expires_at")
+  notes       String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, feature])
+  @@map("entitlements")
 }
 
 // ============================================================

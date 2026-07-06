@@ -19,7 +19,7 @@
     "match:check": "tsx scripts/match-check.ts",
     "ext:build": "node extension/build.mjs",
     "ext:typecheck": "tsc --noEmit -p extension/tsconfig.json",
-    "test": "tsx --test tests/autofill/*.test.ts",
+    "test": "tsx --test tests/autofill/*.test.ts tests/entitlements/*.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

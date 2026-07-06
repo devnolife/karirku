@@ -8,10 +8,12 @@
 
 ## Status
 
-**UI/UX Mock Mode** — project saat ini fokus di presentasi UI/UX. Semua data di-mock di
-[`src/lib/mock/data.ts`](./src/lib/mock/data.ts); `prisma` dan `next-auth` di-stub di
-[`src/lib/db.ts`](./src/lib/db.ts) & [`src/lib/auth.ts`](./src/lib/auth.ts) supaya
-aplikasi bisa jalan **tanpa** database, Redis, Ollama, atau Google OAuth.
+**UI/UX Mock Mode** (default) — project saat ini fokus di presentasi UI/UX. Semua data
+di-mock di [`src/lib/mock/data.ts`](./src/lib/mock/data.ts); `prisma`, `next-auth`, dan
+entitlement (akses fitur premium) di
+[`src/lib/db.ts`](./src/lib/db.ts), [`src/lib/auth.ts`](./src/lib/auth.ts) &
+[`src/lib/entitlements.ts`](./src/lib/entitlements.ts) **dual-mode** — otomatis jalan
+tanpa database, Redis, Ollama, atau Google OAuth.
 
 Quick start (mode mock):
 
@@ -20,13 +22,26 @@ pnpm install
 pnpm dev     # → http://localhost:3000
 ```
 
-Login page punya tombol **"Masuk sebagai demo user"** yang langsung set cookie
-demo dan redirect ke dashboard. Dashboard, roadmap, job match, course rec, dan
-market trend semuanya pakai fixtures — zero backend dependency.
+Login page punya tombol pilih role (jobseeker/freelancer/company/admin) yang langsung
+set cookie demo dan redirect ke dashboard masing-masing. Dashboard, roadmap, job match,
+course rec, dan market trend semuanya pakai fixtures — zero backend dependency.
 
-Untuk kembali ke mode full-stack (DB + auth), kembalikan `src/lib/db.ts` &
-`src/lib/auth.ts` dari git history dan jalankan `./scripts/dev-setup.sh` sesuai
-Quick Start di bawah.
+### Pindah ke mode production (auth + DB nyata)
+
+Tidak perlu ubah kode apa pun — `db.ts`/`auth.ts`/`entitlements.ts` beralih otomatis
+begitu env berikut lengkap terisi (lihat `src/lib/mode.ts`):
+
+```bash
+docker compose up -d postgres      # Postgres + pgvector lokal
+cp .env.example .env.local         # isi DATABASE_URL, GOOGLE_CLIENT_ID/SECRET, ADMIN_EMAIL
+pnpm db:migrate                    # terapkan semua migration (termasuk entitlements)
+pnpm db:seed                       # seed skill taxonomy + demo user + admin (dari ADMIN_EMAIL)
+pnpm dev                           # restart — otomatis production-mode
+```
+
+Kalau hanya sebagian env auth terisi (mis. `DATABASE_URL` ada tapi Google OAuth belum),
+aplikasi tetap fallback ke mock mode (tidak crash) — lihat
+`docs/superpowers/specs/2026-07-06-hunter-premium-foundation-design.md` untuk detail.
 
 Blueprint produk lengkap ada di [`plan.md`](./plan.md).
 Fitur guidance loop (AI roadmap, scraper, worker) aktif di Sprint 3-4.

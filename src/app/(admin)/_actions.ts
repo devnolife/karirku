@@ -11,8 +11,16 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { MOCK_ADMIN_JOBS, MOCK_ADMIN_USERS } from "@/lib/mock/data";
-import { signOutDemo } from "@/lib/mock/session";
+import { getMockSession, signOutDemo } from "@/lib/mock/session";
 import { readAdminOverrides, writeAdminOverrides } from "./_overrides";
+import { auth } from "@/lib/auth";
+import { isProductionMode } from "@/lib/mode";
+import {
+  FEATURE_HUNTER_AUTO_APPLY,
+  grantEntitlement,
+  hasEntitlement,
+  revokeEntitlement,
+} from "@/lib/entitlements";
 
 /** active ⇄ nonaktif (draft/expired → active; active → expired). */
 export async function toggleJobStatus(jobId: string): Promise<void> {
@@ -44,4 +52,40 @@ export async function toggleUserStatus(userId: string): Promise<void> {
 export async function signOutAdmin(): Promise<void> {
   await signOutDemo();
   redirect("/login");
+}
+
+/**
+ * Guard ganda untuk aksi sensitif: pastikan session AKTIF adalah admin,
+ * dicek ulang di server (bukan cuma disembunyikan di UI). Dual-mode: pakai
+ * session Prisma/NextAuth asli di production, mock session sekarang.
+ */
+async function requireAdminUserId(): Promise<void> {
+  if (isProductionMode()) {
+    const session = await auth();
+    const role = (session?.user as { role?: string } | undefined)?.role;
+    if (role !== "admin") throw new Error("Hanya admin yang boleh mengubah entitlement.");
+    return;
+  }
+  const session = await getMockSession();
+  if (session.user.role !== "admin") {
+    throw new Error("Hanya admin yang boleh mengubah entitlement.");
+  }
+}
+
+/**
+ * Aktifkan/cabut add-on premium "Auto-Apply" (Hunter) untuk satu user.
+ * Guard ganda: hanya session admin yang boleh menjalankan ini, dicek ulang
+ * di server (bukan cuma disembunyikan di UI).
+ */
+export async function toggleAutoApplyEntitlement(userId: string): Promise<void> {
+  await requireAdminUserId();
+  if (!isProductionMode() && !MOCK_ADMIN_USERS.some((u) => u.id === userId)) return;
+
+  const active = await hasEntitlement(userId, FEATURE_HUNTER_AUTO_APPLY);
+  if (active) {
+    await revokeEntitlement(userId, FEATURE_HUNTER_AUTO_APPLY);
+  } else {
+    await grantEntitlement(userId, FEATURE_HUNTER_AUTO_APPLY, "toggled manual via /admin/users");
+  }
+  revalidatePath("/admin/users");
 }
