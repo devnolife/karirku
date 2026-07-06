@@ -62,7 +62,10 @@ export default async function OnboardingPage() {
             />
           </FormRow>
 
-          <FormRow label="Mode karir" helper="Pilih salah satu.">
+          <FormRow
+            label="Mode karir"
+            helper={'Pilih salah satu. "Dua-duanya" menampilkan menu & ringkasan kedua mode di dashboard.'}
+          >
             <TrackPicker defaultValue={current?.targetTrack ?? "fulltime"} />
           </FormRow>
 

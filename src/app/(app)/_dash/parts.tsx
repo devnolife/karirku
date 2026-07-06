@@ -586,3 +586,59 @@ export function HatchedBars({
     </div>
   );
 }
+
+/* ---------------- SecondaryModeCard ---------------- */
+/**
+ * Kartu ringkas mode karir kedua — muncul di dashboard saat user memilih
+ * "Dua-duanya" (targetTrack === "both") di Onboarding. Tidak pernah
+ * menggantikan dashboard utama, hanya satu baris ringkasan + tautan.
+ */
+export function SecondaryModeCard({
+  href,
+  tone,
+  label,
+  title,
+  subtitle,
+  stats,
+}: {
+  href: string;
+  tone: "blue" | "iris";
+  label: string;
+  title: string;
+  subtitle: string;
+  stats: { label: string; value: string }[];
+}) {
+  const chipCls = tone === "blue" ? "act-chip-blue" : "act-chip-iris";
+  return (
+    <Link
+      href={href}
+      className="act-card-2 act-rowhover group flex flex-col gap-4 p-5 sm:flex-row sm:items-center"
+    >
+      <div className="min-w-0 flex-1">
+        <span className={`act-chip ${chipCls}`}>{label}</span>
+        <p className="mt-2 truncate text-sm font-semibold text-[var(--act-ink)]">{title}</p>
+        <p className="truncate text-xs text-[var(--act-graphite)]">{subtitle}</p>
+      </div>
+      <div className="flex flex-none gap-6">
+        {stats.map((s) => (
+          <div key={s.label}>
+            <div className="act-display text-xl text-[var(--act-ink)]">{s.value}</div>
+            <div className="text-[11px] text-[var(--act-graphite)]">{s.label}</div>
+          </div>
+        ))}
+      </div>
+      <svg
+        viewBox="0 0 24 24"
+        className="hidden h-4 w-4 flex-none text-[var(--act-graphite)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--act-blue)] sm:block"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+      >
+        <path d="M5 12h14M13 5l7 7-7 7" />
+      </svg>
+    </Link>
+  );
+}

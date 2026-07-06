@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getMockSession } from "@/lib/mock/session";
+import { getGoal, getMockSession } from "@/lib/mock/session";
 import {
   getPriorityCourses,
   getReadiness,
@@ -7,10 +7,12 @@ import {
   getRoadmapMilestones,
   getSkillGap,
 } from "@/lib/data/jobseeker";
+import { MOCK_FREELANCER, MOCK_PROJECTS } from "@/lib/mock/data";
 import {
   StatCard,
   GaugeProgress,
   HatchedBars,
+  SecondaryModeCard,
   type BarDatum,
 } from "../_dash/parts";
 import { FreelancerOverview } from "./FreelancerDashboard";
@@ -37,13 +39,16 @@ async function JobseekerOverview() {
   const session = await getMockSession();
   const email = session.user.email;
 
-  const [skills, milestones, jobs, courses, r] = await Promise.all([
+  const [skills, milestones, jobs, courses, r, goal] = await Promise.all([
     getSkillGap(),
     getRoadmapMilestones(email),
     getRecommendedJobs(email),
     getPriorityCourses(),
     getReadiness(email),
+    getGoal(),
   ]);
+  const showFreelanceMode = goal?.targetTrack === "both";
+  const topProject = [...MOCK_PROJECTS].sort((a, b) => b.matchPct - a.matchPct)[0];
 
   const firstName = session.user.name.split(" ")[0];
   const rankedJobs = [...jobs].sort((a, b) => b.matchPct - a.matchPct);
@@ -271,6 +276,21 @@ async function JobseekerOverview() {
           <path d="M5 12h14M13 5l7 7-7 7" />
         </svg>
       </Link>
+
+      {/* Mode kedua: freelance (muncul hanya bila Mode karir = "Dua-duanya") */}
+      {showFreelanceMode && (
+        <SecondaryModeCard
+          href="/projects"
+          tone="iris"
+          label="Mode freelance aktif"
+          title={topProject.title}
+          subtitle={`${topProject.client} · ${topProject.budget}`}
+          stats={[
+            { label: "earnings", value: `Rp ${(MOCK_FREELANCER.earningsIdr / 1_000_000).toFixed(1)}jt` },
+            { label: "match", value: `${topProject.matchPct}%` },
+          ]}
+        />
+      )}
     </div>
   );
 }

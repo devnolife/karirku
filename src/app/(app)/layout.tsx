@@ -1,4 +1,4 @@
-import { getMockSession, signOutDemo } from "@/lib/mock/session";
+import { getGoal, getMockSession, signOutDemo } from "@/lib/mock/session";
 import { ROLE_LABEL, type UserRole } from "@/lib/mock/data";
 import { redirect } from "next/navigation";
 import { type NavGroup } from "./_sidebar";
@@ -76,10 +76,39 @@ const NAV_BY_ROLE: Record<UserRole, NavGroup[]> = {
   ],
 };
 
+// Mode karir kedua ("Dua-duanya" di Onboarding, MockGoal.targetTrack === "both")
+// menambah satu grup nav kecil — tidak pernah menggantikan menu utama.
+// Key = role utama; value = grup untuk mode SEBALIKNYA.
+const SECONDARY_GROUP: Record<"jobseeker" | "freelancer", NavGroup> = {
+  jobseeker: {
+    label: "Freelance",
+    items: [
+      { href: "/projects", label: "Projects", icon: IC.projects },
+      { href: "/proposals", label: "Proposal", icon: IC.proposals },
+    ],
+  },
+  freelancer: {
+    label: "Full-time",
+    items: [
+      { href: "/jobs", label: "Lowongan", icon: IC.jobs },
+      { href: "/skills", label: "Skill-gap", icon: IC.skills },
+    ],
+  },
+};
+
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await getMockSession();
   const role = session.user.role;
-  const groups = NAV_BY_ROLE[role];
+  let groups = NAV_BY_ROLE[role];
+
+  // "jobseeker" mendapat grup tambahan "Freelance" bila targetTrack "both",
+  // dan sebaliknya "freelancer" mendapat grup tambahan "Full-time".
+  if (role === "jobseeker" || role === "freelancer") {
+    const goal = await getGoal();
+    if (goal?.targetTrack === "both") {
+      groups = [...groups, SECONDARY_GROUP[role]];
+    }
+  }
 
   async function signOut() {
     "use server";

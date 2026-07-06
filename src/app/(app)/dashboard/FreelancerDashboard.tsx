@@ -6,7 +6,8 @@ import {
   MOCK_PROPOSALS,
   MOCK_FREELANCER_ACTIVITY,
 } from "@/lib/mock/data";
-import { StatCard, GaugeProgress, HatchedBars, type BarDatum } from "../_dash/parts";
+import { getReadiness, getRecommendedJobs } from "@/lib/data/jobseeker";
+import { StatCard, GaugeProgress, HatchedBars, SecondaryModeCard, type BarDatum } from "../_dash/parts";
 
 const PROJECT_TILES = [
   "bg-[linear-gradient(140deg,#38bdf8,#0098f2)]",
@@ -27,6 +28,11 @@ export async function FreelancerOverview() {
   const goal = await getGoal();
   const firstName = session.user.name.split(" ")[0];
   const f = MOCK_FREELANCER;
+  const showFulltimeMode = goal?.targetTrack === "both";
+  const [readiness, jobs] = showFulltimeMode
+    ? await Promise.all([getReadiness(session.user.email), getRecommendedJobs(session.user.email)])
+    : [null, null];
+  const bestJob = jobs ? [...jobs].sort((a, b) => b.matchPct - a.matchPct)[0] : null;
   const rankedProjects = [...MOCK_PROJECTS].sort((a, b) => b.matchPct - a.matchPct);
   const topProject = rankedProjects[0];
   const won = MOCK_PROPOSALS.filter((p) => p.status === "won").length;
@@ -203,6 +209,21 @@ export async function FreelancerOverview() {
           </div>
         </div>
       </section>
+
+      {/* Mode kedua: full-time (muncul hanya bila Mode karir = "Dua-duanya") */}
+      {showFulltimeMode && readiness && bestJob && (
+        <SecondaryModeCard
+          href="/jobs"
+          tone="blue"
+          label="Mode full-time aktif"
+          title={bestJob.title}
+          subtitle={`${bestJob.company} · ${bestJob.location}`}
+          stats={[
+            { label: "readiness", value: `${readiness.score}%` },
+            { label: "match", value: `${bestJob.matchPct}%` },
+          ]}
+        />
+      )}
     </div>
   );
 }
