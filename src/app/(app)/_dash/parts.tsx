@@ -1,17 +1,20 @@
 import Link from "next/link";
+import { ApplyButton } from "@/components/ApplyButton";
 import type {
-  MockSkill,
-  MockMilestone,
-  MockJob,
-  MockCourse,
-} from "@/lib/mock/data";
+  SkillView,
+  MilestoneView,
+  JobView,
+  CourseView,
+} from "@/lib/view-models";
 
 /* ---------------- Page header ---------------- */
 export function PageHeader({
+  kicker,
   title,
   meta,
   action,
 }: {
+  kicker?: string;
   title: React.ReactNode;
   meta?: string;
   action?: React.ReactNode;
@@ -19,7 +22,8 @@ export function PageHeader({
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 className="act-display text-3xl leading-[1.05] md:text-4xl">{title}</h1>
+        {kicker && <span className="act-eyebrow">{kicker}</span>}
+        <h1 className={`act-display text-3xl leading-[1.05] md:text-4xl ${kicker ? "mt-3" : ""}`}>{title}</h1>
         {meta && <p className="mt-2 text-sm text-[var(--act-graphite)]">{meta}</p>}
       </div>
       {action}
@@ -107,7 +111,7 @@ export function ReadinessCard({ score, last }: { score: number; last: number }) 
 }
 
 /* ---------------- Skill bar ---------------- */
-export function SkillBar({ skill, tone = "blue" }: { skill: MockSkill; tone?: "blue" | "iris" }) {
+export function SkillBar({ skill, tone = "blue" }: { skill: SkillView; tone?: "blue" | "iris" }) {
   const pct = Math.min(100, (skill.current / skill.required) * 100);
   const gap = Math.max(0, skill.required - skill.current);
   const critical = gap > 25;
@@ -140,7 +144,7 @@ export function SkillBar({ skill, tone = "blue" }: { skill: MockSkill; tone?: "b
 }
 
 /* ---------------- Milestone row ---------------- */
-export function MilestoneRow({ milestone: m }: { milestone: MockMilestone }) {
+export function MilestoneRow({ milestone: m }: { milestone: MilestoneView }) {
   const statusConfig = {
     done: { text: "Done", chip: "act-chip-green", badge: "bg-[linear-gradient(140deg,#34d399,#059669)] text-white" },
     in_progress: { text: "In progress", chip: "act-chip-blue", badge: "bg-[linear-gradient(140deg,#38bdf8,var(--act-blue))] text-white" },
@@ -171,18 +175,23 @@ export function MilestoneRow({ milestone: m }: { milestone: MockMilestone }) {
 }
 
 /* ---------------- Job row ---------------- */
-export function JobRow({ job: j }: { job: MockJob }) {
+export function JobRow({ job: j }: { job: JobView }) {
   const matchClass = j.matchPct >= 80 ? "text-[var(--act-magenta)]" : j.matchPct >= 70 ? "text-[var(--act-iris)]" : "text-[var(--act-graphite)]";
   return (
-    <li className="act-rowhover grid cursor-pointer grid-cols-12 items-center gap-3 px-5 py-4">
+    <li className="act-rowhover grid grid-cols-12 items-center gap-3 px-5 py-4">
       <div className="col-span-2">
         <div className={`act-display text-3xl ${matchClass}`}>{j.matchPct}</div>
         <div className="act-kicker !text-[10px]">match</div>
       </div>
       <div className="col-span-8 min-w-0">
-        <h4 className="truncate font-semibold text-[var(--act-ink)]">{j.title}</h4>
+        <h4 className="truncate font-semibold text-[var(--act-ink)]">
+          <Link href={`/jobs/${j.id}`} className="hover:text-[var(--act-magenta)] hover:underline">{j.title}</Link>
+        </h4>
         <p className="text-xs text-[var(--act-graphite)]">
           <span className="font-semibold text-[var(--act-charcoal)]">{j.company}</span> · {j.location}
+          {j.sourceLabel && (
+            <span className="ml-1.5 rounded bg-[var(--act-mist)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--act-graphite)] ring-1 ring-[rgba(15,23,42,0.06)]">{j.sourceLabel}</span>
+          )}
         </p>
         <div className="mt-1.5 flex flex-wrap gap-1.5">
           {j.skills.map((s) => (
@@ -193,6 +202,9 @@ export function JobRow({ job: j }: { job: MockJob }) {
       <div className="col-span-2 text-right">
         <p className="text-xs font-semibold text-[var(--act-ink)]">{j.salary}</p>
         <p className="act-kicker !text-[10px]">{j.posted}</p>
+        <div className="mt-1.5">
+          <ApplyButton jobId={j.id} alreadyApplied={!!j.applied} isExternal={!!j.applyUrl} />
+        </div>
       </div>
     </li>
   );
@@ -240,7 +252,7 @@ export function MarketChart({ data }: { data: { label: string; value: number }[]
 }
 
 /* ---------------- Course row ---------------- */
-export function CourseRow({ course: c, idx }: { course: MockCourse; idx: number }) {
+export function CourseRow({ course: c, idx }: { course: CourseView; idx: number }) {
   const tiles = [
     "bg-[linear-gradient(140deg,#38bdf8,var(--act-blue))]",
     "bg-[linear-gradient(140deg,#8b78ff,var(--act-iris))]",

@@ -1,8 +1,9 @@
 /**
- * Entitlement store — MOCK MODE (pola sama seperti `_overrides.ts` admin).
+ * Entitlement store — MOCK MODE (fallback ringan tanpa Postgres).
  *
- * Disimpan sebagai cookie JSON, path "/" (bukan "/admin") supaya bisa dibaca
- * dari halaman mana pun (mis. nanti dashboard Hunter), bukan cuma panel admin.
+ * Disimpan sebagai cookie JSON, path "/" (bukan cuma "/admin") supaya bisa
+ * dibaca dari halaman mana pun (mis. nanti dashboard Hunter), bukan cuma
+ * panel admin.
  *
  * Saat `isProductionMode()` aktif, `src/lib/entitlements.ts` tidak memakai
  * modul ini sama sekali — baca/tulis langsung ke tabel Prisma `entitlements`.

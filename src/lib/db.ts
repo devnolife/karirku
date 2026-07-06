@@ -2,11 +2,9 @@
  * Prisma client — DUAL MODE.
  *
  * - `DATABASE_URL` di-set  → PrismaClient asli (mode full-stack).
- * - `DATABASE_URL` kosong   → stub Proxy yang melempar error jelas saat dipakai
- *   (mode UI/UX mock; gunakan helper di src/lib/mock/ untuk data).
+ * - `DATABASE_URL` kosong   → stub Proxy yang melempar error jelas saat dipakai.
  *
- * Dengan ini app demo tetap jalan tanpa DB, dan otomatis full-stack begitu
- * DATABASE_URL tersedia — tanpa perlu menukar file dari git history.
+ * App selalu full-stack begitu DATABASE_URL tersedia (.env / .env.local).
  */
 
 import { PrismaClient } from "@prisma/client";
@@ -17,9 +15,8 @@ declare global {
 }
 
 const STUB_MESSAGE =
-  "[craftworks] DATABASE_URL belum di-set — prisma tidak tersedia (UI/UX mock mode). " +
-  "Set DATABASE_URL di .env.local untuk mengaktifkan mode full-stack, " +
-  "atau gunakan helper di src/lib/mock/ untuk data demo.";
+  "[craftworks] DATABASE_URL belum di-set — prisma tidak tersedia. " +
+  "Set DATABASE_URL di .env.local untuk mengaktifkan mode full-stack.";
 
 /** Stub yang selalu throw saat properti/method diakses. Bertipe PrismaClient agar konsumen tetap type-safe. */
 function makeStub(): PrismaClient {

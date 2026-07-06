@@ -3,9 +3,9 @@
 import { useState } from "react";
 import {
   INTERVIEW_TRACKS,
-  MOCK_INTERVIEW_QUESTIONS,
+  INTERVIEW_QUESTIONS,
   type InterviewTrack,
-} from "@/lib/mock/data";
+} from "@/lib/content/interview";
 
 type Phase = "pick" | "quiz" | "summary";
 
@@ -17,7 +17,7 @@ export function InterviewSimulator() {
   const [revealed, setRevealed] = useState<Record<number, boolean>>({});
   const [showHint, setShowHint] = useState(false);
 
-  const questions = track ? MOCK_INTERVIEW_QUESTIONS[track] : [];
+  const questions = track ? INTERVIEW_QUESTIONS[track] : [];
 
   function start(t: InterviewTrack) {
     setTrack(t);
@@ -46,7 +46,7 @@ export function InterviewSimulator() {
             <div>
               <h3 className="act-heading text-lg text-[var(--act-ink)]">{t.label}</h3>
               <p className="mt-1 text-sm text-[var(--act-graphite)]">
-                {MOCK_INTERVIEW_QUESTIONS[t.key].length} pertanyaan latihan
+                {INTERVIEW_QUESTIONS[t.key].length} pertanyaan latihan
               </p>
             </div>
             <svg viewBox="0 0 24 24" className="h-5 w-5 text-[var(--act-graphite)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--act-blue)]" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>

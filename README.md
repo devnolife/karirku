@@ -8,40 +8,50 @@
 
 ## Status
 
-**UI/UX Mock Mode** (default) — project saat ini fokus di presentasi UI/UX. Semua data
-di-mock di [`src/lib/mock/data.ts`](./src/lib/mock/data.ts); `prisma`, `next-auth`, dan
-entitlement (akses fitur premium) di
-[`src/lib/db.ts`](./src/lib/db.ts), [`src/lib/auth.ts`](./src/lib/auth.ts) &
-[`src/lib/entitlements.ts`](./src/lib/entitlements.ts) **dual-mode** — otomatis jalan
-tanpa database, Redis, Ollama, atau Google OAuth.
+## Status
 
-Quick start (mode mock):
+**Full-stack mode** — aplikasi memakai **data real dari PostgreSQL** (pgvector) untuk
+semua halaman: dashboard, skill-gap, job match, roadmap, course rec, kandidat,
+project, dan admin. Auth memakai **sesi ber-DB** (tabel `sessions`); tidak ada lagi
+mock data.
+
+Fitur premium (add-on terpisah dari tier Pro, mis. **Auto-Apply**) dikontrol lewat
+tabel `entitlements` (`src/lib/entitlements.ts`) — admin toggle per user di
+`/admin/users`. Env `ADMIN_EMAIL` di `.env.local` di-upsert jadi `role=admin` saat
+`pnpm db:seed` (lihat `prisma/seed.ts`). Detail desain:
+`docs/superpowers/specs/2026-07-06-hunter-premium-foundation-design.md`.
+
+Quick start:
 
 ```bash
 pnpm install
-pnpm dev     # → http://localhost:3000
+cp .env.example .env.local   # isi DATABASE_URL, REDIS_URL, OLLAMA_*, ADMIN_EMAIL, dst.
+docker compose up -d         # Postgres + Redis + MinIO + Ollama
+pnpm exec prisma migrate deploy
+pnpm db:seed                 # skill taxonomy + 4 user (1/role) + marketplace + admin
+pnpm embed:all               # generate embedding (768d) untuk jobs/courses/profiles
+pnpm dev                     # → http://localhost:3000
 ```
 
-Login page punya tombol pilih role (jobseeker/freelancer/company/admin) yang langsung
-set cookie demo dan redirect ke dashboard masing-masing. Dashboard, roadmap, job match,
-course rec, dan market trend semuanya pakai fixtures — zero backend dependency.
+### Lowongan live (data asli)
 
-### Pindah ke mode production (auth + DB nyata)
-
-Tidak perlu ubah kode apa pun — `db.ts`/`auth.ts`/`entitlements.ts` beralih otomatis
-begitu env berikut lengkap terisi (lihat `src/lib/mode.ts`):
+Selain seed, aplikasi bisa menarik **lowongan asli** dari job board publik
+(Greenhouse) lengkap dengan deskripsi + URL lamaran nyata:
 
 ```bash
-docker compose up -d postgres      # Postgres + pgvector lokal
-cp .env.example .env.local         # isi DATABASE_URL, GOOGLE_CLIENT_ID/SECRET, ADMIN_EMAIL
-pnpm db:migrate                    # terapkan semua migration (termasuk entitlements)
-pnpm db:seed                       # seed skill taxonomy + demo user + admin (dari ADMIN_EMAIL)
-pnpm dev                           # restart — otomatis production-mode
+pnpm ingest:live   # scrape GitLab/Figma/Dropbox → ekstraksi skill → embed
 ```
 
-Kalau hanya sebagian env auth terisi (mis. `DATABASE_URL` ada tapi Google OAuth belum),
-aplikasi tetap fallback ke mock mode (tidak crash) — lihat
-`docs/superpowers/specs/2026-07-06-hunter-premium-foundation-design.md` untuk detail.
+Lowongan live (`source=greenhouse`) tampil di `/jobs` dengan tombol **Lamar**
+ke URL asli. Tambah/ubah perusahaan target di
+[`scripts/ingest-live.ts`](./scripts/ingest-live.ts) atau lewat pipeline BullMQ
+([`src/lib/scraper/portals.ts`](./src/lib/scraper/portals.ts) + `pnpm worker` +
+`pnpm scan`).
+
+Login page punya tombol **"Masuk sebagai {role}"** (jobseeker / freelancer /
+company / admin) yang membuat sesi real untuk user hasil seed dan redirect ke
+dashboard masing-masing. Konten editorial (panduan & bank soal interview) bersifat
+statis di [`src/lib/content/`](./src/lib/content/).
 
 Blueprint produk lengkap ada di [`plan.md`](./plan.md).
 Fitur guidance loop (AI roadmap, scraper, worker) aktif di Sprint 3-4.

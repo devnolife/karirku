@@ -1,8 +1,11 @@
 /**
- * MIDDLEWARE (Next 16 `proxy.ts`) — proteksi route berbasis cookie demo + role.
- * Mode demo: tidak ada session DB/JWT. Login menyimpan:
- *   - cookie `kai_demo`      = "1" (penanda sudah masuk)
- *   - cookie `kai_demo_role` = jobseeker | freelancer | company | admin
+ * MIDDLEWARE (Next 16 `proxy.ts`) — proteksi route berbasis cookie sesi + role.
+ * Login menyimpan:
+ *   - cookie `authjs.session-token` (httpOnly) = token sesi DB (divalidasi `auth()`)
+ *   - cookie `cw_role` = jobseeker | freelancer | company | admin (untuk routing)
+ *
+ * Middleware hanya cek keberadaan cookie sesi + role untuk routing cepat (tanpa
+ * DB). Validasi sebenarnya dilakukan `auth()` + query ber-scope user di server.
  */
 import { NextResponse, type NextRequest } from "next/server";
 
@@ -37,12 +40,17 @@ function requiredRoleFor(pathname: string): Role | "shared" | "auth" | null {
     pathname.startsWith("/skills") ||
     pathname.startsWith("/roadmap") ||
     pathname.startsWith("/jobs") ||
-    pathname.startsWith("/learn")
+    pathname.startsWith("/learn") ||
+    pathname.startsWith("/applications")
   )
     return "jobseeker";
   if (pathname.startsWith("/guides") || pathname.startsWith("/interview"))
     return "auth";
-  if (pathname.startsWith("/dashboard") || pathname.startsWith("/onboarding"))
+  if (
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/onboarding") ||
+    pathname.startsWith("/profile")
+  )
     return "shared";
   return null;
 }
@@ -50,8 +58,8 @@ function requiredRoleFor(pathname: string): Role | "shared" | "auth" | null {
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const isLoggedIn = request.cookies.get("kai_demo")?.value === "1";
-  const role = resolveRole(request.cookies.get("kai_demo_role")?.value);
+  const isLoggedIn = !!request.cookies.get("authjs.session-token")?.value;
+  const role = resolveRole(request.cookies.get("cw_role")?.value);
 
   // Sudah login tapi membuka /login → lempar ke home sesuai role.
   if (pathname === "/login") {
@@ -91,9 +99,11 @@ export const config = {
     "/login",
     "/dashboard/:path*",
     "/onboarding/:path*",
+    "/profile/:path*",
     "/skills/:path*",
     "/roadmap/:path*",
     "/jobs/:path*",
+    "/applications/:path*",
     "/learn/:path*",
     "/projects/:path*",
     "/proposals/:path*",

@@ -16,9 +16,24 @@ import type { PortalEntry } from "./providers";
 
 export const DEFAULT_PORTALS: PortalEntry[] = [
   {
-    name: "Contoh Greenhouse",
-    careersUrl: "https://job-boards.greenhouse.io/example",
-    enabled: false,
+    name: "Xendit",
+    careersUrl: "https://job-boards.greenhouse.io/xendit",
+    enabled: true,
+  },
+  {
+    name: "GitLab",
+    careersUrl: "https://job-boards.greenhouse.io/gitlab",
+    enabled: true,
+  },
+  {
+    name: "Figma",
+    careersUrl: "https://job-boards.greenhouse.io/figma",
+    enabled: true,
+  },
+  {
+    name: "Dropbox",
+    careersUrl: "https://job-boards.greenhouse.io/dropbox",
+    enabled: true,
   },
   {
     name: "Contoh Ashby",

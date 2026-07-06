@@ -1,13 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getMockSession } from "@/lib/mock/session";
+import { getSession, signOut as authSignOut } from "@/lib/auth";
 import { AdminSidebarNav } from "./_nav";
-import { AdminMobileNav } from "./_mobile-nav";
-import { signOutAdmin } from "./_actions";
-import { SidebarPromo } from "../(app)/_promo";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const session = await getMockSession();
+  const session = await getSession();
 
   // Guard kedua (selain middleware): non-admin tidak boleh di sini.
   if (session.user.role !== "admin") {
@@ -15,11 +12,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="app-canvas act-sans flex h-screen w-full justify-center text-[var(--act-ink)]">
-      {/* One unified frame: sidebar + content (full-bleed, edge-to-edge) */}
-      <div className="flex h-full w-full max-w-[1560px]">
-        {/* Desktop sidebar */}
-        <aside className="hidden w-[252px] flex-none flex-col border-r border-[rgba(15,23,42,0.08)] bg-[var(--act-paper)] py-5 px-4 md:flex">
+    <div className="app-canvas act-sans min-h-screen text-[var(--act-ink)]">
+      <div className="mx-auto flex max-w-[1500px]">
+        {/* Sidebar */}
+        <aside className="sticky top-0 hidden h-screen w-[252px] flex-none flex-col border-r border-[rgba(15,23,42,0.08)] bg-[var(--act-paper)] px-4 py-5 md:flex">
           <Link href="/admin" className="flex items-center gap-2.5 px-2">
             <Wordmark />
             <span className="act-heading text-[18px]">
@@ -30,48 +26,57 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </span>
           </Link>
 
-          <div className="no-scrollbar mt-6 flex-1 overflow-y-auto">
+          <div className="mt-7 px-2">
+            <span className="act-kicker">Panel</span>
+          </div>
+          <div className="mt-3 flex-1">
             <AdminSidebarNav />
           </div>
 
-          <div className="mt-4">
-            <SidebarPromo />
-          </div>
-          <div className="mt-4 flex items-center gap-2.5 border-t border-[rgba(15,23,42,0.08)] pt-4 px-1">
-            <Avatar name={session.user.name} />
-            <div className="min-w-0 flex-1">
-              <div className="truncate text-sm font-semibold text-[var(--act-ink)]">
-                {session.user.name}
-              </div>
-              <div className="truncate text-xs text-[var(--act-graphite)]">
-                {session.user.email}
+          <div className="border-t border-[rgba(15,23,42,0.08)] pt-4">
+            <div className="flex items-center gap-2.5 px-2">
+              <Avatar name={session.user.name} />
+              <div className="min-w-0">
+                <div className="truncate text-sm font-semibold text-[var(--act-ink)]">
+                  {session.user.name}
+                </div>
+                <div className="truncate text-xs text-[var(--act-graphite)]">
+                  {session.user.email}
+                </div>
               </div>
             </div>
-            <form action={signOutAdmin}>
-              <button
-                type="submit"
-                title="Keluar"
-                className="grid h-8 w-8 place-items-center rounded-xl text-[var(--act-graphite)] transition hover:bg-[rgba(15,15,15,0.05)]"
-              >
-                <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3" />
-                  <path d="M10 17l-5-5 5-5M5 12h11" />
-                </svg>
+            <form
+              action={async () => {
+                "use server";
+                await authSignOut({ redirectTo: "/login" });
+              }}
+              className="mt-3 px-2"
+            >
+              <button type="submit" className="act-pill-ghost !w-full justify-center !text-sm">
+                Keluar
               </button>
             </form>
           </div>
         </aside>
 
         {/* Content */}
-        <div className="flex min-w-0 flex-1 flex-col overflow-hidden bg-[var(--act-mist)]">
+        <div className="min-w-0 flex-1">
           {/* Mobile topbar */}
-          <header className="act-glass sticky top-0 z-30 flex flex-none items-center gap-3 px-5 py-3 md:hidden">
-            <AdminMobileNav user={{ name: session.user.name, email: session.user.email }} />
+          <header className="act-glass sticky top-0 z-30 flex items-center gap-3 px-5 py-3 md:hidden">
             <Wordmark />
             <span className="act-heading text-[17px]">CraftWorks</span>
             <span className="act-chip act-chip-magenta !text-[10px] uppercase">admin</span>
+            <form
+              action={async () => {
+                "use server";
+                await authSignOut({ redirectTo: "/login" });
+              }}
+              className="ml-auto"
+            >
+              <button type="submit" className="act-pill-ghost !text-xs">Keluar</button>
+            </form>
           </header>
-          <main className="no-scrollbar min-w-0 flex-1 overflow-y-auto px-6 py-8 md:px-8">{children}</main>
+          <main className="px-6 py-8 md:px-10">{children}</main>
         </div>
       </div>
     </div>

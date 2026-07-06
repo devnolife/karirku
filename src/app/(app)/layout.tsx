@@ -1,7 +1,6 @@
-import { getGoal, getMockSession, signOutDemo } from "@/lib/mock/session";
-import { ROLE_LABEL, type UserRole } from "@/lib/mock/data";
-import { redirect } from "next/navigation";
-import { type NavGroup } from "./_sidebar";
+import { getSession, signOut as authSignOut } from "@/lib/auth";
+import { ROLE_LABEL, type UserRole } from "@/lib/roles";
+import { type SideItem } from "./_sidebar";
 import { AppShell } from "./_shell";
 
 const IC = {
@@ -15,111 +14,54 @@ const IC = {
   projects: "M12 2l9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5",
   proposals: "M7 3h7l5 5v13H7zM14 3v5h5",
   candidates: "M9 11a4 4 0 100-8 4 4 0 000 8zm-7 9a7 7 0 0114 0M17 11a4 4 0 000-8",
+  profile: "M12 14a4 4 0 100-8 4 4 0 000 8zM5 20a7 7 0 0114 0",
+  applications: "M9 11l3 3 8-8M5 12a7 7 0 0011 5.7",
 };
 
-const NAV_BY_ROLE: Record<UserRole, NavGroup[]> = {
+const NAV_BY_ROLE: Record<UserRole, SideItem[]> = {
   jobseeker: [
-    {
-      label: "Menu",
-      items: [
-        { href: "/dashboard", label: "Overview", icon: IC.overview },
-        { href: "/skills", label: "Skill-gap", icon: IC.skills },
-        { href: "/roadmap", label: "Roadmap", icon: IC.roadmap },
-        { href: "/jobs", label: "Lowongan", icon: IC.jobs },
-        { href: "/learn", label: "Belajar", icon: IC.learn },
-      ],
-    },
-    {
-      label: "General",
-      items: [
-        { href: "/onboarding", label: "Goal", icon: IC.goal },
-        { href: "/guides", label: "Panduan", icon: IC.guides },
-      ],
-    },
+    { href: "/dashboard", label: "Overview", icon: IC.overview },
+    { href: "/profile", label: "Profil", icon: IC.profile },
+    { href: "/skills", label: "Skill-gap", icon: IC.skills },
+    { href: "/roadmap", label: "Roadmap", icon: IC.roadmap },
+    { href: "/jobs", label: "Lowongan", icon: IC.jobs },
+    { href: "/applications", label: "Lamaran", icon: IC.applications },
+    { href: "/learn", label: "Belajar", icon: IC.learn },
+    { href: "/onboarding", label: "Goal", icon: IC.goal },
+    { href: "/guides", label: "Panduan", icon: IC.guides },
   ],
   freelancer: [
-    {
-      label: "Menu",
-      items: [
-        { href: "/dashboard", label: "Overview", icon: IC.overview },
-        { href: "/projects", label: "Projects", icon: IC.projects },
-        { href: "/proposals", label: "Proposal", icon: IC.proposals },
-      ],
-    },
-    {
-      label: "General",
-      items: [
-        { href: "/onboarding", label: "Goal", icon: IC.goal },
-        { href: "/guides", label: "Panduan", icon: IC.guides },
-      ],
-    },
+    { href: "/dashboard", label: "Overview", icon: IC.overview },
+    { href: "/profile", label: "Profil", icon: IC.profile },
+    { href: "/projects", label: "Projects", icon: IC.projects },
+    { href: "/proposals", label: "Proposal", icon: IC.proposals },
+    { href: "/onboarding", label: "Goal", icon: IC.goal },
+    { href: "/guides", label: "Panduan", icon: IC.guides },
   ],
   company: [
-    {
-      label: "Menu",
-      items: [
-        { href: "/dashboard", label: "Overview", icon: IC.overview },
-        { href: "/company/jobs", label: "Lowongan", icon: IC.jobs },
-        { href: "/company/candidates", label: "Kandidat", icon: IC.candidates },
-      ],
-    },
-    {
-      label: "General",
-      items: [{ href: "/guides", label: "Panduan", icon: IC.guides }],
-    },
+    { href: "/dashboard", label: "Overview", icon: IC.overview },
+    { href: "/company/jobs", label: "Lowongan", icon: IC.jobs },
+    { href: "/company/talent", label: "Cari Talent", icon: IC.profile },
+    { href: "/company/candidates", label: "Kandidat", icon: IC.candidates },
+    { href: "/guides", label: "Panduan", icon: IC.guides },
   ],
-  admin: [
-    {
-      label: "Menu",
-      items: [{ href: "/dashboard", label: "Overview", icon: IC.overview }],
-    },
-  ],
-};
-
-// Mode karir kedua ("Dua-duanya" di Onboarding, MockGoal.targetTrack === "both")
-// menambah satu grup nav kecil — tidak pernah menggantikan menu utama.
-// Key = role utama; value = grup untuk mode SEBALIKNYA.
-const SECONDARY_GROUP: Record<"jobseeker" | "freelancer", NavGroup> = {
-  jobseeker: {
-    label: "Freelance",
-    items: [
-      { href: "/projects", label: "Projects", icon: IC.projects },
-      { href: "/proposals", label: "Proposal", icon: IC.proposals },
-    ],
-  },
-  freelancer: {
-    label: "Full-time",
-    items: [
-      { href: "/jobs", label: "Lowongan", icon: IC.jobs },
-      { href: "/skills", label: "Skill-gap", icon: IC.skills },
-    ],
-  },
+  admin: [{ href: "/dashboard", label: "Overview", icon: IC.overview }],
 };
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const session = await getMockSession();
+  const session = await getSession();
   const role = session.user.role;
-  let groups = NAV_BY_ROLE[role];
-
-  // "jobseeker" mendapat grup tambahan "Freelance" bila targetTrack "both",
-  // dan sebaliknya "freelancer" mendapat grup tambahan "Full-time".
-  if (role === "jobseeker" || role === "freelancer") {
-    const goal = await getGoal();
-    if (goal?.targetTrack === "both") {
-      groups = [...groups, SECONDARY_GROUP[role]];
-    }
-  }
+  const items = NAV_BY_ROLE[role];
 
   async function signOut() {
     "use server";
-    await signOutDemo();
-    redirect("/login");
+    await authSignOut({ redirectTo: "/login" });
   }
 
   return (
     <AppShell
       roleLabel={ROLE_LABEL[role]}
-      groups={groups}
+      groups={[{ items }]}
       user={{ name: session.user.name, email: session.user.email }}
       signOut={signOut}
     >

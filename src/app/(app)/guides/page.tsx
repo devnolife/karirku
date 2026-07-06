@@ -1,13 +1,13 @@
-import { getMockSession } from "@/lib/mock/session";
-import { MOCK_GUIDES } from "@/lib/mock/data";
+import { getSession } from "@/lib/auth";
+import { GUIDES } from "@/lib/content/guides";
 import { GuidesExplorer } from "./GuidesExplorer";
 
 export default async function GuidesPage() {
-  const session = await getMockSession();
+  const session = await getSession();
   const role = session.user.role;
 
   // Panduan relevan dengan role tampil lebih dulu.
-  const guides = [...MOCK_GUIDES].sort((a, b) => {
+  const guides = [...GUIDES].sort((a, b) => {
     const ar = a.forRoles.includes(role) ? 0 : 1;
     const br = b.forRoles.includes(role) ? 0 : 1;
     return ar - br;

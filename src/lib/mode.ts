@@ -1,20 +1,13 @@
 /**
  * Satu sumber kebenaran untuk mode aktif aplikasi.
  *
- * - `isProductionMode() === false` (default, tanpa setup apa pun) → semua modul
- *   dual-mode (`auth.ts`, `entitlements.ts`, halaman admin) memakai jalur MOCK:
- *   data statis/cookie, tanpa Postgres/Google OAuth nyata.
- * - `isProductionMode() === true` → env auth (`DATABASE_URL` + Google OAuth)
- *   lengkap terisi → modul dual-mode beralih ke Prisma + NextAuth asli.
- *
- * Sengaja mensyaratkan SEMUA env terisi sekaligus: kalau cuma sebagian yang
- * di-set (mis. DATABASE_URL ada tapi Google OAuth belum), aplikasi tetap jalan
- * di mock mode alih-alih crash setengah-jalan.
+ * Sejalan dengan `src/lib/db.ts`: app dianggap "production" (Postgres nyata)
+ * semata berdasarkan `DATABASE_URL`. Auth (`src/lib/auth.ts`) sendiri sudah
+ * selalu memakai sesi ber-DB (bukan lagi dual-mode) — Google OAuth adalah
+ * opsi tambahan terpisah, bukan syarat mode aktif. Dipakai oleh modul yang
+ * masih dual-mode: `entitlements.ts` dan halaman admin yang belum dipindah
+ * penuh ke Prisma.
  */
 export function isProductionMode(): boolean {
-  return !!(
-    process.env.DATABASE_URL &&
-    process.env.GOOGLE_CLIENT_ID &&
-    process.env.GOOGLE_CLIENT_SECRET
-  );
+  return !!process.env.DATABASE_URL;
 }

@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MOCK_GUIDES } from "@/lib/mock/data";
+import { GUIDES } from "@/lib/content/guides";
 
 export function generateStaticParams() {
-  return MOCK_GUIDES.map((g) => ({ slug: g.slug }));
+  return GUIDES.map((g) => ({ slug: g.slug }));
 }
 
 export default async function GuideDetailPage({
@@ -12,10 +12,10 @@ export default async function GuideDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const guide = MOCK_GUIDES.find((g) => g.slug === slug);
+  const guide = GUIDES.find((g) => g.slug === slug);
   if (!guide) notFound();
 
-  const related = MOCK_GUIDES.filter(
+  const related = GUIDES.filter(
     (g) => g.slug !== guide.slug && g.category === guide.category,
   ).slice(0, 2);
   const isInterview = guide.category === "Interview";

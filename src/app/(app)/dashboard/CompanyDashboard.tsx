@@ -1,195 +1,114 @@
 import Link from "next/link";
-import { getMockSession } from "@/lib/mock/session";
+import { requireUser } from "@/lib/auth";
 import {
-  MOCK_COMPANY,
-  MOCK_CANDIDATES,
+  getCompanyStats,
+  getCompanyCandidates,
   CANDIDATE_STAGES,
-  type CandidateStage,
-} from "@/lib/mock/data";
-import { StatCard, GaugeProgress, HatchedBars, type BarDatum } from "../_dash/parts";
-
-const CANDIDATE_TILES = [
-  "bg-[linear-gradient(140deg,#38bdf8,#0098f2)]",
-  "bg-[linear-gradient(140deg,#8b78ff,#6d56fc)]",
-  "bg-[linear-gradient(140deg,#34d399,#059669)]",
-  "bg-[linear-gradient(140deg,#ff77dd,#f200ca)]",
-];
+} from "@/server/queries/company";
+import { Kpi } from "../_dash/parts";
 
 export async function CompanyOverview() {
-  const session = await getMockSession();
-  const c = MOCK_COMPANY;
-  const byStage = (s: CandidateStage) => MOCK_CANDIDATES.filter((k) => k.stage === s);
-  const rankedCandidates = [...MOCK_CANDIDATES].sort((a, b) => b.matchPct - a.matchPct);
-  const topCandidate = rankedCandidates[0];
-
-  // Profil dilihat 7 hari terakhir (presentasi).
-  const dayLabels = ["S", "S", "R", "K", "J", "S", "M"];
-  const factors = [0.5, 0.8, 0.65, 1.2, 0.95, 0, 0];
-  const activeDay = 4;
-  const viewBars: BarDatum[] = dayLabels.map((label, i) => ({
-    label,
-    value: Math.round(c.profileViews * 0.01 * factors[i]),
-    active: i === activeDay,
-  }));
-
-  const offerCount = byStage("offer").length;
-  const interviewCount = byStage("interview").length;
-  const otherCount = MOCK_CANDIDATES.length - offerCount - interviewCount;
-  const offerPct = Math.round((offerCount / Math.max(1, MOCK_CANDIDATES.length)) * 100);
+  const user = await requireUser();
+  const [c, candidates] = await Promise.all([
+    getCompanyStats(user.id),
+    getCompanyCandidates(user.id),
+  ]);
+  const topCandidates = candidates.slice(0, 4);
 
   return (
-    <div className="act-rise mx-auto max-w-[1280px] space-y-6 px-5 py-6 md:px-8">
-      {/* Header + CTA */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="act-display text-3xl leading-[1.04] md:text-4xl">
-            Hai, <span className="act-sky-text">{session.user.name}.</span>
+    <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-8 md:px-10">
+      {/* Hello + profile */}
+      <section className="grid grid-cols-12 items-center gap-6">
+        <div className="col-span-12 lg:col-span-8">
+          <span className="act-eyebrow">Overview · Company</span>
+          <h1 className="act-display mt-3 text-4xl leading-[1.04] md:text-5xl">
+            Hai, <span className="act-sky-text">{user.name}.</span>
           </h1>
-          <p className="mt-2 text-[15px] text-[var(--act-charcoal)]">
+          <p className="mt-3 max-w-xl text-[15px] text-[var(--act-charcoal)]">
             {c.openJobs} lowongan aktif · {c.totalCandidates} kandidat · {c.interviews} interview terjadwal.
           </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Link href="/company/jobs/new" className="act-pill group !text-sm">
+              Posting lowongan
+              <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </Link>
+            <Link href="/company/candidates" className="act-pill-ghost !text-sm">Lihat kandidat</Link>
+          </div>
         </div>
-        <div className="flex flex-none gap-2.5">
-          <Link href="/company/jobs" className="act-pill !px-5">
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <path d="M12 5v14M5 12h14" />
-            </svg>
-            Posting lowongan
-          </Link>
-          <Link href="/company/candidates" className="act-pill-ghost !border !border-[rgba(15,23,42,0.14)] !px-5">
-            Lihat kandidat
-          </Link>
+        <div className="col-span-12 lg:col-span-4">
+          <div className="act-card-2 act-wash-petal-soft border-[rgba(242,0,202,0.16)] p-5">
+            <span className="act-kicker">Total kandidat</span>
+            <div className="act-display mt-2 text-5xl text-[var(--act-magenta)]">{c.totalCandidates.toLocaleString("id-ID")}</div>
+            <div className="mt-4 grid grid-cols-2 gap-3 border-t border-[rgba(15,23,42,0.08)] pt-4">
+              <MiniStat label="Offer" value={`${c.offers}`} />
+              <MiniStat label="Interview" value={`${c.interviews}`} />
+            </div>
+          </div>
         </div>
-      </div>
-
-      {/* Stat row */}
-      <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard
-          label="Profil dilihat"
-          value={c.profileViews.toLocaleString("id-ID")}
-          delta="30 hari terakhir"
-          featured
-        />
-        <StatCard label="Lowongan aktif" value={c.openJobs} delta="sedang hiring" href="/company/jobs" />
-        <StatCard label="Total kandidat" value={c.totalCandidates} delta="semua lowongan" href="/company/candidates" />
-        <StatCard label="Hires bulan ini" value={c.hires} delta={`${c.interviews} interview terjadwal`} />
       </section>
 
-      {/* Bento — 3 kolom */}
-      <section className="grid grid-cols-12 gap-4">
-        {/* Kiri: profile views bar + ATS pipeline */}
-        <div className="col-span-12 flex flex-col gap-4 lg:col-span-5">
-          <div className="act-card-2 p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="act-kicker">Profil dilihat</span>
-                <h3 className="act-heading mt-1 text-xl">7 hari terakhir</h3>
-              </div>
-              <span className="act-chip act-chip-blue">{c.profileViews.toLocaleString("id-ID")} total</span>
-            </div>
-            <div className="mt-6">
-              <HatchedBars data={viewBars} />
-            </div>
-          </div>
+      {/* KPI */}
+      <section className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <Kpi label="Lowongan aktif" value={c.openJobs} caption="sedang hiring" tone="blue" />
+        <Kpi label="Total kandidat" value={c.totalCandidates} caption="semua lowongan" tone="iris" />
+        <Kpi label="Interview" value={c.interviews} caption="terjadwal" tone="magenta" />
+        <Kpi label="Offer" value={c.offers} caption="dikirim" tone="mint" />
+      </section>
 
-          <div className="act-card-2 p-6">
-            <div className="flex items-center justify-between">
-              <h3 className="act-heading text-lg">ATS pipeline</h3>
-              <Link href="/company/candidates" className="act-pill-ghost !text-[var(--act-blue)] !text-xs">
-                Detail
-              </Link>
-            </div>
-            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {CANDIDATE_STAGES.map((st) => {
-                const items = byStage(st.key);
-                return (
-                  <div key={st.key} className="rounded-xl bg-[var(--act-mist)] p-3.5">
-                    <span className="act-kicker !text-[10.5px]">{st.label}</span>
-                    <div className="act-display mt-1 text-xl text-[var(--act-ink)]">{items.length}</div>
-                  </div>
-                );
-              })}
-            </div>
+      {/* Pipeline + top candidates */}
+      <section className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+        <div className="lg:col-span-3">
+          <div className="mb-3 flex items-center justify-between">
+            <span className="act-kicker">ATS pipeline</span>
+            <Link href="/company/candidates" className="text-xs font-semibold text-[var(--act-blue)] hover:underline">Detail</Link>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {CANDIDATE_STAGES.map((st) => {
+              const n = candidates.filter((k) => k.stage === st.key).length;
+              return (
+                <div key={st.key} className="act-card-2 p-4">
+                  <span className="act-kicker !text-[11px]">{st.label}</span>
+                  <div className="act-display mt-1 text-2xl text-[var(--act-ink)]">{n}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
-
-        {/* Tengah: reminder + gauge */}
-        <div className="col-span-12 flex flex-col gap-4 lg:col-span-3">
-          <div className="act-card-2 flex flex-col p-6">
-            <span className="act-kicker">Kandidat teratas</span>
-            <h3 className="act-heading mt-2 text-lg leading-snug">{topCandidate.name}</h3>
-            <p className="mt-1 text-xs text-[var(--act-graphite)]">
-              {topCandidate.appliedFor} · {topCandidate.matchPct}% match
-            </p>
-            <Link href="/company/candidates" className="act-pill mt-5 !w-full justify-center">
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                <path d="M5 3l14 9-14 9V3z" />
-              </svg>
-              Lihat profil
-            </Link>
+        <div className="act-card-2 overflow-hidden lg:col-span-2">
+          <div className="border-b border-[rgba(15,23,42,0.07)] px-5 py-3.5">
+            <span className="act-kicker">Top kandidat</span>
           </div>
-
-          <div className="act-card-2 flex-1 p-6">
-            <span className="act-kicker">Progress hiring</span>
-            <div className="mt-5">
-              <GaugeProgress
-                pct={offerPct}
-                label="di tahap offer"
-                segments={[
-                  { label: `Offer (${offerCount})`, color: "var(--act-sky-deep)" },
-                  { label: `Interview (${interviewCount})`, color: "var(--act-sky-bright)" },
-                  { label: `Lainnya (${otherCount})`, color: "rgba(15,23,42,0.14)" },
-                ]}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Kanan: top candidates + kartu gelap */}
-        <div className="col-span-12 flex flex-col gap-4 lg:col-span-4">
-          <div className="act-card-2 flex-1 p-6">
-            <div className="flex items-center justify-between">
-              <h3 className="act-heading text-lg">Top kandidat (AI)</h3>
-              <Link href="/company/candidates" className="act-chip act-chip-mute !text-[11px]">
-                {MOCK_CANDIDATES.length} total
-              </Link>
-            </div>
-            <ul className="mt-4 space-y-4">
-              {rankedCandidates.slice(0, 4).map((k, i) => (
-                <li key={k.id} className="flex items-center gap-3">
-                  <span className={`act-tile ${CANDIDATE_TILES[i % CANDIDATE_TILES.length]}`}>
+          {topCandidates.length === 0 ? (
+            <p className="px-5 py-6 text-sm text-[var(--act-graphite)]">Belum ada kandidat.</p>
+          ) : (
+            <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
+              {topCandidates.map((k) => (
+                <li key={k.id} className="flex items-center gap-3 px-5 py-3.5">
+                  <span className="inline-flex h-9 w-9 flex-none items-center justify-center rounded-xl bg-[var(--act-onyx)] text-xs font-semibold text-white">
                     {k.name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase()}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-[var(--act-ink)]">{k.name}</p>
+                    <h4 className="truncate text-sm font-semibold text-[var(--act-ink)]">{k.name}</h4>
                     <p className="truncate text-xs text-[var(--act-graphite)]">{k.appliedFor}</p>
                   </div>
-                  <span className="act-display flex-none text-lg text-[var(--act-blue)]">
-                    {k.matchPct}<span className="text-[11px]">%</span>
-                  </span>
+                  <span className="text-sm font-bold text-[var(--act-magenta)]">{k.matchPct}%</span>
                 </li>
               ))}
             </ul>
-          </div>
-
-          <div className="act-promo">
-            <div className="flex items-center justify-between">
-              <span className="act-kicker !text-white/60">Kandidat teratas</span>
-              <span className="rounded-full bg-white/15 px-2 py-0.5 text-[11px] font-semibold">
-                {topCandidate.matchPct}% match
-              </span>
-            </div>
-            <p className="mt-3 truncate text-lg font-semibold">{topCandidate.name}</p>
-            <p className="truncate text-xs text-white/60">{topCandidate.appliedFor}</p>
-            <Link
-              href="/company/candidates"
-              className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-white px-4 py-2 text-[13px] font-semibold text-[var(--act-ink)] transition hover:bg-white/90"
-            >
-              Lihat detail
-            </Link>
-          </div>
+          )}
         </div>
       </section>
+    </div>
+  );
+}
+
+function MiniStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <div className="text-lg font-bold text-[var(--act-ink)]">{value}</div>
+      <div className="text-[11px] text-[var(--act-graphite)]">{label}</div>
     </div>
   );
 }

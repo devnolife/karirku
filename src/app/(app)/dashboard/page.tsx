@@ -1,25 +1,17 @@
 import Link from "next/link";
-import { getGoal, getMockSession } from "@/lib/mock/session";
-import {
-  getPriorityCourses,
-  getReadiness,
-  getRecommendedJobs,
-  getRoadmapMilestones,
-  getSkillGap,
-} from "@/lib/data/jobseeker";
-import { MOCK_FREELANCER, MOCK_PROJECTS } from "@/lib/mock/data";
-import {
-  StatCard,
-  GaugeProgress,
-  HatchedBars,
-  SecondaryModeCard,
-  type BarDatum,
-} from "../_dash/parts";
+import { getSession, requireUser } from "@/lib/auth";
+import { getActiveGoal } from "@/server/queries/goal";
+import { getReadiness } from "@/server/queries/readiness";
+import { getSkillGap } from "@/server/queries/skills";
+import { getRoadmap } from "@/server/queries/roadmap";
+import { getJobMatches } from "@/server/queries/jobs";
+import { getRecommendedCourses } from "@/server/queries/courses";
+import { Kpi, ReadinessCard, PreviewCard, SkillBar } from "../_dash/parts";
 import { FreelancerOverview } from "./FreelancerDashboard";
 import { CompanyOverview } from "./CompanyDashboard";
 
 export default async function DashboardPage() {
-  const session = await getMockSession();
+  const session = await getSession();
   const role = session.user.role;
 
   if (role === "freelancer") return <FreelancerOverview />;
@@ -27,270 +19,120 @@ export default async function DashboardPage() {
   return <JobseekerOverview />;
 }
 
-const JOB_TILES = [
-  "bg-[linear-gradient(140deg,#38bdf8,#0098f2)]",
-  "bg-[linear-gradient(140deg,#8b78ff,#6d56fc)]",
-  "bg-[linear-gradient(140deg,#34d399,#059669)]",
-  "bg-[linear-gradient(140deg,#ff77dd,#f200ca)]",
-  "bg-[linear-gradient(140deg,#fbbf24,#f59e0b)]",
-];
-
 async function JobseekerOverview() {
-  const session = await getMockSession();
-  const email = session.user.email;
-
-  const [skills, milestones, jobs, courses, r, goal] = await Promise.all([
-    getSkillGap(),
-    getRoadmapMilestones(email),
-    getRecommendedJobs(email),
-    getPriorityCourses(),
-    getReadiness(email),
-    getGoal(),
+  const user = await requireUser();
+  const [goal, r, gap, roadmap, jobs, courses] = await Promise.all([
+    getActiveGoal(user.id),
+    getReadiness(user.id),
+    getSkillGap(user.id),
+    getRoadmap(user.id),
+    getJobMatches(user.id, 1),
+    getRecommendedCourses(user.id, 1),
   ]);
-  const showFreelanceMode = goal?.targetTrack === "both";
-  const topProject = [...MOCK_PROJECTS].sort((a, b) => b.matchPct - a.matchPct)[0];
 
-  const firstName = session.user.name.split(" ")[0];
-  const rankedJobs = [...jobs].sort((a, b) => b.matchPct - a.matchPct);
-  const bestJob = rankedJobs[0];
-  const current = milestones.find((m) => m.status === "in_progress") ?? milestones[0];
-
-  // Skill list (gaya "Team Collaboration"): skill + status chip.
-  const skillList = [...skills]
+  const firstName = user.name.split(" ")[0];
+  const bestJob = jobs[0] ?? null;
+  const current = roadmap.current;
+  const criticalSkills = [...gap.skills]
+    .filter((s) => s.category === "core")
     .sort((a, b) => b.required - b.current - (a.required - a.current))
-    .slice(0, 4);
-
-  // Aktivitas belajar mingguan — beberapa hari terisi, akhir pekan arsir.
-  const dayLabels = ["S", "S", "R", "K", "J", "S", "M"];
-  const factors = [0.62, 0.92, 0.75, 1.23, 1.0, 0, 0];
-  const activeDay = 4;
-  const weeklyBars: BarDatum[] = dayLabels.map((label, i) => ({
-    label,
-    value: Math.round(r.hoursThisWeek * factors[i] * 10) / 10,
-    active: i === activeDay,
-  }));
-
-  // Komposisi milestone untuk gauge.
-  const done = milestones.filter((m) => m.status === "done").length;
-  const inProgress = milestones.filter((m) => m.status === "in_progress").length;
-  const pending = milestones.length - done - inProgress;
-  const donePct = Math.round((done / Math.max(1, milestones.length)) * 100);
+    .slice(0, 2);
+  const topCourse = courses[0] ?? null;
 
   return (
-    <div className="act-rise mx-auto max-w-[1280px] space-y-6 px-5 py-6 md:px-8">
-      {/* Header + CTA */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="act-display text-3xl leading-[1.04] md:text-4xl">
+    <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-8 md:px-10">
+      {/* Hello + readiness */}
+      <section className="grid grid-cols-12 items-center gap-6">
+        <div className="col-span-12 lg:col-span-8">
+          <span className="act-eyebrow">
+            Today · {new Date().toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long" })}
+          </span>
+          <h1 className="act-display mt-3 text-4xl leading-[1.04] md:text-5xl">
             Halo, <span className="act-sky-text">{firstName}.</span>
           </h1>
-          <p className="mt-2 text-[15px] text-[var(--act-charcoal)]">
-            Rencanakan, prioritaskan, dan capai goal kariermu dengan mudah.
-          </p>
-        </div>
-        <div className="flex flex-none gap-2.5">
-          <Link href="/jobs" className="act-pill !px-5">
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <path d="M12 5v14M5 12h14" />
-            </svg>
-            Lihat lowongan
-          </Link>
-          <Link href="/onboarding" className="act-pill-ghost !border !border-[rgba(15,23,42,0.14)] !px-5">
-            Ubah goal
-          </Link>
-        </div>
-      </div>
-
-      {/* Stat row */}
-      <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard
-          label="Jam minggu ini"
-          value={<>{r.hoursThisWeek}<span className="text-2xl">h</span></>}
-          delta={`target ${r.hoursTarget}h`}
-          featured
-        />
-        <StatCard
-          label="Milestone selesai"
-          value={<>{r.weeksDone}<span className="text-2xl text-[var(--act-graphite)]">/{r.weeksTotal}</span></>}
-          delta="6 minggu total"
-          href="/roadmap"
-        />
-        <StatCard
-          label="Match terbaik"
-          value={<>{bestJob.matchPct}<span className="text-2xl">%</span></>}
-          delta={`${jobs.length} lowongan`}
-          href="/jobs"
-        />
-        <StatCard
-          label="Readiness"
-          value={<>{r.score}<span className="text-2xl">%</span></>}
-          delta={`+${r.score - r.lastWeek} pts minggu ini`}
-        />
-      </section>
-
-      {/* Bento — 3 kolom (kiri 5 / tengah 3 / kanan 4) */}
-      <section className="grid grid-cols-12 gap-4">
-        {/* ---- Kolom kiri ---- */}
-        <div className="col-span-12 flex flex-col gap-4 lg:col-span-5">
-          {/* Aktivitas belajar (bar chart) */}
-          <div className="act-card-2 p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="act-kicker">Aktivitas belajar</span>
-                <h3 className="act-heading mt-1 text-xl">Minggu ini</h3>
-              </div>
-              <span className="act-chip act-chip-blue">{r.hoursThisWeek}h total</span>
-            </div>
-            <div className="mt-6">
-              <HatchedBars data={weeklyBars} />
-            </div>
-          </div>
-
-          {/* Skill list (gaya Team Collaboration) */}
-          <div className="act-card-2 p-6">
-            <div className="flex items-center justify-between">
-              <h3 className="act-heading text-lg">Skill dalam proses</h3>
-              <Link href="/skills" className="act-pill-ghost !text-[var(--act-blue)] !text-xs">
-                Detail
-              </Link>
-            </div>
-            <ul className="mt-4 space-y-3.5">
-              {skillList.map((s) => {
-                const gap = Math.max(0, s.required - s.current);
-                const chip =
-                  gap > 25
-                    ? { cls: "act-chip-magenta", label: "Prioritas" }
-                    : gap > 0
-                      ? { cls: "act-chip-blue", label: "Berproses" }
-                      : { cls: "act-chip-green", label: "Tuntas" };
-                return (
-                  <li key={s.name} className="flex items-center gap-3">
-                    <span className="act-tile bg-[linear-gradient(140deg,#38bdf8,#0098f2)]">
-                      {s.name.charAt(0)}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-[var(--act-ink)]">{s.name}</p>
-                      <p className="truncate text-xs text-[var(--act-graphite)]">
-                        {s.current}/{s.required} · {s.category}
-                      </p>
-                    </div>
-                    <span className={`act-chip ${chip.cls} !text-[11px]`}>{chip.label}</span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </div>
-
-        {/* ---- Kolom tengah ---- */}
-        <div className="col-span-12 flex flex-col gap-4 lg:col-span-3">
-          {/* Reminder / langkah berikutnya */}
-          <div className="act-card-2 flex flex-col p-6">
-            <span className="act-kicker">Langkah berikutnya</span>
-            <h3 className="act-heading mt-2 text-lg leading-snug">{current.title}</h3>
-            <p className="mt-1 text-xs text-[var(--act-graphite)]">
-              Minggu {current.week} · {r.weeksDone} selesai · {r.weeksTotal - r.weeksDone} tersisa
+          {goal ? (
+            <p className="mt-3 max-w-xl text-[15px] text-[var(--act-charcoal)]">
+              Goal: <span className="font-semibold text-[var(--act-ink)]">{goal.targetRole}</span>
+              {goal.targetCity ? ` · ${goal.targetCity}` : ""} · {goal.weeklyHours} jam/minggu ·{" "}
+              {goal.budgetIdr > 0 ? `Rp ${goal.budgetIdr.toLocaleString("id-ID")}/bln` : "course gratis"}
             </p>
-            <Link href="/roadmap" className="act-pill mt-5 !w-full justify-center">
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                <path d="M5 3l14 9-14 9V3z" />
-              </svg>
-              Lanjut roadmap
-            </Link>
-          </div>
-
-          {/* Gauge progress roadmap */}
-          <div className="act-card-2 flex-1 p-6">
-            <span className="act-kicker">Progress roadmap</span>
-            <div className="mt-5">
-              <GaugeProgress
-                pct={donePct}
-                label="milestone tuntas"
-                segments={[
-                  { label: `Selesai (${done})`, color: "var(--act-sky-deep)" },
-                  { label: `Berjalan (${inProgress})`, color: "var(--act-sky-bright)" },
-                  { label: `Menunggu (${pending})`, color: "rgba(15,23,42,0.14)" },
-                ]}
-              />
-            </div>
-          </div>
+          ) : (
+            <p className="mt-3 max-w-xl text-[15px] text-[var(--act-charcoal)]">
+              Belum ada goal. Atur target role agar dashboard menyesuaikan.
+            </p>
+          )}
+          <Link href="/onboarding" className="act-pill-ghost mt-3 -ml-3 !text-[var(--act-blue)]">
+            {goal ? "Ubah goal" : "Atur goal"}
+            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M5 12h14M13 5l7 7-7 7" />
+            </svg>
+          </Link>
         </div>
-
-        {/* ---- Kolom kanan ---- */}
-        <div className="col-span-12 flex flex-col gap-4 lg:col-span-4">
-          {/* Lowongan cocok (list tinggi, gaya Project) */}
-          <div className="act-card-2 flex-1 p-6">
-            <div className="flex items-center justify-between">
-              <h3 className="act-heading text-lg">Lowongan cocok</h3>
-              <Link href="/jobs" className="act-chip act-chip-mute !text-[11px]">
-                {jobs.length} posisi
-              </Link>
-            </div>
-            <ul className="mt-4 space-y-4">
-              {rankedJobs.slice(0, 5).map((j, i) => (
-                <li key={j.id} className="flex items-center gap-3">
-                  <span className={`act-tile ${JOB_TILES[i % JOB_TILES.length]}`}>{j.company.charAt(0)}</span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-[var(--act-ink)]">{j.title}</p>
-                    <p className="truncate text-xs text-[var(--act-graphite)]">
-                      {j.company} · {j.location}
-                    </p>
-                  </div>
-                  <span className="act-display flex-none text-lg text-[var(--act-blue)]">
-                    {j.matchPct}<span className="text-[11px]">%</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Kartu gelap (gaya Time Tracker) */}
-          <div className="act-promo">
-            <div className="flex items-center justify-between">
-              <span className="act-kicker !text-white/60">Lowongan teratas</span>
-              <span className="rounded-full bg-white/15 px-2 py-0.5 text-[11px] font-semibold">
-                {bestJob.matchPct}% match
-              </span>
-            </div>
-            <p className="mt-3 truncate text-lg font-semibold">{bestJob.title}</p>
-            <p className="truncate text-xs text-white/60">{bestJob.company} · {bestJob.location}</p>
-            <Link
-              href="/jobs"
-              className="mt-4 inline-flex w-full items-center justify-center rounded-full bg-white px-4 py-2 text-[13px] font-semibold text-[var(--act-ink)] transition hover:bg-white/90"
-            >
-              Lihat detail
-            </Link>
-          </div>
+        <div className="col-span-12 lg:col-span-4">
+          <ReadinessCard score={r.score} last={r.lastWeek} />
         </div>
       </section>
 
-      {/* Kursus prioritas */}
-      <Link href="/learn" className="act-card-2 act-rowhover group flex items-center gap-4 p-5">
-        <span className="act-tile bg-[linear-gradient(140deg,#34d399,#059669)]">{courses[0].provider.charAt(0)}</span>
-        <div className="min-w-0 flex-1">
-          <span className="act-kicker">Kursus prioritas</span>
-          <p className="mt-0.5 truncate text-sm font-semibold text-[var(--act-ink)]">{courses[0].title}</p>
-          <p className="text-xs text-[var(--act-graphite)]">{courses[0].provider} · {courses[0].hours}h</p>
-        </div>
-        <svg viewBox="0 0 24 24" className="h-4 w-4 flex-none text-[var(--act-graphite)] transition group-hover:translate-x-0.5 group-hover:text-[var(--act-blue)]" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <path d="M5 12h14M13 5l7 7-7 7" />
-        </svg>
-      </Link>
+      {/* KPI */}
+      <section className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <Kpi label="Jam minggu ini" value={r.hoursThisWeek} unit="h" caption={`target ${r.hoursTarget}h`} tone="blue" />
+        <Kpi label="Milestone selesai" value={r.weeksDone} unit={`/${r.weeksTotal}`} caption={`${r.weeksTotal} minggu total`} tone="iris" />
+        <Kpi label="Match terbaik" value={bestJob?.matchPct ?? 0} unit="%" caption={bestJob ? bestJob.company : "belum ada"} tone="magenta" />
+        <Kpi label="Coverage skill" value={gap.coveragePct} unit="%" caption="vs role target" tone="mint" />
+      </section>
 
-      {/* Mode kedua: freelance (muncul hanya bila Mode karir = "Dua-duanya") */}
-      {showFreelanceMode && (
-        <SecondaryModeCard
-          href="/projects"
-          tone="iris"
-          label="Mode freelance aktif"
-          title={topProject.title}
-          subtitle={`${topProject.client} · ${topProject.budget}`}
-          stats={[
-            { label: "earnings", value: `Rp ${(MOCK_FREELANCER.earningsIdr / 1_000_000).toFixed(1)}jt` },
-            { label: "match", value: `${topProject.matchPct}%` },
-          ]}
-        />
-      )}
+      {/* Preview cards → detail pages */}
+      <section className="grid grid-cols-1 gap-5 md:grid-cols-2">
+        <PreviewCard href="/skills" kicker="Skill-gap" title="Skill kamu vs target" tone="blue">
+          {criticalSkills.length > 0 ? (
+            <div className="space-y-4">
+              {criticalSkills.map((s) => <SkillBar key={s.name} skill={s} tone="blue" />)}
+            </div>
+          ) : (
+            <p className="text-sm text-[var(--act-graphite)]">Belum ada skill-gap. Atur goal dulu.</p>
+          )}
+        </PreviewCard>
+
+        <PreviewCard href="/roadmap" kicker="Roadmap" title="Next move kamu" tone="iris">
+          {current ? (
+            <div className="rounded-xl bg-[var(--act-mist)] p-3.5">
+              <span className="act-chip act-chip-blue">Minggu {current.week} · {current.status === "in_progress" ? "in progress" : current.status}</span>
+              <p className="mt-2 text-sm font-semibold text-[var(--act-ink)]">{current.title}</p>
+              <p className="mt-1 text-xs text-[var(--act-graphite)]">{r.weeksDone} selesai · {Math.max(0, r.weeksTotal - r.weeksDone)} to go</p>
+            </div>
+          ) : (
+            <p className="text-sm text-[var(--act-graphite)]">Belum ada roadmap.</p>
+          )}
+        </PreviewCard>
+
+        <PreviewCard href="/jobs" kicker="Job match" title="Lowongan paling cocok" tone="magenta">
+          {bestJob ? (
+            <div className="flex items-center gap-4">
+              <div className="act-display text-4xl text-[var(--act-magenta)]">{bestJob.matchPct}<span className="text-lg">%</span></div>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-[var(--act-ink)]">{bestJob.title}</p>
+                <p className="truncate text-xs text-[var(--act-graphite)]">{bestJob.company} · {bestJob.location}</p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-[var(--act-graphite)]">Belum ada lowongan cocok.</p>
+          )}
+        </PreviewCard>
+
+        <PreviewCard href="/learn" kicker="Belajar" title="Kursus prioritas" tone="mint">
+          {topCourse ? (
+            <div className="flex items-center gap-3">
+              <span className="act-tile bg-[linear-gradient(140deg,#34d399,#059669)]">{topCourse.provider.charAt(0)}</span>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-[var(--act-ink)]">{topCourse.title}</p>
+                <p className="text-xs text-[var(--act-graphite)]">{topCourse.provider} · {topCourse.hours}h</p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-[var(--act-graphite)]">Belum ada rekomendasi kursus.</p>
+          )}
+        </PreviewCard>
+      </section>
     </div>
   );
 }

@@ -20,6 +20,8 @@
     "ext:build": "node extension/build.mjs",
     "ext:typecheck": "tsc --noEmit -p extension/tsconfig.json",
     "test": "tsx --test tests/autofill/*.test.ts tests/entitlements/*.test.ts",
+    "embed:all": "tsx scripts/embed-all.ts",
+    "ingest:live": "tsx scripts/ingest-live.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
