@@ -22,9 +22,9 @@ export function AppShell({
   const flatItems = groups.flatMap((g) => g.items);
 
   return (
-    <div className="app-canvas act-sans flex h-screen w-full justify-center overflow-hidden text-[var(--act-ink)] lg:p-4">
-      {/* ---------------- One unified frame: sidebar + topbar + content ---------------- */}
-      <div className="flex h-full w-full max-w-[1560px] overflow-hidden lg:rounded-[28px] lg:border lg:border-[rgba(15,23,42,0.07)] lg:shadow-[0_28px_70px_-32px_rgba(15,40,60,0.38)]">
+    <div className="app-canvas act-sans flex h-screen w-full justify-center text-[var(--act-ink)]">
+      {/* ---------------- One unified frame: sidebar + topbar + content (full-bleed, edge-to-edge) ---------------- */}
+      <div className="flex h-full w-full max-w-[1560px]">
         {/* Desktop sidebar (part of the same frame, no own shadow) */}
         <aside
           className={

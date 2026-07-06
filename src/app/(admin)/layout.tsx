@@ -15,9 +15,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="app-canvas act-sans flex h-screen w-full justify-center overflow-hidden text-[var(--act-ink)] md:p-4">
-      {/* One unified frame: sidebar + content (matches (app) shell) */}
-      <div className="flex h-full w-full max-w-[1560px] overflow-hidden md:rounded-[28px] md:border md:border-[rgba(15,23,42,0.07)] md:shadow-[0_28px_70px_-32px_rgba(15,40,60,0.38)]">
+    <div className="app-canvas act-sans flex h-screen w-full justify-center text-[var(--act-ink)]">
+      {/* One unified frame: sidebar + content (full-bleed, edge-to-edge) */}
+      <div className="flex h-full w-full max-w-[1560px]">
         {/* Desktop sidebar */}
         <aside className="hidden w-[252px] flex-none flex-col border-r border-[rgba(15,23,42,0.08)] bg-[var(--act-paper)] py-5 px-4 md:flex">
           <Link href="/admin" className="flex items-center gap-2.5 px-2">
