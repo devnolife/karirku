@@ -1,8 +1,12 @@
 import { MOCK_ADMIN_USERS, ROLE_LABEL } from "@/lib/mock/data";
 import { PageHead, StatusDot } from "../../_ui";
+import { applyUserOverrides, readAdminOverrides } from "../../_overrides";
+import { toggleUserStatus } from "../../_actions";
+import { ActionButton } from "../../_action-button";
 
-export default function AdminUsersPage() {
-  const users = MOCK_ADMIN_USERS;
+export default async function AdminUsersPage() {
+  const overrides = await readAdminOverrides();
+  const users = applyUserOverrides(MOCK_ADMIN_USERS, overrides);
   const active = users.filter((u) => u.status === "active").length;
 
   return (
@@ -21,16 +25,17 @@ export default function AdminUsersPage() {
 
       <div className="act-card-2 overflow-hidden">
         <div className="hidden grid-cols-12 gap-3 border-b border-[rgba(15,23,42,0.07)] px-5 py-3 md:grid">
-          <Th className="col-span-4">Nama</Th>
+          <Th className="col-span-3">Nama</Th>
           <Th className="col-span-2">Role</Th>
           <Th className="col-span-2">Plan</Th>
           <Th className="col-span-2">Status</Th>
           <Th className="col-span-2">Bergabung</Th>
+          <Th className="col-span-1 text-right">Aksi</Th>
         </div>
         <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
           {users.map((u) => (
             <li key={u.id} className="act-rowhover grid grid-cols-12 items-center gap-3 px-5 py-4">
-              <div className="col-span-12 flex items-center gap-3 md:col-span-4">
+              <div className="col-span-12 flex items-center gap-3 md:col-span-3">
                 <span className="inline-flex h-9 w-9 flex-none items-center justify-center rounded-xl bg-[var(--act-onyx)] text-xs font-semibold text-white">
                   {u.name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase()}
                 </span>
@@ -50,6 +55,12 @@ export default function AdminUsersPage() {
                 />
               </div>
               <div className="col-span-6 text-xs text-[var(--act-graphite)] md:col-span-2">{u.joined}</div>
+              <div className="col-span-6 text-left md:col-span-1 md:text-right">
+                <ActionButton
+                  action={toggleUserStatus.bind(null, u.id)}
+                  label={u.status === "active" ? "Suspend" : "Aktifkan"}
+                />
+              </div>
             </li>
           ))}
         </ul>

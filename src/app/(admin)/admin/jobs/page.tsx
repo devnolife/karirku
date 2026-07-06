@@ -1,8 +1,12 @@
 import { MOCK_ADMIN_JOBS } from "@/lib/mock/data";
 import { PageHead, StatusDot } from "../../_ui";
+import { applyJobOverrides, readAdminOverrides } from "../../_overrides";
+import { toggleJobStatus } from "../../_actions";
+import { ActionButton } from "../../_action-button";
 
-export default function AdminJobsPage() {
-  const jobs = MOCK_ADMIN_JOBS;
+export default async function AdminJobsPage() {
+  const overrides = await readAdminOverrides();
+  const jobs = applyJobOverrides(MOCK_ADMIN_JOBS, overrides);
   const activeCount = jobs.filter((j) => j.status === "active").length;
 
   return (
@@ -49,9 +53,10 @@ export default function AdminJobsPage() {
                 />
               </div>
               <div className="col-span-12 text-left md:col-span-1 md:text-right">
-                <button className="text-xs font-semibold text-[var(--act-blue)] hover:underline">
-                  {j.status === "active" ? "Nonaktif" : "Aktifkan"}
-                </button>
+                <ActionButton
+                  action={toggleJobStatus.bind(null, j.id)}
+                  label={j.status === "active" ? "Nonaktif" : "Aktifkan"}
+                />
               </div>
             </li>
           ))}

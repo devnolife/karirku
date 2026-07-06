@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getMockSession, signOutDemo } from "@/lib/mock/session";
+import { getMockSession } from "@/lib/mock/session";
 import { AdminSidebarNav } from "./_nav";
+import { AdminMobileNav } from "./_mobile-nav";
+import { signOutAdmin } from "./_actions";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getMockSession();
@@ -45,14 +47,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 </div>
               </div>
             </div>
-            <form
-              action={async () => {
-                "use server";
-                await signOutDemo();
-                redirect("/login");
-              }}
-              className="mt-3 px-2"
-            >
+            <form action={signOutAdmin} className="mt-3 px-2">
               <button type="submit" className="act-pill-ghost !w-full justify-center !text-sm">
                 Keluar
               </button>
@@ -64,19 +59,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <div className="min-w-0 flex-1">
           {/* Mobile topbar */}
           <header className="act-glass sticky top-0 z-30 flex items-center gap-3 px-5 py-3 md:hidden">
+            <AdminMobileNav
+              user={{ name: session.user.name, email: session.user.email }}
+            />
             <Wordmark />
             <span className="act-heading text-[17px]">CraftWorks</span>
             <span className="act-chip act-chip-magenta !text-[10px] uppercase">admin</span>
-            <form
-              action={async () => {
-                "use server";
-                await signOutDemo();
-                redirect("/login");
-              }}
-              className="ml-auto"
-            >
-              <button type="submit" className="act-pill-ghost !text-xs">Keluar</button>
-            </form>
           </header>
           <main className="px-6 py-8 md:px-10">{children}</main>
         </div>
