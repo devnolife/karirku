@@ -10,6 +10,7 @@
 
 import { findAdapter } from "./adapters";
 import { applyRules, GENERIC_RULES } from "./rules";
+import { matchSavedAnswers, type SavedAnswerItem } from "./answers";
 import { mapWithLlm, type LlmMapperOptions } from "./mapper";
 import type { FormSnapshot, MapResult, ProfileData } from "./types";
 
@@ -17,6 +18,8 @@ export interface MapFormOptions {
   /** Matikan LLM fallback (mis. saat Ollama down atau untuk testing). */
   useLlm?: boolean;
   llm?: LlmMapperOptions;
+  /** Jawaban screening tersimpan user — diprioritaskan di atas LLM. */
+  savedAnswers?: SavedAnswerItem[];
 }
 
 export async function mapForm(
@@ -36,32 +39,35 @@ export async function mapForm(
 
   const deterministic = [...layer1.mappings, ...layer2.mappings];
 
+  // Lapis 2.5: jawaban screening tersimpan (pernah di-approve user)
+  const layerSaved = matchSavedAnswers(layer2.remaining, opts.savedAnswers ?? []);
+
   // Lapis 3: LLM fallback
   const useLlm = opts.useLlm ?? true;
   const llmMappings = useLlm
-    ? await mapWithLlm(layer2.remaining, profile, snapshot, opts.llm)
+    ? await mapWithLlm(layerSaved.remaining, profile, snapshot, opts.llm)
     : [];
 
   const mappedSelectors = new Set(
-    [...deterministic, ...llmMappings].map((m) => m.selector),
+    [...deterministic, ...layerSaved.mappings, ...llmMappings].map((m) => m.selector),
   );
   const unmapped = snapshot.fields
     .filter((f) => f.type !== "file" && !mappedSelectors.has(f.selector))
     .map((f) => f.selector);
 
   const method: MapResult["method"] =
-    deterministic.length && llmMappings.length
+    deterministic.length && (llmMappings.length || layerSaved.mappings.length)
       ? "mixed"
       : deterministic.length
         ? "adapter"
-        : llmMappings.length
+        : llmMappings.length || layerSaved.mappings.length
           ? "llm"
           : "none";
 
   return {
     portal: adapter?.id ?? null,
     method,
-    mappings: [...deterministic, ...llmMappings],
+    mappings: [...deterministic, ...layerSaved.mappings, ...llmMappings],
     unmapped,
   };
 }

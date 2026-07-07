@@ -144,9 +144,74 @@ model Profile {
   embedding  Unsupported("vector(768)")?
   updatedAt  DateTime                    @updatedAt @map("updated_at")
 
+  // — data kontak & tautan (dipakai autofill form lamaran) —
+  phone             String? @db.VarChar(50)
+  city              String? @map("city") @db.VarChar(120)
+  country           String? @db.VarChar(120)
+  linkedinUrl       String? @map("linkedin_url") @db.Text
+  githubUrl         String? @map("github_url") @db.Text
+  portfolioUrl      String? @map("portfolio_url") @db.Text
+  currentTitle      String? @map("current_title") @db.VarChar(255)
+  currentCompany    String? @map("current_company") @db.VarChar(255)
+  yearsExperience   Int?    @map("years_experience")
+  expectedSalaryIdr Int?    @map("expected_salary_idr")
+
+  // — preferensi kerja (dipakai skor rekomendasi) —
+  desiredRoles       String[]        @map("desired_roles") @db.Text
+  preferredLocations String[]        @map("preferred_locations") @db.Text
+  remoteOnly         Boolean         @default(false) @map("remote_only")
+  minSalaryIdr       Int?            @map("min_salary_idr")
+  desiredLevel       SeniorityLevel? @map("desired_level")
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("profiles")
+}
+
+/** Feedback user terhadap lowongan — sinyal untuk ranking rekomendasi. */
+model JobFeedback {
+  id        String            @id @default(uuid()) @db.Uuid
+  userId    String            @map("user_id") @db.Uuid
+  jobId     String            @map("job_id") @db.Uuid
+  action    JobFeedbackAction
+  createdAt DateTime          @default(now()) @map("created_at")
+
+  @@unique([userId, jobId])
+  @@index([userId, action])
+  @@map("job_feedback")
+}
+
+enum JobFeedbackAction {
+  saved
+  hidden
+  irrelevant
+}
+
+/** Jawaban pertanyaan screening yang pernah di-approve user — dipakai ulang autofill. */
+model SavedAnswer {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  questionKey String   @map("question_key") @db.VarChar(500)
+  question    String   @db.Text
+  answer      String   @db.Text
+  timesUsed   Int      @default(0) @map("times_used")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, questionKey])
+  @@map("saved_answers")
+}
+
+/** File CV user (PDF/DOC) — diinjeksikan extension ke field upload form lamaran. */
+model ResumeFile {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @unique @map("user_id") @db.Uuid
+  fileName  String   @map("file_name") @db.VarChar(255)
+  mimeType  String   @map("mime_type") @db.VarChar(100)
+  data      Bytes
+  sizeBytes Int      @map("size_bytes")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("resume_files")
 }
 
 // ============================================================

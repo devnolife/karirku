@@ -28,7 +28,7 @@ export interface FieldMapping {
   selector: string;
   value: string;
   confidence: number;
-  source: "adapter" | "llm";
+  source: "adapter" | "llm" | "saved";
   aiGenerated?: boolean;
 }
 
@@ -54,7 +54,17 @@ export type BgRequest =
   | { kind: "CONNECT" }
   | { kind: "GET_STATUS" }
   | { kind: "MAP_FORM"; snapshot: FormSnapshot }
-  | { kind: "REPORT"; payload: ReportPayload };
+  | { kind: "REPORT"; payload: ReportPayload }
+  | { kind: "GET_RESUME_FILE" }
+  | { kind: "SAVE_ANSWERS"; answers: { question: string; answer: string }[] };
+
+/** File CV yang dikirim background → content script (base64 agar serializable). */
+export interface ResumeFilePayload {
+  fileName: string;
+  mimeType: string;
+  /** Isi file, base64 (tanpa prefix data URL). */
+  base64: string;
+}
 
 export type BgResponse<T = unknown> =
   | { ok: true; data: T }

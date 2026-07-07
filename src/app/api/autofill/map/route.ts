@@ -6,6 +6,7 @@
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { mapForm } from "@/lib/autofill/engine";
+import { getSavedAnswers } from "@/lib/autofill/answers";
 import { getProfileData } from "@/lib/autofill/profile";
 import { corsJson, corsPreflight, unauthorized, userFromRequest } from "../_lib";
 
@@ -47,7 +48,10 @@ export async function POST(req: Request) {
     );
   }
 
-  const profile = await getProfileData(userId);
+  const [profile, savedAnswers] = await Promise.all([
+    getProfileData(userId),
+    getSavedAnswers(userId),
+  ]);
   if (!profile) {
     return corsJson(
       { error: "profile_not_found", message: "Profil user tidak ditemukan — lengkapi profil di karirku" },
@@ -58,6 +62,7 @@ export async function POST(req: Request) {
   const result = await mapForm(snapshot, profile, {
     // LLM bisa dimatikan via env kalau Ollama/vLLM tidak tersedia.
     useLlm: process.env.AUTOFILL_USE_LLM !== "0",
+    savedAnswers,
   });
 
   // Best-effort log (skip di mock mode).

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ApplyButton } from "@/components/ApplyButton";
+import { JobFeedbackButtons } from "@/components/JobFeedbackButtons";
 import type {
   SkillView,
   MilestoneView,
@@ -194,9 +195,30 @@ export function JobRow({ job: j }: { job: JobView }) {
           )}
         </p>
         <div className="mt-1.5 flex flex-wrap gap-1.5">
-          {j.skills.map((s) => (
-            <span key={s} className="rounded-md bg-[rgba(0,152,242,0.08)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--act-blue)]">{s}</span>
-          ))}
+          {j.skills.map((s) => {
+            const owned = j.matchedSkills?.some((m) => m.toLowerCase() === s.toLowerCase());
+            return (
+              <span
+                key={s}
+                title={owned ? "Kamu punya skill ini" : "Belum ada di profilmu"}
+                className={
+                  owned
+                    ? "rounded-md bg-[rgba(0,200,120,0.10)] px-1.5 py-0.5 text-[10px] font-semibold text-[#0a7a4b]"
+                    : "rounded-md bg-[rgba(0,152,242,0.08)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--act-blue)]"
+                }
+              >
+                {owned ? "✓ " : ""}{s}
+              </span>
+            );
+          })}
+        </div>
+        {j.matchReasons && j.matchReasons.length > 0 && (
+          <p className="mt-1 truncate text-[10px] text-[var(--act-graphite)]" title={j.matchReasons.join(" · ")}>
+            {j.matchReasons.join(" · ")}
+          </p>
+        )}
+        <div className="mt-1.5">
+          <JobFeedbackButtons jobId={j.id} saved={j.saved} />
         </div>
       </div>
       <div className="col-span-2 text-right">

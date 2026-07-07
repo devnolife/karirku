@@ -29,6 +29,13 @@ export type JobView = {
   posted: string;
   matchPct: number;
   skills: string[];
+  /** Skill lowongan yang kamu punya — penjelasan "kenapa cocok". */
+  matchedSkills?: string[];
+  /** Skill lowongan yang belum kamu punya — skill gap. */
+  missingSkills?: string[];
+  /** Alasan skor (role/lokasi/gaji sesuai preferensi, dst). */
+  matchReasons?: string[];
+  saved?: boolean;
   applyUrl?: string;
   applied?: boolean;
   sourceLabel?: string;

@@ -5,9 +5,11 @@
 
 import { prisma } from "@/lib/db";
 import { skillCoverageScore } from "@/lib/match/score";
+import { compositeScore } from "@/lib/match/composite";
 import type { JobView } from "@/lib/view-models";
 import { loadUserContext } from "./context";
 import { getAppliedJobIds } from "./applications";
+import { getReadiness } from "./readiness";
 import { classifyJobRegion, regionRank, parseLocation, type JobRegion } from "@/lib/location";
 import { describeJobSource } from "@/lib/source";
 
@@ -65,12 +67,9 @@ export async function getJobsCount(): Promise<number> {
 }
 
 /**
- * Top-N lowongan paling cocok dengan skill user. Coverage dihitung deterministik
- * via skillCoverageScore (bukan mock matchPct).
- *
- * Ranking sadar-lokasi: lowongan Indonesia tampil lebih dulu (sesuai target user
- * yang umumnya berbasis di Indonesia), lalu remote, lalu luar negeri — masing-
- * masing diurutkan by match. `region` opsional mempersempit ke satu region saja.
+ * Top-N lowongan paling cocok. Skor = compositeScore (coverage skill +
+ * semantic + readiness) lalu disesuaikan preferensi user & feedback —
+ * rekomendasi berbasis data, bukan tebakan, dan explainable (reasons).
  */
 export async function getJobMatches(
   userId: string,
@@ -79,7 +78,7 @@ export async function getJobMatches(
 ): Promise<JobView[]> {
   const ctx = await loadUserContext(userId);
 
-  const [jobs, semantic] = await Promise.all([
+  const [jobs, semantic, profile, feedback, readiness] = await Promise.all([
     prisma.job.findMany({
       where: { isActive: true },
       select: {
@@ -87,6 +86,8 @@ export async function getJobMatches(
         title: true,
         company: true,
         location: true,
+        type: true,
+        level: true,
         skills: true,
         salaryMin: true,
         salaryMax: true,
@@ -99,6 +100,21 @@ export async function getJobMatches(
       take: 600,
     }),
     semanticJobScores(userId),
+    prisma.profile.findUnique({
+      where: { userId },
+      select: {
+        desiredRoles: true,
+        preferredLocations: true,
+        remoteOnly: true,
+        minSalaryIdr: true,
+        desiredLevel: true,
+      },
+    }),
+    prisma.jobFeedback.findMany({
+      where: { userId },
+      select: { jobId: true, action: true },
+    }),
+    getReadiness(userId).catch(() => null),
   ]);
 
   const applied = await getAppliedJobIds(userId);
@@ -106,19 +122,84 @@ export async function getJobMatches(
   // Sumber dengan URL apply asli (bukan seed sintetis / native in-platform).
   const EXTERNAL_SOURCES = new Set(["greenhouse", "lever", "ashby", "kalibrr", "http"]);
 
-  const hasSemantic = semantic.size > 0;
+  const hiddenIds = new Set(
+    feedback.filter((f) => f.action === "hidden" || f.action === "irrelevant").map((f) => f.jobId),
+  );
+  const savedIds = new Set(feedback.filter((f) => f.action === "saved").map((f) => f.jobId));
 
-  let scored = jobs.map((j) => {
-    const coverage = skillCoverageScore(ctx.skillNames, j.skills).matchPct;
-    // Coverage skill = sinyal utama (0.75); kemiripan semantik = sekunder (0.25).
-    const sim = semantic.get(j.id);
-    const matchPct =
-      hasSemantic && sim !== undefined
-        ? Math.round(coverage * 0.75 + sim * 0.25)
-        : coverage;
-    const jobRegion = classifyJobRegion(j.location, j.source);
-    return { job: j, matchPct, region: jobRegion };
-  });
+  // Skill dari lowongan yang ditandai "tidak relevan" — dipakai untuk
+  // memberi penalti lowongan serupa (belajar dari feedback).
+  const irrelevantJobIds = new Set(
+    feedback.filter((f) => f.action === "irrelevant").map((f) => f.jobId),
+  );
+  const irrelevantSkills = new Set<string>();
+  for (const j of jobs) {
+    if (!irrelevantJobIds.has(j.id)) continue;
+    for (const s of j.skills) irrelevantSkills.add(s.toLowerCase());
+  }
+
+  const prefs = {
+    roles: (profile?.desiredRoles ?? []).map((r) => r.toLowerCase()),
+    locations: (profile?.preferredLocations ?? []).map((l) => l.toLowerCase()),
+    remoteOnly: profile?.remoteOnly ?? false,
+    minSalary: profile?.minSalaryIdr ?? null,
+    level: profile?.desiredLevel ?? null,
+  };
+  const readinessVal = readiness?.score ?? 0;
+
+  let scored = jobs
+    .filter((j) => !hiddenIds.has(j.id))
+    .map((j) => {
+      const cov = skillCoverageScore(ctx.skillNames, j.skills);
+      const sim = semantic.get(j.id);
+      const base = compositeScore({
+        semanticSimilarity: sim !== undefined ? sim / 100 : undefined,
+        skillCoveragePct: cov.matchPct,
+        readinessScore: readinessVal,
+      }).score;
+
+      // — penyesuaian preferensi (explainable, tiap alasan tercatat) —
+      const reasons: string[] = [];
+      let adj = 0;
+      const titleLc = j.title.toLowerCase();
+      const locLc = (j.location ?? "").toLowerCase();
+      const isRemote = j.type === "remote" || locLc.includes("remote");
+
+      if (prefs.roles.length && prefs.roles.some((r) => titleLc.includes(r) || r.includes(titleLc))) {
+        adj += 8;
+        reasons.push("Role sesuai preferensi");
+      }
+      if (prefs.locations.length && prefs.locations.some((l) => locLc.includes(l) || (l === "remote" && isRemote))) {
+        adj += 5;
+        reasons.push("Lokasi sesuai preferensi");
+      }
+      if (prefs.level && j.level === prefs.level) {
+        adj += 4;
+        reasons.push("Level sesuai");
+      }
+      if (prefs.minSalary && j.salaryMin && j.salaryMin >= prefs.minSalary) {
+        adj += 3;
+        reasons.push("Gaji ≥ minimum kamu");
+      }
+      // Serupa dengan lowongan yang kamu tandai tidak relevan → turunkan.
+      if (irrelevantSkills.size && j.skills.length) {
+        const overlap = j.skills.filter((s) => irrelevantSkills.has(s.toLowerCase())).length / j.skills.length;
+        if (overlap >= 0.5) adj -= 12;
+      }
+      if (cov.matched.length) reasons.unshift(`Cocok: ${cov.matched.slice(0, 3).join(", ")}`);
+
+      const matchPct = Math.max(0, Math.min(100, base + adj));
+      const jobRegion = classifyJobRegion(j.location, j.source);
+      return { job: j, matchPct, region: jobRegion, cov, reasons, isRemote };
+    });
+
+  // Filter keras dari preferensi.
+  if (prefs.remoteOnly) scored = scored.filter((s) => s.isRemote);
+  if (prefs.minSalary) {
+    scored = scored.filter(
+      (s) => !s.job.salaryMax || s.job.salaryMax >= (prefs.minSalary as number),
+    );
+  }
 
   // Filter region kalau diminta.
   if (region) scored = scored.filter((s) => s.region === region);
@@ -129,7 +210,7 @@ export async function getJobMatches(
     return r !== 0 ? r : b.matchPct - a.matchPct;
   });
 
-  return scored.slice(0, limit).map(({ job, matchPct }) => {
+  return scored.slice(0, limit).map(({ job, matchPct, cov, reasons }) => {
     const loc = parseLocation(job.location);
     const applyUrl = EXTERNAL_SOURCES.has(job.source) ? job.sourceUrl : undefined;
     const src = describeJobSource(job.source, applyUrl, !!job.companyProfileId);
@@ -144,6 +225,10 @@ export async function getJobMatches(
       posted: relativeTime(job.postedAt),
       matchPct,
       skills: job.skills.slice(0, 4),
+      matchedSkills: cov.matched.slice(0, 6),
+      missingSkills: cov.missing.slice(0, 6),
+      matchReasons: reasons.slice(0, 3),
+      saved: savedIds.has(job.id),
       applyUrl,
       applied: applied.has(job.id),
       sourceLabel,

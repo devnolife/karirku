@@ -10,6 +10,7 @@ import {
   type BgRequest,
   type BgResponse,
   type MapResult,
+  type ResumeFilePayload,
 } from "./shared";
 
 async function getStorage(): Promise<{
@@ -93,6 +94,31 @@ async function apiFetch<T>(path: string, body: unknown): Promise<BgResponse<T>> 
   }
 }
 
+/** Ambil file CV user dari server sebagai base64 (untuk injeksi input file). */
+async function fetchResumeFile(): Promise<BgResponse<ResumeFilePayload>> {
+  const { token, apiBase } = await getStorage();
+  if (!token) return { ok: false, error: "Belum terhubung ke karirku." };
+  try {
+    const res = await fetch(`${apiBase}/api/autofill/resume/file`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.status === 404) return { ok: false, error: "Belum ada file CV — upload di halaman profil karirku." };
+    if (!res.ok) return { ok: false, error: `HTTP ${res.status}` };
+    const mimeType = res.headers.get("Content-Type") ?? "application/pdf";
+    const fileName = decodeURIComponent(res.headers.get("X-File-Name") ?? "cv.pdf");
+    const buf = await res.arrayBuffer();
+    let binary = "";
+    const bytes = new Uint8Array(buf);
+    const CHUNK = 0x8000;
+    for (let i = 0; i < bytes.length; i += CHUNK) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
+    }
+    return { ok: true, data: { fileName, mimeType, base64: btoa(binary) } };
+  } catch (err) {
+    return { ok: false, error: `Gagal mengambil CV: ${err instanceof Error ? err.message : String(err)}` };
+  }
+}
+
 chrome.runtime.onMessage.addListener((msg: BgRequest, _sender, sendResponse) => {
   (async (): Promise<BgResponse> => {
     switch (msg.kind) {
@@ -106,6 +132,10 @@ chrome.runtime.onMessage.addListener((msg: BgRequest, _sender, sendResponse) => 
         return apiFetch<MapResult>("/api/autofill/map", msg.snapshot);
       case "REPORT":
         return apiFetch("/api/autofill/report", msg.payload);
+      case "GET_RESUME_FILE":
+        return fetchResumeFile();
+      case "SAVE_ANSWERS":
+        return apiFetch("/api/autofill/answers", { answers: msg.answers });
       default:
         return { ok: false, error: "Pesan tidak dikenal" };
     }

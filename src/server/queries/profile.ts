@@ -26,6 +26,31 @@ export type ProfileData = {
   headline: string;
   summary: string;
   skills: OwnedSkill[];
+  contact: ContactData;
+  preferences: PreferencesData;
+};
+
+/** Data kontak & tautan — bahan bakar autofill form lamaran. */
+export type ContactData = {
+  phone: string;
+  city: string;
+  country: string;
+  linkedinUrl: string;
+  githubUrl: string;
+  portfolioUrl: string;
+  currentTitle: string;
+  currentCompany: string;
+  yearsExperience: number | null;
+  expectedSalaryIdr: number | null;
+};
+
+/** Preferensi kerja — sinyal skor rekomendasi. */
+export type PreferencesData = {
+  desiredRoles: string[];
+  preferredLocations: string[];
+  remoteOnly: boolean;
+  minSalaryIdr: number | null;
+  desiredLevel: string | null;
 };
 
 /** Semua skill taxonomy, dikelompokkan per kategori (untuk picker). */
@@ -48,10 +73,7 @@ export async function getSkillCatalog(): Promise<Map<string, SkillOption[]>> {
 /** Profil user + skill yang dimiliki (dengan proficiency & verified). */
 export async function getProfile(userId: string): Promise<ProfileData> {
   const [profile, skills] = await Promise.all([
-    prisma.profile.findUnique({
-      where: { userId },
-      select: { headline: true, summary: true },
-    }),
+    prisma.profile.findUnique({ where: { userId } }),
     prisma.userSkill.findMany({
       where: { userId },
       orderBy: { proficiency: "desc" },
@@ -62,6 +84,25 @@ export async function getProfile(userId: string): Promise<ProfileData> {
   return {
     headline: profile?.headline ?? "",
     summary: profile?.summary ?? "",
+    contact: {
+      phone: profile?.phone ?? "",
+      city: profile?.city ?? "",
+      country: profile?.country ?? "",
+      linkedinUrl: profile?.linkedinUrl ?? "",
+      githubUrl: profile?.githubUrl ?? "",
+      portfolioUrl: profile?.portfolioUrl ?? "",
+      currentTitle: profile?.currentTitle ?? "",
+      currentCompany: profile?.currentCompany ?? "",
+      yearsExperience: profile?.yearsExperience ?? null,
+      expectedSalaryIdr: profile?.expectedSalaryIdr ?? null,
+    },
+    preferences: {
+      desiredRoles: profile?.desiredRoles ?? [],
+      preferredLocations: profile?.preferredLocations ?? [],
+      remoteOnly: profile?.remoteOnly ?? false,
+      minSalaryIdr: profile?.minSalaryIdr ?? null,
+      desiredLevel: profile?.desiredLevel ?? null,
+    },
     skills: skills.map((s) => ({
       id: s.skill.id,
       name: s.skill.name,
@@ -158,6 +199,68 @@ export async function saveProfileBasics(
   });
 }
 
+/** Update data kontak & tautan (bahan autofill). String kosong → null. */
+export async function saveProfileContact(
+  userId: string,
+  data: Partial<ContactData>,
+): Promise<void> {
+  const s = (v: string | undefined) => {
+    const t = v?.trim();
+    return t ? t : null;
+  };
+  const n = (v: number | null | undefined) =>
+    typeof v === "number" && Number.isFinite(v) && v >= 0 ? Math.round(v) : null;
+
+  const values = {
+    phone: s(data.phone),
+    city: s(data.city),
+    country: s(data.country),
+    linkedinUrl: s(data.linkedinUrl),
+    githubUrl: s(data.githubUrl),
+    portfolioUrl: s(data.portfolioUrl),
+    currentTitle: s(data.currentTitle),
+    currentCompany: s(data.currentCompany),
+    yearsExperience: n(data.yearsExperience),
+    expectedSalaryIdr: n(data.expectedSalaryIdr),
+  };
+  await prisma.profile.upsert({
+    where: { userId },
+    create: { userId, ...values },
+    update: values,
+  });
+}
+
+const VALID_LEVELS = new Set(["intern", "junior", "mid", "senior", "lead", "manager"]);
+
+/** Update preferensi kerja (sinyal skor rekomendasi). */
+export async function saveProfilePreferences(
+  userId: string,
+  data: Partial<PreferencesData>,
+): Promise<void> {
+  const list = (v: string[] | undefined) =>
+    (v ?? []).map((x) => x.trim()).filter(Boolean).slice(0, 20);
+  const level =
+    data.desiredLevel && VALID_LEVELS.has(data.desiredLevel)
+      ? (data.desiredLevel as "intern" | "junior" | "mid" | "senior" | "lead" | "manager")
+      : null;
+
+  const values = {
+    desiredRoles: list(data.desiredRoles),
+    preferredLocations: list(data.preferredLocations),
+    remoteOnly: data.remoteOnly ?? false,
+    minSalaryIdr:
+      typeof data.minSalaryIdr === "number" && data.minSalaryIdr > 0
+        ? Math.round(data.minSalaryIdr)
+        : null,
+    desiredLevel: level,
+  };
+  await prisma.profile.upsert({
+    where: { userId },
+    create: { userId, ...values },
+    update: values,
+  });
+}
+
 /**
  * Regenerasi embedding profil dari headline + summary + skill. Best-effort:
  * kalau AI/embedding gagal, tidak melempar (profil tetap tersimpan).
@@ -174,6 +277,8 @@ export async function regenerateProfileEmbedding(userId: string): Promise<void> 
 
     const text = [
       profile.headline ?? "",
+      profile.currentTitle ?? "",
+      (profile.desiredRoles ?? []).join(", "),
       profile.summary ?? "",
       skills.map((s) => s.skill.name).join(", "),
     ]
