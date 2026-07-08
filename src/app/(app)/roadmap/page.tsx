@@ -2,6 +2,7 @@ import { requireUser } from "@/lib/auth";
 import { getRoadmap } from "@/server/queries/roadmap";
 import { hasAnyPath } from "@/server/services/learning-path";
 import { getActiveGoal } from "@/server/queries/goal";
+import { roadmapShUrl } from "@/lib/content/roadmap-reference";
 import { PageHeader, MilestoneRow } from "../_dash/parts";
 import { Empty } from "@/components/ui/empty";
 import { RegenerateRoadmapButton } from "@/components/RegenerateRoadmapButton";
@@ -14,6 +15,7 @@ export default async function RoadmapPage() {
     getActiveGoal(user.id),
   ]);
   const toGo = Math.max(0, roadmap.weeksTotal - roadmap.weeksDone);
+  const referenceUrl = goal ? roadmapShUrl(goal.targetRole) : null;
 
   return (
     <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-8 md:px-10">
@@ -23,6 +25,20 @@ export default async function RoadmapPage() {
         meta={goal ? `Target: ${goal.targetRole} · ${roadmap.weeksDone}/${roadmap.weeksTotal} selesai` : `${roadmap.weeksDone} selesai · ${toGo} to go`}
         action={<RegenerateRoadmapButton hasPath={hasPath} />}
       />
+      {referenceUrl && (
+        <p className="-mt-4 text-xs text-[var(--act-graphite)]">
+          Referensi komunitas:{" "}
+          <a
+            href={referenceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold underline decoration-dotted underline-offset-2 hover:text-[var(--act-iris)]"
+          >
+            roadmap resmi {goal!.targetRole} di roadmap.sh ↗
+          </a>{" "}
+          — bandingkan dengan roadmap personal kamu di bawah.
+        </p>
+      )}
       {roadmap.milestones.length === 0 ? (
         goal ? (
           <Empty
@@ -39,7 +55,7 @@ export default async function RoadmapPage() {
         )
       ) : (
         <ol className="act-card-2 divide-y divide-[rgba(15,23,42,0.07)] overflow-hidden">
-          {roadmap.milestones.map((m) => <MilestoneRow key={m.week} milestone={m} />)}
+          {roadmap.milestones.map((m) => <MilestoneRow key={m.id} milestone={m} />)}
         </ol>
       )}
     </div>

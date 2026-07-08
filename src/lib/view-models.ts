@@ -14,10 +14,11 @@ export type SkillView = {
 };
 
 export type MilestoneView = {
+  id: string;
   week: number;
   title: string;
   status: "done" | "in_progress" | "upcoming";
-  courses: { title: string; provider: string; hours: number }[];
+  courses: { title: string; provider: string; hours: number; url?: string }[];
 };
 
 export type JobView = {

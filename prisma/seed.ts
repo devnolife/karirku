@@ -6,6 +6,7 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { seedUsers } from "./seed/users";
 import { seedMarketplace } from "./seed/marketplace";
+import { seedCourses } from "./seed/courses";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
@@ -167,6 +168,7 @@ async function main() {
 
   await seedUsers(prisma);
   await seedMarketplace(prisma);
+  await seedCourses(prisma);
 }
 
 main()

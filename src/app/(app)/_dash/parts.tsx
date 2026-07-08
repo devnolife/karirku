@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ApplyButton } from "@/components/ApplyButton";
 import { JobFeedbackButtons } from "@/components/JobFeedbackButtons";
+import { MilestoneStatusButton } from "@/components/MilestoneStatusButton";
 import type {
   SkillView,
   MilestoneView,
@@ -162,7 +163,20 @@ export function MilestoneRow({ milestone: m }: { milestone: MilestoneView }) {
           <ul className="mt-1.5 space-y-0.5">
             {m.courses.map((c) => (
               <li key={c.title} className="text-xs text-[var(--act-graphite)]">
-                <span className="font-semibold text-[var(--act-charcoal)]">{c.provider}</span> · {c.title} · {c.hours}h
+                <span className="font-semibold text-[var(--act-charcoal)]">{c.provider}</span> ·{" "}
+                {c.url ? (
+                  <a
+                    href={c.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline decoration-dotted underline-offset-2 hover:text-[var(--act-iris)]"
+                  >
+                    {c.title}
+                  </a>
+                ) : (
+                  c.title
+                )}{" "}
+                · {c.hours}h
               </li>
             ))}
           </ul>
@@ -170,6 +184,7 @@ export function MilestoneRow({ milestone: m }: { milestone: MilestoneView }) {
       </div>
       <div className="col-span-12 flex items-center gap-2 md:col-span-3 md:justify-end">
         <span className={`act-chip ${statusConfig.chip}`}>{statusConfig.text}</span>
+        <MilestoneStatusButton milestoneId={m.id} status={m.status} />
       </div>
     </li>
   );
@@ -330,9 +345,8 @@ export function EmptyState({
 }) {
   return (
     <div
-      className={`flex flex-col items-center justify-center rounded-[18px] border border-dashed border-[rgba(15,23,42,0.14)] bg-[var(--act-mist)] text-center ${
-        compact ? "px-6 py-10" : "px-8 py-16"
-      }`}
+      className={`flex flex-col items-center justify-center rounded-[18px] border border-dashed border-[rgba(15,23,42,0.14)] bg-[var(--act-mist)] text-center ${compact ? "px-6 py-10" : "px-8 py-16"
+        }`}
     >
       <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[rgba(0,152,242,0.09)] text-[var(--act-blue)]">
         <svg
