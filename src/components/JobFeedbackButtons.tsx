@@ -35,11 +35,10 @@ export function JobFeedbackButtons({ jobId, saved }: { jobId: string; saved?: bo
           setIsSaved(next);
           void send(next ? "saved" : "clear");
         }}
-        className={`${base} ${
-          isSaved
-            ? "bg-[rgba(242,0,202,0.10)] text-[var(--act-magenta)] ring-[rgba(242,0,202,0.25)]"
+        className={`${base} ${isSaved
+            ? "bg-[rgba(245,158,11,0.10)] text-[var(--act-magenta)] ring-[rgba(245,158,11,0.25)]"
             : "bg-[var(--act-mist)] text-[var(--act-graphite)] ring-[rgba(15,23,42,0.08)] hover:text-[var(--act-magenta)]"
-        }`}
+          }`}
       >
         {isSaved ? "★ Tersimpan" : "☆ Simpan"}
       </button>

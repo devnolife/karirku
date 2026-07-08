@@ -228,7 +228,7 @@ function ProductShowcase() {
             className="absolute -bottom-6 -left-4 z-20 hidden md:block lg:-left-14"
           >
             <span className="act-glass-chip-light">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#0098f2]" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--act-blue)]" />
               +3 skill baru minggu ini
             </span>
           </div>
@@ -357,7 +357,7 @@ function Features() {
           {/* 01 — Roadmap personal (featured) */}
           <div
             className="act-feature p-6 sm:col-span-2 lg:col-span-4 lg:p-7"
-            style={featureVars("#38bdf8", "#0098f2", "rgba(0,152,242,0.5)")}
+            style={featureVars("#5cb3e8", "#2b8fd6", "rgba(43,143,214,0.45)")}
             data-gs="stagger-child"
           >
             <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
@@ -385,18 +385,16 @@ function Features() {
                       <span className="absolute left-[9px] top-5 h-full w-px bg-[var(--act-stone)]/40" />
                     )}
                     <span
-                      className={`relative z-10 mt-0.5 flex h-[18px] w-[18px] flex-none items-center justify-center rounded-full ${
-                        done
-                          ? "bg-[var(--act-blue)] text-white"
-                          : "bg-white ring-1 ring-inset ring-[var(--act-stone)]/60"
-                      }`}
+                      className={`relative z-10 mt-0.5 flex h-[18px] w-[18px] flex-none items-center justify-center rounded-full ${done
+                        ? "bg-[var(--act-blue)] text-white"
+                        : "bg-white ring-1 ring-inset ring-[var(--act-stone)]/60"
+                        }`}
                     >
                       {done ? <Check className="h-2.5 w-2.5" /> : null}
                     </span>
                     <span
-                      className={`text-[13px] font-medium ${
-                        done ? "text-[var(--act-ink)]" : "text-[var(--act-graphite)]"
-                      }`}
+                      className={`text-[13px] font-medium ${done ? "text-[var(--act-ink)]" : "text-[var(--act-graphite)]"
+                        }`}
                     >
                       {t}
                     </span>
@@ -409,7 +407,7 @@ function Features() {
           {/* 02 — Analisis skill-gap */}
           <div
             className="act-feature p-6 lg:col-span-2"
-            style={featureVars("#8b78ff", "#6d56fc", "rgba(109,86,252,0.5)")}
+            style={featureVars("#948ae3", "#7568d9", "rgba(117,104,217,0.45)")}
             data-gs="stagger-child"
           >
             <span className="act-icon-tile">
@@ -436,7 +434,7 @@ function Features() {
                     <div
                       data-gs="bar"
                       data-w={p}
-                      className="h-full rounded-full bg-gradient-to-r from-[#8b78ff] to-[var(--act-iris)]"
+                      className="h-full rounded-full bg-gradient-to-r from-[#948ae3] to-[var(--act-iris)]"
                       style={{ width: `${p}%` }}
                     />
                   </div>
@@ -448,7 +446,7 @@ function Features() {
           {/* 03 — Job match real-time */}
           <div
             className="act-feature p-6 lg:col-span-3"
-            style={featureVars("#ff5cd6", "#f200ca", "rgba(242,0,202,0.4)")}
+            style={featureVars("#eab264", "#e29a3c", "rgba(226,154,60,0.4)")}
             data-gs="stagger-child"
           >
             <span className="act-icon-tile">
@@ -465,7 +463,7 @@ function Features() {
               <span className="text-[13px] font-medium text-[var(--act-ink)]">
                 Junior Frontend · Xendit
               </span>
-              <span className="rounded-full bg-[rgba(242,0,202,0.1)] px-2.5 py-0.5 text-[12px] font-bold text-[var(--act-magenta)]">
+              <span className="rounded-full bg-[rgba(245,158,11,0.12)] px-2.5 py-0.5 text-[12px] font-bold text-[#b45309]">
                 <span data-gs="count" data-to="92">92</span>%
               </span>
             </div>
@@ -474,7 +472,7 @@ function Features() {
           {/* 04 — Latihan interview */}
           <div
             className="act-feature p-6 lg:col-span-3"
-            style={featureVars("#34d399", "#059669", "rgba(5,150,105,0.45)")}
+            style={featureVars("#5eb3a4", "#3d9a8b", "rgba(61,154,139,0.45)")}
             data-gs="stagger-child"
           >
             <span className="act-icon-tile">
@@ -491,7 +489,7 @@ function Features() {
               <div className="w-fit max-w-[85%] rounded-[12px] rounded-bl-[4px] bg-[var(--act-mist)] px-3.5 py-2 text-[13px] text-[var(--act-charcoal)]">
                 Ceritakan project React terbaikmu?
               </div>
-              <div className="ml-auto w-fit max-w-[85%] rounded-[12px] rounded-br-[4px] bg-gradient-to-r from-[#34d399] to-[#059669] px-3.5 py-2 text-[13px] font-medium text-white">
+              <div className="ml-auto w-fit max-w-[85%] rounded-[12px] rounded-br-[4px] bg-gradient-to-r from-[#5eb3a4] to-[#3d9a8b] px-3.5 py-2 text-[13px] font-medium text-white">
                 Aku bangun dashboard realtime…
               </div>
             </div>
@@ -547,7 +545,7 @@ function Gallery() {
             <figcaption className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-3 p-6 sm:flex-row sm:items-end sm:justify-between sm:p-8">
               <div>
                 <span className="act-glass-chip">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#38bdf8]" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#5cb3e8]" />
                   Roadmap · Frontend Engineer
                 </span>
                 <h3 className="act-heading mt-3 text-[22px] text-white sm:text-[26px]">
@@ -589,9 +587,8 @@ function Comparison() {
     if (c === true)
       return (
         <span
-          className={`inline-flex h-6 w-6 items-center justify-center rounded-full ${
-            highlight ? "bg-[var(--act-blue)] text-white" : "bg-[rgba(0,152,242,0.1)] text-[var(--act-blue)]"
-          }`}
+          className={`inline-flex h-6 w-6 items-center justify-center rounded-full ${highlight ? "bg-[var(--act-blue)] text-white" : "bg-[rgba(0,152,242,0.1)] text-[var(--act-blue)]"
+            }`}
         >
           <Check className="h-3.5 w-3.5" />
         </span>
@@ -602,9 +599,8 @@ function Comparison() {
       return <span className="text-[14px] text-[var(--act-graphite)]">Sebagian</span>;
     return (
       <span
-        className={`text-[14px] ${
-          highlight ? "font-semibold text-[var(--act-ink)]" : "text-[var(--act-graphite)]"
-        }`}
+        className={`text-[14px] ${highlight ? "font-semibold text-[var(--act-ink)]" : "text-[var(--act-graphite)]"
+          }`}
       >
         {c}
       </span>
@@ -652,15 +648,14 @@ function Comparison() {
               {cols.map((c, i) => (
                 <div
                   key={c}
-                  className={`relative flex flex-col items-center justify-center gap-1.5 px-3 py-4 text-center text-[14px] font-semibold ${
-                    i === 0
-                      ? "bg-gradient-to-b from-[rgba(0,152,242,0.1)] to-[rgba(0,152,242,0.04)] text-[var(--act-blue)]"
-                      : "text-[var(--act-graphite)]"
-                  }`}
+                  className={`relative flex flex-col items-center justify-center gap-1.5 px-3 py-4 text-center text-[14px] font-semibold ${i === 0
+                    ? "bg-gradient-to-b from-[rgba(0,152,242,0.1)] to-[rgba(0,152,242,0.04)] text-[var(--act-blue)]"
+                    : "text-[var(--act-graphite)]"
+                    }`}
                 >
                   {i === 0 && (
                     <>
-                      <span className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#38bdf8] to-[var(--act-blue)]" />
+                      <span className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#5cb3e8] to-[var(--act-blue)]" />
                       <span className="rounded-full bg-[var(--act-onyx)] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-white">
                         Rekomendasi
                       </span>
@@ -675,9 +670,8 @@ function Comparison() {
               <div
                 key={r.label}
                 data-gs="stagger-child"
-                className={`act-rowhover grid grid-cols-[1.3fr_repeat(5,1fr)] items-center ${
-                  ri !== rows.length - 1 ? "border-b border-[var(--act-stone)]/20" : ""
-                }`}
+                className={`act-rowhover grid grid-cols-[1.3fr_repeat(5,1fr)] items-center ${ri !== rows.length - 1 ? "border-b border-[var(--act-stone)]/20" : ""
+                  }`}
               >
                 <div className="px-6 py-5 text-[14px] font-medium text-[var(--act-ink)]">
                   {r.label}
@@ -685,11 +679,10 @@ function Comparison() {
                 {r.cells.map((cell, ci) => (
                   <div
                     key={ci}
-                    className={`px-3 py-5 text-center ${
-                      ci === 0
-                        ? "bg-[rgba(0,152,242,0.05)] shadow-[inset_1px_0_0_rgba(0,152,242,0.14),inset_-1px_0_0_rgba(0,152,242,0.14)]"
-                        : ""
-                    }`}
+                    className={`px-3 py-5 text-center ${ci === 0
+                      ? "bg-[rgba(0,152,242,0.05)] shadow-[inset_1px_0_0_rgba(0,152,242,0.14),inset_-1px_0_0_rgba(0,152,242,0.14)]"
+                      : ""
+                      }`}
                   >
                     {renderCell(cell, ci === 0)}
                   </div>
@@ -719,7 +712,7 @@ function JourneyBand() {
       <div className="relative z-10 mx-auto max-w-[1100px] px-6 py-24 md:py-28">
         <div className="mx-auto max-w-[760px] text-center">
           <span className="act-glass-chip">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#38bdf8]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[#5cb3e8]" />
             Cerita dari jalur
           </span>
           <blockquote className="act-heading mx-auto mt-7 max-w-[28ch] text-[26px] leading-[1.3] text-white md:text-[34px]">
@@ -728,7 +721,7 @@ function JourneyBand() {
             tangan kontrak pertama.”
           </blockquote>
           <div className="mt-7 flex flex-col items-center">
-            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#38bdf8] to-[var(--act-iris)] text-[15px] font-bold text-white ring-2 ring-white/25">
+            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#5cb3e8] to-[var(--act-iris)] text-[15px] font-bold text-white ring-2 ring-white/25">
               DA
             </span>
             <p className="act-script mt-3 text-[24px] text-[#bae6fd]">Dewi Anggraini</p>
@@ -825,7 +818,7 @@ function Footer() {
         {/* The second summit — CTA over the open landscape */}
         <div className="pb-5 pt-12 text-center md:pb-6 md:pt-14" data-gs="section">
           <span className="act-glass-chip">
-            <Check className="h-3.5 w-3.5 text-[#38bdf8]" />
+            <Check className="h-3.5 w-3.5 text-[#5cb3e8]" />
             Gratis · tanpa kartu kredit
           </span>
           <h2 className="act-display mx-auto mt-5 text-[30px] leading-[1.04] text-white sm:text-[40px] md:text-[48px]">

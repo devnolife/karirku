@@ -16,10 +16,10 @@ const REGION_BADGE: Record<string, { label: string; cls: string }> = {
 const AVATAR_TONES = ["act-avatar-magenta", "act-avatar-blue", "act-avatar-iris"];
 
 const TILE: Record<string, CSSProperties> = {
-  blue: { "--tile-from": "#38bdf8", "--tile-to": "#0098f2" } as CSSProperties,
-  iris: { "--tile-from": "#8b78ff", "--tile-to": "#6d56fc" } as CSSProperties,
-  magenta: { "--tile-from": "#ff5ce0", "--tile-to": "#f200ca" } as CSSProperties,
-  mint: { "--tile-from": "#34d399", "--tile-to": "#059669" } as CSSProperties,
+  blue: { "--tile-from": "#5cb3e8", "--tile-to": "#2b8fd6" } as CSSProperties,
+  iris: { "--tile-from": "#948ae3", "--tile-to": "#7568d9" } as CSSProperties,
+  magenta: { "--tile-from": "#eab264", "--tile-to": "#e29a3c" } as CSSProperties,
+  mint: { "--tile-from": "#5eb3a4", "--tile-to": "#3d9a8b" } as CSSProperties,
 };
 
 const ICONS: Record<string, ReactNode> = {
@@ -145,7 +145,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
             </p>
           ) : src.kind === "native" ? (
             <p className="mt-3 flex items-center gap-1.5 text-xs text-[var(--act-graphite)]">
-              <span className="text-[#059669]">{ICONS.shield}</span>
+              <span className="text-[var(--act-teal)]">{ICONS.shield}</span>
               Lamar langsung di KarirKu — lamaranmu tercatat & dikelola di sini.
             </p>
           ) : (
@@ -230,7 +230,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                   <span className="act-kicker !text-[10px]">Kamu kuasai</span>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {job.matchedSkills.map((s) => (
-                      <span key={s} className="rounded-md bg-[rgba(5,150,105,0.1)] px-2 py-0.5 text-[11px] font-semibold text-[#059669]">✓ {s}</span>
+                      <span key={s} className="rounded-md bg-[rgba(61,154,139,0.1)] px-2 py-0.5 text-[11px] font-semibold text-[#2b7a6d]">✓ {s}</span>
                     ))}
                   </div>
                 </div>
@@ -240,7 +240,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                   <span className="act-kicker !text-[10px]">Perlu dipelajari</span>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {job.missingSkills.map((s) => (
-                      <span key={s} className="rounded-md bg-[rgba(242,0,202,0.08)] px-2 py-0.5 text-[11px] font-semibold text-[var(--act-magenta)]">{s}</span>
+                      <span key={s} className="rounded-md bg-[rgba(245,158,11,0.1)] px-2 py-0.5 text-[11px] font-semibold text-[#b45309]">{s}</span>
                     ))}
                   </div>
                 </div>

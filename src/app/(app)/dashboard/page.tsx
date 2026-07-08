@@ -122,7 +122,7 @@ async function JobseekerOverview() {
         <PreviewCard href="/learn" kicker="Belajar" title="Kursus prioritas" tone="mint">
           {topCourse ? (
             <div className="flex items-center gap-3">
-              <span className="act-tile bg-[linear-gradient(140deg,#34d399,#059669)]">{topCourse.provider.charAt(0)}</span>
+              <span className="act-tile bg-[linear-gradient(140deg,#5eb3a4,var(--act-teal))]">{topCourse.provider.charAt(0)}</span>
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-[var(--act-ink)]">{topCourse.title}</p>
                 <p className="text-xs text-[var(--act-graphite)]">{topCourse.provider} · {topCourse.hours}h</p>

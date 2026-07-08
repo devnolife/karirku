@@ -22,7 +22,7 @@ export function ApplyButton({
 
   if (applied) {
     return (
-      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#059669]">
+      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--act-teal)]">
         ✓ Sudah dilamar
       </span>
     );

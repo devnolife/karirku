@@ -153,10 +153,10 @@ export default function LoginPage() {
 
 function RoleGlyph({ role }: { role: UserRole }) {
   const cfg: Record<UserRole, { bg: string; d: string }> = {
-    jobseeker: { bg: "bg-[linear-gradient(140deg,#38bdf8,var(--act-blue))]", d: "M12 14a4 4 0 100-8 4 4 0 000 8zM5 20a7 7 0 0114 0" },
-    freelancer: { bg: "bg-[linear-gradient(140deg,#8b78ff,var(--act-iris))]", d: "M4 7h16v12H4zM9 7V5a2 2 0 012-2h2a2 2 0 012 2v2" },
-    company: { bg: "bg-[linear-gradient(140deg,#ff5cd6,var(--act-magenta))]", d: "M4 20V5a1 1 0 011-1h9a1 1 0 011 1v15M15 9h4a1 1 0 011 1v10M7 8h2M7 12h2M7 16h2" },
-    admin: { bg: "bg-[linear-gradient(140deg,#34d399,#059669)]", d: "M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z" },
+    jobseeker: { bg: "bg-[linear-gradient(140deg,#5cb3e8,var(--act-blue))]", d: "M12 14a4 4 0 100-8 4 4 0 000 8zM5 20a7 7 0 0114 0" },
+    freelancer: { bg: "bg-[linear-gradient(140deg,#948ae3,var(--act-iris))]", d: "M4 7h16v12H4zM9 7V5a2 2 0 012-2h2a2 2 0 012 2v2" },
+    company: { bg: "bg-[linear-gradient(140deg,#eab264,var(--act-magenta))]", d: "M4 20V5a1 1 0 011-1h9a1 1 0 011 1v15M15 9h4a1 1 0 011 1v10M7 8h2M7 12h2M7 16h2" },
+    admin: { bg: "bg-[linear-gradient(140deg,#5eb3a4,var(--act-teal))]", d: "M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z" },
   };
   const c = cfg[role];
   return (

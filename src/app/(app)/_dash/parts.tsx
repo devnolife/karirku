@@ -52,7 +52,7 @@ export function Kpi({
   const valueColor = {
     blue: "text-[var(--act-blue)]",
     iris: "text-[var(--act-iris)]",
-    mint: "text-[#059669]",
+    mint: "text-[var(--act-teal)]",
     magenta: "text-[var(--act-magenta)]",
   }[tone];
   const railClass = {
@@ -118,9 +118,9 @@ export function SkillBar({ skill, tone = "blue" }: { skill: SkillView; tone?: "b
   const gap = Math.max(0, skill.required - skill.current);
   const critical = gap > 25;
   const fill = critical
-    ? "linear-gradient(90deg, #ff5cd6, var(--act-magenta))"
+    ? "linear-gradient(90deg, #eab264, var(--act-magenta))"
     : tone === "iris"
-      ? "linear-gradient(90deg, #8b78ff, var(--act-iris))"
+      ? "linear-gradient(90deg, #948ae3, var(--act-iris))"
       : "linear-gradient(90deg, var(--act-sky-bright), var(--act-sky-deep))";
   return (
     <div>
@@ -148,8 +148,8 @@ export function SkillBar({ skill, tone = "blue" }: { skill: SkillView; tone?: "b
 /* ---------------- Milestone row ---------------- */
 export function MilestoneRow({ milestone: m }: { milestone: MilestoneView }) {
   const statusConfig = {
-    done: { text: "Done", chip: "act-chip-green", badge: "bg-[linear-gradient(140deg,#34d399,#059669)] text-white" },
-    in_progress: { text: "In progress", chip: "act-chip-blue", badge: "bg-[linear-gradient(140deg,#38bdf8,var(--act-blue))] text-white" },
+    done: { text: "Done", chip: "act-chip-green", badge: "bg-[linear-gradient(140deg,#5eb3a4,var(--act-teal))] text-white" },
+    in_progress: { text: "In progress", chip: "act-chip-blue", badge: "bg-[linear-gradient(140deg,#5cb3e8,var(--act-blue))] text-white" },
     upcoming: { text: "Upcoming", chip: "act-chip-mute", badge: "bg-[var(--act-mist)] text-[var(--act-graphite)] border border-[rgba(15,23,42,0.1)]" },
   }[m.status];
   return (
@@ -271,7 +271,7 @@ export function MarketChart({ data }: { data: { label: string; value: number }[]
             <stop offset="100%" stopColor="var(--act-magenta)" stopOpacity="0" />
           </linearGradient>
           <linearGradient id="chartLine" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#ff5cd6" />
+            <stop offset="0%" stopColor="#eab264" />
             <stop offset="100%" stopColor="var(--act-magenta)" />
           </linearGradient>
         </defs>
@@ -291,11 +291,12 @@ export function MarketChart({ data }: { data: { label: string; value: number }[]
 /* ---------------- Course row ---------------- */
 export function CourseRow({ course: c, idx }: { course: CourseView; idx: number }) {
   const tiles = [
-    "bg-[linear-gradient(140deg,#38bdf8,var(--act-blue))]",
-    "bg-[linear-gradient(140deg,#8b78ff,var(--act-iris))]",
-    "bg-[linear-gradient(140deg,#ff5cd6,var(--act-magenta))]",
-    "bg-[linear-gradient(140deg,#34d399,#059669)]",
-    "bg-[linear-gradient(140deg,#fbbf24,#d97706)]",
+    "bg-[linear-gradient(140deg,#5cb3e8,var(--act-blue))]",
+    "bg-[linear-gradient(140deg,#948ae3,var(--act-iris))]",
+    "bg-[linear-gradient(140deg,#5eb3a4,var(--act-teal))]",
+    "bg-[linear-gradient(140deg,#eab264,var(--act-magenta))]",
+    "bg-[linear-gradient(140deg,#d98da0,var(--act-rose))]",
+    "bg-[linear-gradient(140deg,#97b58c,var(--act-sage))]",
   ];
   return (
     <li className="act-rowhover grid grid-cols-12 items-center gap-3 px-5 py-4">

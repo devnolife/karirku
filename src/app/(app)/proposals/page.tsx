@@ -73,7 +73,7 @@ export default async function ProposalsPage() {
             <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
               {portfolio.map((it, i) => (
                 <li key={it.title} className="flex items-center gap-3 px-5 py-4">
-                  <span className={`act-tile ${["bg-[linear-gradient(140deg,#38bdf8,var(--act-blue))]","bg-[linear-gradient(140deg,#8b78ff,var(--act-iris))]","bg-[linear-gradient(140deg,#ff5cd6,var(--act-magenta))]"][i % 3]}`}>{it.title.charAt(0)}</span>
+                  <span className={`act-tile ${["bg-[linear-gradient(140deg,#5cb3e8,var(--act-blue))]", "bg-[linear-gradient(140deg,#948ae3,var(--act-iris))]", "bg-[linear-gradient(140deg,#5eb3a4,var(--act-teal))]"][i % 3]}`}>{it.title.charAt(0)}</span>
                   <div className="min-w-0">
                     <h4 className="truncate text-sm font-semibold text-[var(--act-ink)]">{it.title}</h4>
                     <p className="text-xs text-[var(--act-graphite)]">{it.category} · {it.tag}</p>

@@ -16,7 +16,7 @@ export default async function LearnPage() {
     <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-8 md:px-10">
       <PageHeader
         kicker="Belajar"
-        title={<>Belajar <span className="text-[#059669]">ini dulu.</span></>}
+        title={<>Belajar <span className="text-[var(--act-teal)]">ini dulu.</span></>}
         meta="Kursus prioritas sesuai skill-gap kamu"
       />
 

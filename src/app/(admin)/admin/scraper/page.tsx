@@ -50,7 +50,7 @@ export default async function AdminScraperPage() {
               <div className="col-span-12 text-sm font-semibold text-[var(--act-ink)] md:col-span-4">{q.name}</div>
               <div className="col-span-3 text-sm text-[#b45309] md:col-span-2">{q.waiting}</div>
               <div className="col-span-3 text-sm text-[var(--act-blue)] md:col-span-2">{q.active}</div>
-              <div className="col-span-3 text-sm text-[#059669] md:col-span-2">{q.completed}</div>
+              <div className="col-span-3 text-sm text-[var(--act-teal)] md:col-span-2">{q.completed}</div>
               <div className="col-span-3 text-sm text-[var(--act-magenta)] md:col-span-2">{q.failed}</div>
             </li>
           ))}
@@ -83,7 +83,7 @@ function Q({ label, value, tone }: { label: string; value: number; tone: "amber"
   const valueColor = {
     amber: "text-[#b45309]",
     blue: "text-[var(--act-blue)]",
-    green: "text-[#059669]",
+    green: "text-[var(--act-teal)]",
     magenta: "text-[var(--act-magenta)]",
   }[tone];
   return (

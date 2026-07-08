@@ -42,17 +42,25 @@ select, input, textarea { font-family: inherit; }
   --act-ink: #0f0f0f;
   --act-onyx: #0d111b;
   --act-shadow: #242628;
-  --act-blue: #0098f2;
-  --act-magenta: #f200ca;
-  --act-iris: #6d56fc;
-  --act-wash-sky: #cfeafa;
-  --act-wash-lilac: #e1e0fc;
-  --act-wash-petal: #f6d2f4;
+  /* Aksen inti — sedikit diredam dari versi neon agar nyaman di mata */
+  --act-blue: #2b8fd6;
+  --act-magenta: #e29a3c;
+  --act-iris: #7568d9;
+  /* Aksen sekunder — muted, untuk variasi tanpa menyala */
+  --act-teal: #3d9a8b;
+  --act-sage: #7a9e6e;
+  --act-rose: #c96f85;
+  --act-slate: #64748b;
+  --act-wash-sky: #d9ecf8;
+  --act-wash-lilac: #e6e4f8;
+  --act-wash-petal: #f8ecd8;
+  --act-wash-mint: #ddefe9;
+  --act-wash-rose: #f7e7ea;
   /* Sky thread — pulls the hero sky down through the page below */
-  --act-sky-50: #f3faff;
-  --act-sky-100: #e3f3fe;
-  --act-sky-bright: #38bdf8;
-  --act-sky-deep: #0098f2;
+  --act-sky-50: #f4f9fd;
+  --act-sky-100: #e7f2fa;
+  --act-sky-bright: #5cb3e8;
+  --act-sky-deep: #2b8fd6;
   --act-cta-shadow: rgb(36, 38, 40) 0px 0px 0px 1px,
     rgba(27, 28, 29, 0.48) 0px 1px 2px 0px;
   --act-soft-shadow: rgba(0, 0, 0, 0.06) 0px 2.5px 2.5px 0px;
@@ -429,25 +437,32 @@ select, input, textarea { font-family: inherit; }
   font-size: 12px;
   font-weight: 600;
 }
-.act-chip-blue { background: rgba(0, 152, 242, 0.1); color: var(--act-blue); }
-.act-chip-iris { background: rgba(109, 86, 252, 0.1); color: var(--act-iris); }
-.act-chip-green { background: rgba(31, 157, 85, 0.12); color: #15803d; }
-.act-chip-magenta { background: rgba(242, 0, 202, 0.1); color: var(--act-magenta); }
-.act-chip-amber { background: rgba(217, 119, 6, 0.14); color: #b45309; }
+.act-chip-blue { background: rgba(43, 143, 214, 0.1); color: #1d6ca8; }
+.act-chip-iris { background: rgba(117, 104, 217, 0.1); color: #5b4fc0; }
+.act-chip-green { background: rgba(61, 154, 139, 0.12); color: #2b7a6d; }
+.act-chip-magenta { background: rgba(226, 154, 60, 0.14); color: #a8681f; }
+.act-chip-amber { background: rgba(226, 154, 60, 0.14); color: #a8681f; }
+.act-chip-teal { background: rgba(61, 154, 139, 0.12); color: #2b7a6d; }
+.act-chip-sage { background: rgba(122, 158, 110, 0.14); color: #55763f; }
+.act-chip-rose { background: rgba(201, 111, 133, 0.12); color: #a4506a; }
+.act-chip-slate { background: rgba(100, 116, 139, 0.1); color: #475569; }
 .act-chip-mute { background: rgba(15, 23, 42, 0.06); color: var(--act-graphite); }
 
 /* Soft pastel wash surfaces — the colorful card / section backgrounds */
 .act-wash-iris-soft {
-  background: radial-gradient(120% 130% at 50% 0%, #efecff, var(--act-wash-lilac) 82%);
+  background: radial-gradient(120% 130% at 50% 0%, #f0eefb, var(--act-wash-lilac) 82%);
 }
 .act-wash-petal-soft {
-  background: radial-gradient(120% 130% at 50% 0%, #fde6fb, var(--act-wash-petal) 86%);
+  background: radial-gradient(120% 130% at 50% 0%, #fbf3e4, var(--act-wash-petal) 86%);
 }
 .act-wash-mint-soft {
-  background: radial-gradient(120% 130% at 50% 0%, #dcf7e8, #c6f1da 86%);
+  background: radial-gradient(120% 130% at 50% 0%, #e9f5f0, var(--act-wash-mint) 86%);
 }
 .act-wash-amber-soft {
-  background: radial-gradient(120% 130% at 50% 0%, #fdf0d9, #fbe6bf 86%);
+  background: radial-gradient(120% 130% at 50% 0%, #fbf3e4, #f6e8cd 86%);
+}
+.act-wash-rose-soft {
+  background: radial-gradient(120% 130% at 50% 0%, #fbf1f3, var(--act-wash-rose) 86%);
 }
 
 /* Section index badge — a small colored numeral tile */
@@ -463,10 +478,12 @@ select, input, textarea { font-family: inherit; }
   font-size: 13px;
   color: #fff;
 }
-.act-num-blue { background: linear-gradient(140deg, #38bdf8, var(--act-blue)); }
-.act-num-iris { background: linear-gradient(140deg, #8b78ff, var(--act-iris)); }
-.act-num-magenta { background: linear-gradient(140deg, #ff5cd6, var(--act-magenta)); }
-.act-num-mint { background: linear-gradient(140deg, #34d399, #059669); }
+.act-num-blue { background: linear-gradient(140deg, #5cb3e8, var(--act-blue)); }
+.act-num-iris { background: linear-gradient(140deg, #948ae3, var(--act-iris)); }
+.act-num-magenta { background: linear-gradient(140deg, #eab264, var(--act-magenta)); }
+.act-num-mint { background: linear-gradient(140deg, #5eb3a4, var(--act-teal)); }
+.act-num-rose { background: linear-gradient(140deg, #d98da0, var(--act-rose)); }
+.act-num-sage { background: linear-gradient(140deg, #97b58c, var(--act-sage)); }
 
 /* Colored accent rail at a card's top edge */
 .act-rail { position: relative; }
@@ -477,11 +494,12 @@ select, input, textarea { font-family: inherit; }
   height: 4px;
   border-radius: 20px 20px 0 0;
 }
-.act-rail-blue::before { background: linear-gradient(90deg, #38bdf8, var(--act-blue)); }
-.act-rail-iris::before { background: linear-gradient(90deg, #8b78ff, var(--act-iris)); }
-.act-rail-mint::before { background: linear-gradient(90deg, #34d399, #059669); }
-.act-rail-magenta::before { background: linear-gradient(90deg, #ff5cd6, var(--act-magenta)); }
-.act-rail-rainbow::before { background: linear-gradient(90deg, var(--act-blue), var(--act-iris) 55%, var(--act-magenta)); }
+.act-rail-blue::before { background: linear-gradient(90deg, #5cb3e8, var(--act-blue)); }
+.act-rail-iris::before { background: linear-gradient(90deg, #948ae3, var(--act-iris)); }
+.act-rail-mint::before { background: linear-gradient(90deg, #5eb3a4, var(--act-teal)); }
+.act-rail-magenta::before { background: linear-gradient(90deg, #eab264, var(--act-magenta)); }
+.act-rail-rose::before { background: linear-gradient(90deg, #d98da0, var(--act-rose)); }
+.act-rail-rainbow::before { background: linear-gradient(90deg, var(--act-blue), var(--act-iris) 38%, var(--act-teal) 70%, var(--act-magenta)); }
 
 /* Small colored provider/avatar tile */
 .act-tile {
@@ -781,7 +799,7 @@ select, input, textarea { font-family: inherit; }
   position: absolute;
   inset: 0 0 auto 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--rail-from, #38bdf8), var(--rail-to, #0098f2));
+  background: linear-gradient(90deg, var(--rail-from, #5cb3e8), var(--rail-to, #2b8fd6));
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -804,7 +822,7 @@ select, input, textarea { font-family: inherit; }
   height: 44px;
   border-radius: 14px;
   color: #fff;
-  background: linear-gradient(140deg, var(--tile-from, #38bdf8), var(--tile-to, #0098f2));
+  background: linear-gradient(140deg, var(--tile-from, #5cb3e8), var(--tile-to, #2b8fd6));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.28),
     0 10px 22px -10px var(--tile-glow, rgba(0, 152, 242, 0.55));
