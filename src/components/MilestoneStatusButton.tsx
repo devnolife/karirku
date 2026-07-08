@@ -43,9 +43,8 @@ export function MilestoneStatusButton({
       <button
         onClick={onClick}
         disabled={pending}
-        className={`act-chip cursor-pointer transition-opacity hover:opacity-80 disabled:opacity-50 ${
-          status === "in_progress" ? "act-chip-green" : "act-chip-mute"
-        }`}
+        className={`act-chip cursor-pointer transition-opacity hover:opacity-80 disabled:opacity-50 ${status === "in_progress" ? "act-chip-green" : "act-chip-mute"
+          }`}
       >
         {pending ? "…" : next.label}
       </button>

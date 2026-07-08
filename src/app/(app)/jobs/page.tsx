@@ -4,6 +4,7 @@ import { getActiveGoal } from "@/server/queries/goal";
 import { getJobMatches, getRoleMarket } from "@/server/queries/jobs";
 import { PageHeader, JobRow, MarketChart } from "../_dash/parts";
 import { Empty } from "@/components/ui/empty";
+import { JobSearchForm } from "@/components/JobSearchForm";
 import type { JobRegion } from "@/lib/location";
 
 const REGION_TABS: { key: string; label: string; region?: JobRegion }[] = [
@@ -12,21 +13,61 @@ const REGION_TABS: { key: string; label: string; region?: JobRegion }[] = [
   { key: "remote", label: "Remote", region: "remote" },
 ];
 
+const TYPE_OPTIONS = ["fulltime", "parttime", "contract", "remote", "hybrid", "onsite"] as const;
+const LEVEL_OPTIONS = ["intern", "junior", "mid", "senior", "lead", "manager"] as const;
+const SALARY_OPTIONS = [
+  { key: "5", label: "≥ Rp 5 jt", value: 5_000_000 },
+  { key: "10", label: "≥ Rp 10 jt", value: 10_000_000 },
+  { key: "20", label: "≥ Rp 20 jt", value: 20_000_000 },
+] as const;
+
+type JobsSearchParams = {
+  region?: string;
+  q?: string;
+  type?: string;
+  level?: string;
+  gaji?: string;
+  n?: string;
+};
+
+/** Bangun URL /jobs dengan param yang diubah (hapus kalau value kosong). */
+function jobsUrl(current: JobsSearchParams, patch: Partial<JobsSearchParams>): string {
+  const merged: Record<string, string | undefined> = { ...current, ...patch };
+  const params = new URLSearchParams();
+  for (const [k, v] of Object.entries(merged)) {
+    if (v) params.set(k, v);
+  }
+  const qs = params.toString();
+  return qs ? `/jobs?${qs}` : "/jobs";
+}
+
 export default async function JobsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ region?: string }>;
+  searchParams: Promise<JobsSearchParams>;
 }) {
   const user = await requireUser();
-  const { region: regionParam } = await searchParams;
-  const activeTab = REGION_TABS.find((t) => t.key === regionParam) ?? REGION_TABS[0];
+  const sp = await searchParams;
+  const activeTab = REGION_TABS.find((t) => t.key === sp.region) ?? REGION_TABS[0];
+  const q = sp.q?.trim() ?? "";
+  const type = TYPE_OPTIONS.includes(sp.type as (typeof TYPE_OPTIONS)[number]) ? sp.type : undefined;
+  const level = LEVEL_OPTIONS.includes(sp.level as (typeof LEVEL_OPTIONS)[number]) ? sp.level : undefined;
+  const salary = SALARY_OPTIONS.find((s) => s.key === sp.gaji);
+  const limit = Math.min(100, Math.max(20, Number(sp.n) || 20));
 
   const goal = await getActiveGoal(user.id);
   const [jobs, market] = await Promise.all([
-    getJobMatches(user.id, 20, activeTab.region),
+    getJobMatches(user.id, limit, {
+      region: activeTab.region,
+      q: q || undefined,
+      type,
+      level,
+      minSalary: salary?.value,
+    }),
     getRoleMarket(goal?.targetRole ?? null),
   ]);
   const roleLabel = goal?.targetRole?.split(" ").slice(0, 2).join(" ") ?? "Semua role";
+  const hasFilter = Boolean(q || type || level || salary);
 
   return (
     <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-8 md:px-10">
@@ -37,12 +78,15 @@ export default async function JobsPage({
         action={<span className="act-chip act-chip-mute">{market.openPositions} posisi</span>}
       />
 
-      {/* Region filter */}
-      <div className="flex flex-wrap gap-2">
+      {/* Search */}
+      <JobSearchForm initialQuery={q} />
+
+      {/* Region + filter chips */}
+      <div className="flex flex-wrap items-center gap-2">
         {REGION_TABS.map((t) => (
           <Link
             key={t.key}
-            href={t.key === "all" ? "/jobs" : `/jobs?region=${t.key}`}
+            href={jobsUrl(sp, { region: t.key === "all" ? undefined : t.key })}
             className={
               t.key === activeTab.key
                 ? "rounded-full bg-[var(--act-onyx)] px-4 py-2 text-sm font-semibold text-white"
@@ -52,22 +96,82 @@ export default async function JobsPage({
             {t.label}
           </Link>
         ))}
+
+        <span className="mx-1 h-6 w-px bg-[rgba(15,23,42,0.1)]" aria-hidden />
+
+        {SALARY_OPTIONS.map((s) => (
+          <Link
+            key={s.key}
+            href={jobsUrl(sp, { gaji: salary?.key === s.key ? undefined : s.key })}
+            className={
+              salary?.key === s.key
+                ? "rounded-full bg-[var(--act-iris)] px-3.5 py-1.5 text-xs font-semibold text-white"
+                : "rounded-full border border-[rgba(15,23,42,0.12)] bg-[var(--act-mist)] px-3.5 py-1.5 text-xs font-medium text-[var(--act-charcoal)] transition-all hover:border-[var(--act-iris)]"
+            }
+          >
+            {s.label}
+          </Link>
+        ))}
+
+        {LEVEL_OPTIONS.map((l) => (
+          <Link
+            key={l}
+            href={jobsUrl(sp, { level: level === l ? undefined : l })}
+            className={
+              level === l
+                ? "rounded-full bg-[var(--act-blue)] px-3.5 py-1.5 text-xs font-semibold text-white"
+                : "rounded-full border border-[rgba(15,23,42,0.12)] bg-[var(--act-mist)] px-3.5 py-1.5 text-xs font-medium text-[var(--act-charcoal)] transition-all hover:border-[var(--act-blue)]"
+            }
+          >
+            {l}
+          </Link>
+        ))}
+
+        {hasFilter && (
+          <Link
+            href={jobsUrl({ region: sp.region }, {})}
+            className="ml-1 text-xs font-semibold text-[var(--act-magenta)] underline underline-offset-2"
+          >
+            Reset filter
+          </Link>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         <div className="act-card-2 overflow-hidden lg:col-span-3">
           <div className="flex items-center justify-between border-b border-[rgba(15,23,42,0.07)] px-5 py-3.5">
-            <span className="act-kicker">Rekomendasi loker · {activeTab.label}</span>
+            <span className="act-kicker">
+              {q ? `Hasil “${q}” · ${activeTab.label}` : `Rekomendasi loker · ${activeTab.label}`}
+            </span>
             <span className="act-chip act-chip-mute">{jobs.length} posisi</span>
           </div>
           {jobs.length === 0 ? (
             <div className="p-5">
-              <Empty title="Belum ada lowongan cocok" description="Coba filter lain atau tambahkan skill di profilmu untuk meningkatkan kecocokan." />
+              <Empty
+                title={q ? `Tidak ada hasil untuk “${q}”` : "Belum ada lowongan cocok"}
+                description={
+                  q
+                    ? "Coba kata kunci lain atau longgarkan filter."
+                    : "Coba filter lain atau tambahkan skill di profilmu untuk meningkatkan kecocokan."
+                }
+              />
             </div>
           ) : (
-            <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
-              {jobs.map((j) => <JobRow key={j.id} job={j} />)}
-            </ul>
+            <>
+              <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
+                {jobs.map((j) => <JobRow key={j.id} job={j} />)}
+              </ul>
+              {jobs.length >= limit && limit < 100 && (
+                <div className="border-t border-[rgba(15,23,42,0.07)] p-4 text-center">
+                  <Link
+                    href={jobsUrl(sp, { n: String(limit + 20) })}
+                    className="act-pill inline-block !text-sm"
+                  >
+                    Muat lebih banyak
+                  </Link>
+                </div>
+              )}
+            </>
           )}
         </div>
         <div className="act-card-2 act-wash-petal-soft overflow-hidden border-[rgba(242,0,202,0.16)] p-5 lg:col-span-2">

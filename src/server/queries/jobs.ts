@@ -66,21 +66,55 @@ export async function getJobsCount(): Promise<number> {
   return prisma.job.count({ where: { isActive: true } });
 }
 
+export type JobMatchFilters = {
+  region?: JobRegion;
+  /** Keyword pencarian — dicocokkan ke title/company/description/skills (ILIKE). */
+  q?: string;
+  /** Gaji minimum (IDR). Lowongan tanpa data gaji tetap lolos. */
+  minSalary?: number;
+  /** Filter tipe kerja (fulltime | contract | remote | …). */
+  type?: string;
+  /** Filter level (junior | mid | senior | …). */
+  level?: string;
+};
+
 /**
  * Top-N lowongan paling cocok. Skor = compositeScore (coverage skill +
  * semantic + readiness) lalu disesuaikan preferensi user & feedback —
  * rekomendasi berbasis data, bukan tebakan, dan explainable (reasons).
+ * Keyword search menyaring kandidat SEBELUM scoring — hasil pencarian
+ * tetap diurutkan berdasarkan kecocokan personal.
  */
 export async function getJobMatches(
   userId: string,
   limit = 12,
-  region?: JobRegion,
+  filters: JobMatchFilters | JobRegion = {},
 ): Promise<JobView[]> {
+  // Kompat: pemanggil lama mengirim region string sebagai argumen ke-3.
+  const f: JobMatchFilters = typeof filters === "string" ? { region: filters } : filters;
   const ctx = await loadUserContext(userId);
+
+  const q = f.q?.trim();
+  const searchWhere = q
+    ? {
+      OR: [
+        { title: { contains: q, mode: "insensitive" as const } },
+        { company: { contains: q, mode: "insensitive" as const } },
+        { description: { contains: q, mode: "insensitive" as const } },
+        { skills: { hasSome: [q] } },
+        { location: { contains: q, mode: "insensitive" as const } },
+      ],
+    }
+    : {};
 
   const [jobs, semantic, profile, feedback, readiness] = await Promise.all([
     prisma.job.findMany({
-      where: { isActive: true },
+      where: {
+        isActive: true,
+        ...searchWhere,
+        ...(f.type ? { type: f.type as never } : {}),
+        ...(f.level ? { level: f.level as never } : {}),
+      },
       select: {
         id: true,
         title: true,
@@ -201,8 +235,17 @@ export async function getJobMatches(
     );
   }
 
+  // Filter gaji minimum eksplisit dari UI (longgar: tanpa data gaji tetap lolos).
+  if (f.minSalary) {
+    scored = scored.filter(
+      (s) =>
+        (!s.job.salaryMin && !s.job.salaryMax) ||
+        (s.job.salaryMax ?? s.job.salaryMin ?? 0) >= (f.minSalary as number),
+    );
+  }
+
   // Filter region kalau diminta.
-  if (region) scored = scored.filter((s) => s.region === region);
+  if (f.region) scored = scored.filter((s) => s.region === f.region);
 
   // Urutkan: region (Indonesia dulu) → match desc.
   scored.sort((a, b) => {

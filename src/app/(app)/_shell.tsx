@@ -153,18 +153,19 @@ export function AppShell({
 
 function SearchPill({ className = "", showHint }: { className?: string; showHint?: boolean }) {
   return (
-    <div
+    <Link
+      href="/jobs"
       className={
-        "flex items-center gap-2 rounded-full bg-[var(--act-mist)] px-3.5 py-2 text-[12.5px] text-[var(--act-graphite)] " +
+        "flex items-center gap-2 rounded-full bg-[var(--act-mist)] px-3.5 py-2 text-[12.5px] text-[var(--act-graphite)] transition-colors hover:bg-[rgba(15,23,42,0.08)] " +
         className
       }
     >
       <Ico.Search />
-      <span className="flex-1">Cari tugas, lowongan, skill…</span>
+      <span className="flex-1">Cari lowongan, perusahaan, skill…</span>
       {showHint && (
-        <span className="act-chip act-chip-mute !px-1.5 !py-0.5 !text-[10px] font-semibold">⌘F</span>
+        <span className="act-chip act-chip-mute !px-1.5 !py-0.5 !text-[10px] font-semibold">/jobs</span>
       )}
-    </div>
+    </Link>
   );
 }
 

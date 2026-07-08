@@ -238,6 +238,192 @@ const COURSES: SeedCourse[] = [
     description:
       "Modul belajar resmi Mozilla — referensi paling akurat untuk fundamental web.",
   },
+
+  // ================= NON-IT: Marketing =================
+  {
+    source: "google-skillshop",
+    sourceUrl: "https://skillshop.docebosaas.com/learn/public/learning-plan/view/163/google-ads-search-professional-certificate",
+    title: "Google Ads Search Certification",
+    provider: "Google Skillshop",
+    language: "id",
+    level: "beginner",
+    skills: ["Google Ads", "SEM"],
+    durationHours: 8,
+    description:
+      "Sertifikasi resmi Google untuk iklan Search — gratis, tersedia Bahasa Indonesia, diakui industri.",
+  },
+  {
+    source: "google",
+    sourceUrl: "https://analytics.google.com/analytics/academy/",
+    title: "Google Analytics Certification (GA4)",
+    provider: "Google Skillshop",
+    language: "en",
+    level: "beginner",
+    skills: ["Google Analytics", "Data Analysis"],
+    durationHours: 10,
+    description:
+      "Kuasai GA4 dari sumber resminya — skill wajib untuk digital marketing dan data analyst pemula.",
+  },
+  {
+    source: "hubspot",
+    sourceUrl: "https://academy.hubspot.com/courses/content-marketing",
+    title: "Content Marketing Certification",
+    provider: "HubSpot Academy",
+    language: "en",
+    level: "beginner",
+    skills: ["Content Marketing", "Copywriting", "SEO"],
+    durationHours: 7,
+    description:
+      "Strategi konten end-to-end + sertifikat gratis dari HubSpot — bagus untuk CV digital marketing.",
+  },
+  {
+    source: "hubspot",
+    sourceUrl: "https://academy.hubspot.com/courses/digital-marketing",
+    title: "Digital Marketing Certification",
+    provider: "HubSpot Academy",
+    language: "en",
+    level: "beginner",
+    skills: ["Content Marketing", "Email Marketing", "Social Media Marketing"],
+    durationHours: 6,
+    description:
+      "Fondasi digital marketing menyeluruh: paid ads, email, sosmed, dan funnel — gratis bersertifikat.",
+  },
+  {
+    source: "meta",
+    sourceUrl: "https://www.facebook.com/business/learn",
+    title: "Meta Blueprint — Dasar Iklan Facebook & Instagram",
+    provider: "Meta Blueprint",
+    language: "id",
+    level: "beginner",
+    skills: ["Meta Ads", "Social Media Marketing"],
+    durationHours: 6,
+    description:
+      "Kelas resmi Meta (tersedia Bahasa Indonesia) untuk beriklan di Facebook & Instagram.",
+  },
+
+  // ================= NON-IT: Desain & Kreatif =================
+  {
+    source: "figma",
+    sourceUrl: "https://help.figma.com/hc/en-us/sections/30880632542743-Figma-Design-for-beginners",
+    title: "Figma Design for Beginners",
+    provider: "Figma Learn",
+    language: "en",
+    level: "beginner",
+    skills: ["Figma", "UI Design", "Prototyping"],
+    durationHours: 5,
+    description:
+      "Kurikulum resmi Figma: dari canvas pertama sampai prototype interaktif — gratis penuh.",
+  },
+  {
+    source: "google",
+    sourceUrl: "https://www.coursera.org/professional-certificates/google-ux-design",
+    title: "Google UX Design Professional Certificate",
+    provider: "Coursera (Google)",
+    language: "en",
+    level: "beginner",
+    skills: ["UX Design", "UX Research", "Figma", "Prototyping"],
+    durationHours: 150,
+    description:
+      "Jalur karir UX lengkap dari Google — bisa diaudit gratis, financial aid tersedia.",
+  },
+  {
+    source: "canva",
+    sourceUrl: "https://www.canva.com/designschool/courses/",
+    title: "Canva Design School",
+    provider: "Canva",
+    language: "en",
+    level: "beginner",
+    skills: ["Canva", "UI Design"],
+    durationHours: 4,
+    description:
+      "Dasar desain grafis praktis untuk konten sosmed & presentasi — cocok untuk non-desainer.",
+  },
+  {
+    source: "youtube",
+    sourceUrl: "https://www.youtube.com/playlist?list=PLYJx6vLZBLPTGGpteQPBcjLXals4l-2rP",
+    title: "Playlist Belajar Video Editing CapCut & Premiere",
+    provider: "YouTube (kreator ID)",
+    language: "id",
+    level: "beginner",
+    skills: ["Video Editing", "CapCut", "Adobe Premiere"],
+    durationHours: 6,
+    description:
+      "Tutorial editing video berbahasa Indonesia untuk konten kreator pemula.",
+  },
+
+  // ================= NON-IT: Bisnis, Data & Office =================
+  {
+    source: "microsoft",
+    sourceUrl: "https://learn.microsoft.com/id-id/training/paths/get-started-data-analytics/",
+    title: "Memulai Analitik Data dengan Power BI",
+    provider: "Microsoft Learn",
+    language: "id",
+    level: "beginner",
+    skills: ["Power BI", "Data Analysis"],
+    durationHours: 6,
+    description:
+      "Learning path resmi Microsoft (Bahasa Indonesia) untuk analisis data & visualisasi Power BI.",
+  },
+  {
+    source: "freecodecamp",
+    sourceUrl: "https://www.freecodecamp.org/learn/data-analysis-with-python/",
+    title: "Data Analysis with Python Certification",
+    provider: "freeCodeCamp",
+    language: "en",
+    level: "intermediate",
+    skills: ["Data Analysis", "Python", "Pandas"],
+    durationHours: 60,
+    description:
+      "Jembatan dari Excel ke analisis data modern — gratis + sertifikat, cocok lintas jurusan.",
+  },
+  {
+    source: "youtube",
+    sourceUrl: "https://www.youtube.com/playlist?list=PL5PjholuMuy1tGDMWLYd6h6z9U4zxzsQE",
+    title: "Playlist Belajar Microsoft Excel dari Nol",
+    provider: "YouTube (kreator ID)",
+    language: "id",
+    level: "beginner",
+    skills: ["Microsoft Excel", "Data Entry"],
+    durationHours: 8,
+    description:
+      "Excel dasar sampai pivot table & vlookup dalam Bahasa Indonesia — skill wajib admin/finance.",
+  },
+  {
+    source: "hubspot",
+    sourceUrl: "https://academy.hubspot.com/courses/inbound-sales",
+    title: "Inbound Sales Certification",
+    provider: "HubSpot Academy",
+    language: "en",
+    level: "beginner",
+    skills: ["Sales", "CRM", "Negosiasi"],
+    durationHours: 3,
+    description:
+      "Teknik menjual modern berbasis kebutuhan buyer — gratis bersertifikat untuk karir sales/BD.",
+  },
+  {
+    source: "prakerja",
+    sourceUrl: "https://www.prakerja.go.id/",
+    title: "Katalog Pelatihan Prakerja (Admin, Akuntansi, HR)",
+    provider: "Kartu Prakerja",
+    language: "id",
+    level: "beginner",
+    skills: ["Administrasi Perkantoran", "Akuntansi", "Rekrutmen"],
+    durationHours: 15,
+    description:
+      "Pelatihan bersubsidi pemerintah untuk jalur admin, akuntansi, dan HR — cek katalog resmi.",
+  },
+  {
+    source: "youtube",
+    sourceUrl: "https://www.youtube.com/playlist?list=PLXn6qeCSVEDCMDgHDwlbrNMTuoNz7Fg1n",
+    title: "Playlist Dasar Akuntansi untuk Pemula",
+    provider: "YouTube (kreator ID)",
+    language: "id",
+    level: "beginner",
+    skills: ["Akuntansi", "Pembukuan"],
+    durationHours: 10,
+    description:
+      "Siklus akuntansi, jurnal, dan laporan keuangan dijelaskan dalam Bahasa Indonesia.",
+  },
 ];
 
 function slugify(s: string): string {

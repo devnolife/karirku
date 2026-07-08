@@ -128,6 +128,43 @@ const SKILLS: Array<{ name: string; category: string; aliases?: string[] }> = [
   { name: "Tableau", category: "business" },
   { name: "Microsoft Excel", category: "business", aliases: ["Excel"] },
 
+  // Finance & Akuntansi
+  { name: "Akuntansi", category: "finance", aliases: ["Accounting"] },
+  { name: "Pembukuan", category: "finance", aliases: ["Bookkeeping"] },
+  { name: "Perpajakan", category: "finance", aliases: ["Tax", "Brevet"] },
+  { name: "Financial Analysis", category: "finance", aliases: ["Analisis Keuangan"] },
+  { name: "Budgeting", category: "finance", aliases: ["Penganggaran"] },
+  { name: "Accurate", category: "finance" },
+  { name: "SAP", category: "finance" },
+
+  // HR & Administrasi
+  { name: "Rekrutmen", category: "hr", aliases: ["Recruitment", "Talent Acquisition"] },
+  { name: "Payroll", category: "hr", aliases: ["Penggajian"] },
+  { name: "Administrasi Personalia", category: "hr", aliases: ["HR Admin", "People Operations"] },
+  { name: "Hubungan Industrial", category: "hr", aliases: ["Industrial Relations"] },
+  { name: "Administrasi Perkantoran", category: "admin", aliases: ["Office Administration"] },
+  { name: "Data Entry", category: "admin" },
+  { name: "Microsoft Word", category: "admin", aliases: ["Word"] },
+  { name: "Microsoft PowerPoint", category: "admin", aliases: ["PowerPoint"] },
+  { name: "Google Workspace", category: "admin", aliases: ["Google Docs", "Google Sheets"] },
+
+  // Sales & Customer Support
+  { name: "Sales", category: "sales", aliases: ["Penjualan"] },
+  { name: "Business Development", category: "sales", aliases: ["BD"] },
+  { name: "Negosiasi", category: "sales", aliases: ["Negotiation"] },
+  { name: "CRM", category: "sales", aliases: ["Salesforce CRM", "HubSpot CRM"] },
+  { name: "Customer Service", category: "sales", aliases: ["Customer Support", "Layanan Pelanggan"] },
+  { name: "Telemarketing", category: "sales" },
+
+  // Konten & Kreatif (non-desain)
+  { name: "Content Writing", category: "content", aliases: ["Penulisan Konten"] },
+  { name: "Video Editing", category: "content", aliases: ["Edit Video"] },
+  { name: "Adobe Premiere", category: "content", aliases: ["Premiere Pro"] },
+  { name: "CapCut", category: "content" },
+  { name: "Fotografi", category: "content", aliases: ["Photography"] },
+  { name: "Public Speaking", category: "content" },
+  { name: "Canva", category: "content" },
+
   // Soft skills (penting untuk role Indonesia)
   { name: "Komunikasi", category: "soft", aliases: ["Communication"] },
   { name: "Problem Solving", category: "soft" },
