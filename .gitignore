@@ -65,3 +65,7 @@ next-env.d.ts
 
 # brainstorm visual companion sessions
 .superpowers/
+
+# Agent skills (local only, do not push)
+.agents/
+skills-lock.json
