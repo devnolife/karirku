@@ -31,7 +31,7 @@ export default async function TalentSearchPage({
   }
 
   return (
-    <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-12">
+    <div className="act-rise app-page space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <span className="act-eyebrow">Company · Talent search</span>

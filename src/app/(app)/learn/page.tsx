@@ -13,7 +13,7 @@ export default async function LearnPage() {
   ]);
 
   return (
-    <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-8 md:px-10">
+    <div className="act-rise app-page space-y-8">
       <PageHeader
         kicker="Belajar"
         title={<>Belajar <span className="text-[var(--act-teal)]">ini dulu.</span></>}

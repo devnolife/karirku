@@ -12,10 +12,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="app-canvas act-sans min-h-screen text-[var(--act-ink)]">
-      <div className="mx-auto flex max-w-[1500px]">
-        {/* Sidebar */}
-        <aside className="sticky top-0 hidden h-screen w-[252px] flex-none flex-col border-r border-[rgba(15,23,42,0.08)] bg-[var(--act-paper)] px-4 py-5 md:flex">
+    <div className="app-canvas act-sans flex h-dvh w-full text-[var(--act-ink)]">
+      <div className="flex h-full w-full">
+        {/* Sidebar — fixed to viewport, never follows page length */}
+        <aside className="hidden h-full w-[252px] flex-none flex-col border-r border-[rgba(15,23,42,0.08)] bg-[var(--act-paper)] px-4 py-5 md:flex">
           <Link href="/admin" className="flex items-center gap-2.5 px-2">
             <Wordmark />
             <span className="act-heading text-[18px]">
@@ -29,7 +29,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <div className="mt-7 px-2">
             <span className="act-kicker">Panel</span>
           </div>
-          <div className="mt-3 flex-1">
+          <div className="no-scrollbar mt-3 flex-1 overflow-y-auto">
             <AdminSidebarNav />
           </div>
 
@@ -59,10 +59,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
         </aside>
 
-        {/* Content */}
-        <div className="min-w-0 flex-1">
+        {/* Content — scrolls internally, sidebar stays put */}
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
           {/* Mobile topbar */}
-          <header className="act-glass sticky top-0 z-30 flex items-center gap-3 px-5 py-3 md:hidden">
+          <header className="act-glass sticky top-0 z-30 flex flex-none items-center gap-3 px-5 py-3 md:hidden">
             <Wordmark />
             <span className="act-heading text-[17px]">CraftWorks</span>
             <span className="act-chip act-chip-magenta !text-[10px] uppercase">admin</span>
@@ -76,7 +76,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               <button type="submit" className="act-pill-ghost !text-xs">Keluar</button>
             </form>
           </header>
-          <main className="px-6 py-8 md:px-10">{children}</main>
+          <main className="no-scrollbar min-w-0 flex-1 overflow-y-auto">
+            <div className="app-page">{children}</div>
+          </main>
         </div>
       </div>
     </div>

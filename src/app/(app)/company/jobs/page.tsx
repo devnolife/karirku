@@ -9,7 +9,7 @@ export default async function CompanyJobsPage() {
   const active = jobs.filter((j) => j.status === "active").length;
 
   return (
-    <div className="act-rise mx-auto max-w-[1400px] space-y-8 px-6 py-12">
+    <div className="act-rise app-page space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <span className="act-eyebrow">Company · Lowongan</span>

@@ -17,7 +17,7 @@ export async function FreelancerOverview() {
   const topProject = projects[0] ?? null;
 
   return (
-    <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-8 md:px-10">
+    <div className="act-rise app-page space-y-8">
       {/* Hello + profile */}
       <section className="grid grid-cols-12 items-center gap-6">
         <div className="col-span-12 lg:col-span-8">
@@ -36,15 +36,20 @@ export async function FreelancerOverview() {
           </Link>
         </div>
         <div className="col-span-12 lg:col-span-4">
-          <div className="act-card-2 act-wash-sky-soft border-[rgba(0,152,242,0.18)] p-5">
-            <span className="act-kicker">Kesiapan profil</span>
-            <div className="mt-2 flex items-baseline gap-1">
-              <span className="act-display text-5xl text-[var(--act-blue)]">{f.readiness}</span>
-              <span className="text-xl font-semibold text-[var(--act-graphite)]">%</span>
-            </div>
-            <div className="mt-4 grid grid-cols-2 gap-3 border-t border-[rgba(15,23,42,0.08)] pt-4">
-              <MiniStat label="Project selesai" value={`${f.completedProjects}`} />
-              <MiniStat label="Response rate" value={`${f.responseRate}%`} />
+          <div className="act-bezel">
+            <div
+              className="act-bezel-core p-5"
+              style={{ "--core-bg": "radial-gradient(130% 140% at 50% 0%, var(--act-sky-100), var(--act-wash-sky) 90%)" } as React.CSSProperties}
+            >
+              <span className="act-kicker">Kesiapan profil</span>
+              <div className="mt-2 flex items-baseline gap-1">
+                <span className="act-display text-5xl text-[var(--act-blue)]">{f.readiness}</span>
+                <span className="text-xl font-semibold text-[var(--act-graphite)]">%</span>
+              </div>
+              <div className="mt-4 grid grid-cols-2 gap-3 border-t border-[rgba(15,23,42,0.08)] pt-4">
+                <MiniStat label="Project selesai" value={`${f.completedProjects}`} />
+                <MiniStat label="Response rate" value={`${f.responseRate}%`} />
+              </div>
             </div>
           </div>
         </div>

@@ -16,7 +16,7 @@ export default async function SkillsPage() {
   const verifiedCount = profile.skills.filter((s) => s.verified).length;
 
   return (
-    <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-8 md:px-10">
+    <div className="act-rise app-page space-y-8">
       <PageHeader
         kicker="Skill-gap analyzer"
         title={<>Skill kamu <span className="text-[var(--act-blue)]">vs target.</span></>}

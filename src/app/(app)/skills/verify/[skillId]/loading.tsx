@@ -5,7 +5,7 @@
  */
 export default function VerifyLoading() {
   return (
-    <div className="act-rise mx-auto max-w-[800px] px-6 py-16 text-center">
+    <div className="act-rise app-page max-w-[800px] py-16 text-center">
       <div className="mx-auto flex h-14 w-14 items-center justify-center">
         <span className="inline-block h-10 w-10 animate-spin rounded-full border-[3px] border-[rgba(0,152,242,0.2)] border-t-[var(--act-blue)]" />
       </div>

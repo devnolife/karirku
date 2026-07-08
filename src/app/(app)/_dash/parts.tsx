@@ -33,7 +33,7 @@ export function PageHeader({
   );
 }
 
-/* ---------------- KPI ---------------- */
+/* ---------------- KPI — double-bezel tile ---------------- */
 export function Kpi({
   label,
   value,
@@ -55,63 +55,67 @@ export function Kpi({
     mint: "text-[var(--act-teal)]",
     magenta: "text-[var(--act-magenta)]",
   }[tone];
-  const railClass = {
-    blue: "act-rail-blue",
-    iris: "act-rail-iris",
-    mint: "act-rail-mint",
-    magenta: "act-rail-magenta",
-  }[tone];
-  const washClass = {
-    blue: "act-wash-sky-soft",
-    iris: "act-wash-iris-soft",
-    mint: "act-wash-mint-soft",
-    magenta: "act-wash-petal-soft",
+  const coreBg = {
+    blue: "radial-gradient(120% 130% at 50% 0%, #ffffff 30%, var(--act-sky-100) 130%)",
+    iris: "radial-gradient(120% 130% at 50% 0%, #ffffff 30%, #eceafa 130%)",
+    mint: "radial-gradient(120% 130% at 50% 0%, #ffffff 30%, #e2f1eb 130%)",
+    magenta: "radial-gradient(120% 130% at 50% 0%, #ffffff 30%, #f9eedb 130%)",
   }[tone];
   return (
-    <div className={`act-card-2 act-rail ${railClass} ${washClass} p-5`}>
-      <span className="act-kicker">{label}</span>
-      <div className="mt-2 flex items-baseline gap-1">
-        <span className={`act-display text-4xl ${valueColor}`}>
-          {accent ? "+" : ""}
-          {value}
-        </span>
-        {unit && <span className="text-lg font-semibold text-[var(--act-graphite)]">{unit}</span>}
+    <div className="act-bezel act-bezel-lift">
+      <div className="act-bezel-core p-4" style={{ "--core-bg": coreBg } as React.CSSProperties}>
+        <span className="act-kicker">{label}</span>
+        <div className="mt-2 flex items-baseline gap-1">
+          <span className={`act-display text-4xl ${valueColor}`}>
+            {accent ? "+" : ""}
+            {value}
+          </span>
+          {unit && <span className="text-lg font-semibold text-[var(--act-graphite)]">{unit}</span>}
+        </div>
+        <p className="mt-1 text-xs text-[var(--act-graphite)]">{caption}</p>
       </div>
-      <p className="mt-1 text-xs text-[var(--act-graphite)]">{caption}</p>
     </div>
   );
 }
 
-/* ---------------- Readiness ring ---------------- */
+/* ---------------- Readiness ring — double-bezel hero tile ---------------- */
 export function ReadinessCard({ score, last }: { score: number; last: number }) {
   const r = 54;
   const c = 2 * Math.PI * r;
   const dash = (score / 100) * c;
   return (
-    <div className="act-card-2 act-wash-sky-soft w-full border-[rgba(0,152,242,0.18)] p-5">
-      <span className="act-kicker">Career readiness</span>
-      <div className="mt-3 flex items-center gap-5">
-        <div className="relative h-[128px] w-[128px] flex-none">
-          <svg viewBox="0 0 128 128" className="h-full w-full -rotate-90">
-            <defs>
-              <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="var(--act-sky-bright)" />
-                <stop offset="100%" stopColor="var(--act-sky-deep)" />
-              </linearGradient>
-            </defs>
-            <circle cx="64" cy="64" r={r} fill="none" stroke="rgba(15,23,42,0.08)" strokeWidth="10" />
-            <circle cx="64" cy="64" r={r} fill="none" stroke="url(#ring)" strokeWidth="10" strokeDasharray={`${dash} ${c}`} strokeLinecap="round" />
-          </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="act-display text-4xl text-[var(--act-ink)]">{score}</span>
-            <span className="text-xs font-semibold text-[var(--act-blue)]">persen</span>
+    <div className="act-bezel w-full">
+      <div
+        className="act-bezel-core p-5"
+        style={{
+          "--core-bg":
+            "radial-gradient(130% 140% at 50% 0%, var(--act-sky-100), var(--act-wash-sky) 90%)",
+        } as React.CSSProperties}
+      >
+        <span className="act-kicker">Career readiness</span>
+        <div className="mt-3 flex items-center gap-5">
+          <div className="relative h-[128px] w-[128px] flex-none">
+            <svg viewBox="0 0 128 128" className="h-full w-full -rotate-90">
+              <defs>
+                <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="var(--act-sky-bright)" />
+                  <stop offset="100%" stopColor="var(--act-sky-deep)" />
+                </linearGradient>
+              </defs>
+              <circle cx="64" cy="64" r={r} fill="none" stroke="rgba(15,23,42,0.08)" strokeWidth="10" />
+              <circle cx="64" cy="64" r={r} fill="none" stroke="url(#ring)" strokeWidth="10" strokeDasharray={`${dash} ${c}`} strokeLinecap="round" />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="act-display text-4xl text-[var(--act-ink)]">{score}</span>
+              <span className="text-xs font-semibold text-[var(--act-blue)]">persen</span>
+            </div>
           </div>
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-xs text-[var(--act-graphite)]">Naik dari</p>
-          <p className="act-display text-xl text-[var(--act-ink)]">{last}%</p>
-          <p className="mt-1 text-xs text-[var(--act-graphite)]">minggu lalu</p>
-          <span className="act-chip act-chip-green mt-3">+{score - last} poin minggu ini</span>
+          <div className="min-w-0 flex-1">
+            <p className="text-xs text-[var(--act-graphite)]">Naik dari</p>
+            <p className="act-display text-xl text-[var(--act-ink)]">{last}%</p>
+            <p className="mt-1 text-xs text-[var(--act-graphite)]">minggu lalu</p>
+            <span className="act-chip act-chip-green mt-3">+{score - last} poin minggu ini</span>
+          </div>
         </div>
       </div>
     </div>
@@ -376,7 +380,7 @@ export function EmptyState({
   );
 }
 
-/* ---------------- Overview preview card ---------------- */
+/* ---------------- Overview preview card — double-bezel link ---------------- */
 export function PreviewCard({
   href,
   kicker,
@@ -390,22 +394,26 @@ export function PreviewCard({
   children: React.ReactNode;
   tone?: "blue" | "iris" | "magenta" | "mint";
 }) {
-  const rail = {
-    blue: "act-rail-blue",
-    iris: "act-rail-iris",
-    magenta: "act-rail-magenta",
-    mint: "act-rail-mint",
+  const kickerColor = {
+    blue: "!text-[var(--act-blue)]",
+    iris: "!text-[var(--act-iris)]",
+    magenta: "!text-[var(--act-magenta)]",
+    mint: "!text-[var(--act-teal)]",
   }[tone];
   return (
-    <Link href={href} className={`act-card-2 act-rail ${rail} act-lift group block p-5`}>
-      <div className="flex items-center justify-between">
-        <span className="act-kicker">{kicker}</span>
-        <svg viewBox="0 0 24 24" className="h-4 w-4 text-[var(--act-graphite)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--act-blue)]" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <path d="M5 12h14M13 5l7 7-7 7" />
-        </svg>
+    <Link href={href} className="act-bezel group block">
+      <div className="act-bezel-core p-5">
+        <div className="flex items-center justify-between">
+          <span className={`act-kicker ${kickerColor}`}>{kicker}</span>
+          <span className="act-disc">
+            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M5 12h14M13 5l7 7-7 7" />
+            </svg>
+          </span>
+        </div>
+        <h3 className="act-heading mt-1.5 text-lg text-[var(--act-ink)]">{title}</h3>
+        <div className="mt-3">{children}</div>
       </div>
-      <h3 className="act-heading mt-1.5 text-lg text-[var(--act-ink)]">{title}</h3>
-      <div className="mt-3">{children}</div>
     </Link>
   );
 }
@@ -431,9 +439,6 @@ export function StatCard({
   /** Kartu highlight gelap (onyx solid, teks putih). */
   featured?: boolean;
 }) {
-  const base = featured
-    ? "bg-[var(--act-onyx)] text-white border-transparent"
-    : "act-card-2";
   const inner = (
     <>
       <div className="flex items-start justify-between gap-2">
@@ -479,11 +484,23 @@ export function StatCard({
       )}
     </>
   );
-  const cls = `group block rounded-[20px] p-5 ${base} ` + (featured ? "" : "act-rowhover");
+  const cls = "group block act-bezel " + (href ? "" : "act-bezel-lift");
+  const coreStyle = featured
+    ? ({
+      "--core-bg": "var(--act-onyx)",
+      boxShadow:
+        "inset 0 1px 1px rgba(255,255,255,0.12), rgba(15,23,42,0.35) 0px 14px 34px -16px",
+    } as React.CSSProperties)
+    : undefined;
+  const body = (
+    <div className="act-bezel-core p-5" style={coreStyle}>
+      {inner}
+    </div>
+  );
   return href ? (
-    <Link href={href} className={cls}>{inner}</Link>
+    <Link href={href} className={cls}>{body}</Link>
   ) : (
-    <div className={cls}>{inner}</div>
+    <div className={cls}>{body}</div>
   );
 }
 

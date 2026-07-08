@@ -18,7 +18,7 @@ export default async function RoadmapPage() {
   const referenceUrl = goal ? roadmapShUrl(goal.targetRole) : null;
 
   return (
-    <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-8 md:px-10">
+    <div className="act-rise app-page space-y-8">
       <PageHeader
         kicker="Roadmap"
         title={<>Next moves <span className="text-[var(--act-iris)]">kamu.</span></>}

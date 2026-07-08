@@ -31,7 +31,7 @@ export default async function OnboardingSkillsPage() {
   const owned = profile.skills.map((s) => s.id);
 
   return (
-    <div className="mx-auto max-w-[1100px] px-6 py-12">
+    <div className="app-page">
       <div className="mb-8"><OnboardingStepper current={1} /></div>
 
       <div className="act-rise">

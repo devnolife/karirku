@@ -40,7 +40,7 @@ async function JobseekerOverview() {
   const topCourse = courses[0] ?? null;
 
   return (
-    <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-8 md:px-10">
+    <div className="act-rise app-page space-y-8">
       {/* Hello + readiness */}
       <section className="grid grid-cols-12 items-center gap-6">
         <div className="col-span-12 lg:col-span-8">

@@ -16,7 +16,7 @@ export async function CompanyOverview() {
   const topCandidates = candidates.slice(0, 4);
 
   return (
-    <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-8 md:px-10">
+    <div className="act-rise app-page space-y-8">
       {/* Hello + profile */}
       <section className="grid grid-cols-12 items-center gap-6">
         <div className="col-span-12 lg:col-span-8">
@@ -38,12 +38,17 @@ export async function CompanyOverview() {
           </div>
         </div>
         <div className="col-span-12 lg:col-span-4">
-          <div className="act-card-2 act-wash-petal-soft border-[rgba(245,158,11,0.2)] p-5">
-            <span className="act-kicker">Total kandidat</span>
-            <div className="act-display mt-2 text-5xl text-[var(--act-magenta)]">{c.totalCandidates.toLocaleString("id-ID")}</div>
-            <div className="mt-4 grid grid-cols-2 gap-3 border-t border-[rgba(15,23,42,0.08)] pt-4">
-              <MiniStat label="Offer" value={`${c.offers}`} />
-              <MiniStat label="Interview" value={`${c.interviews}`} />
+          <div className="act-bezel">
+            <div
+              className="act-bezel-core p-5"
+              style={{ "--core-bg": "radial-gradient(130% 140% at 50% 0%, #fbf3e4, var(--act-wash-petal) 90%)" } as React.CSSProperties}
+            >
+              <span className="act-kicker">Total kandidat</span>
+              <div className="act-display mt-2 text-5xl text-[var(--act-magenta)]">{c.totalCandidates.toLocaleString("id-ID")}</div>
+              <div className="mt-4 grid grid-cols-2 gap-3 border-t border-[rgba(15,23,42,0.08)] pt-4">
+                <MiniStat label="Offer" value={`${c.offers}`} />
+                <MiniStat label="Interview" value={`${c.interviews}`} />
+              </div>
             </div>
           </div>
         </div>

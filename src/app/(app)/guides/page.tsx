@@ -14,7 +14,7 @@ export default async function GuidesPage() {
   });
 
   return (
-    <div className="act-rise mx-auto max-w-[1400px] space-y-8 px-6 py-12">
+    <div className="act-rise app-page space-y-8">
       <div className="max-w-2xl">
         <h1 className="act-display text-4xl leading-[1.05] md:text-5xl">
           Dituntun dari{" "}

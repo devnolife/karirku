@@ -20,7 +20,7 @@ export default async function ApplicationsPage() {
   const nativeCount = apps.filter((a) => a.mode === "native").length;
 
   return (
-    <div className="act-rise mx-auto max-w-[1100px] space-y-8 px-6 py-8 md:px-10">
+    <div className="act-rise app-page space-y-8">
       <PageHeader
         kicker="Lamaran"
         title={<>Lamaran <span className="text-[var(--act-blue)]">saya.</span></>}

@@ -33,7 +33,7 @@ export default async function OnboardingGoalPage() {
   const current = await getActiveGoal(user.id);
 
   return (
-    <div className="mx-auto max-w-[1400px] px-6 py-12">
+    <div className="app-page">
       <div className="mb-8"><OnboardingStepper current={2} /></div>
       <div className="grid grid-cols-12 gap-8">
         <aside className="act-rise col-span-12 md:col-span-4 md:sticky md:top-24 md:self-start">

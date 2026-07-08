@@ -73,7 +73,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
   const avatarTone = AVATAR_TONES[(job.company.charCodeAt(0) || 0) % AVATAR_TONES.length];
 
   return (
-    <div className="act-rise mx-auto max-w-[1080px] space-y-6 px-6 py-8 md:px-10">
+    <div className="act-rise app-page space-y-6">
       <Link href="/jobs" className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--act-graphite)] transition-colors hover:text-[var(--act-ink)]">
         ← Kembali ke Lowongan
       </Link>

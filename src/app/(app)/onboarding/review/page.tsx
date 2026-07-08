@@ -18,7 +18,7 @@ export default async function OnboardingReviewPage() {
   ]);
 
   return (
-    <div className="mx-auto max-w-[1000px] px-6 py-12">
+    <div className="app-page">
       <div className="mb-8"><OnboardingStepper current={3} /></div>
 
       <div className="act-rise">

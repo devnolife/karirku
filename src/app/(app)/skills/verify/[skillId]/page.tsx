@@ -16,7 +16,7 @@ export default async function VerifySkillPage({
 
   if (!skill) {
     return (
-      <div className="act-rise mx-auto max-w-[800px] px-6 py-16 text-center">
+      <div className="act-rise app-page max-w-[800px] py-16 text-center">
         <h1 className="act-heading text-2xl text-[var(--act-ink)]">Skill tidak ditemukan</h1>
         <p className="mt-3 text-sm text-[var(--act-graphite)]">
           Skill ini belum ada di profilmu. Tambahkan dulu lewat halaman Profil.
@@ -28,7 +28,7 @@ export default async function VerifySkillPage({
 
   if (skill.verified) {
     return (
-      <div className="act-rise mx-auto max-w-[800px] px-6 py-16 text-center">
+      <div className="act-rise app-page max-w-[800px] py-16 text-center">
         <span className="act-chip act-chip-iris">✓ Sudah terverifikasi</span>
         <h1 className="act-heading mt-4 text-2xl text-[var(--act-ink)]">{skill.name} sudah verified</h1>
         <p className="mt-3 text-sm text-[var(--act-graphite)]">
@@ -46,7 +46,7 @@ export default async function VerifySkillPage({
   } catch (err) {
     const isAi = err instanceof AiJsonError;
     return (
-      <div className="act-rise mx-auto max-w-[800px] px-6 py-16 text-center">
+      <div className="act-rise app-page max-w-[800px] py-16 text-center">
         <h1 className="act-heading text-2xl text-[var(--act-ink)]">Gagal membuat kuis</h1>
         <p className="mx-auto mt-3 max-w-md text-sm text-[var(--act-graphite)]">
           {isAi
@@ -66,7 +66,7 @@ export default async function VerifySkillPage({
   const publicQuestions = quiz.questions.map((q) => ({ question: q.question, options: q.options }));
 
   return (
-    <div className="act-rise mx-auto max-w-[800px] space-y-6 px-6 py-8">
+    <div className="act-rise app-page max-w-[800px] space-y-6">
       <div>
         <Link href="/skills" className="text-sm font-medium text-[var(--act-graphite)] hover:text-[var(--act-ink)]">
           ← Kembali ke Skill

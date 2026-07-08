@@ -70,7 +70,7 @@ export default async function JobsPage({
   const hasFilter = Boolean(q || type || level || salary);
 
   return (
-    <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-8 md:px-10">
+    <div className="act-rise app-page space-y-8">
       <PageHeader
         kicker="Market"
         title={<>Job match <span className="text-[var(--act-magenta)]">& trend.</span></>}

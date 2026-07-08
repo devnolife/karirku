@@ -25,7 +25,7 @@ export default async function ProposalsPage() {
   const won = proposals.filter((p) => p.status === "won").length;
 
   return (
-    <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-8 md:px-10">
+    <div className="act-rise app-page space-y-8">
       <PageHeader
         kicker="Apply"
         title={<>Proposal <span className="text-[var(--act-iris)]">& portofolio.</span></>}

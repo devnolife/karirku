@@ -149,7 +149,7 @@ export default async function ProfilePage() {
   const missingLabels = autofillChecks.filter(([, ok]) => !ok).map(([l]) => l);
 
   return (
-    <div className="act-rise mx-auto max-w-[1000px] space-y-8 px-6 py-8 md:px-10">
+    <div className="act-rise app-page space-y-8">
       <div>
         <span className="act-eyebrow">Studio · Profil</span>
         <h1 className="act-display mt-3 text-4xl leading-[1.05] md:text-5xl">

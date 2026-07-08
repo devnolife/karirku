@@ -60,13 +60,15 @@ export function SkListCard({
   );
 }
 
-/* Mirrors <Kpi /> — kicker + big numeral + caption */
+/* Mirrors <Kpi /> — double-bezel: kicker + big numeral + caption */
 export function SkKpi() {
   return (
-    <div className="act-card-2 p-5">
-      <Sk className="h-3 w-20" />
-      <Sk className="mt-3 h-9 w-16" />
-      <Sk className="mt-2 h-3 w-24" />
+    <div className="act-bezel">
+      <div className="act-bezel-core p-4">
+        <Sk className="h-3 w-20" />
+        <Sk className="mt-3 h-9 w-16" />
+        <Sk className="mt-2 h-3 w-24" />
+      </div>
     </div>
   );
 }
@@ -102,7 +104,7 @@ export function SkPanel({
 export function SkPage({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="mx-auto max-w-[1200px] space-y-8 px-6 py-8 md:px-10"
+      className="app-page space-y-8"
       role="status"
       aria-label="Memuat halaman"
     >
