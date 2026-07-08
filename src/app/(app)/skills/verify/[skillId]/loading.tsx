@@ -14,7 +14,7 @@ export default function VerifyLoading() {
       </h1>
       <p className="mx-auto mt-3 max-w-md text-sm text-[var(--act-graphite)]">
         AI sedang menyusun soal yang menguji pemahaman praktismu. Ini butuh
-        beberapa puluh detik — soal yang berkualitas memang dibuat khusus, bukan
+        beberapa puluh detik. Soal yang berkualitas memang dibuat khusus, bukan
         template.
       </p>
       <div className="mx-auto mt-6 flex max-w-sm flex-col gap-3">

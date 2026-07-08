@@ -34,7 +34,7 @@ export default async function SkillsPage() {
       ) : (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div className="act-card-2 p-6">
-            <span className="act-chip act-chip-blue">Core — wajib</span>
+            <span className="act-chip act-chip-blue">Core (wajib)</span>
             <div className="mt-5 space-y-5">
               {core.length > 0
                 ? core.map((s) => <SkillBar key={s.name} skill={s} tone="blue" />)

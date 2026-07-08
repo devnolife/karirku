@@ -45,7 +45,7 @@ async function JobseekerOverview() {
       <section className="grid grid-cols-12 items-center gap-6">
         <div className="col-span-12 lg:col-span-8">
           <span className="act-eyebrow">
-            Today · {new Date().toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long" })}
+            Hari ini · {new Date().toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long" })}
           </span>
           <h1 className="act-display mt-3 text-4xl leading-[1.04] md:text-5xl">
             Halo, <span className="act-sky-text">{firstName}.</span>
@@ -75,7 +75,7 @@ async function JobseekerOverview() {
 
       {/* KPI */}
       <section className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <Kpi label="Jam minggu ini" value={r.hoursThisWeek} unit="h" caption={`target ${r.hoursTarget}h`} tone="blue" />
+        <Kpi label="Jam minggu ini" value={r.hoursThisWeek} unit="jam" caption={`target ${r.hoursTarget} jam`} tone="blue" />
         <Kpi label="Milestone selesai" value={r.weeksDone} unit={`/${r.weeksTotal}`} caption={`${r.weeksTotal} minggu total`} tone="iris" />
         <Kpi label="Match terbaik" value={bestJob?.matchPct ?? 0} unit="%" caption={bestJob ? bestJob.company : "belum ada"} tone="magenta" />
         <Kpi label="Coverage skill" value={gap.coveragePct} unit="%" caption="vs role target" tone="mint" />
@@ -93,12 +93,12 @@ async function JobseekerOverview() {
           )}
         </PreviewCard>
 
-        <PreviewCard href="/roadmap" kicker="Roadmap" title="Next move kamu" tone="iris">
+        <PreviewCard href="/roadmap" kicker="Roadmap" title="Langkah berikutnya" tone="iris">
           {current ? (
             <div className="rounded-xl bg-[var(--act-mist)] p-3.5">
-              <span className="act-chip act-chip-blue">Minggu {current.week} · {current.status === "in_progress" ? "in progress" : current.status}</span>
+              <span className="act-chip act-chip-blue">Minggu {current.week} · {current.status === "in_progress" ? "berjalan" : current.status === "done" ? "selesai" : "menunggu"}</span>
               <p className="mt-2 text-sm font-semibold text-[var(--act-ink)]">{current.title}</p>
-              <p className="mt-1 text-xs text-[var(--act-graphite)]">{r.weeksDone} selesai · {Math.max(0, r.weeksTotal - r.weeksDone)} to go</p>
+              <p className="mt-1 text-xs text-[var(--act-graphite)]">{r.weeksDone} selesai · {Math.max(0, r.weeksTotal - r.weeksDone)} tersisa</p>
             </div>
           ) : (
             <p className="text-sm text-[var(--act-graphite)]">Belum ada roadmap.</p>

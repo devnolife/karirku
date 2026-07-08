@@ -22,7 +22,7 @@ export default async function RoadmapPage() {
       <PageHeader
         kicker="Roadmap"
         title={<>Next moves <span className="text-[var(--act-iris)]">kamu.</span></>}
-        meta={goal ? `Target: ${goal.targetRole} · ${roadmap.weeksDone}/${roadmap.weeksTotal} selesai` : `${roadmap.weeksDone} selesai · ${toGo} to go`}
+        meta={goal ? `Target: ${goal.targetRole} · ${roadmap.weeksDone}/${roadmap.weeksTotal} selesai` : `${roadmap.weeksDone} selesai · ${toGo} tersisa`}
         action={<RegenerateRoadmapButton hasPath={hasPath} />}
       />
       {referenceUrl && (
@@ -36,7 +36,7 @@ export default async function RoadmapPage() {
           >
             roadmap resmi {goal!.targetRole} di roadmap.sh ↗
           </a>{" "}
-          — bandingkan dengan roadmap personal kamu di bawah.
+          lalu bandingkan dengan roadmap personal kamu di bawah.
         </p>
       )}
       {roadmap.milestones.length === 0 ? (

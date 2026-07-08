@@ -5,7 +5,7 @@ import { GuideTeaser } from "../_GuideTeaser";
 import { Empty } from "@/components/ui/empty";
 
 function rupiah(n: number): string {
-  if (n <= 0) return "—";
+  if (n <= 0) return "-";
   const jt = n / 1_000_000;
   return `Rp ${Number.isInteger(jt) ? jt : jt.toFixed(1)} jt`;
 }

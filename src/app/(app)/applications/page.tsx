@@ -66,7 +66,7 @@ export default async function ApplicationsPage() {
                       Buka
                     </a>
                   ) : (
-                    <span className="text-xs text-[var(--act-graphite)]">—</span>
+                    <span className="text-xs text-[var(--act-graphite)]">-</span>
                   )}
                 </div>
               </li>

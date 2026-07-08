@@ -22,7 +22,7 @@ export default async function GuidesPage() {
         </h1>
         <p className="mt-4 text-[15px] leading-relaxed text-[var(--act-charcoal)]">
           Cara daftar Upwork &amp; LinkedIn, dasar kerja remote, persiapan interview,
-          sampai bikin CV lolos ATS — langkah demi langkah, plus latihan interview.
+          sampai bikin CV lolos ATS. Langkah demi langkah, plus latihan interview.
         </p>
       </div>
 

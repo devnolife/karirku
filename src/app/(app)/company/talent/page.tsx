@@ -39,7 +39,7 @@ export default async function TalentSearchPage({
             Cari <span className="act-sky-text">talent.</span>
           </h1>
           <p className="mt-3 max-w-xl text-sm text-[var(--act-graphite)]">
-            Temukan talent pre-qualified yang cocok dengan lowonganmu — di-ranking
+            Temukan talent pre-qualified yang cocok dengan lowonganmu, di-ranking
             berdasarkan skill match, kemiripan semantik, dan readiness.
           </p>
         </div>
@@ -112,7 +112,7 @@ export default async function TalentSearchPage({
                         <div className="flex flex-wrap gap-1.5">
                           {t.matchedSkills.length > 0 ? t.matchedSkills.map((s) => (
                             <span key={s} className="rounded-md bg-[rgba(0,152,242,0.08)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--act-blue)]">{s}</span>
-                          )) : <span className="text-xs text-[var(--act-graphite)]">—</span>}
+                          )) : <span className="text-xs text-[var(--act-graphite)]">-</span>}
                         </div>
                       </div>
                       <div className="col-span-3 md:col-span-2">

@@ -128,7 +128,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
             <ApplyButton jobId={job.id} alreadyApplied={job.applied} isExternal={!!job.applyUrl} />
             <span className="text-sm text-[var(--act-graphite)]">
               <span className="font-semibold text-[var(--act-ink)]">{job.matchedSkills.length}</span> dari{" "}
-              <span className="font-semibold text-[var(--act-ink)]">{job.skills.length || "—"}</span> skill kamu cocok
+              <span className="font-semibold text-[var(--act-ink)]">{job.skills.length || "-"}</span> skill kamu cocok
             </span>
             {job.applyUrl && (
               <a href={job.applyUrl} target="_blank" rel="noopener noreferrer" className="ml-auto text-xs font-medium text-[var(--act-blue)] hover:underline">
@@ -146,12 +146,12 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
           ) : src.kind === "native" ? (
             <p className="mt-3 flex items-center gap-1.5 text-xs text-[var(--act-graphite)]">
               <span className="text-[var(--act-teal)]">{ICONS.shield}</span>
-              Lamar langsung di KarirKu — lamaranmu tercatat & dikelola di sini.
+              Lamar langsung di KarirKu. Lamaranmu tercatat & dikelola di sini.
             </p>
           ) : (
             <p className="mt-3 flex items-center gap-1.5 text-xs text-[var(--act-graphite)]">
               <span className="text-[var(--act-graphite)]">{ICONS.info}</span>
-              Lowongan contoh (data internal) — belum ada tautan lamaran resmi.
+              Lowongan contoh (data internal), belum ada tautan lamaran resmi.
             </p>
           )}
         </div>
@@ -160,8 +160,8 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
       {/* Facts strip */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <Fact icon={ICONS.pin} tone="blue" label="Lokasi" value={`${loc.flag} ${loc.primary}${loc.extraCount > 0 ? ` +${loc.extraCount}` : ""}`} />
-        <Fact icon={ICONS.briefcase} tone="iris" label="Tipe" value={job.type ?? "—"} />
-        <Fact icon={ICONS.layers} tone="magenta" label="Level" value={job.level ?? "—"} />
+        <Fact icon={ICONS.briefcase} tone="iris" label="Tipe" value={job.type ?? "-"} />
+        <Fact icon={ICONS.layers} tone="magenta" label="Level" value={job.level ?? "-"} />
         <Fact icon={ICONS.wallet} tone="mint" label="Gaji" value={job.salary} />
       </div>
 

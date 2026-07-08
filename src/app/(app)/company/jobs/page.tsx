@@ -55,7 +55,7 @@ export default async function CompanyJobsPage() {
                   <span className="act-chip act-chip-mute">{j.type}</span>
                 </div>
                 <div className="col-span-4 text-sm text-[var(--act-charcoal)] md:col-span-2">
-                  {j.applicants > 0 ? `${j.applicants} pelamar` : "—"}
+                  {j.applicants > 0 ? `${j.applicants} pelamar` : "-"}
                 </div>
                 <div className="col-span-4 md:col-span-2">
                   <span className={`act-chip ${j.status === "active" ? "act-chip-green" : "act-chip-amber"}`}>{j.status === "active" ? "aktif" : "draft"}</span>

@@ -61,8 +61,14 @@ export function Kpi({
     mint: "act-rail-mint",
     magenta: "act-rail-magenta",
   }[tone];
+  const washClass = {
+    blue: "act-wash-sky-soft",
+    iris: "act-wash-iris-soft",
+    mint: "act-wash-mint-soft",
+    magenta: "act-wash-petal-soft",
+  }[tone];
   return (
-    <div className={`act-card-2 act-rail ${railClass} p-5`}>
+    <div className={`act-card-2 act-rail ${railClass} ${washClass} p-5`}>
       <span className="act-kicker">{label}</span>
       <div className="mt-2 flex items-baseline gap-1">
         <span className={`act-display text-4xl ${valueColor}`}>
@@ -98,14 +104,14 @@ export function ReadinessCard({ score, last }: { score: number; last: number }) 
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="act-display text-4xl text-[var(--act-ink)]">{score}</span>
-            <span className="text-xs font-semibold text-[var(--act-blue)]">percent</span>
+            <span className="text-xs font-semibold text-[var(--act-blue)]">persen</span>
           </div>
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-xs text-[var(--act-graphite)]">Naik dari</p>
           <p className="act-display text-xl text-[var(--act-ink)]">{last}%</p>
           <p className="mt-1 text-xs text-[var(--act-graphite)]">minggu lalu</p>
-          <span className="act-chip act-chip-green mt-3">+{score - last} pts wk</span>
+          <span className="act-chip act-chip-green mt-3">+{score - last} poin minggu ini</span>
         </div>
       </div>
     </div>
@@ -138,7 +144,7 @@ export function SkillBar({ skill, tone = "blue" }: { skill: SkillView; tone?: "b
       </div>
       {gap > 0 && (
         <p className="mt-1.5 text-[11px] font-medium text-[var(--act-graphite)]">
-          {critical ? <span className="text-[var(--act-magenta)]">high priority · </span> : ""}gap {gap}
+          {critical ? <span className="text-[var(--act-magenta)]">prioritas tinggi · </span> : ""}gap {gap}
         </p>
       )}
     </div>
@@ -148,9 +154,9 @@ export function SkillBar({ skill, tone = "blue" }: { skill: SkillView; tone?: "b
 /* ---------------- Milestone row ---------------- */
 export function MilestoneRow({ milestone: m }: { milestone: MilestoneView }) {
   const statusConfig = {
-    done: { text: "Done", chip: "act-chip-green", badge: "bg-[linear-gradient(140deg,#5eb3a4,var(--act-teal))] text-white" },
-    in_progress: { text: "In progress", chip: "act-chip-blue", badge: "bg-[linear-gradient(140deg,#5cb3e8,var(--act-blue))] text-white" },
-    upcoming: { text: "Upcoming", chip: "act-chip-mute", badge: "bg-[var(--act-mist)] text-[var(--act-graphite)] border border-[rgba(15,23,42,0.1)]" },
+    done: { text: "Selesai", chip: "act-chip-green", badge: "bg-[linear-gradient(140deg,#5eb3a4,var(--act-teal))] text-white" },
+    in_progress: { text: "Berjalan", chip: "act-chip-blue", badge: "bg-[linear-gradient(140deg,#5cb3e8,var(--act-blue))] text-white" },
+    upcoming: { text: "Menunggu", chip: "act-chip-mute", badge: "bg-[var(--act-mist)] text-[var(--act-graphite)] border border-[rgba(15,23,42,0.1)]" },
   }[m.status];
   return (
     <li className="act-rowhover grid grid-cols-12 gap-4 px-5 py-5">
@@ -391,7 +397,7 @@ export function PreviewCard({
     mint: "act-rail-mint",
   }[tone];
   return (
-    <Link href={href} className={`act-card-2 act-rail ${rail} act-rowhover group block p-5`}>
+    <Link href={href} className={`act-card-2 act-rail ${rail} act-lift group block p-5`}>
       <div className="flex items-center justify-between">
         <span className="act-kicker">{kicker}</span>
         <svg viewBox="0 0 24 24" className="h-4 w-4 text-[var(--act-graphite)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--act-blue)]" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>

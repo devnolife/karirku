@@ -1,6 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { CSSProperties } from "react";
+import {
+  ArrowRight as PhArrowRight,
+  Check as PhCheck,
+  Plus as PhPlus,
+  Minus as PhMinus,
+  Compass as PhCompass,
+  Gauge as PhGauge,
+  Target as PhTarget,
+  ChatCircle as PhChat,
+} from "@phosphor-icons/react/dist/ssr";
 import { LandingAnimator } from "@/components/LandingAnimator";
 
 /* =========================================================
@@ -85,7 +95,7 @@ function Hero() {
       {/* Full-bleed landscape backdrop — the winding path is the roadmap metaphor */}
       <Image
         src="/hero/bg-hero.png"
-        alt="Lembah hijau dengan jalan setapak menuju pegunungan—metafora perjalanan karir"
+        alt="Lembah hijau dengan jalan setapak menuju pegunungan, metafora perjalanan karir"
         fill
         priority
         sizes="100vw"
@@ -115,13 +125,13 @@ function Hero() {
           data-gs="hero-fade"
           className="mx-auto mt-6 max-w-[54ch] text-[16px] leading-[1.5] text-white/85"
         >
-          Skill, roadmap, lowongan, sampai latihan interview — semua di satu
+          Skill, roadmap, lowongan, sampai latihan interview. Semua di satu
           tempat.
         </p>
 
         <div data-gs="hero-fade" className="mt-8 flex items-center justify-center gap-2">
           <Link href="/onboarding" className="act-pill-light">
-            Buat roadmap gratis
+            Mulai gratis
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
           <a
@@ -131,23 +141,6 @@ function Hero() {
             Lihat contoh
           </a>
         </div>
-
-        {/* Feature checks */}
-        <div
-          data-gs="hero-fade"
-          className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3"
-        >
-          {[
-            "Gratis, tanpa kartu kredit",
-            "Skill, lowongan & interview jadi satu",
-            "Roadmap pertama dalam 60 detik",
-          ].map((t) => (
-            <span key={t} className="inline-flex items-center gap-2 text-[14px] font-medium text-white">
-              <Check className="h-4 w-4 text-white" />
-              {t}
-            </span>
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -156,8 +149,12 @@ function Hero() {
 /* ================== LOGO CLOUD — glass proof bar over the hero edge ================== */
 function LogoCloud() {
   const logos = [
-    "Tokopedia", "Gojek", "Traveloka", "Bukalapak", "Ruangguru",
-    "Xendit", "Dana", "Blibli", "Vidio", "Ajaib",
+    ["Gojek", "/logos/gojek.svg"],
+    ["Grab", "/logos/grab.svg"],
+    ["Shopee", "/logos/shopee.svg"],
+    ["Bukalapak", "/logos/bukalapak.svg"],
+    ["Xendit", "/logos/xendit.svg"],
+    ["Blibli", "/logos/blibli.svg"],
   ];
   return (
     <section className="relative z-20 -mt-10 px-6 sm:-mt-12">
@@ -167,15 +164,17 @@ function LogoCloud() {
             Bersiap melamar ke perusahaan seperti
           </p>
           <div className="w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
-            <div className="act-marquee">
+            <div className="act-marquee items-center">
               {[0, 1].map((k) =>
-                logos.map((name, i) => (
-                  <span
-                    key={`${k}-${i}`}
-                    className="mx-8 text-[17px] font-semibold tracking-tight text-[var(--act-graphite)] transition-colors hover:text-[var(--act-ink)]"
-                  >
-                    {name}
-                  </span>
+                logos.map(([name, src]) => (
+                  <Image
+                    key={`${k}-${name}`}
+                    src={src}
+                    alt={name}
+                    width={26}
+                    height={26}
+                    className="mx-8 h-[26px] w-auto opacity-70 transition-opacity hover:opacity-100"
+                  />
                 ))
               )}
             </div>
@@ -192,13 +191,12 @@ function ProductShowcase() {
     <section id="showcase" className="relative py-24" data-gs="section">
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="mx-auto max-w-[44ch] text-center">
-          <p className="act-eyebrow mb-4">Satu dashboard, semua langkah</p>
           <h2 className="act-heading text-[32px] text-[var(--act-ink)] md:text-[40px] md:tracking-[-0.03em]">
             Dari posisimu sekarang ke posisi impian
           </h2>
           <p className="mx-auto mt-4 max-w-[52ch] text-[16px] leading-[1.5] text-[var(--act-charcoal)]">
-            Posisi sekarang, posisi impian, dan setiap langkah di antaranya —
-            plus skill yang perlu diasah dan lowongan yang cocok, semua rapi
+            Posisi sekarang, posisi impian, dan setiap langkah di antaranya.
+            Plus skill yang perlu diasah dan lowongan yang cocok, semua rapi
             dalam satu tampilan.
           </p>
         </div>
@@ -211,43 +209,23 @@ function ProductShowcase() {
             <div className="absolute bottom-0 right-[6%] h-56 w-56 rounded-full bg-[var(--act-wash-lilac)] opacity-70 blur-3xl" />
           </div>
 
-          {/* floating glass chips — depth, like signage on the trail */}
+          {/* floating glass chips — depth, like signage on the trail (angka contoh/mock) */}
           <div
             aria-hidden
             data-gs="float"
             className="absolute -right-4 -top-7 z-20 hidden md:block lg:-right-14"
           >
-            <span className="act-glass-chip-light">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#10b981]" />
-              Skor match 92%
-            </span>
+            <span className="act-glass-chip-light">Skor match 92%</span>
           </div>
           <div
             aria-hidden
             data-gs="float"
             className="absolute -bottom-6 -left-4 z-20 hidden md:block lg:-left-14"
           >
-            <span className="act-glass-chip-light">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--act-blue)]" />
-              +3 skill baru minggu ini
-            </span>
+            <span className="act-glass-chip-light">+3 skill baru minggu ini</span>
           </div>
 
           <div className="act-card-line relative overflow-hidden" data-gs="hero-preview">
-            {/* window chrome */}
-            <div className="flex items-center gap-3 border-b border-[rgba(15,23,42,0.06)] bg-[var(--act-mist)]/60 px-5 py-3.5">
-              <span className="flex gap-1.5">
-                <i className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
-                <i className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
-                <i className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
-              </span>
-              <span className="mx-auto inline-flex items-center gap-2 rounded-full bg-white px-4 py-1 text-[12px] font-medium text-[var(--act-graphite)] ring-1 ring-inset ring-[rgba(15,23,42,0.06)]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[var(--act-blue)]" />
-                craft.works/roadmap
-              </span>
-              <span className="w-12" />
-            </div>
-
             <div className="p-6 md:p-8">
               <div className="flex items-center justify-between">
                 <span className="act-tag">Roadmap · Frontend Engineer</span>
@@ -270,7 +248,7 @@ function ProductShowcase() {
                   avatar="magenta"
                   glyph="F"
                   name="Frontend Engineer"
-                  detail="Rp9–14jt · remote-friendly"
+                  detail="Rp9-14jt · remote-friendly"
                 />
               </div>
 
@@ -344,7 +322,6 @@ function Features() {
     <section id="features" className="py-24" data-gs="section">
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="mx-auto max-w-[44ch] text-center">
-          <p className="act-eyebrow mb-4">Semua alat dalam satu copilot</p>
           <h2 className="act-heading text-[32px] text-[var(--act-ink)] md:text-[40px] md:tracking-[-0.03em]">
             Empat alat, satu copilot
           </h2>
@@ -370,7 +347,7 @@ function Features() {
                 </h3>
                 <p className="mt-2 text-[14px] leading-[1.55] text-[var(--act-charcoal)]">
                   Jalur belajar yang disusun khusus dari titikmu sekarang
-                  menuju peran impian — bukan template umum.
+                  menuju peran impian, bukan template umum.
                 </p>
               </div>
               {/* mini stepper visual */}
@@ -407,7 +384,12 @@ function Features() {
           {/* 02 — Analisis skill-gap */}
           <div
             className="act-feature p-6 lg:col-span-2"
-            style={featureVars("#948ae3", "#7568d9", "rgba(117,104,217,0.45)")}
+            style={featureVars(
+              "#948ae3",
+              "#7568d9",
+              "rgba(117,104,217,0.45)",
+              "radial-gradient(120% 130% at 50% 0%, #f0eefb, var(--act-wash-lilac) 82%)"
+            )}
             data-gs="stagger-child"
           >
             <span className="act-icon-tile">
@@ -472,7 +454,12 @@ function Features() {
           {/* 04 — Latihan interview */}
           <div
             className="act-feature p-6 lg:col-span-3"
-            style={featureVars("#5eb3a4", "#3d9a8b", "rgba(61,154,139,0.45)")}
+            style={featureVars(
+              "#5eb3a4",
+              "#3d9a8b",
+              "rgba(61,154,139,0.45)",
+              "radial-gradient(120% 130% at 50% 0%, #e9f5f0, var(--act-wash-mint) 86%)"
+            )}
             data-gs="stagger-child"
           >
             <span className="act-icon-tile">
@@ -500,14 +487,16 @@ function Features() {
   );
 }
 
-/* CSS custom props for the bento tiles' gradient rail + icon */
-function featureVars(from: string, to: string, glow: string) {
+/* CSS custom props for the bento tiles' gradient rail + icon.
+   `bg` opsional: tinted wash agar grid tidak putih-putih semua. */
+function featureVars(from: string, to: string, glow: string, bg?: string) {
   return {
     "--rail-from": from,
     "--rail-to": to,
     "--tile-from": from,
     "--tile-to": to,
     "--tile-glow": glow,
+    ...(bg ? { "--feature-bg": bg } : {}),
   } as CSSProperties;
 }
 
@@ -522,8 +511,8 @@ function Gallery() {
             Setiap langkah punya pemandangan
           </h2>
           <p className="mx-auto mt-4 max-w-[52ch] text-[16px] leading-[1.5] text-[var(--act-charcoal)]">
-            CraftWorks mengubah rencana abstrak jadi peta yang bisa kamu lihat —
-            dari skill yang perlu diasah, lowongan yang cocok, sampai puncak
+            CraftWorks mengubah rencana abstrak jadi peta yang bisa kamu lihat.
+            Dari skill yang perlu diasah, lowongan yang cocok, sampai puncak
             tujuan.
           </p>
         </div>
@@ -542,19 +531,13 @@ function Gallery() {
               className="object-cover object-[50%_30%] transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
             />
             <div className="act-scrim-up absolute inset-0" />
-            <figcaption className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-3 p-6 sm:flex-row sm:items-end sm:justify-between sm:p-8">
+            <figcaption className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
               <div>
-                <span className="act-glass-chip">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#5cb3e8]" />
-                  Roadmap · Frontend Engineer
-                </span>
+                <span className="act-glass-chip">Roadmap · Frontend Engineer</span>
                 <h3 className="act-heading mt-3 text-[22px] text-white sm:text-[26px]">
                   Jalur yang terlihat, bukan tebak-tebakan
                 </h3>
               </div>
-              <span className="hidden text-[13px] font-medium text-white/75 sm:block">
-                Milestone demi milestone, sampai bendera puncak
-              </span>
             </figcaption>
           </div>
         </figure>
@@ -579,7 +562,7 @@ function Comparison() {
     { label: "Bahasa Indonesia", cells: [true, "partial", true, true, "partial"] },
     {
       label: "Pendamping",
-      cells: ["AI 24/7", "—", "Mentor batch", "Coach", "—"],
+      cells: ["AI 24/7", "-", "Mentor batch", "Coach", "-"],
     },
   ];
 
@@ -611,19 +594,16 @@ function Comparison() {
     <section className="act-band-sky py-20" data-gs="section">
       <div className="mx-auto max-w-[1100px] px-6">
         <div className="mx-auto max-w-[40ch] text-center">
-          <span className="inline-flex rounded-full bg-[rgba(0,152,242,0.1)] px-4 py-1.5 text-[13px] font-medium text-[var(--act-blue)]">
-            Lebih lengkap dari LinkedIn, bootcamp & kursus
-          </span>
-          <h2 className="act-display mt-6 text-[34px] text-[var(--act-ink)] md:text-[48px]">
+          <h2 className="act-display text-[34px] text-[var(--act-ink)] md:text-[48px]">
             Roadmap, skill-gap, job match. Tanpa langganan.
           </h2>
           <p className="mx-auto mt-4 max-w-[46ch] text-[16px] leading-[1.5] text-[var(--act-charcoal)]">
             Bayar nol, dapat pendamping karir penuh. Mulai dari memetakan
-            skill sampai latihan interview — semua dalam satu tempat.
+            skill sampai latihan interview, semua dalam satu tempat.
           </p>
           <div className="mt-7 flex flex-col items-center gap-2">
             <Link href="/onboarding" className="act-pill">
-              Buat roadmap pertama
+              Mulai gratis
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
             <span className="text-[13px] text-[var(--act-graphite)]">Gratis selamanya</span>
@@ -698,6 +678,7 @@ function Comparison() {
 
 /* ================== JOURNEY BAND — dark cinematic moment, echoes the hero ================== */
 function JourneyBand() {
+  /* Data contoh (mock) untuk demo. Ganti dengan metrik produksi nyata. */
   const stats: { value: string; count?: string; suffix: string; label: string }[] = [
     { value: "12.4", count: "12.4", suffix: "rb+", label: "roadmap dibuat" },
     { value: "72", count: "72", suffix: "%", label: "rata-rata skor match" },
@@ -711,13 +692,9 @@ function JourneyBand() {
 
       <div className="relative z-10 mx-auto max-w-[1100px] px-6 py-24 md:py-28">
         <div className="mx-auto max-w-[760px] text-center">
-          <span className="act-glass-chip">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#5cb3e8]" />
-            Cerita dari jalur
-          </span>
-          <blockquote className="act-heading mx-auto mt-7 max-w-[28ch] text-[26px] leading-[1.3] text-white md:text-[34px]">
-            “Skill, lowongan, sampai latihan interview semua di satu tempat —
-            aku nggak bingung lagi harus ngapain. Tiga bulan kemudian aku tanda
+          <blockquote className="act-heading mx-auto max-w-[28ch] text-[26px] leading-[1.3] text-white md:text-[34px]">
+            “Skill, lowongan, sampai latihan interview semua di satu tempat.
+            Aku nggak bingung lagi harus ngapain. Tiga bulan kemudian aku tanda
             tangan kontrak pertama.”
           </blockquote>
           <div className="mt-7 flex flex-col items-center">
@@ -761,8 +738,8 @@ function JourneyBand() {
 /* ================== FAQ ================== */
 function FAQ() {
   const faqs = [
-    ["Apakah benar-benar gratis?", "Fitur inti — roadmap, analisis skill-gap, dan job match — bisa dipakai tanpa biaya langganan. Kami tidak menyimpan kartu kredit kamu."],
-    ["Cocok untuk siapa saja?", "Untuk siapa pun yang sedang menata karir — mahasiswa tingkat akhir, fresh graduate yang cari kerja pertama, sampai pekerja yang mau pindah jalur. CraftWorks menyesuaikan roadmap dengan titik awal masing-masing."],
+    ["Apakah benar-benar gratis?", "Fitur inti (roadmap, analisis skill-gap, dan job match) bisa dipakai tanpa biaya langganan. Kami tidak menyimpan kartu kredit kamu."],
+    ["Cocok untuk siapa saja?", "Untuk siapa pun yang sedang menata karir: mahasiswa tingkat akhir, fresh graduate yang cari kerja pertama, sampai pekerja yang mau pindah jalur. CraftWorks menyesuaikan roadmap dengan titik awal masing-masing."],
     ["Dari mana data lowongannya?", "Kami mengumpulkan lowongan dari berbagai sumber publik dan mencocokkannya dengan profil skill kamu secara real-time."],
     ["Apakah CV saya aman?", "Data kamu dienkripsi dan hanya dipakai untuk menyusun roadmap dan rekomendasi. Kamu bisa menghapusnya kapan saja."],
     ["Bahasa apa yang didukung?", "Antarmuka dan percakapan tersedia dalam Bahasa Indonesia, dengan dukungan istilah teknis berbahasa Inggris."],
@@ -771,7 +748,6 @@ function FAQ() {
     <section id="faq" className="py-24" data-gs="section">
       <div className="mx-auto max-w-[760px] px-6">
         <div className="mb-10 text-center">
-          <p className="act-eyebrow mb-4">Masih penasaran?</p>
           <h2 className="act-heading text-[32px] text-[var(--act-ink)] md:text-[40px] md:tracking-[-0.03em]">
             Pertanyaan umum
           </h2>
@@ -829,7 +805,7 @@ function Footer() {
           </h2>
           <p className="mx-auto mt-4 max-w-[52ch] text-[15px] leading-[1.6] text-white/85 md:text-[16px]">
             Buat roadmap pertamamu dalam 60 detik. Tanpa kartu kredit, tanpa
-            langganan, tanpa drama — tinggal melangkah.
+            langganan, tanpa drama. Tinggal melangkah.
           </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3.5">
             <Link href="/onboarding" className="act-pill-hero">
@@ -939,7 +915,10 @@ function Footer() {
 }
 
 /* =====================================================
-   ICONS & MARKS — minimal, hairline stroke
+   ICONS & MARKS
+   Glyph icons: Phosphor (weight distandarkan; "bold" untuk
+   glyph kecil, "regular" untuk icon tile). Wordmark & DashedArrow
+   tetap lokal: brand mark & konektor diagram, bukan icon glyph.
    ===================================================== */
 function Wordmark() {
   return (
@@ -952,35 +931,19 @@ function Wordmark() {
 }
 
 function ArrowRight({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none">
-      <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
+  return <PhArrowRight weight="bold" className={className} />;
 }
 
 function Check({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none">
-      <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
+  return <PhCheck weight="bold" className={className} />;
 }
 
 function Plus({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none">
-      <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
+  return <PhPlus weight="bold" className={className} />;
 }
 
 function Minus({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none">
-      <path d="M6 12h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
+  return <PhMinus weight="bold" className={className} />;
 }
 
 function DashedArrow() {
@@ -993,36 +956,17 @@ function DashedArrow() {
 }
 
 function Compass({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none">
-      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M15.5 8.5l-2 5-5 2 2-5 5-2z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-    </svg>
-  );
+  return <PhCompass className={className} />;
 }
 
 function Gauge({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none">
-      <path d="M4 18a8 8 0 1116 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-      <path d="M12 18l4-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  );
+  return <PhGauge className={className} />;
 }
 
 function Target({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none">
-      <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.8" />
-      <circle cx="12" cy="12" r="3.5" stroke="currentColor" strokeWidth="1.8" />
-    </svg>
-  );
+  return <PhTarget className={className} />;
 }
 
 function Chat({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none">
-      <path d="M5 6h14a1 1 0 011 1v8a1 1 0 01-1 1H9l-4 3V7a1 1 0 011-1z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-    </svg>
-  );
+  return <PhChat className={className} />;
 }

@@ -20,7 +20,7 @@ export default function InterviewPage() {
         </h1>
         <p className="mt-4 text-[15px] leading-relaxed text-[var(--act-charcoal)]">
           Pilih bidang, jawab pertanyaan satu per satu, lalu bandingkan dengan
-          contoh jawaban terbaik. Mode demo — jawaban tidak disimpan.
+          contoh jawaban terbaik. Mode demo, jawaban tidak disimpan.
         </p>
       </header>
 

@@ -41,7 +41,7 @@ export default async function LearnPage() {
           </div>
           {gap.missingNames.length === 0 ? (
             <p className="px-5 py-6 text-sm text-[var(--act-graphite)]">
-              Mantap — skill kamu sudah menutup kebutuhan role target.
+              Mantap, skill kamu sudah menutup kebutuhan role target.
             </p>
           ) : (
             <ol className="divide-y divide-[rgba(15,23,42,0.07)]">

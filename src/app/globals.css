@@ -449,6 +449,10 @@ select, input, textarea { font-family: inherit; }
 .act-chip-mute { background: rgba(15, 23, 42, 0.06); color: var(--act-graphite); }
 
 /* Soft pastel wash surfaces — the colorful card / section backgrounds */
+.act-wash-sky-soft {
+  background:
+    radial-gradient(120% 130% at 50% 0%, var(--act-sky-100), var(--act-wash-sky) 78%);
+}
 .act-wash-iris-soft {
   background: radial-gradient(120% 130% at 50% 0%, #f0eefb, var(--act-wash-lilac) 82%);
 }
@@ -785,7 +789,7 @@ select, input, textarea { font-family: inherit; }
 .act-feature {
   position: relative;
   overflow: hidden;
-  background: var(--act-paper);
+  background: var(--feature-bg, var(--act-paper));
   border: 1px solid rgba(15, 23, 42, 0.06);
   border-radius: 22px;
   box-shadow: var(--act-card-shadow);
@@ -850,6 +854,7 @@ select, input, textarea { font-family: inherit; }
 .act-faq-card:hover { border-color: rgba(0, 152, 242, 0.22); }
 .act-faq-card[open] {
   border-color: rgba(0, 152, 242, 0.3);
+  background: linear-gradient(180deg, var(--act-sky-50), var(--act-paper) 55%);
   box-shadow:
     0 0 0 4px rgba(0, 152, 242, 0.07),
     var(--act-card-shadow);

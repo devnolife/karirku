@@ -48,12 +48,12 @@ export default function LoginPage() {
             butuh peta yang jujur.
           </p>
           <p className="act-script mt-6 text-2xl text-[var(--act-iris)]">
-            — manifesto CraftWorks
+            manifesto CraftWorks
           </p>
         </div>
 
         <div className="flex items-center justify-between border-t border-[rgba(0,152,242,0.16)] pt-5 text-sm text-[var(--act-graphite)]">
-          <span>Demo mode · v1.0</span>
+          <span>Demo mode</span>
           <span>Apr 2026</span>
         </div>
       </aside>
@@ -76,7 +76,7 @@ export default function LoginPage() {
             Masuk ke <span className="act-sky-text">CraftWorks</span>
           </h1>
           <p className="mt-4 text-[15px] leading-relaxed text-[var(--act-charcoal)]">
-            Versi demo — jalan tanpa database &amp; OAuth. Pilih role untuk
+            Versi demo, jalan tanpa database &amp; OAuth. Pilih role untuk
             explore alur &amp; dashboard masing-masing.
           </p>
 
@@ -116,7 +116,7 @@ export default function LoginPage() {
                 className="inline-flex h-[52px] w-full items-center justify-center gap-3 rounded-full border border-[rgba(15,23,42,0.14)] bg-[var(--act-ink)] text-sm font-semibold text-white transition-opacity hover:opacity-90"
               >
                 <GithubIcon />
-                Masuk dengan GitHub — auto-sync skill dari repo publik
+                Masuk dengan GitHub (auto-sync skill dari repo publik)
               </a>
             ) : (
               <button
@@ -125,7 +125,7 @@ export default function LoginPage() {
                 className="inline-flex h-[52px] w-full cursor-not-allowed items-center justify-center gap-3 rounded-full border border-[rgba(15,23,42,0.1)] bg-[var(--act-mist)] text-sm font-medium text-[var(--act-graphite)]"
               >
                 <GithubIcon />
-                GitHub — set GITHUB_CLIENT_ID untuk aktif
+                GitHub: set GITHUB_CLIENT_ID untuk aktif
               </button>
             )}
 
@@ -135,7 +135,7 @@ export default function LoginPage() {
               className="inline-flex h-[52px] w-full cursor-not-allowed items-center justify-center gap-3 rounded-full border border-[rgba(15,23,42,0.1)] bg-[var(--act-mist)] text-sm font-medium text-[var(--act-graphite)]"
             >
               <GoogleIcon />
-              Google — nonaktif di demo
+              Google: nonaktif di demo
             </button>
           </form>
 

@@ -276,7 +276,7 @@ export default async function ProfilePage() {
                 ({Math.round(cvFile.sizeBytes / 1024)} KB)
               </>
             ) : (
-              <> Belum ada — upload PDF/DOC maks 5 MB.</>
+              <> Belum ada. Upload PDF/DOC maks 5 MB.</>
             )}
           </p>
         </div>
@@ -299,7 +299,7 @@ export default async function ProfilePage() {
         <div>
           <span className="act-kicker">Preferensi kerja</span>
           <p className="mt-2 text-sm text-[var(--act-graphite)]">
-            Rekomendasi loker dihitung dari data ini — bukan tebakan.
+            Rekomendasi loker dihitung dari data ini, bukan tebakan.
           </p>
         </div>
 

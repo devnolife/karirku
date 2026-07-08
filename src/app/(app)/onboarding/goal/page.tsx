@@ -36,89 +36,89 @@ export default async function OnboardingGoalPage() {
     <div className="mx-auto max-w-[1400px] px-6 py-12">
       <div className="mb-8"><OnboardingStepper current={2} /></div>
       <div className="grid grid-cols-12 gap-8">
-      <aside className="act-rise col-span-12 md:col-span-4 md:sticky md:top-24 md:self-start">
-        <span className="act-eyebrow">Onboarding · Step 2</span>
-        <h1 className="act-display mt-4 text-5xl leading-[1.04] md:text-6xl">
-          Set career <span className="act-sky-text">goal.</span>
-        </h1>
-        <p className="mt-5 max-w-md text-[15px] leading-relaxed text-[var(--act-charcoal)]">
-          AI butuh tahu kamu mau kemana. Jawaban ini bisa diubah kapan aja —
-          roadmap akan otomatis re-generate.
-        </p>
-        <div className="act-card-2 act-wash-iris-soft mt-8 border-[rgba(109,86,252,0.18)] p-5">
-          <span className="act-kicker">Tips</span>
-          <ul className="mt-3 space-y-3 text-sm text-[var(--act-charcoal)]">
-            <li className="flex gap-2.5">
-              <CheckIcon />
-              Role spesifik (bukan &ldquo;tech&rdquo; doang) bikin analisis lebih tajam.
-            </li>
-            <li className="flex gap-2.5">
-              <CheckIcon />
-              Jujur soal jam belajar. Roadmap nyesuaiin ke kapasitas kamu.
-            </li>
-          </ul>
-        </div>
-      </aside>
+        <aside className="act-rise col-span-12 md:col-span-4 md:sticky md:top-24 md:self-start">
+          <span className="act-eyebrow">Onboarding · Step 2</span>
+          <h1 className="act-display mt-4 text-5xl leading-[1.04] md:text-6xl">
+            Set career <span className="act-sky-text">goal.</span>
+          </h1>
+          <p className="mt-5 max-w-md text-[15px] leading-relaxed text-[var(--act-charcoal)]">
+            AI butuh tahu kamu mau kemana. Jawaban ini bisa diubah kapan aja,
+            roadmap akan otomatis re-generate.
+          </p>
+          <div className="act-card-2 act-wash-iris-soft mt-8 border-[rgba(109,86,252,0.18)] p-5">
+            <span className="act-kicker">Tips</span>
+            <ul className="mt-3 space-y-3 text-sm text-[var(--act-charcoal)]">
+              <li className="flex gap-2.5">
+                <CheckIcon />
+                Role spesifik (bukan &ldquo;tech&rdquo; doang) bikin analisis lebih tajam.
+              </li>
+              <li className="flex gap-2.5">
+                <CheckIcon />
+                Jujur soal jam belajar. Roadmap nyesuaiin ke kapasitas kamu.
+              </li>
+            </ul>
+          </div>
+        </aside>
 
-      <form action={saveGoalAction} className="act-rise col-span-12 md:col-span-8">
-        <div className="act-card-2 act-rail act-rail-rainbow divide-y divide-[rgba(15,23,42,0.07)] overflow-hidden pt-1">
-          <FormRow label="Target role" required helper="Role spesifik bikin skill-gap analysis lebih akurat.">
-            <Input
-              name="targetRole"
-              placeholder="Contoh: Frontend Engineer"
-              defaultValue={current?.targetRole}
-              required
-            />
-          </FormRow>
+        <form action={saveGoalAction} className="act-rise col-span-12 md:col-span-8">
+          <div className="act-card-2 act-rail act-rail-rainbow divide-y divide-[rgba(15,23,42,0.07)] overflow-hidden pt-1">
+            <FormRow label="Target role" required helper="Role spesifik bikin skill-gap analysis lebih akurat.">
+              <Input
+                name="targetRole"
+                placeholder="Contoh: Frontend Engineer"
+                defaultValue={current?.targetRole}
+                required
+              />
+            </FormRow>
 
-          <FormRow label="Mode karir" helper="Pilih salah satu.">
-            <TrackPicker defaultValue={current?.targetTrack ?? "fulltime"} />
-          </FormRow>
+            <FormRow label="Mode karir" helper="Pilih salah satu.">
+              <TrackPicker defaultValue={current?.targetTrack ?? "fulltime"} />
+            </FormRow>
 
-          <FormRow label="Kota target" helper="Opsional. Kosongin kalau bebas.">
-            <Input
-              name="targetCity"
-              placeholder="Jakarta / Remote"
-              defaultValue={current?.targetCity ?? undefined}
-            />
-          </FormRow>
+            <FormRow label="Kota target" helper="Opsional. Kosongin kalau bebas.">
+              <Input
+                name="targetCity"
+                placeholder="Jakarta / Remote"
+                defaultValue={current?.targetCity ?? undefined}
+              />
+            </FormRow>
 
-          <FormRow label="Jam belajar / minggu" helper="CraftWorks nyesuaiin beban roadmap ke kapasitas kamu.">
-            <Input
-              type="number"
-              name="weeklyHours"
-              placeholder="10"
-              suffix="jam"
-              defaultValue={current?.weeklyHours ? String(current.weeklyHours) : undefined}
-            />
-          </FormRow>
+            <FormRow label="Jam belajar / minggu" helper="CraftWorks nyesuaiin beban roadmap ke kapasitas kamu.">
+              <Input
+                type="number"
+                name="weeklyHours"
+                placeholder="10"
+                suffix="jam"
+                defaultValue={current?.weeklyHours ? String(current.weeklyHours) : undefined}
+              />
+            </FormRow>
 
-          <FormRow label="Budget course / bulan" helper="Isi 0 kalau cuma mau course gratis.">
-            <Input
-              type="number"
-              name="budgetIdr"
-              placeholder="200000"
-              prefix="Rp"
-              defaultValue={current?.budgetIdr ? String(current.budgetIdr) : undefined}
-            />
-          </FormRow>
-        </div>
+            <FormRow label="Budget course / bulan" helper="Isi 0 kalau cuma mau course gratis.">
+              <Input
+                type="number"
+                name="budgetIdr"
+                placeholder="200000"
+                prefix="Rp"
+                defaultValue={current?.budgetIdr ? String(current.budgetIdr) : undefined}
+              />
+            </FormRow>
+          </div>
 
-        <div className="mt-8 flex flex-col-reverse items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <span className="text-xs text-[var(--act-graphite)]">
-            Tersimpan di akunmu — roadmap menyesuaikan otomatis.
-          </span>
-          <button
-            type="submit"
-            className="act-pill group justify-center !px-8 !py-3.5 !text-[15px]"
-          >
-            Lanjut ke review
-            <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <path d="M5 12h14M13 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-      </form>
+          <div className="mt-8 flex flex-col-reverse items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <span className="text-xs text-[var(--act-graphite)]">
+              Tersimpan di akunmu, roadmap menyesuaikan otomatis.
+            </span>
+            <button
+              type="submit"
+              className="act-pill group justify-center !px-8 !py-3.5 !text-[15px]"
+            >
+              Lanjut ke review
+              <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M5 12h14M13 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
