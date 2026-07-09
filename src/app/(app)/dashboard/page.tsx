@@ -51,21 +51,26 @@ async function JobseekerOverview() {
             Halo, <span className="act-sky-text">{firstName}.</span>
           </h1>
           {goal ? (
-            <p className="mt-3 max-w-xl text-[15px] text-[var(--act-charcoal)]">
-              Goal: <span className="font-semibold text-[var(--act-ink)]">{goal.targetRole}</span>
-              {goal.targetCity ? ` · ${goal.targetCity}` : ""} · {goal.weeklyHours} jam/minggu ·{" "}
-              {goal.budgetIdr > 0 ? `Rp ${goal.budgetIdr.toLocaleString("id-ID")}/bln` : "course gratis"}
-            </p>
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <span className="act-chip act-chip-blue">{goal.targetRole}</span>
+              {goal.targetCity && <span className="act-chip act-chip-mute">{goal.targetCity}</span>}
+              <span className="act-chip act-chip-mute">{goal.weeklyHours} jam/minggu</span>
+              <span className="act-chip act-chip-mute">
+                {goal.budgetIdr > 0 ? `Rp ${goal.budgetIdr.toLocaleString("id-ID")}/bln` : "course gratis"}
+              </span>
+            </div>
           ) : (
             <p className="mt-3 max-w-xl text-[15px] text-[var(--act-charcoal)]">
               Belum ada goal. Atur target role agar dashboard menyesuaikan.
             </p>
           )}
-          <Link href="/onboarding" className="act-pill-ghost mt-3 -ml-3 !text-[var(--act-blue)]">
+          <Link href="/onboarding" className="group mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[var(--act-blue)]">
             {goal ? "Ubah goal" : "Atur goal"}
-            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <path d="M5 12h14M13 5l7 7-7 7" />
-            </svg>
+            <span className="act-disc !h-6 !w-6">
+              <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M5 12h14M13 5l7 7-7 7" />
+              </svg>
+            </span>
           </Link>
         </div>
         <div className="col-span-12 lg:col-span-4">

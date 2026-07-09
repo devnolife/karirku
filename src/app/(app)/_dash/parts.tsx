@@ -228,11 +228,16 @@ export function JobRow({ job: j }: { job: JobView }) {
                 title={owned ? "Kamu punya skill ini" : "Belum ada di profilmu"}
                 className={
                   owned
-                    ? "rounded-md bg-[rgba(0,200,120,0.10)] px-1.5 py-0.5 text-[10px] font-semibold text-[#0a7a4b]"
+                    ? "inline-flex items-center gap-0.5 rounded-md bg-[rgba(0,200,120,0.10)] px-1.5 py-0.5 text-[10px] font-semibold text-[#0a7a4b]"
                     : "rounded-md bg-[rgba(0,152,242,0.08)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--act-blue)]"
                 }
               >
-                {owned ? "✓ " : ""}{s}
+                {owned && (
+                  <svg viewBox="0 0 24 24" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <path d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+                {s}
               </span>
             );
           })}
@@ -315,8 +320,12 @@ export function CourseRow({ course: c, idx }: { course: CourseView; idx: number 
       </div>
       <div className="col-span-7 sm:col-span-8">
         <h4 className="text-sm font-semibold leading-snug text-[var(--act-ink)]">{c.title}</h4>
-        <p className="mt-1 text-xs text-[var(--act-graphite)]">
-          {c.provider} · {c.level} · {c.hours}h · <span className="text-[#d97706]">★</span> {c.rating}
+        <p className="mt-1 flex items-center gap-1 text-xs text-[var(--act-graphite)]">
+          {c.provider} · {c.level} · {c.hours}h ·
+          <svg viewBox="0 0 24 24" className="h-3 w-3 text-[#d97706]" fill="currentColor" aria-hidden>
+            <path d="M12 2l2.9 6.26 6.6.7-4.9 4.5 1.35 6.54L12 16.77 6.05 20l1.35-6.54-4.9-4.5 6.6-.7L12 2z" />
+          </svg>
+          {c.rating}
         </p>
       </div>
       <div className="col-span-3 text-right">

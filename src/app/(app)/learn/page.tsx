@@ -21,41 +21,45 @@ export default async function LearnPage() {
       />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-        <div className="act-card-2 overflow-hidden lg:col-span-3">
-          <div className="border-b border-[rgba(15,23,42,0.07)] px-5 py-3.5">
-            <span className="act-kicker">Kursus prioritas</span>
-          </div>
-          {courses.length === 0 ? (
-            <div className="p-5">
-              <Empty title="Belum ada rekomendasi kursus" description="Lengkapi skill & goal kamu dulu." />
+        <div className="act-bezel lg:col-span-3">
+          <div className="act-bezel-core overflow-hidden">
+            <div className="border-b border-[rgba(15,23,42,0.07)] px-5 py-3.5">
+              <span className="act-kicker">Kursus prioritas</span>
             </div>
-          ) : (
-            <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
-              {courses.map((c, i) => <CourseRow key={c.id} course={c} idx={i} />)}
-            </ul>
-          )}
-        </div>
-        <div className="act-card-2 overflow-hidden lg:col-span-2">
-          <div className="border-b border-[rgba(15,23,42,0.07)] px-5 py-3.5">
-            <span className="act-kicker">Fokus skill</span>
+            {courses.length === 0 ? (
+              <div className="p-5">
+                <Empty title="Belum ada rekomendasi kursus" description="Lengkapi skill & goal kamu dulu." />
+              </div>
+            ) : (
+              <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
+                {courses.map((c, i) => <CourseRow key={c.id} course={c} idx={i} />)}
+              </ul>
+            )}
           </div>
-          {gap.missingNames.length === 0 ? (
-            <p className="px-5 py-6 text-sm text-[var(--act-graphite)]">
-              Mantap, skill kamu sudah menutup kebutuhan role target.
-            </p>
-          ) : (
-            <ol className="divide-y divide-[rgba(15,23,42,0.07)]">
-              {gap.missingNames.slice(0, 6).map((name, i) => (
-                <li key={name} className="flex items-center gap-3 px-5 py-4">
-                  <span className="act-display text-lg text-[var(--act-graphite)]">{i + 1}</span>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-[var(--act-ink)]">{name}</p>
-                    <p className="text-xs text-[var(--act-graphite)]">diminta lowongan, belum kamu kuasai</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          )}
+        </div>
+        <div className="act-bezel lg:col-span-2">
+          <div className="act-bezel-core overflow-hidden">
+            <div className="border-b border-[rgba(15,23,42,0.07)] px-5 py-3.5">
+              <span className="act-kicker">Fokus skill</span>
+            </div>
+            {gap.missingNames.length === 0 ? (
+              <p className="px-5 py-6 text-sm text-[var(--act-graphite)]">
+                Mantap, skill kamu sudah menutup kebutuhan role target.
+              </p>
+            ) : (
+              <ol className="divide-y divide-[rgba(15,23,42,0.07)]">
+                {gap.missingNames.slice(0, 6).map((name, i) => (
+                  <li key={name} className="flex items-center gap-3 px-5 py-4">
+                    <span className="act-display text-lg text-[var(--act-graphite)]">{i + 1}</span>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-[var(--act-ink)]">{name}</p>
+                      <p className="text-xs text-[var(--act-graphite)]">diminta lowongan, belum kamu kuasai</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </div>
         </div>
       </div>
 

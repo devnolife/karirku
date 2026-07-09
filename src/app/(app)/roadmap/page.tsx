@@ -54,9 +54,11 @@ export default async function RoadmapPage() {
           />
         )
       ) : (
-        <ol className="act-card-2 divide-y divide-[rgba(15,23,42,0.07)] overflow-hidden">
-          {roadmap.milestones.map((m) => <MilestoneRow key={m.id} milestone={m} />)}
-        </ol>
+        <div className="act-bezel">
+          <ol className="act-bezel-core divide-y divide-[rgba(15,23,42,0.07)] overflow-hidden">
+            {roadmap.milestones.map((m) => <MilestoneRow key={m.id} milestone={m} />)}
+          </ol>
+        </div>
       )}
     </div>
   );

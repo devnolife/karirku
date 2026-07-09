@@ -36,42 +36,44 @@ export default async function ApplicationsPage() {
           actionHref="/jobs"
         />
       ) : (
-        <div className="act-card-2 overflow-hidden">
-          <div className="hidden grid-cols-12 gap-3 border-b border-[rgba(15,23,42,0.07)] px-5 py-3 md:grid">
-            <span className="act-kicker !text-[11px] col-span-5">Posisi</span>
-            <span className="act-kicker !text-[11px] col-span-2">Mode</span>
-            <span className="act-kicker !text-[11px] col-span-2">Tanggal</span>
-            <span className="act-kicker !text-[11px] col-span-2">Status</span>
-            <span className="act-kicker !text-[11px] col-span-1 text-right">Aksi</span>
-          </div>
-          <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
-            {apps.map((a) => (
-              <li key={a.id} className="act-rowhover grid grid-cols-12 items-center gap-3 px-5 py-4">
-                <div className="col-span-12 md:col-span-5">
-                  <div className="text-sm font-semibold text-[var(--act-ink)]">{a.jobTitle}</div>
-                  <div className="text-xs text-[var(--act-graphite)]">
-                    <span className="font-semibold text-[var(--act-charcoal)]">{a.company}</span> · {a.location}
+        <div className="act-bezel">
+          <div className="act-bezel-core overflow-hidden">
+            <div className="hidden grid-cols-12 gap-3 border-b border-[rgba(15,23,42,0.07)] px-5 py-3 md:grid">
+              <span className="act-kicker !text-[11px] col-span-5">Posisi</span>
+              <span className="act-kicker !text-[11px] col-span-2">Mode</span>
+              <span className="act-kicker !text-[11px] col-span-2">Tanggal</span>
+              <span className="act-kicker !text-[11px] col-span-2">Status</span>
+              <span className="act-kicker !text-[11px] col-span-1 text-right">Aksi</span>
+            </div>
+            <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
+              {apps.map((a) => (
+                <li key={a.id} className="act-rowhover grid grid-cols-12 items-center gap-3 px-5 py-4">
+                  <div className="col-span-12 md:col-span-5">
+                    <div className="text-sm font-semibold text-[var(--act-ink)]">{a.jobTitle}</div>
+                    <div className="text-xs text-[var(--act-graphite)]">
+                      <span className="font-semibold text-[var(--act-charcoal)]">{a.company}</span> · {a.location}
+                    </div>
                   </div>
-                </div>
-                <div className="col-span-4 md:col-span-2">
-                  <span className="act-chip act-chip-mute">{a.mode === "native" ? "In-platform" : "Eksternal"}</span>
-                </div>
-                <div className="col-span-4 text-xs text-[var(--act-graphite)] md:col-span-2">{a.appliedAt}</div>
-                <div className="col-span-4 md:col-span-2">
-                  <span className={`act-chip ${STATUS_TONE[a.status] ?? "act-chip-mute"}`}>{statusLabel(a.status)}</span>
-                </div>
-                <div className="col-span-12 text-left md:col-span-1 md:text-right">
-                  {a.applyUrl ? (
-                    <a href={a.applyUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-[var(--act-blue)] hover:underline">
-                      Buka
-                    </a>
-                  ) : (
-                    <span className="text-xs text-[var(--act-graphite)]">-</span>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
+                  <div className="col-span-4 md:col-span-2">
+                    <span className="act-chip act-chip-mute">{a.mode === "native" ? "In-platform" : "Eksternal"}</span>
+                  </div>
+                  <div className="col-span-4 text-xs text-[var(--act-graphite)] md:col-span-2">{a.appliedAt}</div>
+                  <div className="col-span-4 md:col-span-2">
+                    <span className={`act-chip ${STATUS_TONE[a.status] ?? "act-chip-mute"}`}>{statusLabel(a.status)}</span>
+                  </div>
+                  <div className="col-span-12 text-left md:col-span-1 md:text-right">
+                    {a.applyUrl ? (
+                      <a href={a.applyUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-[var(--act-blue)] hover:underline">
+                        Buka
+                      </a>
+                    ) : (
+                      <span className="text-xs text-[var(--act-graphite)]">-</span>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       )}
     </div>

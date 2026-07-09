@@ -972,8 +972,9 @@ a.act-bezel:active,
   background-color: rgba(0, 152, 242, 0.05);
 }
 
-/* Sidebar nav item — Donezo left active-indicator style.
-   Active: soft mist fill + onyx bold + left blue bar. Idle: charcoal + hover. */
+/* Sidebar nav item — modern soft-pill.
+   Active: sky gradient pill + blue ink + hairline ring, no hard bar.
+   Idle: charcoal, hover nudges right with a mist wash. */
 .act-nav {
   position: relative;
   display: flex;
@@ -984,32 +985,45 @@ a.act-bezel:active,
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--act-charcoal);
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 300ms cubic-bezier(0.32, 0.72, 0, 1),
+    color 300ms cubic-bezier(0.32, 0.72, 0, 1),
+    transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
 }
-.act-nav:hover { background: rgba(15, 15, 15, 0.05); }
+.act-nav:hover {
+  background: rgba(15, 15, 15, 0.04);
+  transform: translateX(2px);
+}
+.act-nav:active { transform: translateX(2px) scale(0.98); }
+.act-nav svg {
+  transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1), color 300ms ease;
+}
+.act-nav:hover svg { transform: scale(1.08); }
 .act-nav-active {
-  background: var(--act-mist);
-  color: var(--act-ink);
+  background:
+    linear-gradient(135deg, rgba(92, 179, 232, 0.14), rgba(43, 143, 214, 0.08));
+  color: var(--act-sky-deep);
   font-weight: 650;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 0 0 1px rgba(43, 143, 214, 0.14);
 }
-.act-nav-active::before {
+.act-nav-active:hover { transform: none; }
+.act-nav-active::after {
   content: "";
-  position: absolute;
-  left: -4px;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 20px;
-  width: 4px;
-  border-radius: 0 4px 4px 0;
-  background: var(--act-blue);
+  margin-left: auto;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--act-sky-deep);
 }
-.act-nav-active svg { color: var(--act-blue); }
+.act-nav-active svg { color: var(--act-sky-deep); }
 .act-nav-collapsed {
   justify-content: center;
   padding-left: 0.6rem;
   padding-right: 0.6rem;
 }
-.act-nav-collapsed.act-nav-active::before { left: -3px; }
+.act-nav-collapsed.act-nav-active::after { display: none; }
 
 /* Dark promo card in sidebar footer */
 .act-promo {
@@ -1027,7 +1041,8 @@ a.act-bezel:active,
 @media (prefers-reduced-motion: reduce) {
   .act-kenburns { animation: none !important; }
   .act-feature, .act-feature::before, .act-pill-ghost-light, .act-faq-card .act-faq-sign,
-  .act-pill-hero, .act-pill-hero svg, .act-pill-ghost-hero {
+  .act-pill-hero, .act-pill-hero svg, .act-pill-ghost-hero,
+  .act-nav, .act-nav svg {
     transition: none;
   }
 }

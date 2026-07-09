@@ -138,50 +138,57 @@ export default async function JobsPage({
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-        <div className="act-card-2 overflow-hidden lg:col-span-3">
-          <div className="flex items-center justify-between border-b border-[rgba(15,23,42,0.07)] px-5 py-3.5">
-            <span className="act-kicker">
-              {q ? `Hasil “${q}” · ${activeTab.label}` : `Rekomendasi loker · ${activeTab.label}`}
-            </span>
-            <span className="act-chip act-chip-mute">{jobs.length} posisi</span>
-          </div>
-          {jobs.length === 0 ? (
-            <div className="p-5">
-              <Empty
-                title={q ? `Tidak ada hasil untuk “${q}”` : "Belum ada lowongan cocok"}
-                description={
-                  q
-                    ? "Coba kata kunci lain atau longgarkan filter."
-                    : "Coba filter lain atau tambahkan skill di profilmu untuk meningkatkan kecocokan."
-                }
-              />
+        <div className="act-bezel lg:col-span-3">
+          <div className="act-bezel-core overflow-hidden">
+            <div className="flex items-center justify-between border-b border-[rgba(15,23,42,0.07)] px-5 py-3.5">
+              <span className="act-kicker">
+                {q ? `Hasil “${q}” · ${activeTab.label}` : `Rekomendasi loker · ${activeTab.label}`}
+              </span>
+              <span className="act-chip act-chip-mute">{jobs.length} posisi</span>
             </div>
-          ) : (
-            <>
-              <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
-                {jobs.map((j) => <JobRow key={j.id} job={j} />)}
-              </ul>
-              {jobs.length >= limit && limit < 100 && (
-                <div className="border-t border-[rgba(15,23,42,0.07)] p-4 text-center">
-                  <Link
-                    href={jobsUrl(sp, { n: String(limit + 20) })}
-                    className="act-pill inline-block !text-sm"
-                  >
-                    Muat lebih banyak
-                  </Link>
-                </div>
-              )}
-            </>
-          )}
+            {jobs.length === 0 ? (
+              <div className="p-5">
+                <Empty
+                  title={q ? `Tidak ada hasil untuk “${q}”` : "Belum ada lowongan cocok"}
+                  description={
+                    q
+                      ? "Coba kata kunci lain atau longgarkan filter."
+                      : "Coba filter lain atau tambahkan skill di profilmu untuk meningkatkan kecocokan."
+                  }
+                />
+              </div>
+            ) : (
+              <>
+                <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
+                  {jobs.map((j) => <JobRow key={j.id} job={j} />)}
+                </ul>
+                {jobs.length >= limit && limit < 100 && (
+                  <div className="border-t border-[rgba(15,23,42,0.07)] p-4 text-center">
+                    <Link
+                      href={jobsUrl(sp, { n: String(limit + 20) })}
+                      className="act-pill inline-block !text-sm"
+                    >
+                      Muat lebih banyak
+                    </Link>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
-        <div className="act-card-2 act-wash-petal-soft overflow-hidden border-[rgba(245,158,11,0.2)] p-5 lg:col-span-2">
-          <span className="act-kicker">Demand by level</span>
-          <h3 className="act-heading mt-2 text-2xl">{roleLabel}</h3>
-          <p className="mt-1 text-sm text-[var(--act-graphite)]">Sebaran {market.openPositions} posisi</p>
-          <MarketChart data={market.trend} />
-          <div className="mt-3 flex items-center justify-between border-t border-[rgba(15,23,42,0.07)] pt-3">
-            <span className="act-kicker">Posisi aktif</span>
-            <span className="act-chip act-chip-green">{market.openPositions}</span>
+        <div className="act-bezel lg:col-span-2">
+          <div
+            className="act-bezel-core overflow-hidden p-5"
+            style={{ "--core-bg": "radial-gradient(120% 130% at 50% 0%, #fbf3e4, var(--act-wash-petal) 86%)" } as React.CSSProperties}
+          >
+            <span className="act-kicker">Demand by level</span>
+            <h3 className="act-heading mt-2 text-2xl">{roleLabel}</h3>
+            <p className="mt-1 text-sm text-[var(--act-graphite)]">Sebaran {market.openPositions} posisi</p>
+            <MarketChart data={market.trend} />
+            <div className="mt-3 flex items-center justify-between border-t border-[rgba(15,23,42,0.07)] pt-3">
+              <span className="act-kicker">Posisi aktif</span>
+              <span className="act-chip act-chip-green">{market.openPositions}</span>
+            </div>
           </div>
         </div>
       </div>
