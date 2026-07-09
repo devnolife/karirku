@@ -7,6 +7,7 @@ import { getRoadmap } from "@/server/queries/roadmap";
 import { getJobMatches } from "@/server/queries/jobs";
 import { getRecommendedCourses } from "@/server/queries/courses";
 import { Kpi, ReadinessCard, PreviewCard, SkillBar } from "../_dash/parts";
+import { StaggerGroup, StaggerItem } from "../_dash/motion";
 import { FreelancerOverview } from "./FreelancerDashboard";
 import { CompanyOverview } from "./CompanyDashboard";
 
@@ -79,65 +80,81 @@ async function JobseekerOverview() {
       </section>
 
       {/* KPI */}
-      <section className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <Kpi label="Jam minggu ini" value={r.hoursThisWeek} unit="jam" caption={`target ${r.hoursTarget} jam`} tone="blue" />
-        <Kpi label="Milestone selesai" value={r.weeksDone} unit={`/${r.weeksTotal}`} caption={`${r.weeksTotal} minggu total`} tone="iris" />
-        <Kpi label="Match terbaik" value={bestJob?.matchPct ?? 0} unit="%" caption={bestJob ? bestJob.company : "belum ada"} tone="magenta" />
-        <Kpi label="Coverage skill" value={gap.coveragePct} unit="%" caption="vs role target" tone="mint" />
-      </section>
+      <StaggerGroup className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <StaggerItem>
+          <Kpi label="Jam minggu ini" value={r.hoursThisWeek} unit="jam" caption={`target ${r.hoursTarget} jam`} tone="blue" />
+        </StaggerItem>
+        <StaggerItem>
+          <Kpi label="Milestone selesai" value={r.weeksDone} unit={`/${r.weeksTotal}`} caption={`${r.weeksTotal} minggu total`} tone="iris" />
+        </StaggerItem>
+        <StaggerItem>
+          <Kpi label="Match terbaik" value={bestJob?.matchPct ?? 0} unit="%" caption={bestJob ? bestJob.company : "belum ada"} tone="magenta" />
+        </StaggerItem>
+        <StaggerItem>
+          <Kpi label="Coverage skill" value={gap.coveragePct} unit="%" caption="vs role target" tone="mint" />
+        </StaggerItem>
+      </StaggerGroup>
 
       {/* Preview cards → detail pages */}
-      <section className="grid grid-cols-1 gap-5 md:grid-cols-2">
-        <PreviewCard href="/skills" kicker="Skill-gap" title="Skill kamu vs target" tone="blue">
-          {criticalSkills.length > 0 ? (
-            <div className="space-y-4">
-              {criticalSkills.map((s) => <SkillBar key={s.name} skill={s} tone="blue" />)}
-            </div>
-          ) : (
-            <p className="text-sm text-[var(--act-graphite)]">Belum ada skill-gap. Atur goal dulu.</p>
-          )}
-        </PreviewCard>
-
-        <PreviewCard href="/roadmap" kicker="Roadmap" title="Langkah berikutnya" tone="iris">
-          {current ? (
-            <div className="rounded-xl bg-[var(--act-mist)] p-3.5">
-              <span className="act-chip act-chip-blue">Minggu {current.week} · {current.status === "in_progress" ? "berjalan" : current.status === "done" ? "selesai" : "menunggu"}</span>
-              <p className="mt-2 text-sm font-semibold text-[var(--act-ink)]">{current.title}</p>
-              <p className="mt-1 text-xs text-[var(--act-graphite)]">{r.weeksDone} selesai · {Math.max(0, r.weeksTotal - r.weeksDone)} tersisa</p>
-            </div>
-          ) : (
-            <p className="text-sm text-[var(--act-graphite)]">Belum ada roadmap.</p>
-          )}
-        </PreviewCard>
-
-        <PreviewCard href="/jobs" kicker="Job match" title="Lowongan paling cocok" tone="magenta">
-          {bestJob ? (
-            <div className="flex items-center gap-4">
-              <div className="act-display text-4xl text-[var(--act-magenta)]">{bestJob.matchPct}<span className="text-lg">%</span></div>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-[var(--act-ink)]">{bestJob.title}</p>
-                <p className="truncate text-xs text-[var(--act-graphite)]">{bestJob.company} · {bestJob.location}</p>
+      <StaggerGroup className="grid grid-cols-1 gap-5 md:grid-cols-2">
+        <StaggerItem>
+          <PreviewCard href="/skills" kicker="Skill-gap" title="Skill kamu vs target" tone="blue">
+            {criticalSkills.length > 0 ? (
+              <div className="space-y-4">
+                {criticalSkills.map((s) => <SkillBar key={s.name} skill={s} tone="blue" />)}
               </div>
-            </div>
-          ) : (
-            <p className="text-sm text-[var(--act-graphite)]">Belum ada lowongan cocok.</p>
-          )}
-        </PreviewCard>
+            ) : (
+              <p className="text-sm text-[var(--act-graphite)]">Belum ada skill-gap. Atur goal dulu.</p>
+            )}
+          </PreviewCard>
+        </StaggerItem>
 
-        <PreviewCard href="/learn" kicker="Belajar" title="Kursus prioritas" tone="mint">
-          {topCourse ? (
-            <div className="flex items-center gap-3">
-              <span className="act-tile bg-[linear-gradient(140deg,#5eb3a4,var(--act-teal))]">{topCourse.provider.charAt(0)}</span>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-[var(--act-ink)]">{topCourse.title}</p>
-                <p className="text-xs text-[var(--act-graphite)]">{topCourse.provider} · {topCourse.hours}h</p>
+        <StaggerItem>
+          <PreviewCard href="/roadmap" kicker="Roadmap" title="Langkah berikutnya" tone="iris">
+            {current ? (
+              <div className="rounded-xl bg-[var(--act-mist)] p-3.5">
+                <span className="act-chip act-chip-blue">Minggu {current.week} · {current.status === "in_progress" ? "berjalan" : current.status === "done" ? "selesai" : "menunggu"}</span>
+                <p className="mt-2 text-sm font-semibold text-[var(--act-ink)]">{current.title}</p>
+                <p className="mt-1 text-xs text-[var(--act-graphite)]">{r.weeksDone} selesai · {Math.max(0, r.weeksTotal - r.weeksDone)} tersisa</p>
               </div>
-            </div>
-          ) : (
-            <p className="text-sm text-[var(--act-graphite)]">Belum ada rekomendasi kursus.</p>
-          )}
-        </PreviewCard>
-      </section>
+            ) : (
+              <p className="text-sm text-[var(--act-graphite)]">Belum ada roadmap.</p>
+            )}
+          </PreviewCard>
+        </StaggerItem>
+
+        <StaggerItem>
+          <PreviewCard href="/jobs" kicker="Job match" title="Lowongan paling cocok" tone="magenta">
+            {bestJob ? (
+              <div className="flex items-center gap-4">
+                <div className="act-display text-4xl text-[var(--act-magenta)]">{bestJob.matchPct}<span className="text-lg">%</span></div>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-[var(--act-ink)]">{bestJob.title}</p>
+                  <p className="truncate text-xs text-[var(--act-graphite)]">{bestJob.company} · {bestJob.location}</p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-[var(--act-graphite)]">Belum ada lowongan cocok.</p>
+            )}
+          </PreviewCard>
+        </StaggerItem>
+
+        <StaggerItem>
+          <PreviewCard href="/learn" kicker="Belajar" title="Kursus prioritas" tone="mint">
+            {topCourse ? (
+              <div className="flex items-center gap-3">
+                <span className="act-tile bg-[linear-gradient(140deg,#5eb3a4,var(--act-teal))]">{topCourse.provider.charAt(0)}</span>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-[var(--act-ink)]">{topCourse.title}</p>
+                  <p className="text-xs text-[var(--act-graphite)]">{topCourse.provider} · {topCourse.hours}h</p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-[var(--act-graphite)]">Belum ada rekomendasi kursus.</p>
+            )}
+          </PreviewCard>
+        </StaggerItem>
+      </StaggerGroup>
     </div>
   );
 }

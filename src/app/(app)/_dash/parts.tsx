@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ApplyButton } from "@/components/ApplyButton";
 import { JobFeedbackButtons } from "@/components/JobFeedbackButtons";
 import { MilestoneStatusButton } from "@/components/MilestoneStatusButton";
+import { CountUp, RingProgress } from "./motion";
 import type {
   SkillView,
   MilestoneView,
@@ -68,7 +69,7 @@ export function Kpi({
         <div className="mt-2 flex items-baseline gap-1">
           <span className={`act-display text-4xl ${valueColor}`}>
             {accent ? "+" : ""}
-            {value}
+            {typeof value === "number" ? <CountUp to={value} /> : value}
           </span>
           {unit && <span className="text-lg font-semibold text-[var(--act-graphite)]">{unit}</span>}
         </div>
@@ -80,9 +81,6 @@ export function Kpi({
 
 /* ---------------- Readiness ring — double-bezel hero tile ---------------- */
 export function ReadinessCard({ score, last }: { score: number; last: number }) {
-  const r = 54;
-  const c = 2 * Math.PI * r;
-  const dash = (score / 100) * c;
   return (
     <div className="act-bezel w-full">
       <div
@@ -95,18 +93,11 @@ export function ReadinessCard({ score, last }: { score: number; last: number }) 
         <span className="act-kicker">Career readiness</span>
         <div className="mt-3 flex items-center gap-5">
           <div className="relative h-[128px] w-[128px] flex-none">
-            <svg viewBox="0 0 128 128" className="h-full w-full -rotate-90">
-              <defs>
-                <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="var(--act-sky-bright)" />
-                  <stop offset="100%" stopColor="var(--act-sky-deep)" />
-                </linearGradient>
-              </defs>
-              <circle cx="64" cy="64" r={r} fill="none" stroke="rgba(15,23,42,0.08)" strokeWidth="10" />
-              <circle cx="64" cy="64" r={r} fill="none" stroke="url(#ring)" strokeWidth="10" strokeDasharray={`${dash} ${c}`} strokeLinecap="round" />
-            </svg>
+            <RingProgress score={score} />
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="act-display text-4xl text-[var(--act-ink)]">{score}</span>
+              <span className="act-display text-4xl text-[var(--act-ink)]">
+                <CountUp to={score} />
+              </span>
               <span className="text-xs font-semibold text-[var(--act-blue)]">persen</span>
             </div>
           </div>

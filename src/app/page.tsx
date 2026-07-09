@@ -109,37 +109,88 @@ function Hero() {
         <Nav />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-[1200px] px-6 pt-16 pb-24 text-center sm:pt-20 sm:pb-28 md:pt-24 md:pb-36">
-        <p data-gs="hero-fade" className="mb-5 text-[14px] font-medium tracking-[0.01em] text-white/80">
-          Copilot karir untuk semua
-        </p>
+      <div className="relative z-10 mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-10 px-6 pt-14 pb-24 sm:pt-16 sm:pb-28 md:pt-20 md:pb-32 lg:grid-cols-[1.15fr_0.85fr]">
+        {/* Copy — left aligned */}
+        <div className="text-center lg:text-left">
+          <p data-gs="hero-fade" className="mb-5 text-[14px] font-medium tracking-[0.01em] text-white/80">
+            Copilot karir untuk semua
+          </p>
 
-        <h1
-          data-gs="hero-line"
-          className="act-display mx-auto max-w-[16ch] text-[40px] text-white sm:text-[54px] md:text-[64px]"
-        >
-          Karirmu, akhirnya terarah
-        </h1>
-
-        <p
-          data-gs="hero-fade"
-          className="mx-auto mt-6 max-w-[54ch] text-[16px] leading-[1.5] text-white/85"
-        >
-          Skill, roadmap, lowongan, sampai latihan interview. Semua di satu
-          tempat.
-        </p>
-
-        <div data-gs="hero-fade" className="mt-8 flex items-center justify-center gap-2">
-          <Link href="/onboarding" className="act-pill-light">
-            Mulai gratis
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-          <a
-            href="#showcase"
-            className="inline-flex items-center gap-2 rounded-full border border-white/40 px-5 py-3 text-[14px] font-medium text-white transition-colors hover:bg-white/10"
+          <h1
+            data-gs="hero-line"
+            className="act-display mx-auto max-w-[16ch] text-[40px] text-white sm:text-[54px] md:text-[60px] lg:mx-0"
           >
-            Lihat contoh
-          </a>
+            Karirmu, akhirnya terarah
+          </h1>
+
+          <p
+            data-gs="hero-fade"
+            className="mx-auto mt-6 max-w-[46ch] text-[16px] leading-[1.5] text-white/85 lg:mx-0"
+          >
+            Skill, roadmap, lowongan, sampai latihan interview. Semua di satu
+            tempat.
+          </p>
+
+          <div data-gs="hero-fade" className="mt-8 flex items-center justify-center gap-2 lg:justify-start">
+            <Link href="/onboarding" className="act-pill-light">
+              Mulai gratis
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+            <a
+              href="#showcase"
+              className="inline-flex items-center gap-2 rounded-full border border-white/40 px-5 py-3 text-[14px] font-medium text-white transition-colors hover:bg-white/10"
+            >
+              Lihat contoh
+            </a>
+          </div>
+        </div>
+
+        {/* Glass roadmap preview — real mini component, floats over the valley */}
+        <div data-gs="hero-fade" className="hidden lg:block">
+          <div className="rounded-[22px] border border-white/25 bg-white/10 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_24px_60px_-20px_rgba(0,0,0,0.45)] backdrop-blur-xl">
+            <div className="flex items-center justify-between">
+              <span className="text-[12px] font-semibold uppercase tracking-[0.08em] text-white/70">
+                Roadmap kamu
+              </span>
+              <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-[11px] font-semibold text-white">
+                16 minggu
+              </span>
+            </div>
+            <div className="mt-4 space-y-2.5">
+              {[
+                ["Kuasai TypeScript", "minggu 1-2", true],
+                ["Bangun 3 project", "minggu 3-6", true],
+                ["Latihan interview", "minggu 7", false],
+              ].map(([t, d, done]) => (
+                <div
+                  key={t as string}
+                  className="flex items-center gap-3 rounded-[14px] bg-white/10 px-3.5 py-3 ring-1 ring-inset ring-white/10"
+                >
+                  <span
+                    className={`flex h-[22px] w-[22px] flex-none items-center justify-center rounded-full ${
+                      done ? "bg-[#5cb3e8] text-white" : "bg-white/15 text-white/50"
+                    }`}
+                  >
+                    {done ? (
+                      <Check className="h-3 w-3" />
+                    ) : (
+                      <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                    )}
+                  </span>
+                  <div className="leading-tight">
+                    <div className="text-[14px] font-semibold text-white">{t}</div>
+                    <div className="text-[11.5px] text-white/60">{d}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 flex items-center justify-between border-t border-white/15 pt-3.5">
+              <span className="text-[12px] text-white/65">Skor match terbaik</span>
+              <span className="text-[15px] font-bold text-[#7dd3fc]">
+                <span data-gs="count" data-to="92">92</span>%
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -225,7 +276,7 @@ function ProductShowcase() {
             <span className="act-glass-chip-light">+3 skill baru minggu ini</span>
           </div>
 
-          <div className="act-card-line relative overflow-hidden" data-gs="hero-preview">
+          <div className="act-card-line act-tilt relative overflow-hidden" data-gs="hero-preview" data-gs-tilt>
             <div className="p-6 md:p-8">
               <div className="flex items-center justify-between">
                 <span className="act-tag">Roadmap · Frontend Engineer</span>
@@ -546,49 +597,23 @@ function Gallery() {
   );
 }
 
-/* ================== COMPARISON ================== */
+/* ================== COMPARISON — featured card vs compact competitors ================== */
 function Comparison() {
-  const cols = ["CraftWorks", "LinkedIn Premium", "Bootcamp", "Career coach", "Kursus online"];
-  type Cell = boolean | "partial" | string;
-  const rows: { label: string; cells: Cell[] }[] = [
-    {
-      label: "Biaya bulanan",
-      cells: ["Rp0", "Rp450rb", "Rp15jt+", "Rp500rb / sesi", "Rp200rb"],
-    },
-    { label: "Roadmap personal", cells: [true, false, "partial", true, false] },
-    { label: "Analisis skill-gap", cells: [true, false, true, true, false] },
-    { label: "Job match real-time", cells: [true, true, false, false, false] },
-    { label: "Latihan interview", cells: [true, false, true, true, false] },
-    { label: "Bahasa Indonesia", cells: [true, "partial", true, true, "partial"] },
-    {
-      label: "Pendamping",
-      cells: ["AI 24/7", "-", "Mentor batch", "Coach", "-"],
-    },
+  const features = [
+    "Roadmap personal",
+    "Analisis skill-gap",
+    "Job match real-time",
+    "Latihan interview",
+    "Bahasa Indonesia",
+    "Pendamping AI 24/7",
   ];
-
-  function renderCell(c: Cell, highlight: boolean) {
-    if (c === true)
-      return (
-        <span
-          className={`inline-flex h-6 w-6 items-center justify-center rounded-full ${highlight ? "bg-[var(--act-blue)] text-white" : "bg-[rgba(0,152,242,0.1)] text-[var(--act-blue)]"
-            }`}
-        >
-          <Check className="h-3.5 w-3.5" />
-        </span>
-      );
-    if (c === false)
-      return <Minus className="mx-auto h-5 w-5 text-[var(--act-stone)]" />;
-    if (c === "partial")
-      return <span className="text-[14px] text-[var(--act-graphite)]">Sebagian</span>;
-    return (
-      <span
-        className={`text-[14px] ${highlight ? "font-semibold text-[var(--act-ink)]" : "text-[var(--act-graphite)]"
-          }`}
-      >
-        {c}
-      </span>
-    );
-  }
+  /* Kompetitor: harga + fitur yang TIDAK didapat */
+  const others: { name: string; price: string; missing: string[] }[] = [
+    { name: "LinkedIn Premium", price: "Rp450rb/bln", missing: ["Roadmap personal", "Skill-gap", "Latihan interview"] },
+    { name: "Bootcamp", price: "Rp15jt+", missing: ["Job match real-time", "Pendamping 24/7"] },
+    { name: "Career coach", price: "Rp500rb/sesi", missing: ["Job match real-time", "Selalu tersedia"] },
+    { name: "Kursus online", price: "Rp200rb/bln", missing: ["Roadmap personal", "Job match", "Interview"] },
+  ];
 
   return (
     <section className="act-band-sky py-20" data-gs="section">
@@ -601,72 +626,66 @@ function Comparison() {
             Bayar nol, dapat pendamping karir penuh. Mulai dari memetakan
             skill sampai latihan interview, semua dalam satu tempat.
           </p>
-          <div className="mt-7 flex flex-col items-center gap-2">
-            <Link href="/onboarding" className="act-pill">
-              Mulai gratis
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-            <span className="text-[13px] text-[var(--act-graphite)]">Gratis selamanya</span>
-          </div>
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-7 gap-y-2">
-            {["0 biaya langganan", "Roadmap personal", "Job match real-time"].map((t) => (
-              <span key={t} className="inline-flex items-center gap-2 text-[14px] font-medium text-[var(--act-ink)]">
-                <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[var(--act-blue)] text-white">
-                  <Check className="h-3 w-3" />
-                </span>
-                {t}
-              </span>
-            ))}
-          </div>
         </div>
 
-        <div className="mt-14 overflow-x-auto">
-          <div className="act-card-line min-w-[760px] overflow-hidden rounded-[24px]" data-gs="stagger-parent">
-            {/* header row */}
-            <div className="grid grid-cols-[1.3fr_repeat(5,1fr)] border-b border-[var(--act-stone)]/25">
-              <div className="px-6 py-5" />
-              {cols.map((c, i) => (
-                <div
-                  key={c}
-                  className={`relative flex flex-col items-center justify-center gap-1.5 px-3 py-4 text-center text-[14px] font-semibold ${i === 0
-                    ? "bg-gradient-to-b from-[rgba(0,152,242,0.1)] to-[rgba(0,152,242,0.04)] text-[var(--act-blue)]"
-                    : "text-[var(--act-graphite)]"
-                    }`}
-                >
-                  {i === 0 && (
-                    <>
-                      <span className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#5cb3e8] to-[var(--act-blue)]" />
-                      <span className="rounded-full bg-[var(--act-onyx)] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-white">
-                        Rekomendasi
-                      </span>
-                    </>
-                  )}
-                  {c}
-                </div>
-              ))}
-            </div>
-
-            {rows.map((r, ri) => (
-              <div
-                key={r.label}
-                data-gs="stagger-child"
-                className={`act-rowhover grid grid-cols-[1.3fr_repeat(5,1fr)] items-center ${ri !== rows.length - 1 ? "border-b border-[var(--act-stone)]/20" : ""
-                  }`}
-              >
-                <div className="px-6 py-5 text-[14px] font-medium text-[var(--act-ink)]">
-                  {r.label}
-                </div>
-                {r.cells.map((cell, ci) => (
-                  <div
-                    key={ci}
-                    className={`px-3 py-5 text-center ${ci === 0
-                      ? "bg-[rgba(0,152,242,0.05)] shadow-[inset_1px_0_0_rgba(0,152,242,0.14),inset_-1px_0_0_rgba(0,152,242,0.14)]"
-                      : ""
-                      }`}
-                  >
-                    {renderCell(cell, ci === 0)}
-                  </div>
+        <div className="mt-14 grid gap-6 lg:grid-cols-[1.1fr_1fr]" data-gs="stagger-parent">
+          {/* Featured — CraftWorks */}
+          <div
+            data-gs="stagger-child"
+            className="relative overflow-hidden rounded-[26px] bg-[var(--act-onyx)] p-7 text-white shadow-[0_30px_70px_-28px_rgba(13,17,27,0.55)] md:p-9"
+          >
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-[radial-gradient(480px_260px_at_85%_0%,rgba(56,189,248,0.25),transparent_60%),radial-gradient(420px_240px_at_0%_100%,rgba(109,86,252,0.2),transparent_60%)]"
+            />
+            <div className="relative">
+              <div className="flex items-center justify-between">
+                <span className="act-heading text-[22px]">
+                  Craft<span className="text-[#7dd3fc]">Works</span>
+                </span>
+                <span className="rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.06em]">
+                  Rekomendasi
+                </span>
+              </div>
+              <div className="mt-6 flex items-baseline gap-2">
+                <span className="act-display text-[52px] leading-none">Rp0</span>
+                <span className="text-[15px] text-white/70">selamanya</span>
+              </div>
+              <ul className="mt-7 grid gap-3 sm:grid-cols-2">
+                {features.map((f) => (
+                  <li key={f} className="flex items-center gap-2.5 text-[14px] font-medium">
+                    <span className="flex h-5 w-5 flex-none items-center justify-center rounded-full bg-[#5cb3e8] text-white">
+                      <Check className="h-3 w-3" />
+                    </span>
+                    {f}
+                  </li>
                 ))}
+              </ul>
+              <Link href="/onboarding" className="act-pill-light mt-8 inline-flex">
+                Mulai gratis
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Competitors — compact 2x2 */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            {others.map((o) => (
+              <div
+                key={o.name}
+                data-gs="stagger-child"
+                className="act-card-2 flex flex-col p-5"
+              >
+                <span className="text-[15px] font-semibold text-[var(--act-ink)]">{o.name}</span>
+                <span className="mt-1 text-[13px] font-medium text-[var(--act-graphite)]">{o.price}</span>
+                <ul className="mt-4 space-y-1.5 border-t border-[rgba(15,23,42,0.07)] pt-3.5">
+                  {o.missing.map((m) => (
+                    <li key={m} className="flex items-center gap-2 text-[12.5px] text-[var(--act-graphite)]">
+                      <Minus className="h-3.5 w-3.5 flex-none text-[var(--act-stone)]" />
+                      {m}
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
@@ -678,13 +697,7 @@ function Comparison() {
 
 /* ================== JOURNEY BAND — dark cinematic moment, echoes the hero ================== */
 function JourneyBand() {
-  /* Data contoh (mock) untuk demo. Ganti dengan metrik produksi nyata. */
-  const stats: { value: string; count?: string; suffix: string; label: string }[] = [
-    { value: "12.4", count: "12.4", suffix: "rb+", label: "roadmap dibuat" },
-    { value: "72", count: "72", suffix: "%", label: "rata-rata skor match" },
-    { value: "3.1", count: "3.1", suffix: "bln", label: "menuju kerja pertama" },
-    { value: "Rp0", suffix: "", label: "biaya langganan" },
-  ];
+  /* Angka di bawah adalah data contoh (mock) untuk demo. */
   return (
     <section className="act-cinema act-grain" data-gs="section">
       {/* night at base camp — pure dark band, sky glow only */}
@@ -708,25 +721,47 @@ function JourneyBand() {
           </div>
         </div>
 
-        {/* Stats — milestones logged at base camp */}
-        <div className="mt-16 grid grid-cols-2 gap-y-10 border-t border-white/12 pt-12 md:grid-cols-4">
-          {stats.map((s) => (
-            <div key={s.label} className="text-center">
-              <div className="act-display text-[40px] text-white md:text-[48px]">
+        {/* Stats — one featured milestone + three supporting */}
+        <div
+          className="mt-16 grid gap-4 border-t border-white/12 pt-12 md:grid-cols-[1.2fr_repeat(3,1fr)] md:gap-6"
+          data-gs="stagger-parent"
+        >
+          {/* Featured stat */}
+          <div
+            data-gs="stagger-child"
+            className="rounded-[20px] bg-white/[0.07] p-6 ring-1 ring-inset ring-white/15 backdrop-blur-sm md:p-7"
+          >
+            <div className="act-display text-[56px] leading-none text-white md:text-[64px]">
+              <span data-gs="count" data-to="12.4">12.4</span>
+              <span className="ml-1 align-baseline text-[24px] font-semibold text-[#7dd3fc]">rb+</span>
+            </div>
+            <div className="mt-2 text-[14.5px] font-medium text-white/80">roadmap dibuat</div>
+            <div className="mt-1 text-[12.5px] text-white/50">dan terus bertambah tiap hari</div>
+          </div>
+          {/* Supporting stats */}
+          {[
+            { count: "72", suffix: "%", label: "rata-rata skor match" },
+            { count: "3.1", suffix: "bln", label: "menuju kerja pertama" },
+            { value: "Rp0", suffix: "", label: "biaya langganan" },
+          ].map((s) => (
+            <div
+              key={s.label}
+              data-gs="stagger-child"
+              className="flex flex-col justify-center rounded-[20px] p-5 text-center ring-1 ring-inset ring-white/10 md:p-6"
+            >
+              <div className="act-display text-[34px] text-white md:text-[38px]">
                 {s.count ? (
-                  <span data-gs="count" data-to={s.count}>
-                    {s.value}
-                  </span>
+                  <span data-gs="count" data-to={s.count}>{s.count}</span>
                 ) : (
                   <span>{s.value}</span>
                 )}
                 {s.suffix && (
-                  <span className="ml-1 align-baseline text-[20px] font-semibold text-[#7dd3fc] md:text-[24px]">
+                  <span className="ml-1 align-baseline text-[17px] font-semibold text-[#7dd3fc]">
                     {s.suffix}
                   </span>
                 )}
               </div>
-              <div className="mt-1.5 text-[13.5px] text-white/65">{s.label}</div>
+              <div className="mt-1.5 text-[13px] text-white/65">{s.label}</div>
             </div>
           ))}
         </div>

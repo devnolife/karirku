@@ -1038,6 +1038,12 @@ a.act-bezel:active,
     linear-gradient(160deg, #0d111b 0%, #0a0d15 100%);
 }
 
+/* Pointer-tracked 3D tilt (transform diisi GSAP quickTo, ini hanya setup) */
+.act-tilt {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .act-kenburns { animation: none !important; }
   .act-feature, .act-feature::before, .act-pill-ghost-light, .act-faq-card .act-faq-sign,
