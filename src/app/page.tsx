@@ -109,88 +109,37 @@ function Hero() {
         <Nav />
       </div>
 
-      <div className="relative z-10 mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-10 px-6 pt-14 pb-24 sm:pt-16 sm:pb-28 md:pt-20 md:pb-32 lg:grid-cols-[1.15fr_0.85fr]">
-        {/* Copy — left aligned */}
-        <div className="text-center lg:text-left">
-          <p data-gs="hero-fade" className="mb-5 text-[14px] font-medium tracking-[0.01em] text-white/80">
-            Copilot karir untuk semua
-          </p>
+      <div className="relative z-10 mx-auto max-w-[1200px] px-6 pt-16 pb-24 text-center sm:pt-20 sm:pb-28 md:pt-24 md:pb-36">
+        <p data-gs="hero-fade" className="mb-5 text-[14px] font-medium tracking-[0.01em] text-white/80">
+          Copilot karir untuk semua
+        </p>
 
-          <h1
-            data-gs="hero-line"
-            className="act-display mx-auto max-w-[16ch] text-[40px] text-white sm:text-[54px] md:text-[60px] lg:mx-0"
+        <h1
+          data-gs="hero-line"
+          className="act-display mx-auto max-w-[16ch] text-[40px] text-white sm:text-[54px] md:text-[64px]"
+        >
+          Karirmu, akhirnya terarah
+        </h1>
+
+        <p
+          data-gs="hero-fade"
+          className="mx-auto mt-6 max-w-[54ch] text-[16px] leading-[1.5] text-white/85"
+        >
+          Skill, roadmap, lowongan, sampai latihan interview. Semua di satu
+          tempat.
+        </p>
+
+        <div data-gs="hero-fade" className="mt-8 flex items-center justify-center gap-2">
+          <Link href="/onboarding" className="act-pill-light">
+            Mulai gratis
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+          <a
+            href="#showcase"
+            className="inline-flex items-center gap-2 rounded-full border border-white/40 px-5 py-3 text-[14px] font-medium text-white transition-colors hover:bg-white/10"
           >
-            Karirmu, akhirnya terarah
-          </h1>
-
-          <p
-            data-gs="hero-fade"
-            className="mx-auto mt-6 max-w-[46ch] text-[16px] leading-[1.5] text-white/85 lg:mx-0"
-          >
-            Skill, roadmap, lowongan, sampai latihan interview. Semua di satu
-            tempat.
-          </p>
-
-          <div data-gs="hero-fade" className="mt-8 flex items-center justify-center gap-2 lg:justify-start">
-            <Link href="/onboarding" className="act-pill-light">
-              Mulai gratis
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-            <a
-              href="#showcase"
-              className="inline-flex items-center gap-2 rounded-full border border-white/40 px-5 py-3 text-[14px] font-medium text-white transition-colors hover:bg-white/10"
-            >
-              Lihat contoh
-            </a>
-          </div>
-        </div>
-
-        {/* Glass roadmap preview — real mini component, floats over the valley */}
-        <div data-gs="hero-fade" className="hidden lg:block">
-          <div className="rounded-[22px] border border-white/25 bg-white/10 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_24px_60px_-20px_rgba(0,0,0,0.45)] backdrop-blur-xl">
-            <div className="flex items-center justify-between">
-              <span className="text-[12px] font-semibold uppercase tracking-[0.08em] text-white/70">
-                Roadmap kamu
-              </span>
-              <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-[11px] font-semibold text-white">
-                16 minggu
-              </span>
-            </div>
-            <div className="mt-4 space-y-2.5">
-              {[
-                ["Kuasai TypeScript", "minggu 1-2", true],
-                ["Bangun 3 project", "minggu 3-6", true],
-                ["Latihan interview", "minggu 7", false],
-              ].map(([t, d, done]) => (
-                <div
-                  key={t as string}
-                  className="flex items-center gap-3 rounded-[14px] bg-white/10 px-3.5 py-3 ring-1 ring-inset ring-white/10"
-                >
-                  <span
-                    className={`flex h-[22px] w-[22px] flex-none items-center justify-center rounded-full ${
-                      done ? "bg-[#5cb3e8] text-white" : "bg-white/15 text-white/50"
-                    }`}
-                  >
-                    {done ? (
-                      <Check className="h-3 w-3" />
-                    ) : (
-                      <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                    )}
-                  </span>
-                  <div className="leading-tight">
-                    <div className="text-[14px] font-semibold text-white">{t}</div>
-                    <div className="text-[11.5px] text-white/60">{d}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-4 flex items-center justify-between border-t border-white/15 pt-3.5">
-              <span className="text-[12px] text-white/65">Skor match terbaik</span>
-              <span className="text-[15px] font-bold text-[#7dd3fc]">
-                <span data-gs="count" data-to="92">92</span>%
-              </span>
-            </div>
-          </div>
+            Lihat contoh
+          </a>
         </div>
       </div>
     </section>
