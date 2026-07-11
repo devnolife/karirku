@@ -52,6 +52,7 @@ export interface ReportPayload {
 
 export type BgRequest =
   | { kind: "CONNECT" }
+  | { kind: "DISCONNECT" }
   | { kind: "GET_STATUS" }
   | { kind: "MAP_FORM"; snapshot: FormSnapshot }
   | { kind: "REPORT"; payload: ReportPayload }

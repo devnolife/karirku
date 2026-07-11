@@ -23,7 +23,7 @@ export async function OPTIONS() {
 }
 
 export async function POST(req: Request) {
-  const userId = userFromRequest(req);
+  const userId = await userFromRequest(req);
   if (!userId) return unauthorized();
 
   let report;

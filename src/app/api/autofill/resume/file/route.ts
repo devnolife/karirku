@@ -12,7 +12,7 @@ export async function OPTIONS() {
 }
 
 export async function GET(req: Request) {
-  const userId = userFromRequest(req);
+  const userId = await userFromRequest(req);
   if (!userId) return unauthorized();
 
   if (!process.env.DATABASE_URL) {

@@ -1,4 +1,5 @@
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import {
   getProfile,
@@ -77,8 +78,15 @@ async function uploadResumeAction(formData: FormData) {
   "use server";
   const user = await requireUser();
   const file = formData.get("cv");
-  if (!(file instanceof File) || file.size === 0) return;
-  if (file.size > CV_MAX_BYTES || !CV_MIME_ALLOWED.has(file.type)) return;
+  if (!(file instanceof File) || file.size === 0) {
+    redirect("/profile?cv=empty");
+  }
+  if (file.size > CV_MAX_BYTES) {
+    redirect("/profile?cv=too-large");
+  }
+  if (!CV_MIME_ALLOWED.has(file.type)) {
+    redirect("/profile?cv=unsupported");
+  }
 
   const { prisma } = await import("@/lib/db");
   const data = Buffer.from(await file.arrayBuffer());
@@ -94,6 +102,7 @@ async function uploadResumeAction(formData: FormData) {
     update: { fileName: file.name.slice(0, 255), mimeType: file.type, data, sizeBytes: file.size },
   });
   revalidatePath("/profile");
+  redirect("/profile?cv=uploaded");
 }
 
 async function saveSkillsAction(formData: FormData) {
@@ -112,8 +121,33 @@ async function setProficiencyAction(skillId: string, proficiency: number) {
   revalidatePath("/profile");
 }
 
-export default async function ProfilePage() {
+const CV_NOTICE: Record<string, { tone: string; message: string }> = {
+  uploaded: {
+    tone: "border-emerald-200 bg-emerald-50 text-emerald-800",
+    message: "CV berhasil disimpan dan siap dipakai extension.",
+  },
+  empty: {
+    tone: "border-amber-200 bg-amber-50 text-amber-800",
+    message: "Pilih file CV terlebih dahulu.",
+  },
+  "too-large": {
+    tone: "border-red-200 bg-red-50 text-red-800",
+    message: "Ukuran CV melebihi batas 5 MB.",
+  },
+  unsupported: {
+    tone: "border-red-200 bg-red-50 text-red-800",
+    message: "Format CV harus PDF, DOC, atau DOCX.",
+  },
+};
+
+export default async function ProfilePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ cv?: string }>;
+}) {
   const user = await requireUser();
+  const { cv } = await searchParams;
+  const cvNotice = cv ? CV_NOTICE[cv] : undefined;
   const { prisma } = await import("@/lib/db");
   const [profile, catalog, cvFile] = await Promise.all([
     getProfile(user.id),
@@ -266,6 +300,14 @@ export default async function ProfilePage() {
 
       {/* File CV */}
       <form action={uploadResumeAction} className="act-card-2 space-y-4 p-6">
+        {cvNotice && (
+          <div
+            role="status"
+            className={`rounded-xl border px-4 py-3 text-sm font-medium ${cvNotice.tone}`}
+          >
+            {cvNotice.message}
+          </div>
+        )}
         <div>
           <span className="act-kicker">File CV</span>
           <p className="mt-2 text-sm text-[var(--act-graphite)]">

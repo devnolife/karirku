@@ -1,8 +1,12 @@
 import { hunterDb, gmailStatus } from "@/lib/hunter";
+import { authorizeHunterApi } from "@/lib/hunter-access";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  const access = await authorizeHunterApi();
+  if (!access.ok) return access.response;
+
   const db = hunterDb().getDb();
   const accounts = db
     .prepare(

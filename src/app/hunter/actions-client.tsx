@@ -27,9 +27,17 @@ export function ActionButton({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action, ...body }),
       });
-      const data = await res.json();
-      setMsg(res.ok ? `▶ started (pid ${data.pid})` : `✗ ${data.error}`);
-      setTimeout(() => router.refresh(), 4000);
+      const data = (await res.json()) as {
+        pid?: number;
+        error?: string;
+        message?: string;
+      };
+      setMsg(
+        res.ok
+          ? `▶ queued${data.pid ? ` (pid ${data.pid})` : ""}`
+          : `✗ ${data.message ?? data.error ?? `HTTP ${res.status}`}`,
+      );
+      if (res.ok) setTimeout(() => router.refresh(), 4000);
     } catch (e) {
       setMsg("✗ " + (e as Error).message);
     } finally {

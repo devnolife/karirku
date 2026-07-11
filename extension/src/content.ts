@@ -6,7 +6,6 @@
 import type {
   BgRequest,
   BgResponse,
-  FieldMapping,
   FormFieldInfo,
   FormSnapshot,
   MapResult,

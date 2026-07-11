@@ -19,7 +19,7 @@
     "match:check": "tsx scripts/match-check.ts",
     "ext:build": "node extension/build.mjs",
     "ext:typecheck": "tsc --noEmit -p extension/tsconfig.json",
-    "test": "tsx --test tests/autofill/*.test.ts tests/entitlements/*.test.ts tests/match/*.test.ts tests/content/*.test.ts tests/scraper/*.test.ts",
+    "test": "tsx --test tests/autofill/*.test.ts tests/entitlements/*.test.ts tests/match/*.test.ts tests/content/*.test.ts tests/scraper/*.test.ts tests/hunter/*.test.ts",
     "embed:all": "tsx scripts/embed-all.ts",
     "ingest:live": "tsx scripts/ingest-live.ts",
     "typecheck": "tsc --noEmit"

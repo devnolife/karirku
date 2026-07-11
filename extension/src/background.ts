@@ -65,6 +65,38 @@ async function connect(): Promise<BgResponse> {
   }
 }
 
+/** Revoke token di server, lalu hapus kredensial lokal extension. */
+async function disconnect(): Promise<BgResponse> {
+  const { token, apiBase } = await getStorage();
+  if (!token) {
+    await chrome.storage.local.remove([STORAGE_KEYS.token, STORAGE_KEYS.user]);
+    return { ok: true, data: { revoked: 0 } };
+  }
+  try {
+    const res = await fetch(`${apiBase}/api/autofill/token`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) {
+      const body = (await res.json().catch(() => null)) as
+        | { message?: string }
+        | null;
+      return {
+        ok: false,
+        error: body?.message ?? `Gagal memutus koneksi (HTTP ${res.status}).`,
+      };
+    }
+    await chrome.storage.local.remove([STORAGE_KEYS.token, STORAGE_KEYS.user]);
+    return { ok: true, data: await res.json() };
+  } catch (err) {
+    return {
+      ok: false,
+      error: `Tidak dapat merevoke token: ${err instanceof Error ? err.message : String(err)}`,
+    };
+  }
+}
+
 async function apiFetch<T>(path: string, body: unknown): Promise<BgResponse<T>> {
   const { token, apiBase } = await getStorage();
   if (!token) return { ok: false, error: "Belum terhubung ke karirku. Buka popup extension → Hubungkan." };
@@ -124,6 +156,8 @@ chrome.runtime.onMessage.addListener((msg: BgRequest, _sender, sendResponse) => 
     switch (msg.kind) {
       case "CONNECT":
         return connect();
+      case "DISCONNECT":
+        return disconnect();
       case "GET_STATUS": {
         const { token, user, enabled, apiBase } = await getStorage();
         return { ok: true, data: { connected: Boolean(token), user, enabled, apiBase } };
