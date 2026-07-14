@@ -4,6 +4,7 @@
  */
 
 import { prisma } from "@/lib/db";
+import { isProductionMode } from "@/lib/mode";
 
 export type GoalTrack = "fulltime" | "freelance" | "both";
 
@@ -19,6 +20,14 @@ export type UserGoal = {
 
 /** Goal aktif terbaru milik user, atau null kalau belum ada. */
 export async function getActiveGoal(userId: string): Promise<UserGoal | null> {
+  if (!isProductionMode()) {
+    const [{ readDemoGoal }, { DEMO_GOAL }] = await Promise.all([
+      import("@/lib/mock/demo-store"),
+      import("@/lib/mock/demo"),
+    ]);
+    return (await readDemoGoal()) ?? DEMO_GOAL;
+  }
+
   const goal = await prisma.careerGoal.findFirst({
     where: { userId, status: "active" },
     orderBy: { createdAt: "desc" },
@@ -47,6 +56,23 @@ export async function saveActiveGoal(
     budgetIdr?: number;
   },
 ): Promise<UserGoal> {
+  if (!isProductionMode()) {
+    const [{ writeDemoGoal }, { DEMO_GOAL }] = await Promise.all([
+      import("@/lib/mock/demo-store"),
+      import("@/lib/mock/demo"),
+    ]);
+    const goal: UserGoal = {
+      ...DEMO_GOAL,
+      targetRole: data.targetRole,
+      targetTrack: data.targetTrack,
+      targetCity: data.targetCity ?? null,
+      weeklyHours: data.weeklyHours ?? 0,
+      budgetIdr: data.budgetIdr ?? 0,
+    };
+    await writeDemoGoal(goal);
+    return goal;
+  }
+
   const existing = await prisma.careerGoal.findFirst({
     where: { userId, status: "active" },
     orderBy: { createdAt: "desc" },

@@ -7,6 +7,7 @@
  */
 
 import { prisma } from "@/lib/db";
+import { isProductionMode } from "@/lib/mode";
 
 export type SkillOption = {
   id: string;
@@ -30,6 +31,11 @@ export type ProfileData = {
 
 /** Semua skill taxonomy, dikelompokkan per kategori (untuk picker). */
 export async function getSkillCatalog(): Promise<Map<string, SkillOption[]>> {
+  if (!isProductionMode()) {
+    const { demoSkillCatalog } = await import("@/lib/mock/demo");
+    return demoSkillCatalog();
+  }
+
   const rows = await prisma.skillTaxonomy.findMany({
     where: { category: { not: null } },
     orderBy: [{ category: "asc" }, { name: "asc" }],
@@ -47,6 +53,11 @@ export async function getSkillCatalog(): Promise<Map<string, SkillOption[]>> {
 
 /** Profil user + skill yang dimiliki (dengan proficiency & verified). */
 export async function getProfile(userId: string): Promise<ProfileData> {
+  if (!isProductionMode()) {
+    const { DEMO_PROFILE_DATA } = await import("@/lib/mock/demo");
+    return DEMO_PROFILE_DATA;
+  }
+
   const [profile, skills] = await Promise.all([
     prisma.profile.findUnique({
       where: { userId },
@@ -77,6 +88,7 @@ export async function setUserSkills(
   userId: string,
   skillIds: string[],
 ): Promise<void> {
+  if (!isProductionMode()) return; // demo: no-op
   const unique = [...new Set(skillIds.filter(Boolean))];
   await prisma.$transaction(async (tx) => {
     // Pertahankan proficiency & verified untuk skill yang masih dipilih.
@@ -107,6 +119,7 @@ export async function setSkillProficiency(
   skillId: string,
   proficiency: number,
 ): Promise<void> {
+  if (!isProductionMode()) return; // demo: no-op
   const p = Math.max(1, Math.min(5, Math.round(proficiency)));
   await prisma.userSkill.update({
     where: { userId_skillId: { userId, skillId } },
@@ -120,6 +133,7 @@ export async function markSkillVerified(
   skillId: string,
   verifiedBy = "quiz",
 ): Promise<void> {
+  if (!isProductionMode()) return; // demo: no-op
   await prisma.userSkill.update({
     where: { userId_skillId: { userId, skillId } },
     data: { verified: true, verifiedBy, acquiredAt: new Date() },
@@ -131,6 +145,12 @@ export async function getUserSkill(
   userId: string,
   skillId: string,
 ): Promise<{ id: string; name: string; verified: boolean } | null> {
+  if (!isProductionMode()) {
+    const { DEMO_PROFILE_DATA } = await import("@/lib/mock/demo");
+    const s = DEMO_PROFILE_DATA.skills.find((x) => x.id === skillId);
+    return s ? { id: s.id, name: s.name, verified: s.verified } : null;
+  }
+
   const row = await prisma.userSkill.findUnique({
     where: { userId_skillId: { userId, skillId } },
     include: { skill: { select: { id: true, name: true } } },
@@ -144,6 +164,7 @@ export async function saveProfileBasics(
   userId: string,
   data: { headline: string; summary: string },
 ): Promise<void> {
+  if (!isProductionMode()) return; // demo: no-op
   await prisma.profile.upsert({
     where: { userId },
     create: {
@@ -163,6 +184,7 @@ export async function saveProfileBasics(
  * kalau AI/embedding gagal, tidak melempar (profil tetap tersimpan).
  */
 export async function regenerateProfileEmbedding(userId: string): Promise<void> {
+  if (!isProductionMode()) return; // demo: no-op
   try {
     const profile = await prisma.profile.findUnique({ where: { userId } });
     if (!profile) return;

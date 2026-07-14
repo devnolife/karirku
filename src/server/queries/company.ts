@@ -4,6 +4,7 @@
  */
 
 import { prisma } from "@/lib/db";
+import { isProductionMode } from "@/lib/mode";
 import { skillCoverageScore } from "@/lib/match/score";
 import { readinessScore, type ReadinessBand } from "@/lib/match/readiness";
 import { PIPELINE_OPTIONS, type PipelineStatus } from "@/lib/pipeline";
@@ -71,6 +72,7 @@ export async function createNativeJob(
   userId: string,
   input: CreateJobInput,
 ): Promise<string | null> {
+  if (!isProductionMode()) return "demo-cjob-created"; // demo: pura-pura sukses
   const cp = await prisma.companyProfile.findUnique({
     where: { userId },
     select: { id: true, name: true },
@@ -124,6 +126,11 @@ export type CompanyJobRow = {
 };
 
 export async function getCompanyJobs(userId: string): Promise<CompanyJobRow[]> {
+  if (!isProductionMode()) {
+    const { DEMO_COMPANY_JOBS } = await import("@/lib/mock/demo");
+    return DEMO_COMPANY_JOBS;
+  }
+
   const cpId = await companyProfileId(userId);
   if (!cpId) return [];
 
@@ -178,6 +185,11 @@ function toPipelineStatus(status: string): PipelineStatus {
 }
 
 export async function getCompanyCandidates(userId: string): Promise<CandidateRow[]> {
+  if (!isProductionMode()) {
+    const { DEMO_CANDIDATES } = await import("@/lib/mock/demo");
+    return DEMO_CANDIDATES;
+  }
+
   const cpId = await companyProfileId(userId);
   if (!cpId) return [];
 
@@ -228,6 +240,11 @@ export type CompanyStats = {
 };
 
 export async function getCompanyStats(userId: string): Promise<CompanyStats> {
+  if (!isProductionMode()) {
+    const { DEMO_COMPANY_STATS } = await import("@/lib/mock/demo");
+    return DEMO_COMPANY_STATS;
+  }
+
   const cp = await prisma.companyProfile.findUnique({
     where: { userId },
     select: { id: true, name: true },
@@ -273,6 +290,11 @@ export type JobOption = { id: string; title: string };
 
 /** Daftar lowongan perusahaan untuk selector talent search. */
 export async function getCompanyJobOptions(userId: string): Promise<JobOption[]> {
+  if (!isProductionMode()) {
+    const { DEMO_JOB_OPTIONS } = await import("@/lib/mock/demo");
+    return DEMO_JOB_OPTIONS;
+  }
+
   const cpId = await companyProfileId(userId);
   if (!cpId) return [];
   const jobs = await prisma.job.findMany({
@@ -315,6 +337,11 @@ export async function searchTalentForJob(
   jobId: string,
   limit = 20,
 ): Promise<TalentMatch[] | null> {
+  if (!isProductionMode()) {
+    const { DEMO_TALENT } = await import("@/lib/mock/demo");
+    return DEMO_TALENT.slice(0, limit);
+  }
+
   const cpId = await companyProfileId(userId);
   if (!cpId) return null;
 
@@ -399,6 +426,7 @@ export async function updateApplicationStatus(
   applicationId: string,
   status: PipelineStatus,
 ): Promise<boolean> {
+  if (!isProductionMode()) return true; // demo: pura-pura sukses (tanpa persist)
   const cpId = await companyProfileId(userId);
   if (!cpId) return false;
 

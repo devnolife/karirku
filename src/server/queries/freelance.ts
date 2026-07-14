@@ -4,6 +4,7 @@
  */
 
 import { prisma } from "@/lib/db";
+import { isProductionMode } from "@/lib/mode";
 import { skillCoverageScore } from "@/lib/match/score";
 
 function formatBudget(min: number | null, max: number | null, durationDays: number | null): string {
@@ -52,6 +53,11 @@ async function freelancerSkills(userId: string): Promise<string[]> {
 }
 
 export async function getFreelanceProjects(userId: string, limit = 12): Promise<ProjectRow[]> {
+  if (!isProductionMode()) {
+    const { DEMO_PROJECTS } = await import("@/lib/mock/demo");
+    return DEMO_PROJECTS.slice(0, limit);
+  }
+
   const skills = await freelancerSkills(userId);
   const projects = await prisma.project.findMany({
     where: { isActive: true },
@@ -112,6 +118,11 @@ const DEFAULT_META: FreelancerMeta = {
 
 /** Meta freelancer dari Profile.experience JSON (di-seed). */
 export async function getFreelancerMeta(userId: string): Promise<FreelancerMeta> {
+  if (!isProductionMode()) {
+    const { DEMO_FREELANCER_META } = await import("@/lib/mock/demo");
+    return DEMO_FREELANCER_META;
+  }
+
   const profile = await prisma.profile.findUnique({
     where: { userId },
     select: { experience: true },

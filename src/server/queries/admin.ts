@@ -3,7 +3,7 @@
  */
 
 import { prisma } from "@/lib/db";
-import { allQueues } from "@/lib/queue";
+import { isProductionMode } from "@/lib/mode";
 import { FEATURE_HUNTER_AUTO_APPLY } from "@/lib/entitlements";
 import type { UserRole } from "@/lib/roles";
 
@@ -19,6 +19,11 @@ export type PlatformStats = {
 };
 
 export async function getPlatformStats(): Promise<PlatformStats> {
+  if (!isProductionMode()) {
+    const { DEMO_PLATFORM_STATS } = await import("@/lib/mock/demo");
+    return DEMO_PLATFORM_STATS;
+  }
+
   const weekAgo = new Date(Date.now() - 7 * 86_400_000);
   const [totalUsers, newUsersWeek, activeJobs, indexedCourses, totalSkills, totalApplications, grouped] =
     await Promise.all([
@@ -49,6 +54,11 @@ export async function getPlatformStats(): Promise<PlatformStats> {
 
 /** Pertumbuhan user per bulan (3 bulan terakhir), dari users.createdAt. */
 export async function getUserGrowth(): Promise<{ label: string; value: number }[]> {
+  if (!isProductionMode()) {
+    const { DEMO_USER_GROWTH } = await import("@/lib/mock/demo");
+    return DEMO_USER_GROWTH;
+  }
+
   const now = new Date();
   const months: { label: string; start: Date; end: Date }[] = [];
   for (let i = 2; i >= 0; i--) {
@@ -88,6 +98,11 @@ export type AdminJobRow = {
 };
 
 export async function getAdminJobs(limit = 20): Promise<AdminJobRow[]> {
+  if (!isProductionMode()) {
+    const { DEMO_ADMIN_JOBS } = await import("@/lib/mock/demo");
+    return DEMO_ADMIN_JOBS.slice(0, limit);
+  }
+
   const jobs = await prisma.job.findMany({
     orderBy: { scrapedAt: "desc" },
     take: limit,
@@ -118,6 +133,11 @@ export type AdminUserRow = {
 };
 
 export async function getAdminUsers(limit = 50): Promise<AdminUserRow[]> {
+  if (!isProductionMode()) {
+    const { DEMO_ADMIN_USERS } = await import("@/lib/mock/demo");
+    return DEMO_ADMIN_USERS.slice(0, limit);
+  }
+
   const users = await prisma.user.findMany({
     orderBy: { createdAt: "desc" },
     take: limit,
@@ -146,6 +166,11 @@ export type AdminCourseRow = {
 };
 
 export async function getAdminCourses(limit = 30): Promise<AdminCourseRow[]> {
+  if (!isProductionMode()) {
+    const { DEMO_ADMIN_COURSES } = await import("@/lib/mock/demo");
+    return DEMO_ADMIN_COURSES.slice(0, limit);
+  }
+
   const courses = await prisma.course.findMany({
     orderBy: { scrapedAt: "desc" },
     take: limit,
@@ -165,6 +190,19 @@ export type QueueStat = { name: string; waiting: number; active: number; complet
 
 /** Statistik antrian BullMQ (real). Aman kalau Redis tidak tersedia → 0. */
 export async function getQueueStats(): Promise<QueueStat[]> {
+  if (!isProductionMode()) {
+    // Demo: jangan import @/lib/queue sama sekali — modul itu membuka
+    // koneksi Redis saat load. Nama antrian di-hardcode selaras QUEUE_NAMES.
+    return ["scraper", "enrich", "embed", "market-intel"].map((name) => ({
+      name,
+      waiting: 0,
+      active: 0,
+      completed: 0,
+      failed: 0,
+    }));
+  }
+
+  const { allQueues } = await import("@/lib/queue");
   try {
     return await Promise.all(
       allQueues.map(async (q) => {
@@ -187,6 +225,11 @@ export async function getQueueStats(): Promise<QueueStat[]> {
 export async function getRecentIngest(limit = 6): Promise<
   { source: string; items: number; lastAt: string }[]
 > {
+  if (!isProductionMode()) {
+    const { DEMO_RECENT_INGEST } = await import("@/lib/mock/demo");
+    return DEMO_RECENT_INGEST.slice(0, limit);
+  }
+
   const grouped = await prisma.job.groupBy({
     by: ["source"],
     _count: { _all: true },

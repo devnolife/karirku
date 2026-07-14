@@ -4,6 +4,7 @@
  */
 
 import { prisma } from "@/lib/db";
+import { isProductionMode } from "@/lib/mode";
 import { readinessScore } from "@/lib/match/readiness";
 import type { ReadinessView } from "@/lib/view-models";
 import { getSkillGap } from "./skills";
@@ -11,6 +12,11 @@ import { getRoadmap } from "./roadmap";
 import { loadUserContext } from "./context";
 
 export async function getReadiness(userId: string): Promise<ReadinessView> {
+  if (!isProductionMode()) {
+    const { DEMO_READINESS } = await import("@/lib/mock/demo");
+    return DEMO_READINESS;
+  }
+
   const [ctx, gap, roadmap] = await Promise.all([
     loadUserContext(userId),
     getSkillGap(userId),

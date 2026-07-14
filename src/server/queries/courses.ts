@@ -4,6 +4,7 @@
  */
 
 import { prisma } from "@/lib/db";
+import { isProductionMode } from "@/lib/mode";
 import type { CourseView } from "@/lib/view-models";
 import { getSkillGap } from "./skills";
 
@@ -39,6 +40,11 @@ function toView(c: CourseRow, tag: string): CourseView {
 }
 
 export async function getRecommendedCourses(userId: string, limit = 6): Promise<CourseView[]> {
+  if (!isProductionMode()) {
+    const { DEMO_COURSES } = await import("@/lib/mock/demo");
+    return DEMO_COURSES.slice(0, limit);
+  }
+
   const gap = await getSkillGap(userId);
 
   // Map nama skill kurang → id taxonomy.

@@ -10,6 +10,7 @@
  */
 
 import { prisma } from "@/lib/db";
+import { isProductionMode } from "@/lib/mode";
 
 const EXTERNAL_SOURCES = new Set(["greenhouse", "lever", "ashby", "kalibrr", "http"]);
 
@@ -20,6 +21,21 @@ export type ApplyResult =
 
 /** Lamar ke sebuah job. Idempoten — tolak kalau sudah pernah melamar. */
 export async function applyToJob(userId: string, jobId: string): Promise<ApplyResult> {
+  if (!isProductionMode()) {
+    const [{ DEMO_JOBS }, { readDemoAppliedIds, addDemoAppliedId }] = await Promise.all([
+      import("@/lib/mock/demo"),
+      import("@/lib/mock/demo-store"),
+    ]);
+    const job = DEMO_JOBS.find((j) => j.id === jobId);
+    if (!job) return { ok: false, reason: "not_found" };
+    const applied = await readDemoAppliedIds();
+    if (applied.has(jobId)) return { ok: false, reason: "already_applied" };
+    await addDemoAppliedId(jobId);
+    return job.applyUrl
+      ? { ok: true, mode: "external", redirectUrl: job.applyUrl }
+      : { ok: true, mode: "native" };
+  }
+
   const job = await prisma.job.findUnique({
     where: { id: jobId },
     select: { id: true, source: true, sourceUrl: true, companyProfileId: true, isActive: true },
@@ -80,6 +96,31 @@ export function statusLabel(status: string): string {
 
 /** Daftar lamaran user (terbaru dulu). */
 export async function getUserApplications(userId: string): Promise<ApplicationRow[]> {
+  if (!isProductionMode()) {
+    const [{ DEMO_APPLICATIONS, DEMO_JOBS }, { readDemoAppliedIds }] = await Promise.all([
+      import("@/lib/mock/demo"),
+      import("@/lib/mock/demo-store"),
+    ]);
+    const applied = await readDemoAppliedIds();
+    const fromCookie: ApplicationRow[] = DEMO_JOBS.filter((j) => applied.has(j.id)).map(
+      (j) => ({
+        id: `demo-applied-${j.id}`,
+        jobTitle: j.title,
+        company: j.company,
+        location: j.location.replace(/^\S+\s/, ""),
+        mode: j.applyUrl ? "external" : "native",
+        status: "applied",
+        appliedAt: new Date().toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
+        applyUrl: j.applyUrl ?? null,
+      }),
+    );
+    return [...fromCookie, ...DEMO_APPLICATIONS];
+  }
+
   const apps = await prisma.application.findMany({
     where: { userId },
     orderBy: { appliedAt: "desc" },
@@ -104,6 +145,11 @@ export async function getUserApplications(userId: string): Promise<ApplicationRo
 
 /** Set jobId yang sudah dilamar user (untuk tandai tombol "Sudah dilamar"). */
 export async function getAppliedJobIds(userId: string): Promise<Set<string>> {
+  if (!isProductionMode()) {
+    const { readDemoAppliedIds } = await import("@/lib/mock/demo-store");
+    return readDemoAppliedIds();
+  }
+
   const rows = await prisma.application.findMany({
     where: { userId },
     select: { jobId: true },

@@ -3,6 +3,7 @@
  */
 
 import { prisma } from "@/lib/db";
+import { isProductionMode } from "@/lib/mode";
 import type { MilestoneView } from "@/lib/view-models";
 
 function mapStatus(s: string): MilestoneView["status"] {
@@ -20,6 +21,11 @@ export type RoadmapData = {
 
 /** Learning path aktif user + milestone-nya (urut minggu). */
 export async function getRoadmap(userId: string): Promise<RoadmapData> {
+  if (!isProductionMode()) {
+    const { DEMO_ROADMAP } = await import("@/lib/mock/demo");
+    return DEMO_ROADMAP;
+  }
+
   const path = await prisma.learningPath.findFirst({
     where: { userId },
     orderBy: [{ status: "asc" }, { createdAt: "desc" }],

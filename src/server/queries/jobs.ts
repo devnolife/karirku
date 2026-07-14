@@ -4,6 +4,7 @@
  */
 
 import { prisma } from "@/lib/db";
+import { isProductionMode } from "@/lib/mode";
 import { skillCoverageScore } from "@/lib/match/score";
 import type { JobView } from "@/lib/view-models";
 import { loadUserContext } from "./context";
@@ -61,6 +62,10 @@ function relativeTime(date: Date | null): string {
 }
 
 export async function getJobsCount(): Promise<number> {
+  if (!isProductionMode()) {
+    const { DEMO_JOBS } = await import("@/lib/mock/demo");
+    return DEMO_JOBS.length;
+  }
   return prisma.job.count({ where: { isActive: true } });
 }
 
@@ -77,6 +82,21 @@ export async function getJobMatches(
   limit = 12,
   region?: JobRegion,
 ): Promise<JobView[]> {
+  if (!isProductionMode()) {
+    const [{ DEMO_JOBS }, { readDemoAppliedIds }] = await Promise.all([
+      import("@/lib/mock/demo"),
+      import("@/lib/mock/demo-store"),
+    ]);
+    const applied = await readDemoAppliedIds();
+    let list = DEMO_JOBS.map((j) => ({ ...j, applied: applied.has(j.id) }));
+    if (region) {
+      list = list.filter((j) =>
+        region === "remote" ? j.location.includes("Remote") : !j.location.includes("Remote"),
+      );
+    }
+    return list.slice(0, limit);
+  }
+
   const ctx = await loadUserContext(userId);
 
   const [jobs, semantic] = await Promise.all([
@@ -158,6 +178,11 @@ export async function getJobMatches(
 export async function getRoleMarket(
   targetRole: string | null,
 ): Promise<{ openPositions: number; trend: { label: string; value: number }[] }> {
+  if (!isProductionMode()) {
+    const { DEMO_ROLE_MARKET } = await import("@/lib/mock/demo");
+    return DEMO_ROLE_MARKET;
+  }
+
   const where = targetRole
     ? { isActive: true, title: { contains: targetRole.split(" ")[0], mode: "insensitive" as const } }
     : { isActive: true };
@@ -232,6 +257,17 @@ export type JobDetail = {
 
 /** Detail lengkap satu lowongan + info match untuk user aktif. null kalau tak ada. */
 export async function getJobDetail(userId: string, jobId: string): Promise<JobDetail | null> {
+  if (!isProductionMode()) {
+    const [{ DEMO_JOB_DETAILS }, { readDemoAppliedIds }] = await Promise.all([
+      import("@/lib/mock/demo"),
+      import("@/lib/mock/demo-store"),
+    ]);
+    const detail = DEMO_JOB_DETAILS[jobId];
+    if (!detail) return null;
+    const applied = await readDemoAppliedIds();
+    return { ...detail, applied: applied.has(jobId) };
+  }
+
   const job = await prisma.job.findUnique({ where: { id: jobId } });
   if (!job) return null;
 

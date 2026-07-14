@@ -5,6 +5,7 @@
  */
 
 import { prisma } from "@/lib/db";
+import { isProductionMode } from "@/lib/mode";
 import { skillCoverageScore } from "@/lib/match/score";
 import type { SkillTone, SkillView } from "@/lib/view-models";
 import {
@@ -82,6 +83,11 @@ async function demandedSkills(
 }
 
 export async function getSkillGap(userId: string, limit = 8): Promise<SkillGap> {
+  if (!isProductionMode()) {
+    const { DEMO_SKILL_GAP } = await import("@/lib/mock/demo");
+    return DEMO_SKILL_GAP;
+  }
+
   const ctx = await loadUserContext(userId);
   const freq = await demandedSkills(ctx);
 

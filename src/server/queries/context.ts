@@ -5,6 +5,7 @@
  */
 
 import { prisma } from "@/lib/db";
+import { isProductionMode } from "@/lib/mode";
 import { getActiveGoal, type UserGoal } from "./goal";
 
 export type UserSkillItem = {
@@ -40,6 +41,12 @@ export function roleKeywords(targetRole: string | undefined | null): string[] {
 }
 
 export async function loadUserContext(userId: string): Promise<UserContext> {
+  if (!isProductionMode()) {
+    const { demoUserContext } = await import("@/lib/mock/demo");
+    const goal = await getActiveGoal(userId); // hormati goal cookie demo
+    return { ...demoUserContext(userId), goal };
+  }
+
   const [goal, skillRows] = await Promise.all([
     getActiveGoal(userId),
     prisma.userSkill.findMany({

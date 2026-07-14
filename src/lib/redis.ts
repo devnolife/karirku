@@ -22,5 +22,8 @@ export function createQueueConnection() {
   return new Redis(REDIS_URL, {
     maxRetriesPerRequest: null,
     enableReadyCheck: false,
+    // Jangan connect saat import — tanpa Redis (demo mode) ioredis akan
+    // retry tanpa henti. BullMQ connect sendiri saat command pertama.
+    lazyConnect: true,
   });
 }
