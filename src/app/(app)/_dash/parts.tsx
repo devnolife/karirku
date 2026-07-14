@@ -20,7 +20,7 @@ export function PageHeader({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div className="studio-page-header flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         {kicker && <span className="act-eyebrow">{kicker}</span>}
         <h1 className={`act-display text-3xl leading-[1.05] md:text-4xl ${kicker ? "mt-3" : ""}`}>{title}</h1>
@@ -47,23 +47,11 @@ export function Kpi({
   tone: "blue" | "iris" | "mint" | "magenta";
   accent?: boolean;
 }) {
-  const valueColor = {
-    blue: "text-[var(--act-blue)]",
-    iris: "text-[var(--act-iris)]",
-    mint: "text-[#059669]",
-    magenta: "text-[var(--act-magenta)]",
-  }[tone];
-  const railClass = {
-    blue: "act-rail-blue",
-    iris: "act-rail-iris",
-    mint: "act-rail-mint",
-    magenta: "act-rail-magenta",
-  }[tone];
   return (
-    <div className={`act-card-2 act-rail ${railClass} p-5`}>
-      <span className="act-kicker">{label}</span>
+    <div className={`studio-kpi studio-kpi-${tone} p-5`}>
+      <span className="studio-kpi-label">{label}</span>
       <div className="mt-2 flex items-baseline gap-1">
-        <span className={`act-display text-4xl ${valueColor}`}>
+        <span className="act-display studio-kpi-value text-4xl">
           {accent ? "+" : ""}
           {value}
         </span>
@@ -78,32 +66,35 @@ export function Kpi({
 export function ReadinessCard({ score, last }: { score: number; last: number }) {
   const r = 54;
   const c = 2 * Math.PI * r;
-  const dash = (score / 100) * c;
+  const dash = (Math.max(0, Math.min(score, 100)) / 100) * c;
+  const delta = score - last;
+  const status = score >= 80 ? "Siap memperluas peluangmu." : score >= 60 ? "Kamu makin dekat ke target." : "Bangun fondasi untuk targetmu.";
   return (
-    <div className="act-card-2 act-wash-sky-soft w-full border-[rgba(25,143,56,0.18)] p-5">
-      <span className="act-kicker">Career readiness</span>
-      <div className="mt-3 flex items-center gap-5">
-        <div className="relative h-[128px] w-[128px] flex-none">
+    <div className="studio-readiness-card w-full p-5 sm:p-6">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <span className="studio-section-kicker">Career readiness</span>
+          <p className="mt-1 text-sm leading-relaxed text-[var(--act-graphite)]">{status}</p>
+        </div>
+        <span className="studio-ready-status">Studio score</span>
+      </div>
+      <div className="mt-5 flex items-center gap-5">
+        <div className="relative h-[122px] w-[122px] flex-none">
           <svg viewBox="0 0 128 128" className="h-full w-full -rotate-90">
-            <defs>
-              <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="var(--act-sky-bright)" />
-                <stop offset="100%" stopColor="var(--act-sky-deep)" />
-              </linearGradient>
-            </defs>
-            <circle cx="64" cy="64" r={r} fill="none" stroke="rgba(15,23,42,0.08)" strokeWidth="10" />
-            <circle cx="64" cy="64" r={r} fill="none" stroke="url(#ring)" strokeWidth="10" strokeDasharray={`${dash} ${c}`} strokeLinecap="round" />
+            <circle cx="64" cy="64" r={r} fill="none" stroke="rgba(4,39,24,0.1)" strokeWidth="10" />
+            <circle cx="64" cy="64" r={r} fill="none" stroke="#198F38" strokeWidth="10" strokeDasharray={`${dash} ${c}`} strokeLinecap="round" />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="act-display text-4xl text-[var(--act-ink)]">{score}</span>
-            <span className="text-xs font-semibold text-[var(--act-blue)]">percent</span>
+            <span className="text-xs font-semibold text-[var(--act-blue)]">dari 100</span>
           </div>
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-xs text-[var(--act-graphite)]">Naik dari</p>
-          <p className="act-display text-xl text-[var(--act-ink)]">{last}%</p>
-          <p className="mt-1 text-xs text-[var(--act-graphite)]">minggu lalu</p>
-          <span className="act-chip act-chip-green mt-3">+{score - last} pts wk</span>
+          <p className="text-xs font-medium text-[var(--act-graphite)]">Dibanding minggu lalu</p>
+          <p className="act-display mt-1 text-xl text-[var(--act-ink)]">{last} poin</p>
+          <span className="studio-delta mt-3">
+            {delta > 0 ? `+${delta}` : delta} poin minggu ini
+          </span>
         </div>
       </div>
     </div>
@@ -115,13 +106,8 @@ export function SkillBar({ skill, tone = "blue" }: { skill: SkillView; tone?: "b
   const pct = Math.min(100, (skill.current / skill.required) * 100);
   const gap = Math.max(0, skill.required - skill.current);
   const critical = gap > 25;
-  const fill = critical
-    ? "linear-gradient(90deg, #F59E0B, var(--act-magenta))"
-    : tone === "iris"
-      ? "linear-gradient(90deg, #14B8A6, var(--act-iris))"
-      : "linear-gradient(90deg, var(--act-sky-bright), var(--act-sky-deep))";
   return (
-    <div>
+    <div className={`studio-skill-bar ${critical ? "studio-skill-critical" : `studio-skill-${tone}`} `}>
       <div className="flex items-baseline justify-between">
         <span className="text-sm font-semibold text-[var(--act-ink)]">{skill.name}</span>
         <span className="text-xs font-medium text-[var(--act-graphite)]">
@@ -131,12 +117,12 @@ export function SkillBar({ skill, tone = "blue" }: { skill: SkillView; tone?: "b
         </span>
       </div>
       <div className="act-track mt-2">
-        <i style={{ width: `${pct}%`, background: fill }} />
-        <span className="absolute top-[-2px] bottom-[-2px] w-[2px] rounded bg-[var(--act-onyx)] opacity-40" style={{ left: `${Math.min(100, skill.required)}%` }} aria-hidden />
+        <i style={{ width: `${pct}%` }} />
+        <span className="studio-skill-target" style={{ left: `${Math.min(100, skill.required)}%` }} aria-hidden />
       </div>
       {gap > 0 && (
         <p className="mt-1.5 text-[11px] font-medium text-[var(--act-graphite)]">
-          {critical ? <span className="text-[var(--act-magenta)]">high priority · </span> : ""}gap {gap}
+          {critical ? <span className="text-[var(--act-magenta)]">prioritas tinggi · </span> : ""}gap {gap}
         </p>
       )}
     </div>
@@ -347,22 +333,17 @@ export function PreviewCard({
   children: React.ReactNode;
   tone?: "blue" | "iris" | "magenta" | "mint";
 }) {
-  const rail = {
-    blue: "act-rail-blue",
-    iris: "act-rail-iris",
-    magenta: "act-rail-magenta",
-    mint: "act-rail-mint",
-  }[tone];
   return (
-    <Link href={href} className={`act-card-2 act-rail ${rail} act-rowhover group block p-5`}>
+    <Link href={href} className={`studio-preview-card studio-preview-${tone} group flex h-full flex-col p-5 sm:p-6`}>
       <div className="flex items-center justify-between">
-        <span className="act-kicker">{kicker}</span>
+        <span className="studio-section-kicker">{kicker}</span>
         <svg viewBox="0 0 24 24" className="h-4 w-4 text-[var(--act-graphite)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--act-blue)]" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
           <path d="M5 12h14M13 5l7 7-7 7" />
         </svg>
       </div>
       <h3 className="act-heading mt-1.5 text-lg text-[var(--act-ink)]">{title}</h3>
-      <div className="mt-3">{children}</div>
+      <div className="mt-4 flex-1">{children}</div>
+      <span className="studio-preview-footer">Lihat detail</span>
     </Link>
   );
 }

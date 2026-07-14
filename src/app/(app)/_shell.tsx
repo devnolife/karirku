@@ -22,40 +22,36 @@ export function AppShell({
   const flatItems = groups.flatMap((g) => g.items);
 
   return (
-    <div className="app-canvas act-sans flex h-screen w-full justify-center text-[var(--act-ink)]">
-      {/* ---------------- One unified frame: sidebar + topbar + content (full-bleed, edge-to-edge) ---------------- */}
+    <div className="studio-shell act-sans flex h-screen w-full justify-center text-[var(--act-ink)]">
       <div className="flex h-full w-full max-w-[1560px]">
-        {/* Desktop sidebar (part of the same frame, no own shadow) */}
         <aside
           className={
-            "hidden flex-none flex-col border-r border-[rgba(15,23,42,0.08)] bg-[var(--act-paper)] py-5 transition-[width] duration-300 ease-out lg:flex " +
-            (collapsed ? "w-[76px] px-2.5" : "w-[248px] px-4")
+            "studio-sidebar hidden flex-none flex-col transition-[width] duration-300 ease-out lg:flex " +
+            (collapsed ? "w-[76px] px-3" : "w-[264px] p-5")
           }
         >
-          {/* brand */}
           <Link
             href="/dashboard"
-            className={"flex items-center gap-2.5 " + (collapsed ? "justify-center px-0" : "px-2")}
+            className={"flex items-center gap-2.5 " + (collapsed ? "justify-center" : "px-1")}
           >
             <Wordmark />
             {!collapsed && (
               <span className="act-heading text-[18px]">
-                Craft<span className="text-[var(--act-graphite)]">Works</span>
+                Craft<span className="text-[#198F38]">Works</span>
               </span>
             )}
           </Link>
 
-          <div className="no-scrollbar mt-6 flex-1 overflow-y-auto">
+          <div className="no-scrollbar mt-8 flex-1 overflow-y-auto">
             <AppSidebarNav groups={groups} collapsed={collapsed} />
           </div>
 
-          {/* promo + user + sign out */}
           {!collapsed && (
             <div className="mt-4">
               <SidebarPromo />
             </div>
           )}
-          <div className="mt-4 border-t border-[rgba(15,23,42,0.08)] pt-4">
+          <div className="mt-5 border-t border-[rgba(4,39,24,0.08)] pt-4">
             {collapsed ? (
               <div className="flex flex-col items-center gap-2">
                 <Avatar name={user.name} />
@@ -63,7 +59,7 @@ export function AppShell({
                   <button
                     type="submit"
                     title="Keluar"
-                    className="grid h-9 w-9 place-items-center rounded-xl text-[var(--act-graphite)] transition hover:bg-[rgba(15,15,15,0.05)]"
+                    className="studio-icon-button grid h-9 w-9 place-items-center text-[var(--act-graphite)]"
                   >
                     <Ico.Logout />
                   </button>
@@ -80,7 +76,7 @@ export function AppShell({
                   <button
                     type="submit"
                     title="Keluar"
-                    className="grid h-8 w-8 place-items-center rounded-xl text-[var(--act-graphite)] transition hover:bg-[rgba(15,15,15,0.05)]"
+                    className="studio-icon-button grid h-8 w-8 place-items-center text-[var(--act-graphite)]"
                   >
                     <Ico.Logout />
                   </button>
@@ -90,45 +86,44 @@ export function AppShell({
           </div>
         </aside>
 
-        {/* ---------------- Content column (light canvas zone within the frame) ---------------- */}
-        <div className="flex min-w-0 flex-1 flex-col overflow-hidden bg-[var(--act-mist)]">
-          {/* Mobile top bar */}
-          <header className="act-glass sticky top-0 z-30 flex flex-none items-center gap-3 px-5 py-3 lg:hidden">
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+          <header className="studio-topbar sticky top-0 z-30 flex flex-none items-center gap-3 px-4 lg:hidden">
             <Wordmark />
             <span className="act-heading text-[17px]">CraftWorks</span>
-            <span className="act-chip act-chip-blue ml-auto !text-[10px]">{roleLabel}</span>
+            <span className="studio-role-chip ml-auto">{roleLabel}</span>
             <form action={signOut}>
-              <button type="submit" className="act-pill-ghost !text-xs">
+              <button type="submit" className="studio-logout">
                 Keluar
               </button>
             </form>
           </header>
-          {/* Mobile search + tabs */}
-          <div className="flex-none border-b border-[rgba(15,23,42,0.08)] bg-[var(--act-paper)] px-4 py-2.5 lg:hidden">
-            <SearchPill className="w-full" />
-            <div className="mt-2 flex gap-1 overflow-x-auto">
+          <div className="flex-none border-b border-[rgba(4,39,24,0.08)] bg-[#F9FCF9] px-4 py-2.5 lg:hidden">
+            <div className="flex gap-2 overflow-x-auto">
               <MobileTabs items={flatItems} />
             </div>
           </div>
 
-          {/* Desktop topbar — docked in-frame, not a separate floating card */}
-          <header className="hidden flex-none items-center gap-3 border-b border-[rgba(15,23,42,0.07)] bg-[var(--act-paper)] px-6 py-3.5 lg:flex">
+          <header className="studio-topbar hidden flex-none items-center gap-3 px-6 lg:flex">
             <button
               onClick={() => setCollapsed((c) => !c)}
               aria-label="Toggle sidebar"
-              className="grid h-8 w-8 flex-none place-items-center rounded-lg text-[var(--act-graphite)] transition hover:bg-[rgba(15,15,15,0.05)]"
+              className="studio-icon-button grid h-9 w-9 flex-none place-items-center text-[var(--act-graphite)]"
             >
               <PanelIcon collapsed={collapsed} />
             </button>
 
-            <SearchPill className="w-[320px]" showHint />
+            <div className="studio-status">
+              <span aria-hidden />
+              Workspace aktif
+            </div>
+            <span className="studio-role-chip">{roleLabel}</span>
 
             <div className="ml-auto flex items-center gap-1.5">
-              <button className="grid h-9 w-9 place-items-center rounded-full text-[var(--act-graphite)] transition hover:bg-[rgba(15,15,15,0.05)]">
+              <button className="studio-icon-button grid h-9 w-9 place-items-center text-[var(--act-graphite)]">
                 <Ico.Mail />
                 <span className="sr-only">Pesan</span>
               </button>
-              <button className="grid h-9 w-9 place-items-center rounded-full text-[var(--act-graphite)] transition hover:bg-[rgba(15,15,15,0.05)]">
+              <button className="studio-icon-button grid h-9 w-9 place-items-center text-[var(--act-graphite)]">
                 <Ico.Bell />
                 <span className="sr-only">Notifikasi</span>
               </button>
@@ -142,7 +137,7 @@ export function AppShell({
             </div>
           </header>
 
-          <main className="no-scrollbar min-w-0 flex-1 overflow-y-auto">{children}</main>
+          <main className="studio-content no-scrollbar min-w-0 flex-1 overflow-y-auto">{children}</main>
         </div>
       </div>
     </div>
@@ -151,23 +146,6 @@ export function AppShell({
 
 /* ------------------------------ bits ------------------------------ */
 
-function SearchPill({ className = "", showHint }: { className?: string; showHint?: boolean }) {
-  return (
-    <div
-      className={
-        "flex items-center gap-2 rounded-full bg-[var(--act-mist)] px-3.5 py-2 text-[12.5px] text-[var(--act-graphite)] " +
-        className
-      }
-    >
-      <Ico.Search />
-      <span className="flex-1">Cari tugas, lowongan, skill…</span>
-      {showHint && (
-        <span className="act-chip act-chip-mute !px-1.5 !py-0.5 !text-[10px] font-semibold">⌘F</span>
-      )}
-    </div>
-  );
-}
-
 function MobileTabs({ items }: { items: { href: string; label: string; icon: string }[] }) {
   return (
     <>
@@ -175,7 +153,7 @@ function MobileTabs({ items }: { items: { href: string; label: string; icon: str
         <Link
           key={item.href}
           href={item.href}
-          className="flex flex-none items-center gap-1.5 rounded-full px-3 py-1.5 text-[12.5px] font-medium text-[var(--act-charcoal)] hover:bg-[rgba(15,15,15,0.05)]"
+          className="studio-mobile-tab flex flex-none items-center gap-1.5 px-3 py-1.5 text-[12.5px] font-medium"
         >
           <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d={item.icon} />
@@ -208,10 +186,9 @@ function Avatar({ name, sm }: { name: string; sm?: boolean }) {
 
 function Wordmark() {
   return (
-    <span className="inline-flex h-8 w-8 flex-none items-center justify-center rounded-[10px] bg-[var(--act-onyx)] text-white shadow-[var(--act-soft-shadow)]">
-      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M5 19 L12 5 L19 19" />
-        <path d="M8 14 H16" />
+    <span className="studio-brand-mark">
+      <svg viewBox="0 0 48 48" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="3.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <path d="M14 34V14M14 24c6.5-9.5 16.5-9.5 22 0" />
       </svg>
     </span>
   );
@@ -228,12 +205,6 @@ function PanelIcon({ collapsed }: { collapsed: boolean }) {
 }
 
 const Ico = {
-  Search: () => (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="11" cy="11" r="7" />
-      <path d="m20 20-3-3" />
-    </svg>
-  ),
   Bell: () => (
     <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M18 16V11a6 6 0 1 0-12 0v5l-1.5 2h15z" />

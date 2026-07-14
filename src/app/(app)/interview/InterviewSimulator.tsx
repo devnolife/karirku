@@ -36,12 +36,12 @@ export function InterviewSimulator() {
   /* ---------- PICK ---------- */
   if (phase === "pick") {
     return (
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <section aria-label="Pilih bidang latihan" className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {INTERVIEW_TRACKS.map((t) => (
           <button
             key={t.key}
             onClick={() => start(t.key)}
-            className="act-card-2 act-rowhover group flex items-center justify-between p-6 text-left"
+            className="group flex items-center justify-between rounded-[20px] border border-[rgba(4,39,24,0.08)] bg-[#F2FBF6] p-6 text-left transition-colors hover:bg-[#D4E5CD]"
           >
             <div>
               <h3 className="act-heading text-lg text-[var(--act-ink)]">{t.label}</h3>
@@ -49,12 +49,12 @@ export function InterviewSimulator() {
                 {INTERVIEW_QUESTIONS[t.key].length} pertanyaan latihan
               </p>
             </div>
-            <svg viewBox="0 0 24 24" className="h-5 w-5 text-[var(--act-graphite)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--act-blue)]" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[var(--act-onyx)] text-white transition-transform group-hover:translate-x-0.5"><svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
               <path d="M5 12h14M13 5l7 7-7 7" />
-            </svg>
+            </svg></span>
           </button>
         ))}
-      </div>
+      </section>
     );
   }
 
@@ -63,7 +63,7 @@ export function InterviewSimulator() {
     const answeredCount = questions.filter((_, i) => (answers[i] ?? "").trim().length > 0).length;
     return (
       <div className="space-y-6">
-        <div className="act-card-2 act-wash-sky-soft border-[rgba(25,143,56,0.18)] p-6">
+        <section className="rounded-[24px] border border-[rgba(4,39,24,0.1)] bg-[#D4E5CD] p-6">
           <span className="act-kicker">Selesai</span>
           <h2 className="act-display mt-2 text-3xl text-[var(--act-ink)]">
             {answeredCount}<span className="text-[var(--act-graphite)]">/{questions.length}</span> dijawab
@@ -71,26 +71,26 @@ export function InterviewSimulator() {
           <p className="mt-1 text-sm text-[var(--act-graphite)]">
             Bagus! Bandingkan jawabanmu dengan contoh di bawah dan ulangi sampai lancar.
           </p>
-        </div>
+        </section>
 
         <div className="space-y-4">
           {questions.map((q, i) => (
-            <div key={i} className="act-card-2 p-5">
+            <article key={i} className="rounded-[20px] border border-[rgba(4,39,24,0.08)] bg-white p-5">
               <span className={`act-chip ${chipFor(q.category)}`}>{q.category}</span>
               <h3 className="mt-3 text-base font-semibold text-[var(--act-ink)]">{q.question}</h3>
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-xl bg-[var(--act-mist)] p-3">
+                <div className="rounded-xl bg-[#F2FBF6] p-3">
                   <div className="act-kicker !text-[10px]">Jawabanmu</div>
                   <p className="mt-1 text-sm text-[var(--act-charcoal)]">
                     {(answers[i] ?? "").trim() || <span className="text-[var(--act-graphite)]">(kosong)</span>}
                   </p>
                 </div>
-                <div className="rounded-xl border border-[rgba(25,143,56,0.18)] bg-[var(--act-sky-50)] p-3">
+                <div className="rounded-xl border border-[rgba(4,39,24,0.08)] bg-[#D2DDEA] p-3">
                   <div className="act-kicker !text-[10px]">Contoh jawaban</div>
                   <p className="mt-1 text-sm text-[var(--act-charcoal)]">{q.sample}</p>
                 </div>
               </div>
-            </div>
+            </article>
           ))}
         </div>
 
@@ -130,11 +130,11 @@ export function InterviewSimulator() {
           <span>Soal {index + 1} / {questions.length}</span>
         </div>
         <div className="act-track mt-2">
-          <i style={{ width: `${progress}%`, background: "linear-gradient(90deg, var(--act-sky-bright), var(--act-sky-deep))" }} />
+          <i style={{ width: `${progress}%`, background: "var(--act-blue)" }} />
         </div>
       </div>
 
-      <div className="act-card-2 p-6">
+      <section className="rounded-[22px] border border-[rgba(4,39,24,0.08)] bg-white p-6">
         <span className={`act-chip ${chipFor(q.category)}`}>{q.category}</span>
         <h2 className="act-heading mt-4 text-xl leading-snug text-[var(--act-ink)]">{q.question}</h2>
 
@@ -145,8 +145,8 @@ export function InterviewSimulator() {
           {showHint ? "Sembunyikan hint" : "Lihat hint"}
         </button>
         {showHint && (
-          <p className="mt-2 rounded-xl bg-[var(--act-mist)] p-3 text-sm text-[var(--act-charcoal)]">
-            💡 {q.hint}
+          <p className="mt-2 rounded-xl bg-[#F2FBF6] p-3 text-sm text-[var(--act-charcoal)]">
+            Hint: {q.hint}
           </p>
         )}
 
@@ -165,12 +165,12 @@ export function InterviewSimulator() {
           {revealed[index] ? "Sembunyikan contoh jawaban" : "Lihat contoh jawaban"}
         </button>
         {revealed[index] && (
-          <div className="mt-2 rounded-2xl border border-[rgba(25,143,56,0.18)] bg-[var(--act-sky-50)] p-4">
+          <div className="mt-2 rounded-2xl border border-[rgba(4,39,24,0.08)] bg-[#D2DDEA] p-4">
             <div className="act-kicker !text-[10px]">Contoh jawaban terbaik</div>
             <p className="mt-1.5 text-sm leading-relaxed text-[var(--act-charcoal)]">{q.sample}</p>
           </div>
         )}
-      </div>
+      </section>
 
       <div className="flex items-center justify-between">
         <button
@@ -192,5 +192,5 @@ export function InterviewSimulator() {
 }
 
 function chipFor(cat: "Behavioral" | "Technical" | "HR") {
-  return { Behavioral: "act-chip-iris", Technical: "act-chip-blue", HR: "act-chip-magenta" }[cat];
+  return { Behavioral: "act-chip-iris", Technical: "act-chip-blue", HR: "act-chip-amber" }[cat];
 }

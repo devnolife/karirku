@@ -14,17 +14,18 @@ export default async function GuidesPage() {
   });
 
   return (
-    <div className="act-rise mx-auto max-w-[1400px] space-y-8 px-6 py-12">
-      <div className="max-w-2xl">
-        <h1 className="act-display text-4xl leading-[1.05] md:text-5xl">
+    <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-10 md:py-12">
+      <header className="max-w-3xl border-b border-[rgba(4,39,24,0.08)] pb-8">
+        <span className="studio-section-kicker">Bacaan karier</span>
+        <h1 className="act-display mt-3 text-4xl leading-[1.05] md:text-5xl">
           Dituntun dari{" "}
-          <span className="act-sky-text">daftar sampai diterima.</span>
+          <span className="text-[var(--act-blue)]">daftar sampai diterima.</span>
         </h1>
         <p className="mt-4 text-[15px] leading-relaxed text-[var(--act-charcoal)]">
           Cara daftar Upwork &amp; LinkedIn, dasar kerja remote, persiapan interview,
           sampai bikin CV lolos ATS — langkah demi langkah, plus latihan interview.
         </p>
-      </div>
+      </header>
 
       <GuidesExplorer guides={guides} highlightRole={role} />
     </div>

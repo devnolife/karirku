@@ -1,131 +1,35 @@
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
-import {
-  getCompanyJobOptions,
-  searchTalentForJob,
-  type TalentMatch,
-} from "@/server/queries/company";
+import { getCompanyJobOptions, searchTalentForJob, type TalentMatch } from "@/server/queries/company";
 import { Empty } from "@/components/ui/empty";
 
-const BAND_LABEL: Record<string, { label: string; cls: string }> = {
-  ready: { label: "Ready", cls: "act-chip-green" },
-  getting_there: { label: "Getting there", cls: "act-chip-iris" },
-  not_ready: { label: "Belum siap", cls: "act-chip-mute" },
-};
+const BAND_LABEL: Record<string, string> = { ready: "Ready", getting_there: "Getting there", not_ready: "Belum siap" };
 
-export default async function TalentSearchPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ job?: string }>;
-}) {
+export default async function TalentSearchPage({ searchParams }: { searchParams: Promise<{ job?: string }> }) {
   const user = await requireUser();
   const { job: selectedJobId } = await searchParams;
-
   const jobs = await getCompanyJobOptions(user.id);
   const activeJobId = selectedJobId ?? jobs[0]?.id ?? null;
-  const activeJob = jobs.find((j) => j.id === activeJobId) ?? null;
-
+  const activeJob = jobs.find((job) => job.id === activeJobId) ?? null;
   let talents: TalentMatch[] | null = null;
-  if (activeJobId) {
-    talents = await searchTalentForJob(user.id, activeJobId, 20);
-  }
+  if (activeJobId) talents = await searchTalentForJob(user.id, activeJobId, 20);
 
   return (
-    <div className="act-rise mx-auto max-w-[1200px] space-y-8 px-6 py-12">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <span className="act-eyebrow">Company · Talent search</span>
-          <h1 className="act-display mt-3 text-4xl leading-[1.05] md:text-5xl">
-            Cari <span className="act-sky-text">talent.</span>
-          </h1>
-          <p className="mt-3 max-w-xl text-sm text-[var(--act-graphite)]">
-            Temukan talent pre-qualified yang cocok dengan lowonganmu — di-ranking
-            berdasarkan skill match, kemiripan semantik, dan readiness.
-          </p>
-        </div>
+    <div className="act-rise mx-auto max-w-[1280px] space-y-7 px-5 py-8 sm:px-8 sm:py-12">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-end">
+        <div><span className="text-xs font-bold uppercase tracking-[0.14em] text-[#198F38]">Talent marketplace / Discovery</span><h1 className="act-display mt-3 text-4xl text-[#042718] md:text-5xl">Temukan talent yang sudah memberi sinyal siap.</h1><p className="mt-3 max-w-2xl text-sm leading-6 text-[#476655]">Mulai dari lowongan Anda, lalu lihat skill yang terverifikasi dan indikator readiness secara berdampingan.</p></div>
+        <div className="rounded-[20px] border border-[rgba(4,39,24,0.08)] bg-[#D4E5CD] p-5"><p className="text-xs font-bold uppercase tracking-[0.12em] text-[#315644]">Discovery signal</p><p className="act-heading mt-2 text-lg text-[#042718]">Match, verifikasi, dan readiness dalam satu urutan.</p></div>
       </div>
 
-      {jobs.length === 0 ? (
-        <Empty
-          title="Belum ada lowongan"
-          description="Posting lowongan dulu untuk mulai mencari talent yang cocok."
-          actionLabel="Posting lowongan"
-          actionHref="/company/jobs/new"
-        />
-      ) : (
+      {jobs.length === 0 ? <Empty title="Belum ada lowongan" description="Posting lowongan dulu untuk mulai mencari talent yang cocok." actionLabel="Posting lowongan" actionHref="/company/jobs/new" /> : (
         <>
-          {/* Job selector */}
-          <div className="flex flex-wrap gap-2">
-            {jobs.map((j) => (
-              <Link
-                key={j.id}
-                href={`/company/talent?job=${j.id}`}
-                className={
-                  j.id === activeJobId
-                    ? "rounded-full bg-[var(--act-onyx)] px-4 py-2 text-sm font-semibold text-white"
-                    : "rounded-full border border-[rgba(15,23,42,0.12)] bg-[var(--act-mist)] px-4 py-2 text-sm font-medium text-[var(--act-charcoal)] transition-all hover:border-[var(--act-blue)]"
-                }
-              >
-                {j.title}
-              </Link>
-            ))}
-          </div>
-
-          {/* Results */}
-          {!talents || talents.length === 0 ? (
-            <Empty
-              title="Belum ada talent cocok"
-              description={`Belum ada kandidat dengan skill yang relevan untuk ${activeJob?.title ?? "lowongan ini"}.`}
-            />
-          ) : (
-            <div className="act-card-2 overflow-hidden">
-              <div className="flex items-center justify-between border-b border-[rgba(15,23,42,0.07)] px-5 py-3.5">
-                <span className="act-kicker">Talent cocok untuk {activeJob?.title}</span>
-                <span className="act-chip act-chip-blue">{talents.length} kandidat</span>
-              </div>
-              <div className="hidden grid-cols-12 gap-3 border-b border-[rgba(15,23,42,0.07)] px-5 py-3 md:grid">
-                <span className="act-kicker !text-[11px] col-span-1">Match</span>
-                <span className="act-kicker !text-[11px] col-span-4">Talent</span>
-                <span className="act-kicker !text-[11px] col-span-3">Skill cocok</span>
-                <span className="act-kicker !text-[11px] col-span-2">Readiness</span>
-                <span className="act-kicker !text-[11px] col-span-2">Verified</span>
-              </div>
-              <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
-                {talents.map((t) => {
-                  const matchClass = t.matchPct >= 70 ? "text-[var(--act-magenta)]" : t.matchPct >= 50 ? "text-[var(--act-iris)]" : "text-[var(--act-graphite)]";
-                  const band = BAND_LABEL[t.readinessBand];
-                  return (
-                    <li key={t.userId} className="act-rowhover grid grid-cols-12 items-center gap-3 px-5 py-4">
-                      <div className="col-span-3 md:col-span-1">
-                        <span className={`act-display text-2xl ${matchClass}`}>{t.matchPct}</span>
-                      </div>
-                      <div className="col-span-9 flex items-center gap-3 md:col-span-4">
-                        <span className="inline-flex h-9 w-9 flex-none items-center justify-center rounded-xl bg-[var(--act-onyx)] text-xs font-semibold text-white">
-                          {t.name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase()}
-                        </span>
-                        <div className="min-w-0">
-                          <div className="truncate text-sm font-semibold text-[var(--act-ink)]">{t.name}</div>
-                          <div className="truncate text-xs text-[var(--act-graphite)]">{t.headline}</div>
-                        </div>
-                      </div>
-                      <div className="col-span-6 md:col-span-3">
-                        <div className="flex flex-wrap gap-1.5">
-                          {t.matchedSkills.length > 0 ? t.matchedSkills.map((s) => (
-                            <span key={s} className="rounded-md bg-[rgba(25,143,56,0.08)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--act-blue)]">{s}</span>
-                          )) : <span className="text-xs text-[var(--act-graphite)]">—</span>}
-                        </div>
-                      </div>
-                      <div className="col-span-3 md:col-span-2">
-                        <span className={`act-chip ${band.cls}`}>{t.readinessScore}% {band.label}</span>
-                      </div>
-                      <div className="col-span-3 text-sm text-[var(--act-charcoal)] md:col-span-2">
-                        {t.verifiedCount}/{t.totalSkills} skill
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
+          <section className="rounded-[22px] border border-[rgba(4,39,24,0.08)] bg-white p-4 shadow-[0_14px_35px_-30px_rgba(4,39,24,0.5)]"><div className="flex flex-col gap-3"><div className="flex items-center justify-between gap-3"><p className="text-xs font-bold uppercase tracking-[0.12em] text-[#6E8D7B]">Cari berdasarkan lowongan</p><span className="rounded-full bg-[#F2FBF6] px-2.5 py-1 text-xs font-semibold text-[#315644]">{jobs.length} lowongan</span></div><div className="flex gap-2 overflow-x-auto pb-1">{jobs.map((job) => <Link key={job.id} href={`/company/talent?job=${job.id}`} className={job.id === activeJobId ? "shrink-0 rounded-full bg-[#042718] px-4 py-2.5 text-sm font-semibold text-white" : "shrink-0 rounded-full border border-[rgba(4,39,24,0.1)] bg-[#F9FCF9] px-4 py-2.5 text-sm font-semibold text-[#476655] transition-colors hover:border-[#198F38] hover:text-[#042718]"}>{job.title}</Link>)}</div></div></section>
+          {!talents || talents.length === 0 ? <Empty title="Belum ada talent cocok" description={`Belum ada kandidat dengan skill yang relevan untuk ${activeJob?.title ?? "lowongan ini"}.`} /> : (
+            <section><div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-xs font-bold uppercase tracking-[0.14em] text-[#198F38]">Recommended for</p><h2 className="act-heading mt-1 text-2xl text-[#042718]">{activeJob?.title}</h2></div><p className="text-sm text-[#476655]">{talents.length} talent sesuai ditemukan</p></div><ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{talents.map((talent) => {
+              const band = BAND_LABEL[talent.readinessBand] ?? "Readiness";
+              const verified = talent.totalSkills > 0 ? Math.round((talent.verifiedCount / talent.totalSkills) * 100) : 0;
+              return <li key={talent.userId} className="flex min-h-[270px] flex-col rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-white p-5 shadow-[0_16px_38px_-34px_rgba(4,39,24,0.52)] transition-transform hover:-translate-y-0.5"><div className="flex items-start justify-between gap-3"><span className="inline-flex h-11 w-11 items-center justify-center rounded-[15px] bg-[#042718] text-xs font-bold text-white">{talent.name.split(" ").map((part) => part[0]).slice(0, 2).join("").toUpperCase()}</span><span className="rounded-[14px] bg-[#D4E5CD] px-2.5 py-2 text-sm font-bold text-[#042718]">{talent.matchPct}% match</span></div><div className="mt-4"><p className="text-[15px] font-semibold text-[#042718]">{talent.name}</p><p className="mt-1 min-h-10 text-xs leading-5 text-[#6E8D7B]">{talent.headline}</p></div><div className="mt-4 flex flex-wrap gap-1.5">{talent.matchedSkills.length > 0 ? talent.matchedSkills.map((skill) => <span key={skill} className="rounded-full border border-[rgba(25,143,56,0.16)] bg-[#F2FBF6] px-2 py-1 text-[11px] font-bold text-[#136F2D]">{skill}</span>) : <span className="text-xs text-[#6E8D7B]">Tidak ada skill yang sama</span>}</div><div className="mt-auto grid grid-cols-2 gap-3 border-t border-[rgba(4,39,24,0.08)] pt-4"><div><p className="text-[10px] font-bold uppercase tracking-[0.11em] text-[#6E8D7B]">Verified skill</p><p className="mt-1 text-sm font-bold text-[#042718]">{talent.verifiedCount}/{talent.totalSkills} <span className="font-medium text-[#476655]">({verified}%)</span></p></div><div><p className="text-[10px] font-bold uppercase tracking-[0.11em] text-[#6E8D7B]">Readiness</p><p className="mt-1 text-sm font-bold text-[#198F38]">{talent.readinessScore}% <span className="font-medium text-[#476655]">{band}</span></p></div></div></li>;
+            })}</ul></section>
           )}
         </>
       )}

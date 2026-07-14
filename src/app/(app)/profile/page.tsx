@@ -47,24 +47,41 @@ export default async function ProfilePage() {
   const verifiedCount = profile.skills.filter((s) => s.verified).length;
 
   return (
-    <div className="act-rise mx-auto max-w-[1000px] space-y-8 px-6 py-8 md:px-10">
-      <div>
-        <span className="act-eyebrow">Studio · Profil</span>
-        <h1 className="act-display mt-3 text-4xl leading-[1.05] md:text-5xl">
-          Profil <span className="act-sky-text">karir kamu.</span>
-        </h1>
-        <p className="mt-3 max-w-2xl text-[15px] text-[var(--act-charcoal)]">
-          Profil ini jadi aset yang dibaca semua permukaan: rekomendasi loker,
-          skill-gap, readiness, dan pencarian talent oleh perusahaan.
+    <div className="act-rise mx-auto max-w-[1000px] space-y-8 px-6 py-10 md:px-10">
+      <section className="overflow-hidden rounded-[24px] border border-[rgba(4,39,24,0.1)] bg-[var(--act-sky-50)] shadow-[0_18px_36px_-30px_rgba(4,39,24,0.5)]">
+        <div className="p-6 sm:p-8">
+          <span className="act-eyebrow">Career studio · profile</span>
+          <div className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div className="flex min-w-0 items-center gap-4">
+              <span className="inline-flex h-16 w-16 flex-none items-center justify-center rounded-[20px] bg-[var(--act-onyx)] text-xl font-semibold text-white shadow-[0_12px_24px_-14px_rgba(4,39,24,0.7)]">
+                {user.name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase()}
+              </span>
+              <div className="min-w-0">
+                <h1 className="act-display text-3xl text-[var(--act-ink)] sm:text-4xl">{user.name}</h1>
+                <p className="mt-1 truncate text-sm text-[var(--act-charcoal)]">{profile.headline || "Membangun arah karir yang lebih jelas"}</p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <span className="act-chip act-chip-blue">{profile.skills.length} skill</span>
+              <span className="act-chip act-chip-iris">{verifiedCount} verified</span>
+            </div>
+          </div>
+        </div>
+        <p className="border-t border-[rgba(4,39,24,0.08)] bg-white/55 px-6 py-4 text-sm leading-relaxed text-[var(--act-charcoal)] sm:px-8">
+          Ini adalah aset karirmu untuk rekomendasi loker, skill-gap, readiness, dan pencarian talent.
         </p>
-      </div>
+      </section>
 
-      {/* Identity */}
-      <form action={saveBasicsAction} className="act-card-2 space-y-5 p-6">
-        <div className="flex items-center gap-3">
-          <span className="inline-flex h-12 w-12 flex-none items-center justify-center rounded-2xl bg-[var(--act-onyx)] text-base font-semibold text-white">
-            {user.name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase()}
-          </span>
+      <form action={saveBasicsAction} className="act-card-2 overflow-hidden">
+        <div className="border-b border-[rgba(4,39,24,0.08)] px-6 py-5">
+          <span className="act-kicker">Identitas profesional</span>
+          <h2 className="act-heading mt-1 text-xl text-[var(--act-ink)]">Ceritakan fokusmu</h2>
+        </div>
+        <div className="space-y-5 p-6">
+          <div className="flex items-center gap-3 rounded-2xl border border-[rgba(4,39,24,0.08)] bg-[var(--act-mist)] p-4">
+            <span className="inline-flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-[#D4E5CD] text-sm font-semibold text-[var(--act-onyx)]">
+              {user.name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase()}
+            </span>
           <div>
             <p className="text-base font-semibold text-[var(--act-ink)]">{user.name}</p>
             <p className="text-xs text-[var(--act-graphite)]">{user.email}</p>
@@ -92,24 +109,32 @@ export default async function ProfilePage() {
           />
         </div>
 
-        <div className="flex justify-end">
-          <button type="submit" className="act-pill !text-sm">Simpan profil</button>
+          <div className="flex justify-end border-t border-[rgba(4,39,24,0.08)] pt-5">
+            <button type="submit" className="act-pill !text-sm">Simpan profil</button>
+          </div>
         </div>
       </form>
 
-      {/* Skills */}
-      <div className="act-card-2 p-6">
-        <div className="mb-4 flex items-center gap-2">
-          <span className="act-chip act-chip-blue">{profile.skills.length} skill</span>
-          <span className="act-chip act-chip-iris">{verifiedCount} verified</span>
+      <section className="act-card-2 overflow-hidden">
+        <div className="flex flex-col gap-3 border-b border-[rgba(4,39,24,0.08)] bg-[#D4E5CD]/35 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <span className="act-kicker !text-[var(--act-blue)]">Keahlian</span>
+            <h2 className="act-heading mt-1 text-xl text-[var(--act-ink)]">Skill yang kamu bawa</h2>
+          </div>
+          <div className="flex gap-2">
+            <span className="act-chip act-chip-blue">{profile.skills.length} skill</span>
+            <span className="act-chip act-chip-iris">{verifiedCount} verified</span>
+          </div>
         </div>
-        <ProfileSkillsEditor
-          skills={profile.skills}
-          catalog={groups}
-          saveSkills={saveSkillsAction}
-          setProficiency={setProficiencyAction}
-        />
-      </div>
+        <div className="p-6">
+          <ProfileSkillsEditor
+            skills={profile.skills}
+            catalog={groups}
+            saveSkills={saveSkillsAction}
+            setProficiency={setProficiencyAction}
+          />
+        </div>
+      </section>
     </div>
   );
 }

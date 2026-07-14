@@ -33,19 +33,19 @@ export default async function OnboardingGoalPage() {
   const current = await getActiveGoal(user.id);
 
   return (
-    <div className="mx-auto max-w-[1400px] px-6 py-12">
-      <div className="mb-8"><OnboardingStepper current={2} /></div>
-      <div className="grid grid-cols-12 gap-8">
+    <div className="mx-auto max-w-[1100px] px-6 py-10 md:py-14">
+      <div className="mb-10"><OnboardingStepper current={2} /></div>
+      <div className="grid grid-cols-12 gap-8 lg:gap-12">
       <aside className="act-rise col-span-12 md:col-span-4 md:sticky md:top-24 md:self-start">
         <span className="act-eyebrow">Onboarding · Step 2</span>
-        <h1 className="act-display mt-4 text-5xl leading-[1.04] md:text-6xl">
-          Set career <span className="act-sky-text">goal.</span>
+        <h1 className="act-display mt-3 text-4xl leading-[1.04] md:text-5xl">
+          Tentukan arah <span className="text-[var(--act-blue)]">karirmu.</span>
         </h1>
         <p className="mt-5 max-w-md text-[15px] leading-relaxed text-[var(--act-charcoal)]">
           AI butuh tahu kamu mau kemana. Jawaban ini bisa diubah kapan aja —
           roadmap akan otomatis re-generate.
         </p>
-        <div className="act-card-2 act-wash-iris-soft mt-8 border-[rgba(15,118,110,0.18)] p-5">
+        <div className="mt-8 rounded-[20px] border border-[rgba(4,39,24,0.1)] bg-[#D4E5CD]/55 p-5">
           <span className="act-kicker">Tips</span>
           <ul className="mt-3 space-y-3 text-sm text-[var(--act-charcoal)]">
             <li className="flex gap-2.5">
@@ -61,7 +61,7 @@ export default async function OnboardingGoalPage() {
       </aside>
 
       <form action={saveGoalAction} className="act-rise col-span-12 md:col-span-8">
-        <div className="act-card-2 act-rail act-rail-rainbow divide-y divide-[rgba(15,23,42,0.07)] overflow-hidden pt-1">
+        <div className="act-card-2 divide-y divide-[rgba(4,39,24,0.08)] overflow-hidden">
           <FormRow label="Target role" required helper="Role spesifik bikin skill-gap analysis lebih akurat.">
             <Input
               name="targetRole"
@@ -148,7 +148,7 @@ function FormRow({
       <div className="col-span-12 md:col-span-4">
         <label className="flex items-center gap-1 text-base font-semibold text-[var(--act-ink)]">
           {label}
-          {required && <span className="text-[var(--act-magenta)]">*</span>}
+          {required && <span className="text-[var(--act-blue)]">*</span>}
         </label>
         {helper && <p className="mt-1.5 text-xs leading-relaxed text-[var(--act-graphite)]">{helper}</p>}
       </div>
@@ -212,7 +212,7 @@ function TrackPicker({ defaultValue }: { defaultValue: GoalTrack }) {
       {options.map((o) => (
         <label
           key={o.value}
-          className="relative flex cursor-pointer flex-col gap-1 rounded-2xl border border-[rgba(15,23,42,0.1)] bg-[var(--act-mist)] p-4 transition-all hover:border-[rgba(25,143,56,0.4)] has-[:checked]:border-[var(--act-blue)] has-[:checked]:bg-[var(--act-sky-50)] has-[:checked]:shadow-[0_0_0_3px_rgba(25,143,56,0.12)]"
+          className="relative flex cursor-pointer flex-col gap-1 rounded-2xl border border-[rgba(4,39,24,0.1)] bg-[var(--act-mist)] p-4 transition-all hover:border-[rgba(25,143,56,0.4)] has-[:checked]:border-[var(--act-blue)] has-[:checked]:bg-[var(--act-sky-50)] has-[:checked]:shadow-[0_0_0_3px_rgba(25,143,56,0.12)]"
         >
           <input
             type="radio"

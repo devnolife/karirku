@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { requireUser } from "@/lib/auth";
 import { getJobDetail } from "@/server/queries/jobs";
 import { parseLocation, locationFlag } from "@/lib/location";
@@ -13,13 +13,11 @@ const REGION_BADGE: Record<string, { label: string; cls: string }> = {
   foreign: { label: "Global", cls: "act-chip-mute" },
 };
 
-const AVATAR_TONES = ["act-avatar-magenta", "act-avatar-blue", "act-avatar-iris"];
-
-const TILE: Record<string, CSSProperties> = {
-  blue: { "--tile-from": "#22C55E", "--tile-to": "#198F38" } as CSSProperties,
-  iris: { "--tile-from": "#14B8A6", "--tile-to": "#0F766E" } as CSSProperties,
-  magenta: { "--tile-from": "#F59E0B", "--tile-to": "#B45309" } as CSSProperties,
-  mint: { "--tile-from": "#34d399", "--tile-to": "#059669" } as CSSProperties,
+const FACT_TONES: Record<string, string> = {
+  blue: "bg-[#F2FBF6] text-[var(--act-blue)]",
+  iris: "bg-[#D2DDEA] text-[var(--act-iris)]",
+  amber: "bg-[#EBE3D2] text-[#8A5A18]",
+  mint: "bg-[#D4E5CD] text-[var(--act-onyx)]",
 };
 
 const ICONS: Record<string, ReactNode> = {
@@ -48,8 +46,8 @@ const ICONS: Record<string, ReactNode> = {
 
 function Fact({ icon, tone, label, value }: { icon: ReactNode; tone: string; label: string; value: string }) {
   return (
-    <div className="act-card-2 flex items-center gap-3 p-4">
-      <span className="act-icon-tile flex-none" style={TILE[tone]}>{icon}</span>
+    <div className="flex items-center gap-3 rounded-[20px] border border-[rgba(4,39,24,0.08)] bg-white p-4 shadow-[0_10px_20px_-24px_rgba(4,39,24,0.45)]">
+      <span className={`inline-flex h-10 w-10 flex-none items-center justify-center rounded-xl ${FACT_TONES[tone]}`}>{icon}</span>
       <div className="min-w-0">
         <span className="act-kicker block !text-[10px]">{label}</span>
         <span className="block truncate text-sm font-semibold text-[var(--act-ink)]">{value}</span>
@@ -64,13 +62,11 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
   const job = await getJobDetail(user.id, id);
   if (!job) notFound();
 
-  const ringColor =
-    job.matchPct >= 70 ? "var(--act-magenta)" : job.matchPct >= 40 ? "var(--act-iris)" : "var(--act-blue)";
+  const ringColor = job.matchPct >= 70 ? "#198F38" : job.matchPct >= 40 ? "#0F766E" : "#B45309";
   const region = REGION_BADGE[job.region];
   const loc = parseLocation(job.location);
   const src = describeJobSource(job.source, job.applyUrl, job.isNative);
   const descParas = job.description.split(/\n{1,}/).map((p) => p.trim()).filter(Boolean);
-  const avatarTone = AVATAR_TONES[(job.company.charCodeAt(0) || 0) % AVATAR_TONES.length];
 
   return (
     <div className="act-rise mx-auto max-w-[1080px] space-y-6 px-6 py-8 md:px-10">
@@ -78,11 +74,10 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
         ← Kembali ke Lowongan
       </Link>
 
-      {/* Hero header */}
-      <div className="act-card-2 act-rail act-rail-magenta act-wash-petal-soft overflow-hidden p-6 md:p-8">
+      <section aria-labelledby="job-title" className="overflow-hidden rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-[#F2FBF6] p-6 shadow-[0_20px_40px_-32px_rgba(4,39,24,0.55)] md:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex min-w-0 gap-4">
-            <span className={`act-avatar ${avatarTone} !h-14 !w-14 flex-none !rounded-2xl text-xl font-bold`}>
+            <span className="inline-flex h-14 w-14 flex-none items-center justify-center rounded-2xl bg-[var(--act-onyx)] font-[family-name:var(--font-onest-v)] text-xl font-bold text-white">
               {job.company.slice(0, 1).toUpperCase()}
             </span>
             <div className="min-w-0">
@@ -90,7 +85,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                 <span className={`act-chip ${region.cls}`}>{region.label}</span>
                 {job.isNative && <span className="act-chip act-chip-iris">Native · lamar di sini</span>}
               </div>
-              <h1 className="act-display mt-3 text-3xl leading-[1.08] md:text-[40px]">{job.title}</h1>
+              <h1 id="job-title" className="act-display mt-3 text-3xl leading-[1.08] md:text-[40px]">{job.title}</h1>
               <p className="mt-2 text-[15px] text-[var(--act-charcoal)]">
                 <span className="font-semibold text-[var(--act-ink)]">{job.company}</span>
                 <span className="text-[var(--act-graphite)]"> · diposting {job.posted}</span>
@@ -105,13 +100,12 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
             </div>
           </div>
 
-          {/* Match ring */}
-          <div className="flex flex-none items-center gap-4">
+          <div className="flex flex-none items-center gap-4 rounded-[20px] border border-[rgba(4,39,24,0.08)] bg-white p-3">
             <div
               className="relative grid h-[104px] w-[104px] flex-none place-items-center rounded-full"
               style={{ background: `conic-gradient(${ringColor} ${job.matchPct * 3.6}deg, rgba(15,23,42,0.08) 0deg)` }}
             >
-              <div className="grid h-[84px] w-[84px] place-items-center rounded-full bg-white text-center">
+              <div className="grid h-[84px] w-[84px] place-items-center rounded-full bg-[#F2FBF6] text-center">
                 <span className="act-display text-3xl leading-none" style={{ color: ringColor }}>
                   {job.matchPct}
                   <span className="text-sm">%</span>
@@ -122,16 +116,16 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="mt-7 border-t border-[rgba(15,23,42,0.08)] pt-6">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+        <div className="mt-7 border-t border-[rgba(4,39,24,0.1)] pt-6">
+          <span className="studio-section-kicker">Kesiapan melamar</span>
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-3">
             <ApplyButton jobId={job.id} alreadyApplied={job.applied} isExternal={!!job.applyUrl} />
             <span className="text-sm text-[var(--act-graphite)]">
               <span className="font-semibold text-[var(--act-ink)]">{job.matchedSkills.length}</span> dari{" "}
               <span className="font-semibold text-[var(--act-ink)]">{job.skills.length || "—"}</span> skill kamu cocok
             </span>
             {job.applyUrl && (
-              <a href={job.applyUrl} target="_blank" rel="noopener noreferrer" className="ml-auto text-xs font-medium text-[var(--act-blue)] hover:underline">
+              <a href={job.applyUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-[var(--act-blue)] hover:underline lg:ml-auto">
                 Lihat di situs asli ↗
               </a>
             )}
@@ -155,23 +149,23 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
             </p>
           )}
         </div>
-      </div>
+      </section>
 
       {/* Facts strip */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <Fact icon={ICONS.pin} tone="blue" label="Lokasi" value={`${loc.flag} ${loc.primary}${loc.extraCount > 0 ? ` +${loc.extraCount}` : ""}`} />
         <Fact icon={ICONS.briefcase} tone="iris" label="Tipe" value={job.type ?? "—"} />
-        <Fact icon={ICONS.layers} tone="magenta" label="Level" value={job.level ?? "—"} />
+        <Fact icon={ICONS.layers} tone="amber" label="Level" value={job.level ?? "—"} />
         <Fact icon={ICONS.wallet} tone="mint" label="Gaji" value={job.salary} />
       </div>
 
       {/* All locations (jobs with multiple offices/regions) */}
       {loc.all.length > 1 && (
-        <div className="act-card-2 flex flex-wrap items-center gap-x-3 gap-y-2 p-4">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-[20px] border border-[rgba(4,39,24,0.08)] bg-[#D2DDEA] p-4">
           <span className="act-kicker !text-[10px]">Lokasi asli ({loc.all.length})</span>
           <div className="flex flex-wrap gap-1.5">
             {loc.all.map((l) => (
-              <span key={l} className="rounded-md bg-[var(--act-mist)] px-2.5 py-1 text-xs font-medium text-[var(--act-charcoal)] ring-1 ring-[rgba(15,23,42,0.06)]">
+              <span key={l} className="rounded-md bg-white/70 px-2.5 py-1 text-xs font-medium text-[var(--act-charcoal)] ring-1 ring-[rgba(4,39,24,0.06)]">
                 {locationFlag(l)} {l}
               </span>
             ))}
@@ -182,38 +176,38 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Description + requirements */}
         <div className="space-y-6 lg:col-span-2">
-          <div className="act-card-2 p-6 md:p-7">
+           <article className="rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-white p-6 shadow-[0_14px_28px_-26px_rgba(4,39,24,0.4)] md:p-7">
             <h2 className="act-heading text-lg text-[var(--act-ink)]">Deskripsi pekerjaan</h2>
             {descParas.length > 0 ? (
-              <div className="mt-4 space-y-3.5 text-[15px] leading-[1.7] text-[var(--act-charcoal)]">
-                {descParas.map((p, i) => <p key={i} className="whitespace-pre-line">{p}</p>)}
-              </div>
+                <div className="mt-4 space-y-3.5 text-[15px] leading-[1.7] text-[var(--act-charcoal)]">
+                  {descParas.map((p, i) => <p key={i} className="whitespace-pre-line">{p}</p>)}
+                </div>
             ) : (
               <p className="mt-4 text-sm text-[var(--act-graphite)]">
                 Deskripsi detail belum tersedia.{job.applyUrl ? " Lihat lowongan asli untuk info lengkap." : ""}
               </p>
             )}
-          </div>
+          </article>
 
           {job.requirements.length > 0 && (
-            <div className="act-card-2 p-6 md:p-7">
+             <section className="rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-[#D4E5CD] p-6 md:p-7">
               <h2 className="act-heading text-lg text-[var(--act-ink)]">Kualifikasi</h2>
               <ul className="mt-4 space-y-3">
                 {job.requirements.map((r, i) => (
                   <li key={i} className="flex gap-3 text-[15px] leading-relaxed text-[var(--act-charcoal)]">
-                    <span className="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-[var(--act-blue)]" />
+                     <span className="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-[var(--act-iris)]" />
                     {r}
                   </li>
                 ))}
               </ul>
-            </div>
+             </section>
           )}
         </div>
 
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Skills coverage */}
-          <div className="act-card-2 p-6">
+           <section className="rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-white p-6 shadow-[0_14px_28px_-26px_rgba(4,39,24,0.4)]">
             <div className="flex items-baseline justify-between">
               <h2 className="act-heading text-base text-[var(--act-ink)]">Skill cocok</h2>
               <span className="text-sm font-bold" style={{ color: ringColor }}>
@@ -221,7 +215,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
               </span>
             </div>
             <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-[rgba(15,23,42,0.08)]">
-              <div className="h-full rounded-full" style={{ width: `${job.matchPct}%`, background: ringColor }} />
+               <div className="h-full rounded-full" style={{ width: `${job.matchPct}%`, backgroundColor: ringColor }} />
             </div>
 
             <div className="mt-5 space-y-4">
@@ -230,7 +224,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                   <span className="act-kicker !text-[10px]">Kamu kuasai</span>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {job.matchedSkills.map((s) => (
-                      <span key={s} className="rounded-md bg-[rgba(5,150,105,0.1)] px-2 py-0.5 text-[11px] font-semibold text-[#059669]">✓ {s}</span>
+                       <span key={s} className="rounded-md bg-[#F2FBF6] px-2 py-0.5 text-[11px] font-semibold text-[var(--act-blue)]">✓ {s}</span>
                     ))}
                   </div>
                 </div>
@@ -240,7 +234,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                   <span className="act-kicker !text-[10px]">Perlu dipelajari</span>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {job.missingSkills.map((s) => (
-                      <span key={s} className="rounded-md bg-[rgba(180,83,9,0.08)] px-2 py-0.5 text-[11px] font-semibold text-[var(--act-magenta)]">{s}</span>
+                       <span key={s} className="rounded-md bg-[#EBE3D2] px-2 py-0.5 text-[11px] font-semibold text-[#8A5A18]">{s}</span>
                     ))}
                   </div>
                 </div>
@@ -255,19 +249,19 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                 Belajar skill yang kurang →
               </Link>
             )}
-          </div>
+          </section>
 
           {/* About company */}
-          <div className="act-card-2 p-6">
+           <aside className="rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-[#D2DDEA] p-6">
             <span className="act-kicker !text-[10px]">Tentang perusahaan</span>
             <div className="mt-3 flex items-center gap-3">
-              <span className={`act-avatar ${avatarTone} flex-none font-bold`}>{job.company.slice(0, 1).toUpperCase()}</span>
+               <span className="inline-flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-[var(--act-iris)] font-bold text-white">{job.company.slice(0, 1).toUpperCase()}</span>
               <div className="min-w-0">
                 <p className="truncate font-semibold text-[var(--act-ink)]">{job.company}</p>
                 <p className="truncate text-xs text-[var(--act-graphite)]">{loc.flag} {loc.primary}</p>
               </div>
             </div>
-            <div className="mt-4 border-t border-[rgba(15,23,42,0.07)] pt-4">
+             <div className="mt-4 border-t border-[rgba(4,39,24,0.1)] pt-4">
               <span className="act-kicker !text-[10px]">Sumber lowongan</span>
               <div className="mt-2 flex items-center gap-2">
                 <span className={`act-chip !text-[10px] ${src.kind === "native" ? "act-chip-iris" : src.kind === "external" ? "act-chip-blue" : "act-chip-mute"}`}>
@@ -291,7 +285,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                 </a>
               )}
             </div>
-          </div>
+          </aside>
         </div>
       </div>
     </div>

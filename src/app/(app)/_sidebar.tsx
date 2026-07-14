@@ -20,9 +20,10 @@ export function AppSidebarNav({
 }) {
   const pathname = usePathname();
   return (
-    <nav className="space-y-5">
+    <nav className="space-y-6">
+      {!collapsed && <div className="studio-nav-kicker">Career Studio</div>}
       {groups.map((group, gi) => (
-        <div key={group.label ?? gi} className="space-y-1">
+        <div key={group.label ?? gi} className="space-y-1.5">
           {group.label && !collapsed && (
             <div className="px-2 pb-1">
               <span className="act-kicker !text-[10.5px]">{group.label}</span>

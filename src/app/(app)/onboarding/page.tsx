@@ -31,13 +31,13 @@ export default async function OnboardingSkillsPage() {
   const owned = profile.skills.map((s) => s.id);
 
   return (
-    <div className="mx-auto max-w-[1100px] px-6 py-12">
-      <div className="mb-8"><OnboardingStepper current={1} /></div>
+    <div className="mx-auto max-w-[980px] px-6 py-10 md:py-14">
+      <div className="mb-10"><OnboardingStepper current={1} /></div>
 
-      <div className="act-rise">
+      <div className="act-rise max-w-2xl">
         <span className="act-eyebrow">Onboarding · Step 1</span>
-        <h1 className="act-display mt-4 text-5xl leading-[1.04] md:text-6xl">
-          Skill apa yang <span className="act-sky-text">kamu punya?</span>
+        <h1 className="act-display mt-3 text-4xl leading-[1.04] md:text-5xl">
+          Mulai dari skill yang <span className="text-[var(--act-blue)]">sudah kamu kuasai.</span>
         </h1>
         <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-[var(--act-charcoal)]">
           Pilih skill yang sudah kamu kuasai. Ini jadi dasar skill-gap analysis,
@@ -47,8 +47,13 @@ export default async function OnboardingSkillsPage() {
       </div>
 
       <form action={saveSkillsAction} className="act-rise mt-8">
-        <div className="act-card-2 p-6 md:p-8">
+        <div className="act-card-2 overflow-hidden">
+          <div className="border-b border-[rgba(4,39,24,0.08)] bg-[#F2FBF6] px-6 py-4">
+            <span className="act-kicker !text-[var(--act-blue)]">Pilih keahlianmu</span>
+          </div>
+          <div className="p-6 md:p-8">
           <SkillPicker groups={groups} initialSelected={owned} />
+          </div>
         </div>
 
         <div className="mt-8 flex flex-col-reverse items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between">

@@ -18,13 +18,13 @@ export default async function OnboardingReviewPage() {
   ]);
 
   return (
-    <div className="mx-auto max-w-[1000px] px-6 py-12">
-      <div className="mb-8"><OnboardingStepper current={3} /></div>
+    <div className="mx-auto max-w-[900px] px-6 py-10 md:py-14">
+      <div className="mb-10"><OnboardingStepper current={3} /></div>
 
-      <div className="act-rise">
+      <div className="act-rise max-w-2xl">
         <span className="act-eyebrow">Onboarding · Step 3</span>
-        <h1 className="act-display mt-4 text-5xl leading-[1.04] md:text-6xl">
-          Semua sudah <span className="act-sky-text">siap.</span>
+        <h1 className="act-display mt-3 text-4xl leading-[1.04] md:text-5xl">
+          Semua sudah <span className="text-[var(--act-blue)]">siap.</span>
         </h1>
         <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-[var(--act-charcoal)]">
           Cek ringkasan profilmu. Dashboard, skill-gap, dan rekomendasi loker akan
@@ -34,10 +34,10 @@ export default async function OnboardingReviewPage() {
 
       <div className="act-rise mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Goal */}
-        <div className="act-card-2 act-rail act-rail-iris p-6">
+        <div className="act-card-2 bg-[#F2FBF6] p-6">
           <div className="flex items-center justify-between">
             <span className="act-kicker">Career goal</span>
-            <Link href="/onboarding/goal" className="text-xs font-semibold text-[var(--act-blue)] hover:underline">Ubah</Link>
+            <Link href="/onboarding/goal" className="text-xs font-semibold text-[var(--act-blue)] underline decoration-[rgba(25,143,56,0.3)] underline-offset-4 hover:text-[var(--act-onyx)]">Ubah</Link>
           </div>
           {goal ? (
             <div className="mt-3 space-y-1.5">
@@ -58,10 +58,10 @@ export default async function OnboardingReviewPage() {
         </div>
 
         {/* Skills */}
-        <div className="act-card-2 act-rail act-rail-blue p-6">
+        <div className="act-card-2 p-6">
           <div className="flex items-center justify-between">
             <span className="act-kicker">Skill ({profile.skills.length})</span>
-            <Link href="/onboarding" className="text-xs font-semibold text-[var(--act-blue)] hover:underline">Ubah</Link>
+            <Link href="/onboarding" className="text-xs font-semibold text-[var(--act-blue)] underline decoration-[rgba(25,143,56,0.3)] underline-offset-4 hover:text-[var(--act-onyx)]">Ubah</Link>
           </div>
           {profile.skills.length > 0 ? (
             <div className="mt-3 flex flex-wrap gap-1.5">
