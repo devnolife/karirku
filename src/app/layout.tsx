@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Plus_Jakarta_Sans, Caveat } from "next/font/google";
+import {
+  Bricolage_Grotesque,
+  Plus_Jakarta_Sans,
+  Caveat,
+  Inter,
+  Onest,
+  Playfair_Display,
+} from "next/font/google";
 import "./globals.css";
 
 // v4 "Clean Paper Desk" — the active design system.
@@ -23,6 +30,27 @@ const caveat = Caveat({
   weight: ["600", "700"],
 });
 
+// Landing page (ui-pages) — finsyc-style visual system.
+// Heading -> Onest. Body -> Inter. Serif italic accents -> Playfair Display.
+const inter = Inter({
+  variable: "--font-inter-v",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const onest = Onest({
+  variable: "--font-onest-v",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair-v",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  weight: ["400", "500", "600"],
+});
+
 export const metadata: Metadata = {
   title: "CraftWorks — Career Studio & Talent Marketplace",
   description:
@@ -37,7 +65,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${bricolage.variable} ${jakarta.variable} ${caveat.variable} h-full antialiased`}
+      className={`${bricolage.variable} ${jakarta.variable} ${caveat.variable} ${inter.variable} ${onest.variable} ${playfair.variable} h-full antialiased`}
     >
       <body
         className="min-h-full flex flex-col"

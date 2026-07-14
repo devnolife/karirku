@@ -1,6 +1,32 @@
 @import "tailwindcss";
 
 /* =========================================================
+   Landing page (ui-pages) — finsyc-style visual system.
+   Additive only: font tokens + marquee keyframes. The act-*
+   design system below remains untouched and is still used by
+   the (app)/(admin) surfaces.
+   ========================================================= */
+@theme {
+  --font-inter: var(--font-inter-v), ui-sans-serif, system-ui, sans-serif;
+  --font-onest: var(--font-onest-v), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-onest-v), ui-sans-serif, system-ui, sans-serif;
+  --font-playfair: var(--font-playfair-v), ui-serif, Georgia, serif;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+/* =========================================================
    CraftWorks — global foundation
    Active design system: v4 "Clean Paper Desk" (act-*), below.
    This block only grounds the document (body, focus, form
