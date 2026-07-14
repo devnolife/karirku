@@ -14,6 +14,11 @@ const CATEGORIES = [
   "https://id.jobstreet.com/id/software-engineer-jobs/remote",
   "https://id.jobstreet.com/id/web-developer-jobs/remote",
   "https://id.jobstreet.com/id/mobile-developer-jobs/remote",
+  "https://id.jobstreet.com/id/backend-developer-jobs/remote",
+  "https://id.jobstreet.com/id/node-js-jobs/remote",
+  "https://id.jobstreet.com/id/golang-jobs/remote",
+  "https://id.jobstreet.com/id/next-js-jobs/remote",
+  "https://id.jobstreet.com/id/devops-jobs/remote",
 ];
 
 async function checkLogin(page) {

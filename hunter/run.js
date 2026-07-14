@@ -15,6 +15,7 @@ const freelancer = require("./platforms/freelancer");
 const jobstreet = require("./platforms/jobstreet");
 const linkedin = require("./platforms/linkedin");
 const upwork = require("./platforms/upwork");
+const remoteboards = require("./platforms/remoteboards");
 const gmail = require("./email/gmail");
 
 const args = process.argv.slice(2);
@@ -28,7 +29,7 @@ const logLines = [];
 const log = (...a) => { const s = a.join(" "); logLines.push(s); console.log(s); };
 
 async function scan(target) {
-  const scanners = { freelancer, jobstreet, linkedin, upwork };
+  const scanners = { freelancer, jobstreet, linkedin, upwork, remoteboards };
   const list = target && target !== "all" ? [target] : Object.keys(scanners);
   const stats = {};
   for (const name of list) {
