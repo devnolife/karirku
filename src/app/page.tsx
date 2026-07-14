@@ -22,7 +22,7 @@ import { FooterSection } from "@/components/landing/FooterSection";
 
 export default function LandingPage() {
   return (
-    <main className="w-full overflow-x-hidden bg-white font-inter">
+    <main className="w-full overflow-x-clip bg-white font-inter">
       <HeroSection />
       <LogosStatsSection />
       <FeaturesSection />
