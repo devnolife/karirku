@@ -7,7 +7,7 @@ export default function VerifyLoading() {
   return (
     <div className="act-rise mx-auto max-w-[800px] px-6 py-16 text-center">
       <div className="mx-auto flex h-14 w-14 items-center justify-center">
-        <span className="inline-block h-10 w-10 animate-spin rounded-full border-[3px] border-[rgba(0,152,242,0.2)] border-t-[var(--act-blue)]" />
+        <span className="inline-block h-10 w-10 animate-spin rounded-full border-[3px] border-[rgba(25,143,56,0.2)] border-t-[var(--act-blue)]" />
       </div>
       <h1 className="act-heading mt-6 text-2xl text-[var(--act-ink)]">
         Menyiapkan kuis…

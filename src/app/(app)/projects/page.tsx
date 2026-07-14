@@ -45,7 +45,7 @@ export default async function ProjectsPage() {
 
                 <div className="mt-4 flex flex-wrap gap-1.5">
                   {p.skills.map((s) => (
-                    <span key={s} className="rounded-md bg-[rgba(0,152,242,0.08)] px-2 py-0.5 text-[11px] font-semibold text-[var(--act-blue)]">{s}</span>
+                    <span key={s} className="rounded-md bg-[rgba(25,143,56,0.08)] px-2 py-0.5 text-[11px] font-semibold text-[var(--act-blue)]">{s}</span>
                   ))}
                 </div>
 

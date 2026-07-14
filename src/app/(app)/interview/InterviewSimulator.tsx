@@ -63,7 +63,7 @@ export function InterviewSimulator() {
     const answeredCount = questions.filter((_, i) => (answers[i] ?? "").trim().length > 0).length;
     return (
       <div className="space-y-6">
-        <div className="act-card-2 act-wash-sky-soft border-[rgba(0,152,242,0.18)] p-6">
+        <div className="act-card-2 act-wash-sky-soft border-[rgba(25,143,56,0.18)] p-6">
           <span className="act-kicker">Selesai</span>
           <h2 className="act-display mt-2 text-3xl text-[var(--act-ink)]">
             {answeredCount}<span className="text-[var(--act-graphite)]">/{questions.length}</span> dijawab
@@ -85,7 +85,7 @@ export function InterviewSimulator() {
                     {(answers[i] ?? "").trim() || <span className="text-[var(--act-graphite)]">(kosong)</span>}
                   </p>
                 </div>
-                <div className="rounded-xl border border-[rgba(0,152,242,0.18)] bg-[var(--act-sky-50)] p-3">
+                <div className="rounded-xl border border-[rgba(25,143,56,0.18)] bg-[var(--act-sky-50)] p-3">
                   <div className="act-kicker !text-[10px]">Contoh jawaban</div>
                   <p className="mt-1 text-sm text-[var(--act-charcoal)]">{q.sample}</p>
                 </div>
@@ -165,7 +165,7 @@ export function InterviewSimulator() {
           {revealed[index] ? "Sembunyikan contoh jawaban" : "Lihat contoh jawaban"}
         </button>
         {revealed[index] && (
-          <div className="mt-2 rounded-2xl border border-[rgba(0,152,242,0.18)] bg-[var(--act-sky-50)] p-4">
+          <div className="mt-2 rounded-2xl border border-[rgba(25,143,56,0.18)] bg-[var(--act-sky-50)] p-4">
             <div className="act-kicker !text-[10px]">Contoh jawaban terbaik</div>
             <p className="mt-1.5 text-sm leading-relaxed text-[var(--act-charcoal)]">{q.sample}</p>
           </div>

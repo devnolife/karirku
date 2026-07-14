@@ -45,7 +45,7 @@ export default async function AdminOverviewPage() {
                 </span>
                 <div className="flex h-[120px] w-full items-end">
                   <div
-                    className="w-full rounded-t-lg bg-[linear-gradient(180deg,#38bdf8,var(--act-blue))]"
+                    className="w-full rounded-t-lg bg-[linear-gradient(180deg,#22C55E,var(--act-blue))]"
                     style={{ height: `${(t.value / trendMax) * 100}%` }}
                   />
                 </div>
@@ -73,7 +73,7 @@ export default async function AdminOverviewPage() {
                     </span>
                   </div>
                   <div className="act-track mt-2">
-                    <i style={{ width: `${pct}%`, background: "linear-gradient(90deg,#8b78ff,var(--act-iris))" }} />
+                    <i style={{ width: `${pct}%`, background: "linear-gradient(90deg,#14B8A6,var(--act-iris))" }} />
                   </div>
                 </div>
               );

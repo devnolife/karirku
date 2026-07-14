@@ -80,7 +80,7 @@ export function ReadinessCard({ score, last }: { score: number; last: number }) 
   const c = 2 * Math.PI * r;
   const dash = (score / 100) * c;
   return (
-    <div className="act-card-2 act-wash-sky-soft w-full border-[rgba(0,152,242,0.18)] p-5">
+    <div className="act-card-2 act-wash-sky-soft w-full border-[rgba(25,143,56,0.18)] p-5">
       <span className="act-kicker">Career readiness</span>
       <div className="mt-3 flex items-center gap-5">
         <div className="relative h-[128px] w-[128px] flex-none">
@@ -116,9 +116,9 @@ export function SkillBar({ skill, tone = "blue" }: { skill: SkillView; tone?: "b
   const gap = Math.max(0, skill.required - skill.current);
   const critical = gap > 25;
   const fill = critical
-    ? "linear-gradient(90deg, #ff5cd6, var(--act-magenta))"
+    ? "linear-gradient(90deg, #F59E0B, var(--act-magenta))"
     : tone === "iris"
-      ? "linear-gradient(90deg, #8b78ff, var(--act-iris))"
+      ? "linear-gradient(90deg, #14B8A6, var(--act-iris))"
       : "linear-gradient(90deg, var(--act-sky-bright), var(--act-sky-deep))";
   return (
     <div>
@@ -147,7 +147,7 @@ export function SkillBar({ skill, tone = "blue" }: { skill: SkillView; tone?: "b
 export function MilestoneRow({ milestone: m }: { milestone: MilestoneView }) {
   const statusConfig = {
     done: { text: "Done", chip: "act-chip-green", badge: "bg-[linear-gradient(140deg,#34d399,#059669)] text-white" },
-    in_progress: { text: "In progress", chip: "act-chip-blue", badge: "bg-[linear-gradient(140deg,#38bdf8,var(--act-blue))] text-white" },
+    in_progress: { text: "In progress", chip: "act-chip-blue", badge: "bg-[linear-gradient(140deg,#22C55E,var(--act-blue))] text-white" },
     upcoming: { text: "Upcoming", chip: "act-chip-mute", badge: "bg-[var(--act-mist)] text-[var(--act-graphite)] border border-[rgba(15,23,42,0.1)]" },
   }[m.status];
   return (
@@ -195,7 +195,7 @@ export function JobRow({ job: j }: { job: JobView }) {
         </p>
         <div className="mt-1.5 flex flex-wrap gap-1.5">
           {j.skills.map((s) => (
-            <span key={s} className="rounded-md bg-[rgba(0,152,242,0.08)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--act-blue)]">{s}</span>
+            <span key={s} className="rounded-md bg-[rgba(25,143,56,0.08)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--act-blue)]">{s}</span>
           ))}
         </div>
       </div>
@@ -234,7 +234,7 @@ export function MarketChart({ data }: { data: { label: string; value: number }[]
             <stop offset="100%" stopColor="var(--act-magenta)" stopOpacity="0" />
           </linearGradient>
           <linearGradient id="chartLine" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#ff5cd6" />
+            <stop offset="0%" stopColor="#F59E0B" />
             <stop offset="100%" stopColor="var(--act-magenta)" />
           </linearGradient>
         </defs>
@@ -254,9 +254,9 @@ export function MarketChart({ data }: { data: { label: string; value: number }[]
 /* ---------------- Course row ---------------- */
 export function CourseRow({ course: c, idx }: { course: CourseView; idx: number }) {
   const tiles = [
-    "bg-[linear-gradient(140deg,#38bdf8,var(--act-blue))]",
-    "bg-[linear-gradient(140deg,#8b78ff,var(--act-iris))]",
-    "bg-[linear-gradient(140deg,#ff5cd6,var(--act-magenta))]",
+    "bg-[linear-gradient(140deg,#22C55E,var(--act-blue))]",
+    "bg-[linear-gradient(140deg,#14B8A6,var(--act-iris))]",
+    "bg-[linear-gradient(140deg,#F59E0B,var(--act-magenta))]",
     "bg-[linear-gradient(140deg,#34d399,#059669)]",
     "bg-[linear-gradient(140deg,#fbbf24,#d97706)]",
   ];
@@ -312,7 +312,7 @@ export function EmptyState({
         compact ? "px-6 py-10" : "px-8 py-16"
       }`}
     >
-      <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[rgba(0,152,242,0.09)] text-[var(--act-blue)]">
+      <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[rgba(25,143,56,0.09)] text-[var(--act-blue)]">
         <svg
           viewBox="0 0 24 24"
           className="h-[22px] w-[22px]"
@@ -585,7 +585,7 @@ export function HatchedBars({
                   (d.active
                     ? "bg-[linear-gradient(180deg,var(--act-sky-bright),var(--act-sky-deep))]"
                     : filled
-                      ? "bg-[rgba(0,152,242,0.25)]"
+                      ? "bg-[rgba(25,143,56,0.25)]"
                       : "act-hatch")
                 }
                 style={{ height: `${h}%` }}

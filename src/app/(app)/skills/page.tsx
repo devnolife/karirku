@@ -65,7 +65,7 @@ export default async function SkillsPage() {
           <div className="mt-4 flex flex-wrap gap-2">
             {profile.skills.map((s) =>
               s.verified ? (
-                <span key={s.id} className="inline-flex items-center gap-1 rounded-full border border-[rgba(109,86,252,0.3)] bg-[rgba(109,86,252,0.08)] px-3 py-1.5 text-sm font-semibold text-[var(--act-iris)]">
+                <span key={s.id} className="inline-flex items-center gap-1 rounded-full border border-[rgba(15,118,110,0.3)] bg-[rgba(15,118,110,0.08)] px-3 py-1.5 text-sm font-semibold text-[var(--act-iris)]">
                   ✓ {s.name}
                 </span>
               ) : (

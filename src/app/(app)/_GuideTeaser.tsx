@@ -40,7 +40,7 @@ export function GuideTeaser({
           {showInterview && (
             <Link
               href="/interview"
-              className="act-card-2 act-wash-petal-soft act-rowhover flex items-center justify-between border-[rgba(242,0,202,0.16)] p-5 sm:col-span-2"
+              className="act-card-2 act-wash-petal-soft act-rowhover flex items-center justify-between border-[rgba(180,83,9,0.16)] p-5 sm:col-span-2"
             >
               <div>
                 <h4 className="text-sm font-semibold text-[var(--act-ink)]">Latihan interview</h4>

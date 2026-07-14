@@ -78,7 +78,7 @@ export default async function GuideDetailPage({
 
       {/* Tips */}
       {guide.tips && guide.tips.length > 0 && (
-        <div className="act-card-2 act-wash-sky-soft mt-8 border-[rgba(0,152,242,0.18)] p-6">
+        <div className="act-card-2 act-wash-sky-soft mt-8 border-[rgba(25,143,56,0.18)] p-6">
           <span className="act-kicker">Tips cepat</span>
           <ul className="mt-3 space-y-2.5">
             {guide.tips.map((t) => (

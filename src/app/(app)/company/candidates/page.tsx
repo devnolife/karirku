@@ -68,7 +68,7 @@ export default async function CompanyCandidatesPage() {
                   <div className="col-span-6 md:col-span-3">
                     <div className="flex flex-wrap gap-1.5">
                       {k.skills.map((s) => (
-                        <span key={s} className="rounded-md bg-[rgba(0,152,242,0.08)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--act-blue)]">{s}</span>
+                        <span key={s} className="rounded-md bg-[rgba(25,143,56,0.08)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--act-blue)]">{s}</span>
                       ))}
                     </div>
                   </div>

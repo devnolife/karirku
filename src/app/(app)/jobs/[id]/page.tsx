@@ -16,9 +16,9 @@ const REGION_BADGE: Record<string, { label: string; cls: string }> = {
 const AVATAR_TONES = ["act-avatar-magenta", "act-avatar-blue", "act-avatar-iris"];
 
 const TILE: Record<string, CSSProperties> = {
-  blue: { "--tile-from": "#38bdf8", "--tile-to": "#0098f2" } as CSSProperties,
-  iris: { "--tile-from": "#8b78ff", "--tile-to": "#6d56fc" } as CSSProperties,
-  magenta: { "--tile-from": "#ff5ce0", "--tile-to": "#f200ca" } as CSSProperties,
+  blue: { "--tile-from": "#22C55E", "--tile-to": "#198F38" } as CSSProperties,
+  iris: { "--tile-from": "#14B8A6", "--tile-to": "#0F766E" } as CSSProperties,
+  magenta: { "--tile-from": "#F59E0B", "--tile-to": "#B45309" } as CSSProperties,
   mint: { "--tile-from": "#34d399", "--tile-to": "#059669" } as CSSProperties,
 };
 
@@ -240,7 +240,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                   <span className="act-kicker !text-[10px]">Perlu dipelajari</span>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {job.missingSkills.map((s) => (
-                      <span key={s} className="rounded-md bg-[rgba(242,0,202,0.08)] px-2 py-0.5 text-[11px] font-semibold text-[var(--act-magenta)]">{s}</span>
+                      <span key={s} className="rounded-md bg-[rgba(180,83,9,0.08)] px-2 py-0.5 text-[11px] font-semibold text-[var(--act-magenta)]">{s}</span>
                     ))}
                   </div>
                 </div>

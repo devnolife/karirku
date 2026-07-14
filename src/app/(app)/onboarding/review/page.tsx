@@ -66,7 +66,7 @@ export default async function OnboardingReviewPage() {
           {profile.skills.length > 0 ? (
             <div className="mt-3 flex flex-wrap gap-1.5">
               {profile.skills.map((s) => (
-                <span key={s.id} className="rounded-md bg-[rgba(0,152,242,0.08)] px-2 py-0.5 text-[11px] font-semibold text-[var(--act-blue)]">
+                <span key={s.id} className="rounded-md bg-[rgba(25,143,56,0.08)] px-2 py-0.5 text-[11px] font-semibold text-[var(--act-blue)]">
                   {s.name}
                   {s.verified && <span className="ml-1 text-[var(--act-iris)]">✓</span>}
                 </span>

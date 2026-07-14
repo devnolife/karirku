@@ -38,7 +38,7 @@ export async function CompanyOverview() {
           </div>
         </div>
         <div className="col-span-12 lg:col-span-4">
-          <div className="act-card-2 act-wash-petal-soft border-[rgba(242,0,202,0.16)] p-5">
+          <div className="act-card-2 act-wash-petal-soft border-[rgba(180,83,9,0.16)] p-5">
             <span className="act-kicker">Total kandidat</span>
             <div className="act-display mt-2 text-5xl text-[var(--act-magenta)]">{c.totalCandidates.toLocaleString("id-ID")}</div>
             <div className="mt-4 grid grid-cols-2 gap-3 border-t border-[rgba(15,23,42,0.08)] pt-4">

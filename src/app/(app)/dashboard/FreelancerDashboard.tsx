@@ -36,7 +36,7 @@ export async function FreelancerOverview() {
           </Link>
         </div>
         <div className="col-span-12 lg:col-span-4">
-          <div className="act-card-2 act-wash-sky-soft border-[rgba(0,152,242,0.18)] p-5">
+          <div className="act-card-2 act-wash-sky-soft border-[rgba(25,143,56,0.18)] p-5">
             <span className="act-kicker">Kesiapan profil</span>
             <div className="mt-2 flex items-baseline gap-1">
               <span className="act-display text-5xl text-[var(--act-blue)]">{f.readiness}</span>

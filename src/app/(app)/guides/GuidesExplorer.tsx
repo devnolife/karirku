@@ -103,7 +103,7 @@ export function GuidesExplorer({
       </div>
 
       {/* Interview practice CTA */}
-      <div className="act-card-2 act-wash-petal-soft flex flex-col items-start gap-4 border-[rgba(242,0,202,0.16)] p-6 sm:flex-row sm:items-center sm:justify-between">
+      <div className="act-card-2 act-wash-petal-soft flex flex-col items-start gap-4 border-[rgba(180,83,9,0.16)] p-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <span className="act-kicker">Latihan interview</span>
           <h3 className="act-heading mt-1.5 text-xl text-[var(--act-ink)]">

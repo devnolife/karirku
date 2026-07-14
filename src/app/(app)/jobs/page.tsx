@@ -70,7 +70,7 @@ export default async function JobsPage({
             </ul>
           )}
         </div>
-        <div className="act-card-2 act-wash-petal-soft overflow-hidden border-[rgba(242,0,202,0.16)] p-5 lg:col-span-2">
+        <div className="act-card-2 act-wash-petal-soft overflow-hidden border-[rgba(180,83,9,0.16)] p-5 lg:col-span-2">
           <span className="act-kicker">Demand by level</span>
           <h3 className="act-heading mt-2 text-2xl">{roleLabel}</h3>
           <p className="mt-1 text-sm text-[var(--act-graphite)]">Sebaran {market.openPositions} posisi</p>

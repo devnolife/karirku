@@ -45,7 +45,7 @@ export default async function OnboardingGoalPage() {
           AI butuh tahu kamu mau kemana. Jawaban ini bisa diubah kapan aja —
           roadmap akan otomatis re-generate.
         </p>
-        <div className="act-card-2 act-wash-iris-soft mt-8 border-[rgba(109,86,252,0.18)] p-5">
+        <div className="act-card-2 act-wash-iris-soft mt-8 border-[rgba(15,118,110,0.18)] p-5">
           <span className="act-kicker">Tips</span>
           <ul className="mt-3 space-y-3 text-sm text-[var(--act-charcoal)]">
             <li className="flex gap-2.5">
@@ -212,7 +212,7 @@ function TrackPicker({ defaultValue }: { defaultValue: GoalTrack }) {
       {options.map((o) => (
         <label
           key={o.value}
-          className="relative flex cursor-pointer flex-col gap-1 rounded-2xl border border-[rgba(15,23,42,0.1)] bg-[var(--act-mist)] p-4 transition-all hover:border-[rgba(0,152,242,0.4)] has-[:checked]:border-[var(--act-blue)] has-[:checked]:bg-[var(--act-sky-50)] has-[:checked]:shadow-[0_0_0_3px_rgba(0,152,242,0.12)]"
+          className="relative flex cursor-pointer flex-col gap-1 rounded-2xl border border-[rgba(15,23,42,0.1)] bg-[var(--act-mist)] p-4 transition-all hover:border-[rgba(25,143,56,0.4)] has-[:checked]:border-[var(--act-blue)] has-[:checked]:bg-[var(--act-sky-50)] has-[:checked]:shadow-[0_0_0_3px_rgba(25,143,56,0.12)]"
         >
           <input
             type="radio"
