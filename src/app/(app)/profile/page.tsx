@@ -63,7 +63,7 @@ export default async function ProfilePage() {
             </div>
             <div className="flex gap-2">
               <span className="act-chip act-chip-blue">{profile.skills.length} skill</span>
-              <span className="act-chip act-chip-iris">{verifiedCount} verified</span>
+              <span className="act-chip act-chip-teal">{verifiedCount} verified</span>
             </div>
           </div>
         </div>
@@ -79,7 +79,7 @@ export default async function ProfilePage() {
         </div>
         <div className="space-y-5 p-6">
           <div className="flex items-center gap-3 rounded-2xl border border-[rgba(4,39,24,0.08)] bg-[var(--act-mist)] p-4">
-            <span className="inline-flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-[#D4E5CD] text-sm font-semibold text-[var(--act-onyx)]">
+            <span className="inline-flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-[var(--act-wash-sky)] text-sm font-semibold text-[var(--act-onyx)]">
               {user.name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase()}
             </span>
           <div>
@@ -116,14 +116,14 @@ export default async function ProfilePage() {
       </form>
 
       <section className="act-card-2 overflow-hidden">
-        <div className="flex flex-col gap-3 border-b border-[rgba(4,39,24,0.08)] bg-[#D4E5CD]/35 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 border-b border-[rgba(4,39,24,0.08)] bg-[var(--act-wash-sky)]/35 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <span className="act-kicker !text-[var(--act-blue)]">Keahlian</span>
             <h2 className="act-heading mt-1 text-xl text-[var(--act-ink)]">Skill yang kamu bawa</h2>
           </div>
           <div className="flex gap-2">
             <span className="act-chip act-chip-blue">{profile.skills.length} skill</span>
-            <span className="act-chip act-chip-iris">{verifiedCount} verified</span>
+            <span className="act-chip act-chip-teal">{verifiedCount} verified</span>
           </div>
         </div>
         <div className="p-6">

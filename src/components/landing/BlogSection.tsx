@@ -19,15 +19,15 @@ interface BlogTag {
 }
 
 const aiArticleTags: BlogTag[] = [
-  { label: "AI", bg: "bg-[#E0F2FE]", text: "text-[#0369A1]" },
-  { label: "Karir", bg: "bg-[#DCFCE7]", text: "text-[#15803D]" },
-  { label: "Tips", bg: "bg-[#FEF3C7]", text: "text-[#B45309]" },
+  { label: "AI", bg: "bg-violet-50", text: "text-violet-700" },
+  { label: "Karir", bg: "bg-brand-100", text: "text-brand-700" },
+  { label: "Tips", bg: "bg-amber-100", text: "text-amber-700" },
 ];
 
 const portfolioArticleTags: BlogTag[] = [
-  { label: "Portofolio", bg: "bg-[#E0F2FE]", text: "text-[#0369A1]" },
-  { label: "Karir", bg: "bg-[#DCFCE7]", text: "text-[#15803D]" },
-  { label: "Tips", bg: "bg-[#FEF3C7]", text: "text-[#B45309]" },
+  { label: "Portofolio", bg: "bg-blue-50", text: "text-blue-700" },
+  { label: "Karir", bg: "bg-brand-100", text: "text-brand-700" },
+  { label: "Tips", bg: "bg-amber-100", text: "text-amber-700" },
 ];
 
 function BlogTags({ tags }: { tags: BlogTag[] }) {
@@ -53,7 +53,7 @@ export function BlogSection() {
           <div className="flex flex-col items-center text-center mb-12 md:mb-[80px]">
             <motion.div
               {...fadeUp}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#E4F3EB] border border-[#138E5F]/10 mb-6"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-100 border border-[#138E5F]/10 mb-6"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +79,7 @@ export function BlogSection() {
             </motion.div>
             <motion.h2
               {...fadeUp}
-              className="text-[32px] sm:text-[40px] md:text-[52px] font-onest font-semibold text-[#042718] leading-[1.1] md:leading-[58px] tracking-tight md:tracking-[-2px] mb-6 max-w-3xl"
+              className="text-[32px] sm:text-[40px] md:text-[52px] font-onest font-semibold text-brand-950 leading-[1.1] md:leading-[58px] tracking-tight md:tracking-[-2px] mb-6 max-w-3xl"
             >
               Insight untuk{" "}
               <span className="font-playfair italic text-[rgba(4,39,24,0.40)]">
@@ -89,7 +89,7 @@ export function BlogSection() {
             </motion.h2>
             <motion.p
               {...fadeUp}
-              className="text-[15px] md:text-[18px] text-[#042718] leading-[1.6] md:leading-[28px] max-w-[612px] font-sans opacity-60"
+              className="text-[15px] md:text-[18px] text-brand-950 leading-[1.6] md:leading-[28px] max-w-[612px] font-sans opacity-60"
             >
               Pelajari cara mengembangkan skill, menonjol di mata recruiter,
               dan mengambil keputusan karir yang lebih baik lewat tips dari
@@ -100,7 +100,7 @@ export function BlogSection() {
             <MotionLink
               href="/guides"
               {...fadeUp}
-              className="group cursor-pointer flex flex-col items-start bg-white hover:bg-[#F6FDFF] rounded-[24px] overflow-hidden border border-[#042718]/10 shadow-[0_4px_24px_rgba(4,39,24,0.02)] hover:shadow-[0_20px_60px_rgba(4,39,24,0.08)] transition-all duration-500 w-full lg:w-[612px]"
+              className="group cursor-pointer flex flex-col items-start bg-white hover:bg-[#F6FDFF] rounded-[24px] overflow-hidden border border-brand-950/10 shadow-[0_4px_24px_rgba(4,39,24,0.02)] hover:shadow-[0_20px_60px_rgba(4,39,24,0.08)] transition-all duration-500 w-full lg:w-[612px]"
             >
               <div className="w-full h-[300px] md:h-[440px] overflow-hidden">
                 <img
@@ -110,13 +110,13 @@ export function BlogSection() {
                 />
               </div>
               <div className="flex flex-col p-6 md:p-[40px] gap-4 w-full self-stretch lg:w-[612px]">
-                <span className="text-[#042718] font-sans text-base md:text-[18px] leading-[28px] opacity-80">
+                <span className="text-brand-950 font-sans text-base md:text-[18px] leading-[28px] opacity-80">
                   19 Feb 2026
                 </span>
-                <h3 className="text-[#042718] font-onest text-[28px] md:text-[34px] font-semibold leading-[1.1] md:leading-[38px] tracking-[-1px]">
+                <h3 className="text-brand-950 font-onest text-[28px] md:text-[34px] font-semibold leading-[1.1] md:leading-[38px] tracking-[-1px]">
                   Bagaimana AI mengubah cara kita mencari kerja
                 </h3>
-                <p className="text-[#042718] font-sans text-base md:text-[18px] leading-[28px] opacity-80">
+                <p className="text-brand-950 font-sans text-base md:text-[18px] leading-[28px] opacity-80">
                   Kenali bagaimana tools berbasis AI membantumu menemukan
                   lowongan yang tepat, menyusun CV, dan mempersiapkan
                   interview dengan lebih percaya diri.
@@ -130,16 +130,16 @@ export function BlogSection() {
             <MotionLink
               href="/guides"
               {...fadeUp}
-              className="group cursor-pointer flex flex-col items-start bg-white hover:bg-[#F6FDFF] rounded-[24px] overflow-hidden border border-[#042718]/10 shadow-[0_4px_24px_rgba(4,39,24,0.02)] hover:shadow-[0_20px_60px_rgba(4,39,24,0.08)] transition-all duration-500 w-full lg:w-[612px]"
+              className="group cursor-pointer flex flex-col items-start bg-white hover:bg-[#F6FDFF] rounded-[24px] overflow-hidden border border-brand-950/10 shadow-[0_4px_24px_rgba(4,39,24,0.02)] hover:shadow-[0_20px_60px_rgba(4,39,24,0.08)] transition-all duration-500 w-full lg:w-[612px]"
             >
               <div className="flex flex-col p-6 md:p-[40px] gap-4 w-full self-stretch lg:w-[612px]">
-                <span className="text-[#042718] font-sans text-base md:text-[18px] leading-[28px] opacity-80">
+                <span className="text-brand-950 font-sans text-base md:text-[18px] leading-[28px] opacity-80">
                   13 Mei 2026
                 </span>
-                <h3 className="text-[#042718] font-onest text-[28px] md:text-[34px] font-semibold leading-[1.1] md:leading-[38px] tracking-[-1px]">
+                <h3 className="text-brand-950 font-onest text-[28px] md:text-[34px] font-semibold leading-[1.1] md:leading-[38px] tracking-[-1px]">
                   Cara membangun portofolio yang dilirik recruiter
                 </h3>
-                <p className="text-[#042718] font-sans text-base md:text-[18px] leading-[28px] opacity-80">
+                <p className="text-brand-950 font-sans text-base md:text-[18px] leading-[28px] opacity-80">
                   Pelajari cara menyusun portofolio yang menonjolkan karya
                   terbaikmu dan membuat recruiter tertarik sejak pandangan
                   pertama.

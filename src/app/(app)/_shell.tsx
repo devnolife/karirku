@@ -37,7 +37,7 @@ export function AppShell({
             <Wordmark />
             {!collapsed && (
               <span className="act-heading text-[18px]">
-                Craft<span className="text-[#198F38]">Works</span>
+                Craft<span className="text-brand-600">Works</span>
               </span>
             )}
           </Link>

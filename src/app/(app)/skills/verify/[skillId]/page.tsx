@@ -31,8 +31,8 @@ export default async function VerifySkillPage({
   if (skill.verified) {
     return (
       <div className="act-rise mx-auto max-w-[800px] px-6 py-16 text-center">
-        <div className="rounded-[24px] border border-[rgba(15,118,110,0.2)] bg-[#F2FBF6] p-8">
-        <span className="act-chip act-chip-iris">✓ Sudah terverifikasi</span>
+        <div className="rounded-[24px] border border-[rgba(13,148,136,0.25)] bg-teal-50 p-8">
+        <span className="act-chip act-chip-teal">✓ Sudah terverifikasi</span>
         <h1 className="act-heading mt-4 text-2xl text-[var(--act-ink)]">{skill.name} sudah verified</h1>
         <p className="mt-3 text-sm text-[var(--act-graphite)]">
           Skill ini sudah lolos verifikasi. Tidak perlu mengulang.
@@ -51,7 +51,7 @@ export default async function VerifySkillPage({
     const isAi = err instanceof AiJsonError;
     return (
       <div className="act-rise mx-auto max-w-[800px] px-6 py-16 text-center">
-        <div className="rounded-[24px] border border-[rgba(180,83,9,0.2)] bg-[#EBE3D2]/45 p-8">
+        <div className="rounded-[24px] border border-[rgba(217,119,6,0.25)] bg-amber-50 p-8">
         <span className="act-chip act-chip-amber">Perlu dicoba lagi</span>
         <h1 className="act-heading mt-4 text-2xl text-[var(--act-ink)]">Gagal membuat kuis</h1>
         <p className="mx-auto mt-3 max-w-md text-sm text-[var(--act-graphite)]">

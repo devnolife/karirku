@@ -14,6 +14,7 @@ interface Metric {
   suffix: string;
   label: string;
   description: string;
+  numCls: string;
 }
 
 const metrics: Metric[] = [
@@ -23,6 +24,7 @@ const metrics: Metric[] = [
     label: "Talent Terdaftar",
     description:
       "Talenta di seluruh Indonesia membangun profil terverifikasi dan siap direkrut setiap harinya.",
+    numCls: "text-brand-600",
   },
   {
     value: "84",
@@ -30,6 +32,7 @@ const metrics: Metric[] = [
     label: "Akurasi kecocokan karir",
     description:
       "Talent menemukan peluang yang tepat berkat AI matching dan analisis kecocokan yang lebih cerdas.",
+    numCls: "text-violet-600",
   },
   {
     value: "500",
@@ -37,6 +40,7 @@ const metrics: Metric[] = [
     label: "Lowongan teragregasi",
     description:
       "Lowongan dari berbagai platform dan perusahaan terkurasi dalam satu tempat untuk karirmu.",
+    numCls: "text-blue-600",
   },
 ];
 
@@ -46,7 +50,7 @@ export function MetricsSection() {
       <div className="w-full max-w-[1248px] px-6 lg:px-0 flex flex-col items-center">
         <motion.div
           {...fadeUp}
-          className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E5F2ED] border border-[#042718]/[0.08]"
+          className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E5F2ED] border border-brand-950/[0.08]"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -70,7 +74,7 @@ export function MetricsSection() {
         </motion.div>
         <motion.h2
           {...fadeUp}
-          className="mt-6 sm:mt-8 w-full max-w-[970px] text-center text-[30px] sm:text-[36px] lg:text-[42px] font-semibold leading-[1.2] sm:leading-[44px] lg:leading-[48px] tracking-[-1.5px] sm:tracking-[-2px] text-[#042718]"
+          className="mt-6 sm:mt-8 w-full max-w-[970px] text-center text-[30px] sm:text-[36px] lg:text-[42px] font-semibold leading-[1.2] sm:leading-[44px] lg:leading-[48px] tracking-[-1.5px] sm:tracking-[-2px] text-brand-950"
         >
           Berkarir lebih cerdas, berkembang lebih cepat, dan mengambil keputusan
           karir yang lebih tepat. Mari kendalikan karirmu bersama.
@@ -84,18 +88,18 @@ export function MetricsSection() {
             >
               <div className="flex flex-col items-start w-full sm:w-[294px] p-[20px_24px] gap-2.5 rounded-[24px] bg-white/40 backdrop-blur-md border border-white/20 shadow-[0_8px_32px_rgba(4,39,24,0.06)]">
                 <div className="flex justify-center items-baseline gap-[2px]">
-                  <span className="text-[#042718] text-[52px] font-semibold leading-[58px] tracking-[-1.8px]">
+                  <span className={`${metric.numCls} text-[52px] font-semibold leading-[58px] tracking-[-1.8px]`}>
                     {metric.value}
                   </span>
                   <span className="text-black/40 text-[42px] font-semibold leading-[48px] tracking-[-2px]">
                     {metric.suffix}
                   </span>
                 </div>
-                <p className="text-[#042718] text-[18px] font-medium leading-[28px]">
+                <p className="text-brand-950 text-[18px] font-medium leading-[28px]">
                   {metric.label}
                 </p>
               </div>
-              <p className="mt-4 text-[#042718] text-[16px] font-normal leading-[24px] tracking-[-0.3px] opacity-80 line-clamp-2 pr-[20px]">
+              <p className="mt-4 text-brand-950 text-[16px] font-normal leading-[24px] tracking-[-0.3px] opacity-80 line-clamp-2 pr-[20px]">
                 {metric.description}
               </p>
             </motion.div>

@@ -15,6 +15,7 @@ interface Plan {
   cta: string;
   features: string[];
   highlighted: boolean;
+  check: string;
 }
 
 const plans: Plan[] = [
@@ -33,6 +34,7 @@ const plans: Plan[] = [
       "Rekomendasi lowongan mingguan",
     ],
     highlighted: false,
+    check: "text-brand-600",
   },
   {
     name: "Talent Pro",
@@ -49,6 +51,7 @@ const plans: Plan[] = [
       "Roadmap belajar personal",
     ],
     highlighted: true,
+    check: "text-violet-600",
   },
   {
     name: "Perusahaan",
@@ -65,6 +68,7 @@ const plans: Plan[] = [
       "Dukungan prioritas",
     ],
     highlighted: false,
+    check: "text-blue-600",
   },
 ];
 
@@ -125,7 +129,7 @@ export function PricingSection() {
       <div className="w-full max-w-[1248px] lg:px-0 px-6 flex flex-col items-center">
         <motion.div
           {...fadeUp}
-          className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E5F2ED] border border-[#042718]/08"
+          className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E5F2ED] border border-brand-950/08"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -151,7 +155,7 @@ export function PricingSection() {
         </motion.div>
         <motion.h2
           {...fadeUp}
-          className="mt-6 w-full max-w-[800px] text-center text-[#042718] font-onest text-[36px] sm:text-[48px] lg:text-[64px] font-semibold leading-[1.1] tracking-[-2px] sm:tracking-[-3px]"
+          className="mt-6 w-full max-w-[800px] text-center text-brand-950 font-onest text-[36px] sm:text-[48px] lg:text-[64px] font-semibold leading-[1.1] tracking-[-2px] sm:tracking-[-3px]"
         >
           Pilih{" "}
           <span className="font-playfair italic font-medium text-black/40">
@@ -161,22 +165,22 @@ export function PricingSection() {
         </motion.h2>
         <motion.p
           {...fadeUp}
-          className="mt-6 w-full max-w-[600px] text-center font-inter text-[16px] sm:text-[18px] font-normal leading-[24px] sm:leading-[28px] text-[#042718] opacity-80"
+          className="mt-6 w-full max-w-[600px] text-center font-inter text-[16px] sm:text-[18px] font-normal leading-[24px] sm:leading-[28px] text-brand-950 opacity-80"
         >
           Harga sederhana dan transparan untuk talent maupun perusahaan — mulai
           gratis, upgrade kapan saja.
         </motion.p>
         <motion.div
           {...fadeUp}
-          className="mt-10 flex items-center p-1.5 bg-white border border-[#042718]/08 rounded-full shadow-sm mb-16"
+          className="mt-10 flex items-center p-1.5 bg-white border border-brand-950/08 rounded-full shadow-sm mb-16"
         >
           <button
             type="button"
             onClick={() => setBilling("monthly")}
             className={`px-8 py-2 h-11 flex items-center justify-center rounded-full text-[15px] font-medium transition-all duration-300 ${
               billing === "monthly"
-                ? "bg-[#042718] text-white shadow-md shadow-[#042718]/10"
-                : "gap-2 text-[#042718]/60 hover:text-[#042718]"
+                ? "bg-brand-950 text-white shadow-md shadow-brand-950/10"
+                : "gap-2 text-brand-950/60 hover:text-brand-950"
             }`}
           >
             Bulanan
@@ -186,12 +190,12 @@ export function PricingSection() {
             onClick={() => setBilling("yearly")}
             className={`px-8 py-2 h-11 flex items-center justify-center rounded-full text-[15px] font-medium transition-all duration-300 gap-2 ${
               billing === "yearly"
-                ? "bg-[#042718] text-white shadow-md shadow-[#042718]/10"
-                : "text-[#042718]/60 hover:text-[#042718]"
+                ? "bg-brand-950 text-white shadow-md shadow-brand-950/10"
+                : "text-brand-950/60 hover:text-brand-950"
             }`}
           >
             Tahunan
-            <span className="px-2 py-0.5 rounded-full bg-[#22C55E] text-[10px] text-white font-bold whitespace-nowrap">
+            <span className="px-2 py-0.5 rounded-full bg-brand-500 text-[10px] text-white font-bold whitespace-nowrap">
               Hemat 23%
             </span>
           </button>
@@ -202,8 +206,8 @@ export function PricingSection() {
               <div
                 className={`relative flex flex-col items-start w-full lg:w-[404px] p-[32px] rounded-[30px] border transition-all duration-500 overflow-hidden cursor-pointer group ${
                   plan.highlighted
-                    ? "border-transparent shadow-2xl -translate-y-2.5"
-                    : "border-[#042718]/08 bg-white"
+                    ? "border-violet-600/30 shadow-[0_24px_48px_-24px_rgba(124,58,237,0.4)] -translate-y-2.5"
+                    : "border-brand-950/08 bg-white"
                 }`}
               >
                 {plan.highlighted && (
@@ -225,29 +229,29 @@ export function PricingSection() {
                 )}
                 <div className="relative z-10 w-full flex flex-col">
                   <div className="flex flex-col gap-[6px]">
-                    <h3 className="text-[#042718] font-onest text-[28px] font-semibold leading-[34px] tracking-[-0.8px]">
+                    <h3 className="text-brand-950 font-onest text-[28px] font-semibold leading-[34px] tracking-[-0.8px]">
                       {plan.name}
                     </h3>
-                    <p className="text-[#042718] font-inter text-[16px] font-normal leading-[24px] tracking-[-0.3px] opacity-80">
+                    <p className="text-brand-950 font-inter text-[16px] font-normal leading-[24px] tracking-[-0.3px] opacity-80">
                       {plan.description}
                     </p>
                   </div>
                   <div
                     className={`mt-[16px] border-t w-full transition-colors duration-300 ${
                       plan.highlighted
-                        ? "border-[#042718]/20"
-                        : "border-[#042718]/08"
+                        ? "border-brand-950/20"
+                        : "border-brand-950/08"
                     }`}
                   />
                   <div className="mt-[16px] flex flex-col">
                     <div className="flex items-baseline">
-                      <span className="text-[#042718] font-onest text-[56px] font-semibold leading-[64px] tracking-[-2px]">
+                      <span className="text-brand-950 font-onest text-[56px] font-semibold leading-[64px] tracking-[-2px]">
                         {billing === "monthly"
                           ? plan.monthlyPrice
                           : plan.yearlyPrice}
                       </span>
                     </div>
-                    <p className="mt-[16px] text-[#042718] font-inter text-[18px] font-normal leading-[28px] tracking-[-0.3px] opacity-80">
+                    <p className="mt-[16px] text-brand-950 font-inter text-[18px] font-normal leading-[28px] tracking-[-0.3px] opacity-80">
                       {plan.freeForever
                         ? "Gratis selamanya"
                         : billing === "monthly"
@@ -259,8 +263,8 @@ export function PricingSection() {
                     href="/login"
                     className={`mt-[24px] flex items-center justify-between self-stretch rounded-full border transition-all duration-500 relative overflow-hidden p-[8px_8px_8px_20px] flex-row ${
                       plan.highlighted
-                        ? "bg-[#042718] border-[#042718] text-white"
-                        : "bg-white border-[#042718]/10 text-[#042718]"
+                        ? "bg-brand-950 border-brand-950 text-white"
+                        : "bg-white border-brand-950/10 text-brand-950"
                     }`}
                   >
                     <span className="font-inter text-[18px] font-medium leading-[28px] z-10">
@@ -268,12 +272,12 @@ export function PricingSection() {
                     </span>
                     <div
                       className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-500 z-10 ${
-                        plan.highlighted ? "bg-white" : "bg-[#042718]"
+                        plan.highlighted ? "bg-white" : "bg-brand-950"
                       }`}
                     >
                       <ArrowUpRightIcon
                         className={`lucide lucide-arrow-up-right transition-colors duration-300 ${
-                          plan.highlighted ? "text-[#042718]" : "text-white"
+                          plan.highlighted ? "text-brand-950" : "text-white"
                         }`}
                       />
                     </div>
@@ -283,7 +287,7 @@ export function PricingSection() {
                       className={`font-inter text-[14px] font-medium leading-[20px] uppercase transition-colors duration-300 ${
                         plan.highlighted
                           ? "text-white opacity-70"
-                          : "text-[#042718]/40"
+                          : "text-brand-950/40"
                       }`}
                     >
                       FITUR
@@ -297,18 +301,14 @@ export function PricingSection() {
                             }`}
                           >
                             <CheckIcon
-                              className={`lucide lucide-check ${
-                                plan.highlighted
-                                  ? "text-[#042718]"
-                                  : "text-[#15803D]"
-                              }`}
+                              className={`lucide lucide-check ${plan.check}`}
                             />
                           </div>
                           <span
                             className={`font-inter text-[18px] font-normal leading-[28px] tracking-[-0.3px] transition-colors duration-300 ${
                               plan.highlighted
                                 ? "text-white"
-                                : "text-[#042718]/80"
+                                : "text-brand-950/80"
                             }`}
                           >
                             {feature}

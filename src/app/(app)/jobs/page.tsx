@@ -39,7 +39,7 @@ export default async function JobsPage({
         action={<span className="act-chip act-chip-mute">{market.openPositions} posisi</span>}
       />
 
-      <nav aria-label="Filter wilayah" className="flex flex-wrap items-center gap-2 rounded-[22px] border border-[rgba(4,39,24,0.08)] bg-[#F2FBF6] p-2">
+      <nav aria-label="Filter wilayah" className="flex flex-wrap items-center gap-2 rounded-[22px] border border-[rgba(4,39,24,0.08)] bg-brand-50 p-2">
         <span className="px-2 text-xs font-semibold uppercase tracking-[0.1em] text-[var(--act-graphite)]">Wilayah</span>
         {REGION_TABS.map((t) => (
           <Link
@@ -76,8 +76,8 @@ export default async function JobsPage({
             </ul>
           )}
         </section>
-        <aside aria-label="Ringkasan pasar" className="rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-[#D2DDEA] p-5 shadow-[0_16px_32px_-28px_rgba(4,39,24,0.38)] lg:col-span-2">
-          <span className="studio-section-kicker">Denyut pasar</span>
+        <aside aria-label="Ringkasan pasar" className="rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-[var(--act-wash-blue)] p-5 shadow-[0_16px_32px_-28px_rgba(4,39,24,0.38)] lg:col-span-2">
+          <span className="studio-section-kicker !text-blue-700">Denyut pasar</span>
           <h3 className="act-heading mt-2 text-2xl">{roleLabel}</h3>
           <p className="mt-1 text-sm leading-relaxed text-[var(--act-graphite)]">Pantau arah demand untuk role targetmu.</p>
           <MarketPulse data={market.trend} />
@@ -92,10 +92,10 @@ export default async function JobsPage({
 }
 
 function StudioJobRow({ job }: { job: JobView }) {
-  const matchTone = job.matchPct >= 70 ? "text-[var(--act-blue)]" : job.matchPct >= 40 ? "text-[var(--act-iris)]" : "text-[#B45309]";
+  const matchTone = job.matchPct >= 70 ? "text-[var(--act-green)]" : job.matchPct >= 40 ? "text-amber-600" : "text-rose-600";
 
   return (
-    <li className="group grid grid-cols-12 items-center gap-3 px-5 py-5 transition-colors hover:bg-[#F2FBF6] md:px-6">
+    <li className="group grid grid-cols-12 items-center gap-3 px-5 py-5 transition-colors hover:bg-brand-50 md:px-6">
       <div className="col-span-3 sm:col-span-2">
         <div className={`act-display text-3xl ${matchTone}`}>{job.matchPct}<span className="text-base">%</span></div>
         <div className="act-kicker !text-[10px]">Kecocokan</div>
@@ -106,7 +106,7 @@ function StudioJobRow({ job }: { job: JobView }) {
         </h3>
         <p className="mt-1 text-xs text-[var(--act-graphite)]"><span className="font-semibold text-[var(--act-charcoal)]">{job.company}</span> · {job.location}</p>
         <div className="mt-2 flex flex-wrap gap-1.5">
-          {job.skills.map((skill) => <span key={skill} className="rounded-md bg-[#F2FBF6] px-2 py-0.5 text-[10px] font-semibold text-[var(--act-blue)]">{skill}</span>)}
+          {job.skills.map((skill) => <span key={skill} className="rounded-md bg-brand-50 px-2 py-0.5 text-[10px] font-semibold text-[var(--act-blue)]">{skill}</span>)}
         </div>
       </div>
       <div className="col-span-12 flex items-center justify-between border-t border-[rgba(4,39,24,0.06)] pt-3 sm:col-span-3 sm:block sm:border-0 sm:pt-0 sm:text-right">
@@ -128,7 +128,7 @@ function MarketPulse({ data }: { data: { label: string; value: number }[] }) {
       <div className="flex h-28 items-end gap-2">
         {data.map((item) => (
           <div key={item.label} className="flex h-full flex-1 items-end rounded-t-lg bg-white/45">
-            <div className="w-full rounded-t-lg bg-[var(--act-iris)] transition-[height]" style={{ height: `${Math.max(10, (item.value / max) * 100)}%` }} title={`${item.label}: ${item.value}`} />
+            <div className="w-full rounded-t-lg bg-[var(--act-info)] transition-[height]" style={{ height: `${Math.max(10, (item.value / max) * 100)}%` }} title={`${item.label}: ${item.value}`} />
           </div>
         ))}
       </div>

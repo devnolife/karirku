@@ -67,7 +67,7 @@ export default async function GuideDetailPage({
       <ol className="space-y-3">
         {guide.steps.map((s, i) => (
           <li key={s.title} className="flex gap-4 rounded-[20px] border border-[rgba(4,39,24,0.08)] bg-white p-5 shadow-[0_12px_24px_-26px_rgba(4,39,24,0.42)]">
-            <span className="inline-flex h-8 w-8 flex-none items-center justify-center rounded-full bg-[#D4E5CD] font-[family-name:var(--font-onest-v)] text-xs font-bold text-[var(--act-onyx)]">{String(i + 1).padStart(2, "0")}</span>
+            <span className="inline-flex h-8 w-8 flex-none items-center justify-center rounded-full bg-[var(--act-wash-sky)] font-[family-name:var(--font-onest-v)] text-xs font-bold text-[var(--act-onyx)]">{String(i + 1).padStart(2, "0")}</span>
             <div>
               <h3 className="act-heading text-lg text-[var(--act-ink)]">{s.title}</h3>
               <p className="mt-1.5 text-[15px] leading-relaxed text-[var(--act-charcoal)]">{s.body}</p>
@@ -79,7 +79,7 @@ export default async function GuideDetailPage({
 
       {/* Tips */}
       {guide.tips && guide.tips.length > 0 && (
-        <aside className="mt-8 rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-[#F2FBF6] p-6">
+        <aside className="mt-8 rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-brand-50 p-6">
           <span className="act-kicker">Tips cepat</span>
           <ul className="mt-3 space-y-2.5">
             {guide.tips.map((t) => (
@@ -100,7 +100,7 @@ export default async function GuideDetailPage({
           <span className="act-kicker">Panduan terkait</span>
           <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {related.map((r) => (
-              <Link key={r.slug} href={`/guides/${r.slug}`} className="block rounded-[20px] border border-[rgba(4,39,24,0.08)] bg-[#D2DDEA] p-5 transition-colors hover:bg-[#D4E5CD]">
+              <Link key={r.slug} href={`/guides/${r.slug}`} className="block rounded-[20px] border border-[rgba(4,39,24,0.08)] bg-[var(--act-wash-blue)] p-5 transition-colors hover:bg-[var(--act-wash-sky)]">
                 <h4 className="text-sm font-semibold text-[var(--act-ink)]">{r.title}</h4>
                 <p className="mt-1 text-xs text-[var(--act-graphite)]">{r.readMins} menit · {r.category}</p>
               </Link>

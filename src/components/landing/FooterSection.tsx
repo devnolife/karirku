@@ -182,7 +182,7 @@ export function FooterSection() {
           <div className="max-w-[1248px] w-full flex flex-col items-center">
             <motion.div
               {...fadeUp}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#E4F3EB] border border-[#138E5F]/10 mb-[30px]"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-100 border border-[#138E5F]/10 mb-[30px]"
             >
               <SparklesIcon className="lucide lucide-sparkles w-3.5 h-3.5 text-[#138E5F]" />
               <span className="text-[#138E5F] text-[13px] font-sans font-medium uppercase tracking-wider">
@@ -191,15 +191,15 @@ export function FooterSection() {
             </motion.div>
             <motion.h2
               {...fadeUp}
-              className="w-full max-w-[742px] text-center text-[#042718] font-onest font-semibold text-[42px] md:text-[68px] leading-[1.1] md:leading-[80px] tracking-tight md:tracking-[-2.2px] mb-[12px]"
+              className="w-full max-w-[742px] text-center text-brand-950 font-onest font-semibold text-[42px] md:text-[68px] leading-[1.1] md:leading-[80px] tracking-tight md:tracking-[-2.2px] mb-[12px]"
             >
               Kendalikan penuh{" "}
-              <span className="font-playfair italic text-[rgba(0,0,0,0.40)]">karirmu</span> hari
+              <span className="font-playfair italic act-ai-text">karirmu</span> hari
               ini
             </motion.h2>
             <motion.p
               {...fadeUp}
-              className="w-full max-w-[660px] text-center text-[#042718] font-sans text-lg md:text-[20px] leading-[1.5] md:leading-[30px] tracking-tight md:tracking-[-0.4px] opacity-80 mb-[64px]"
+              className="w-full max-w-[660px] text-center text-brand-950 font-sans text-lg md:text-[20px] leading-[1.5] md:leading-[30px] tracking-tight md:tracking-[-0.4px] opacity-80 mb-[64px]"
             >
               Temukan lowongan, bangun skill, dan rancang langkah karirmu &mdash; semua dalam
               satu platform yang intuitif.
@@ -207,23 +207,23 @@ export function FooterSection() {
             <motion.div {...fadeUp} className="flex flex-col sm:flex-row items-center gap-4">
               <Link
                 href="/login"
-                className="relative flex items-center h-[56px] rounded-full transition-all duration-500 overflow-hidden gap-3 bg-[#042718] text-white shadow-[0_8px_32px_rgba(4,39,24,0.15)] pl-[20px] pr-[8px] flex-row"
+                className="relative flex items-center h-[56px] rounded-full transition-all duration-500 overflow-hidden gap-3 bg-brand-950 text-white shadow-[0_8px_32px_rgba(4,39,24,0.15)] pl-[20px] pr-[8px] flex-row"
               >
                 <span className="font-sans font-medium text-[18px] leading-[28px] whitespace-nowrap z-10">
                   Mulai Gratis
                 </span>
                 <div className="flex items-center justify-center w-10 h-10 rounded-full shrink-0 z-20 bg-white">
-                  <ArrowUpRightIcon className="lucide lucide-arrow-up-right w-4 h-4 text-[#042718]" />
+                  <ArrowUpRightIcon className="lucide lucide-arrow-up-right w-4 h-4 text-brand-950" />
                 </div>
               </Link>
               <Link
                 href="/jobs"
-                className="relative flex items-center h-[56px] rounded-full transition-all duration-500 overflow-hidden gap-3 bg-white/20 backdrop-blur-xl border border-white/60 text-[#042718] w-full sm:w-[232px] justify-between shadow-[0_8px_32px_rgba(255,255,255,0.1)] pl-[20px] pr-[8px] flex-row"
+                className="relative flex items-center h-[56px] rounded-full transition-all duration-500 overflow-hidden gap-3 bg-white/20 backdrop-blur-xl border border-white/60 text-brand-950 w-full sm:w-[232px] justify-between shadow-[0_8px_32px_rgba(255,255,255,0.1)] pl-[20px] pr-[8px] flex-row"
               >
                 <span className="font-sans font-medium text-[18px] leading-[28px] whitespace-nowrap z-10">
                   Lihat Lowongan
                 </span>
-                <div className="flex items-center justify-center w-10 h-10 rounded-full shrink-0 z-20 bg-[#042718]">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full shrink-0 z-20 bg-brand-950">
                   <ArrowUpRightIcon className="lucide lucide-arrow-up-right w-4 h-4 text-white" />
                 </div>
               </Link>
@@ -240,13 +240,13 @@ export function FooterSection() {
             <div className="w-full lg:w-[440px] flex flex-col gap-6">
               <motion.h3
                 {...fadeUp}
-                className="text-[#042718] font-onest text-[24px] font-semibold leading-[30px] tracking-[-0.8px]"
+                className="text-brand-950 font-onest text-[24px] font-semibold leading-[30px] tracking-[-0.8px]"
               >
                 Jangan lewatkan info karir terbaru
               </motion.h3>
               <motion.p
                 {...fadeUp}
-                className="text-[#042718] font-sans text-[18px] font-normal leading-[28px] opacity-80"
+                className="text-brand-950 font-sans text-[18px] font-normal leading-[28px] opacity-80"
               >
                 Tips karir, lowongan pilihan, dan wawasan industri &mdash; langsung ke inbox
                 kamu.
@@ -259,16 +259,16 @@ export function FooterSection() {
                 <input
                   placeholder="Masukkan email kamu"
                   type="email"
-                  className="flex-1 bg-transparent border-none outline-none px-4 py-2 sm:py-0 font-sans text-[18px] text-[#042718] placeholder:text-[#042718]/60"
+                  className="flex-1 bg-transparent border-none outline-none px-4 py-2 sm:py-0 font-sans text-[18px] text-brand-950 placeholder:text-brand-950/60"
                 />
                 <button
                   type="submit"
                   className="flex items-center justify-between sm:justify-start gap-3 bg-white pl-6 pr-2 py-2 sm:pl-[24px] sm:pr-[8px] sm:py-[8px] rounded-full shadow-sm hover:shadow-md transition-all duration-300 group"
                 >
-                  <span className="font-sans text-[18px] font-medium text-[#042718]">
+                  <span className="font-sans text-[18px] font-medium text-brand-950">
                     Berlangganan
                   </span>
-                  <div className="w-[36px] h-[36px] bg-[#042718] rounded-full flex items-center justify-center transition-colors duration-300 shrink-0">
+                  <div className="w-[36px] h-[36px] bg-brand-950 rounded-full flex items-center justify-center transition-colors duration-300 shrink-0">
                     <ArrowRightIcon className="lucide lucide-arrow-right text-white" />
                   </div>
                 </button>
@@ -278,7 +278,7 @@ export function FooterSection() {
               <div className="lg:w-[152px] flex flex-col gap-[20px] relative">
                 <motion.h4
                   {...fadeUp}
-                  className="text-[#042718] font-onest text-[24px] font-semibold leading-[30px] tracking-[-0.8px]"
+                  className="text-brand-950 font-onest text-[24px] font-semibold leading-[30px] tracking-[-0.8px]"
                 >
                   Produk
                 </motion.h4>
@@ -287,19 +287,19 @@ export function FooterSection() {
                     <motion.li key={link.label} {...fadeUp}>
                       <Link
                         href={link.href}
-                        className="text-[#042718] font-sans text-[18px] font-normal leading-[28px] opacity-80 hover:opacity-100 hover:font-medium transition-all"
+                        className="text-brand-950 font-sans text-[18px] font-normal leading-[28px] opacity-80 hover:opacity-100 hover:font-medium transition-all"
                       >
                         {link.label}
                       </Link>
                     </motion.li>
                   ))}
                 </ul>
-                <div className="absolute top-0 -right-[32px] h-full w-[1px] bg-[#042718]/10 hidden lg:block" />
+                <div className="absolute top-0 -right-[32px] h-full w-[1px] bg-brand-950/10 hidden lg:block" />
               </div>
               <div className="lg:w-[152px] flex flex-col gap-[20px] relative">
                 <motion.h4
                   {...fadeUp}
-                  className="text-[#042718] font-onest text-[24px] font-semibold leading-[30px] tracking-[-0.8px]"
+                  className="text-brand-950 font-onest text-[24px] font-semibold leading-[30px] tracking-[-0.8px]"
                 >
                   Perusahaan
                 </motion.h4>
@@ -309,14 +309,14 @@ export function FooterSection() {
                       {link.href.startsWith("/") ? (
                         <Link
                           href={link.href}
-                          className="text-[#042718] font-sans text-[18px] font-normal leading-[28px] opacity-80 hover:opacity-100 hover:font-medium transition-all"
+                          className="text-brand-950 font-sans text-[18px] font-normal leading-[28px] opacity-80 hover:opacity-100 hover:font-medium transition-all"
                         >
                           {link.label}
                         </Link>
                       ) : (
                         <a
                           href={link.href}
-                          className="text-[#042718] font-sans text-[18px] font-normal leading-[28px] opacity-80 hover:opacity-100 hover:font-medium transition-all"
+                          className="text-brand-950 font-sans text-[18px] font-normal leading-[28px] opacity-80 hover:opacity-100 hover:font-medium transition-all"
                         >
                           {link.label}
                         </a>
@@ -324,12 +324,12 @@ export function FooterSection() {
                     </motion.li>
                   ))}
                 </ul>
-                <div className="absolute top-0 -right-[32px] h-full w-[1px] bg-[#042718]/10 hidden lg:block" />
+                <div className="absolute top-0 -right-[32px] h-full w-[1px] bg-brand-950/10 hidden lg:block" />
               </div>
               <div className="lg:w-[220px] flex flex-col gap-[20px]">
                 <motion.h4
                   {...fadeUp}
-                  className="text-[#042718] font-onest text-[24px] font-semibold leading-[30px] tracking-[-0.8px]"
+                  className="text-brand-950 font-onest text-[24px] font-semibold leading-[30px] tracking-[-0.8px]"
                 >
                   Sosial
                 </motion.h4>
@@ -338,7 +338,7 @@ export function FooterSection() {
                     <motion.li key={social.label} {...fadeUp}>
                       <a
                         href="#"
-                        className="flex items-center gap-3 text-[#042718] font-sans text-[18px] font-normal leading-[28px] opacity-80 hover:opacity-100 hover:font-medium transition-all"
+                        className="flex items-center gap-3 text-brand-950 font-sans text-[18px] font-normal leading-[28px] opacity-80 hover:opacity-100 hover:font-medium transition-all"
                       >
                         {social.icon}
                         {social.label}
@@ -352,7 +352,7 @@ export function FooterSection() {
           <div className="w-[342px] h-[120px] md:w-[720px] md:h-[250px] lg:w-[1248px] lg:h-[430px] flex flex-col justify-center items-center select-none mx-auto lg:mx-0">
             <motion.h1
               {...fadeUp}
-              className="w-full text-center text-[#042718] font-onest text-[68px] md:text-[144px] lg:text-[248px] font-bold leading-none tracking-[-2.2px] md:tracking-[-4.8px] lg:tracking-[-8.2px]"
+              className="w-full text-center text-brand-950 font-onest text-[68px] md:text-[144px] lg:text-[248px] font-bold leading-none tracking-[-2.2px] md:tracking-[-4.8px] lg:tracking-[-8.2px]"
             >
               CraftWorks
             </motion.h1>
@@ -362,10 +362,10 @@ export function FooterSection() {
             className="w-full lg:w-[1248px] mt-[24px] pt-8 flex flex-col lg:flex-row items-center justify-between gap-6"
           >
             <div className="flex items-center gap-8 text-white font-sans text-[18px] font-normal leading-[28px] opacity-80">
-              <a href="#" className="hover:opacity-100 hover:font-medium transition-all">
+              <a href="#" className="hover:opacity-100 hover:font-medium hover:text-brand-300 transition-all">
                 Syarat &amp; Ketentuan
               </a>
-              <a href="#" className="hover:opacity-100 hover:font-medium transition-all">
+              <a href="#" className="hover:opacity-100 hover:font-medium hover:text-brand-300 transition-all">
                 Kebijakan Privasi
               </a>
             </div>

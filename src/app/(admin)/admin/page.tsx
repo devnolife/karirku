@@ -25,11 +25,11 @@ export default async function AdminOverviewPage() {
 
       <section className="grid grid-cols-2 gap-4 lg:grid-cols-3">
         <Stat label="Total users" value={s.totalUsers.toLocaleString("id-ID")} caption={`+${s.newUsersWeek} minggu ini`} tone="blue" />
-        <Stat label="Lowongan aktif" value={s.activeJobs.toLocaleString("id-ID")} caption="ter-index" tone="magenta" />
+        <Stat label="Lowongan aktif" value={s.activeJobs.toLocaleString("id-ID")} caption="ter-index" tone="mint" />
         <Stat label="Course ter-index" value={s.indexedCourses.toLocaleString("id-ID")} caption="multi-provider" tone="iris" />
         <Stat label="Skill taxonomy" value={s.totalSkills.toLocaleString("id-ID")} caption="skill ter-kurasi" tone="mint" />
         <Stat label="Total lamaran" value={s.totalApplications.toLocaleString("id-ID")} caption="aplikasi tercatat" tone="blue" />
-        <Stat label="User baru / minggu" value={s.newUsersWeek.toLocaleString("id-ID")} caption="net growth" tone="iris" />
+        <Stat label="User baru / minggu" value={s.newUsersWeek.toLocaleString("id-ID")} caption="net growth" tone="blue" />
       </section>
 
       <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -45,7 +45,7 @@ export default async function AdminOverviewPage() {
                 </span>
                 <div className="flex h-[120px] w-full items-end">
                   <div
-                    className="w-full rounded-t-lg bg-[linear-gradient(180deg,#22C55E,var(--act-blue))]"
+                    className="w-full rounded-t-lg bg-[linear-gradient(180deg,var(--color-brand-500),var(--act-blue))]"
                     style={{ height: `${(t.value / trendMax) * 100}%` }}
                   />
                 </div>

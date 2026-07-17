@@ -39,14 +39,14 @@ export default async function SkillsPage() {
                 <span className="act-kicker !text-[var(--act-blue)]">Fondasi target</span>
                 <h2 className="act-heading mt-2 text-xl text-[var(--act-ink)]">Skill inti</h2>
               </div>
-              <span className="act-chip act-chip-blue">Wajib</span>
+              <span className="act-chip act-chip-amber">Wajib</span>
             </div>
             <p className="mt-2 text-sm leading-relaxed text-[var(--act-charcoal)]">
               Prioritaskan gap terbesar di sini untuk menaikkan kesiapanmu lebih cepat.
             </p>
             <div className="mt-6 space-y-5">
               {core.length > 0
-                ? core.map((s) => <SkillBar key={s.name} skill={s} tone="blue" />)
+                ? core.map((s) => <SkillBar key={s.name} skill={s} tone="green" />)
                 : <p className="text-sm text-[var(--act-graphite)]">Belum ada skill core terdeteksi.</p>}
             </div>
           </section>
@@ -56,7 +56,7 @@ export default async function SkillsPage() {
                 <span className="act-kicker">Penguat profil</span>
                 <h2 className="act-heading mt-2 text-xl text-[var(--act-ink)]">Nice-to-have & soft skill</h2>
               </div>
-              <span className="rounded-full bg-[#D2DDEA] px-3 py-1 text-xs font-semibold text-[#38536A]">Nilai tambah</span>
+              <span className="rounded-full bg-blue-600/10 px-3 py-1 text-xs font-semibold text-blue-700">Nilai tambah</span>
             </div>
             <p className="mt-2 text-sm leading-relaxed text-[var(--act-charcoal)]">
               Bekal pembeda yang memperluas pilihan role dan cara kamu bekerja.
@@ -72,12 +72,12 @@ export default async function SkillsPage() {
 
       {profile.skills.length > 0 && (
         <section className="overflow-hidden rounded-[24px] border border-[rgba(4,39,24,0.1)] bg-white shadow-[0_16px_32px_-28px_rgba(4,39,24,0.52)]">
-          <div className="flex flex-col gap-4 border-b border-[rgba(4,39,24,0.08)] bg-[#D4E5CD]/55 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-4 border-b border-[rgba(4,39,24,0.08)] bg-teal-500/10 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <span className="act-kicker !text-[var(--act-blue)]">Bukti kemampuan</span>
+              <span className="act-kicker !text-[var(--act-teal)]">Bukti kemampuan</span>
               <h2 className="act-heading mt-1 text-xl text-[var(--act-ink)]">Verifikasi skill</h2>
             </div>
-            <span className="act-chip act-chip-iris">{verifiedCount}/{profile.skills.length} terverifikasi</span>
+            <span className="act-chip act-chip-teal">{verifiedCount}/{profile.skills.length} terverifikasi</span>
           </div>
           <div className="p-6">
           <p className="max-w-2xl text-sm leading-relaxed text-[var(--act-charcoal)]">
@@ -86,7 +86,7 @@ export default async function SkillsPage() {
           <div className="mt-5 flex flex-wrap gap-2.5">
             {profile.skills.map((s) =>
               s.verified ? (
-                <span key={s.id} className="inline-flex items-center gap-1 rounded-full border border-[rgba(15,118,110,0.22)] bg-[rgba(15,118,110,0.08)] px-3.5 py-2 text-sm font-semibold text-[var(--act-iris)]">
+                <span key={s.id} className="inline-flex items-center gap-1 rounded-full border border-[rgba(13,148,136,0.25)] bg-[rgba(13,148,136,0.08)] px-3.5 py-2 text-sm font-semibold text-[var(--act-teal)]">
                   ✓ {s.name}
                 </span>
               ) : (

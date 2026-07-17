@@ -64,7 +64,7 @@ function CraftWorksLogo() {
           strokeLinejoin="round"
         />
       </svg>
-      <span className="font-onest text-xl lg:text-2xl font-semibold tracking-tight text-[#042718]">
+      <span className="font-onest text-xl lg:text-2xl font-semibold tracking-tight text-brand-950">
         CraftWorks
       </span>
     </span>
@@ -91,8 +91,8 @@ export function HeroSection() {
                   href={link.href}
                   className={
                     link.active
-                      ? "font-inter text-base leading-6 tracking-[-0.3px] text-[#042718] transition-all font-bold opacity-100"
-                      : "font-inter text-base leading-6 tracking-[-0.3px] text-[#042718] transition-all font-normal opacity-80 hover:opacity-100 hover:font-bold"
+                      ? "font-inter text-base leading-6 tracking-[-0.3px] text-brand-950 transition-all font-bold opacity-100"
+                      : "font-inter text-base leading-6 tracking-[-0.3px] text-brand-950 transition-all font-normal opacity-80 hover:opacity-100 hover:font-bold"
                   }
                 >
                   {link.label}
@@ -105,16 +105,16 @@ export function HeroSection() {
               href="/login"
               className="hidden sm:flex items-center gap-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/40 group cursor-pointer relative h-11 transition-all duration-300 flex-row pl-[18px] pr-1.5"
             >
-              <span className="font-inter text-base font-medium leading-6 tracking-[-0.3px] text-[#042718]">
+              <span className="font-inter text-base font-medium leading-6 tracking-[-0.3px] text-brand-950">
                 Mulai Sekarang
               </span>
               <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center relative overflow-hidden shrink-0">
                 <div>
-                  <ArrowUpRightIcon className="lucide lucide-arrow-up-right w-3 h-3 text-[#042718]" />
+                  <ArrowUpRightIcon className="lucide lucide-arrow-up-right w-3 h-3 text-brand-950" />
                 </div>
               </div>
             </Link>
-            <button className="lg:hidden p-2 text-[#042718] bg-white/20 backdrop-blur-md rounded-full">
+            <button className="lg:hidden p-2 text-brand-950 bg-white/20 backdrop-blur-md rounded-full">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -150,7 +150,7 @@ export function HeroSection() {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="lucide lucide-sparkles w-3.5 h-3.5 sm:w-4 sm:h-4 fill-[#042718] text-[#042718]"
+                className="lucide lucide-sparkles w-3.5 h-3.5 sm:w-4 sm:h-4 fill-brand-950 text-brand-950"
               >
                 <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
                 <path d="M20 3v4" />
@@ -158,7 +158,7 @@ export function HeroSection() {
                 <path d="M4 17v2" />
                 <path d="M5 18H3" />
               </svg>
-              <span className="font-inter text-sm sm:text-base lg:text-[18px] font-medium leading-[28px] text-[#042718]">
+              <span className="font-inter text-sm sm:text-base lg:text-[18px] font-medium leading-[28px] text-brand-950">
                 4.9 rating
               </span>
             </div>
@@ -168,31 +168,31 @@ export function HeroSection() {
           </motion.div>
           <motion.h1
             {...fadeUp}
-            className="max-w-[750px] w-full text-center font-onest text-[40px] sm:text-[50px] lg:text-[66px] font-semibold leading-tight lg:leading-[72px] tracking-tight lg:tracking-[-3px] text-[#042718]"
+            className="max-w-[750px] w-full text-center font-onest text-[40px] sm:text-[50px] lg:text-[66px] font-semibold leading-tight lg:leading-[72px] tracking-tight lg:tracking-[-3px] text-brand-950"
           >
             Bangun Karirmu dengan{" "}
-            <span className="font-playfair italic font-semibold text-[#000000] opacity-50 tracking-normal lg:tracking-[-3.566px]">
+            <span className="font-playfair italic font-semibold act-ai-text tracking-normal lg:tracking-[-3.566px]">
               AI-Powered
             </span>{" "}
             Matching
           </motion.h1>
           <motion.p
             {...fadeUp}
-            className="max-w-[630px] w-full text-center mt-5 font-inter text-lg lg:text-[20px] font-normal leading-relaxed lg:leading-[30px] tracking-[-0.4px] text-[#042718]"
+            className="max-w-[630px] w-full text-center mt-5 font-inter text-lg lg:text-[20px] font-normal leading-relaxed lg:leading-[30px] tracking-[-0.4px] text-brand-950"
           >
             Bangun profil karir yang menonjol, verifikasi skill-mu, dan biarkan AI
             mencocokkanmu dengan lowongan serta proyek yang paling tepat.
           </motion.p>
           <motion.button
             {...fadeUp}
-            className="flex items-center gap-3 py-2 rounded-full bg-[#042718] mt-8 lg:mt-12 group cursor-pointer relative h-14 border border-white/20 transition-all duration-300 flex-row pl-5 pr-2"
+            className="flex items-center gap-3 py-2 rounded-full bg-brand-950 mt-8 lg:mt-12 group cursor-pointer relative h-14 border border-white/20 transition-all duration-300 flex-row pl-5 pr-2"
           >
             <span className="font-inter text-base lg:text-[18px] font-medium leading-[28px] text-white">
               Coba Gratis
             </span>
             <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center relative overflow-hidden shrink-0">
               <div>
-                <ArrowUpRightIcon className="lucide lucide-arrow-up-right w-4 h-4 text-[#042718]" />
+                <ArrowUpRightIcon className="lucide lucide-arrow-up-right w-4 h-4 text-brand-950" />
               </div>
             </div>
           </motion.button>

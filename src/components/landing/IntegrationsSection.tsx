@@ -152,10 +152,10 @@ function IntegrationCardItem({ card }: { card: IntegrationCard }) {
         />
       </div>
       <div className="flex flex-col">
-        <span className="text-[#042718] font-semibold text-[14px] lg:text-[16px] leading-tight">
+        <span className="text-brand-950 font-semibold text-[14px] lg:text-[16px] leading-tight">
           {card.name}
         </span>
-        <span className="text-[#042718]/40 text-[12px] lg:text-[13px] font-sans mt-0.5">
+        <span className="text-brand-950/40 text-[12px] lg:text-[13px] font-sans mt-0.5">
           {card.description}
         </span>
       </div>
@@ -171,7 +171,7 @@ export function IntegrationsSection() {
           <div className="flex flex-col items-center text-center mb-12 md:mb-[80px]">
             <motion.div
               {...fadeUp}
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#138E5F]/5 border border-[#138E5F]/10 mb-6"
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-600/5 border border-blue-600/15 mb-6"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -183,17 +183,17 @@ export function IntegrationsSection() {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="lucide lucide-star w-4 h-4 text-[#138E5F] fill-[#138E5F]"
+                className="lucide lucide-star w-4 h-4 text-blue-600 fill-blue-600"
               >
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
               </svg>
-              <span className="text-[#138E5F] text-[14px] font-medium font-sans">
+              <span className="text-blue-700 text-[14px] font-medium font-sans">
                 Integrasi
               </span>
             </motion.div>
             <motion.h2
               {...fadeUp}
-              className="text-[32px] sm:text-[40px] md:text-[52px] font-semibold text-[#042718] leading-[1.2] md:leading-[58px] tracking-tight md:tracking-[-1.8px] mb-6 max-w-2xl text-center"
+              className="text-[32px] sm:text-[40px] md:text-[52px] font-semibold text-brand-950 leading-[1.2] md:leading-[58px] tracking-tight md:tracking-[-1.8px] mb-6 max-w-2xl text-center"
             >
               Hubungkan semua peluang karirmu di{" "}
               <span className="font-playfair italic text-[rgba(0,0,0,0.40)]">
@@ -202,7 +202,7 @@ export function IntegrationsSection() {
             </motion.h2>
             <motion.p
               {...fadeUp}
-              className="text-[15px] md:text-[18px] text-[#042718] leading-[1.6] md:leading-[28px] max-w-[612px] font-sans font-normal opacity-80 text-center"
+              className="text-[15px] md:text-[18px] text-brand-950 leading-[1.6] md:leading-[28px] max-w-[612px] font-sans font-normal opacity-80 text-center"
             >
               Integrasikan job board, jaringan profesional, dan tools
               produktivitasmu untuk melihat seluruh peluang karir secara
@@ -222,8 +222,8 @@ export function IntegrationsSection() {
                   x2="100%"
                   y2="0%"
                 >
-                  <stop offset="0%" stopColor="#138E5F" stopOpacity="0.02"></stop>
-                  <stop offset="100%" stopColor="#138E5F" stopOpacity="0.4"></stop>
+                  <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.02"></stop>
+                  <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.4"></stop>
                 </linearGradient>
                 <linearGradient
                   id="line-gradient-right"
@@ -232,8 +232,8 @@ export function IntegrationsSection() {
                   x2="0%"
                   y2="0%"
                 >
-                  <stop offset="0%" stopColor="#138E5F" stopOpacity="0.02"></stop>
-                  <stop offset="100%" stopColor="#138E5F" stopOpacity="0.4"></stop>
+                  <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.02"></stop>
+                  <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.4"></stop>
                 </linearGradient>
               </defs>
               {connectorLines.map((line) => (
@@ -246,7 +246,7 @@ export function IntegrationsSection() {
                     strokeDasharray="4 4"
                     opacity="0.9"
                   ></path>
-                  <circle r="3.5" fill="#138E5F">
+                  <circle r="3.5" fill="#3B82F6">
                     <animateMotion
                       dur="3.5s"
                       repeatCount="indefinite"
@@ -262,7 +262,7 @@ export function IntegrationsSection() {
                   cx={line.startX}
                   cy={line.startY}
                   r="5"
-                  fill="#138E5F"
+                  fill="#3B82F6"
                   opacity="0.95"
                 >
                   <animate
@@ -284,7 +284,7 @@ export function IntegrationsSection() {
               <div className="flex items-center justify-center py-8 lg:py-0 lg:absolute lg:left-1/2 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2">
                 <div className="relative w-[100px] lg:w-[124px] h-[100px] lg:h-[124px] flex items-center justify-center">
                   <motion.div
-                    className="absolute inset-0 -m-8 lg:-m-[58px] rounded-full bg-[#E4F3EB]/60 shadow-[inset_0_0_40px_rgba(19,142,95,0.03)]"
+                    className="absolute inset-0 -m-8 lg:-m-[58px] rounded-full bg-brand-100/60 shadow-[inset_0_0_40px_rgba(19,142,95,0.03)]"
                     animate={{ scale: [1, 1.03, 1] }}
                     transition={{
                       duration: 4,
@@ -314,7 +314,7 @@ export function IntegrationsSection() {
           <div className="flex flex-col items-center mt-12 md:mt-[80px] gap-6 md:gap-8">
             <motion.div
               {...fadeUp}
-              className="inline-flex items-center gap-3 px-5 md:px-[24px] py-2 md:py-[11px] rounded-full border border-[#138E5F]/15 bg-white/50 shadow-[0_4px_24px_rgba(19,142,95,0.03)]"
+              className="inline-flex items-center gap-3 px-5 md:px-[24px] py-2 md:py-[11px] rounded-full border border-teal-600/15 bg-white/50 shadow-[0_4px_24px_rgba(13,148,136,0.04)]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -326,16 +326,16 @@ export function IntegrationsSection() {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="lucide lucide-shield-check w-5 h-5 text-[#138E5F]"
+                className="lucide lucide-shield-check w-5 h-5 text-teal-600"
               >
                 <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
                 <path d="m9 12 2 2 4-4"></path>
               </svg>
               <p className="text-[13px] md:text-[15px] font-sans">
-                <span className="text-[#138E5F] font-semibold">
+                <span className="text-teal-700 font-semibold">
                   Data profilmu aman &amp; terenkripsi.
                 </span>{" "}
-                <span className="text-[#042718]/40">
+                <span className="text-brand-950/40">
                   Kami tidak pernah membagikan datamu tanpa izin.
                 </span>
               </p>
@@ -345,7 +345,7 @@ export function IntegrationsSection() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="text-[13px] md:text-[15px] text-[#042718]/40 font-sans tracking-tight text-center px-4"
+              className="text-[13px] md:text-[15px] text-brand-950/40 font-sans tracking-tight text-center px-4"
             >
               Dipercaya{" "}
               <span className="font-semibold text-[#138E5F]">50.000+</span>{" "}

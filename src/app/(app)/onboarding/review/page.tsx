@@ -34,7 +34,7 @@ export default async function OnboardingReviewPage() {
 
       <div className="act-rise mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Goal */}
-        <div className="act-card-2 bg-[#F2FBF6] p-6">
+        <div className="act-card-2 bg-brand-50 p-6">
           <div className="flex items-center justify-between">
             <span className="act-kicker">Career goal</span>
             <Link href="/onboarding/goal" className="text-xs font-semibold text-[var(--act-blue)] underline decoration-[rgba(25,143,56,0.3)] underline-offset-4 hover:text-[var(--act-onyx)]">Ubah</Link>
@@ -68,7 +68,7 @@ export default async function OnboardingReviewPage() {
               {profile.skills.map((s) => (
                 <span key={s.id} className="rounded-md bg-[rgba(25,143,56,0.08)] px-2 py-0.5 text-[11px] font-semibold text-[var(--act-blue)]">
                   {s.name}
-                  {s.verified && <span className="ml-1 text-[var(--act-iris)]">✓</span>}
+                  {s.verified && <span className="ml-1 text-[var(--act-teal)]">✓</span>}
                 </span>
               ))}
             </div>

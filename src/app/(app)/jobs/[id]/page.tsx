@@ -14,10 +14,10 @@ const REGION_BADGE: Record<string, { label: string; cls: string }> = {
 };
 
 const FACT_TONES: Record<string, string> = {
-  blue: "bg-[#F2FBF6] text-[var(--act-blue)]",
-  iris: "bg-[#D2DDEA] text-[var(--act-iris)]",
-  amber: "bg-[#EBE3D2] text-[#8A5A18]",
-  mint: "bg-[#D4E5CD] text-[var(--act-onyx)]",
+  blue: "bg-blue-600/10 text-blue-700",
+  iris: "bg-violet-600/10 text-violet-700",
+  amber: "bg-amber-500/15 text-amber-700",
+  mint: "bg-[var(--act-wash-sky)] text-[var(--act-onyx)]",
 };
 
 const ICONS: Record<string, ReactNode> = {
@@ -62,7 +62,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
   const job = await getJobDetail(user.id, id);
   if (!job) notFound();
 
-  const ringColor = job.matchPct >= 70 ? "#198F38" : job.matchPct >= 40 ? "#0F766E" : "#B45309";
+  const ringColor = job.matchPct >= 70 ? "#198F38" : job.matchPct >= 40 ? "#D97706" : "#E11D48";
   const region = REGION_BADGE[job.region];
   const loc = parseLocation(job.location);
   const src = describeJobSource(job.source, job.applyUrl, job.isNative);
@@ -74,7 +74,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
         ← Kembali ke Lowongan
       </Link>
 
-      <section aria-labelledby="job-title" className="overflow-hidden rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-[#F2FBF6] p-6 shadow-[0_20px_40px_-32px_rgba(4,39,24,0.55)] md:p-8">
+      <section aria-labelledby="job-title" className="overflow-hidden rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-brand-50 p-6 shadow-[0_20px_40px_-32px_rgba(4,39,24,0.55)] md:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex min-w-0 gap-4">
             <span className="inline-flex h-14 w-14 flex-none items-center justify-center rounded-2xl bg-[var(--act-onyx)] font-[family-name:var(--font-onest-v)] text-xl font-bold text-white">
@@ -83,7 +83,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <span className={`act-chip ${region.cls}`}>{region.label}</span>
-                {job.isNative && <span className="act-chip act-chip-iris">Native · lamar di sini</span>}
+                {job.isNative && <span className="act-chip act-chip-teal">Native · lamar di sini</span>}
               </div>
               <h1 id="job-title" className="act-display mt-3 text-3xl leading-[1.08] md:text-[40px]">{job.title}</h1>
               <p className="mt-2 text-[15px] text-[var(--act-charcoal)]">
@@ -105,7 +105,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
               className="relative grid h-[104px] w-[104px] flex-none place-items-center rounded-full"
               style={{ background: `conic-gradient(${ringColor} ${job.matchPct * 3.6}deg, rgba(15,23,42,0.08) 0deg)` }}
             >
-              <div className="grid h-[84px] w-[84px] place-items-center rounded-full bg-[#F2FBF6] text-center">
+              <div className="grid h-[84px] w-[84px] place-items-center rounded-full bg-brand-50 text-center">
                 <span className="act-display text-3xl leading-none" style={{ color: ringColor }}>
                   {job.matchPct}
                   <span className="text-sm">%</span>
@@ -139,7 +139,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
             </p>
           ) : src.kind === "native" ? (
             <p className="mt-3 flex items-center gap-1.5 text-xs text-[var(--act-graphite)]">
-              <span className="text-[#059669]">{ICONS.shield}</span>
+              <span className="text-[var(--act-teal)]">{ICONS.shield}</span>
               Lamar langsung di KarirKu — lamaranmu tercatat & dikelola di sini.
             </p>
           ) : (
@@ -161,7 +161,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
 
       {/* All locations (jobs with multiple offices/regions) */}
       {loc.all.length > 1 && (
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-[20px] border border-[rgba(4,39,24,0.08)] bg-[#D2DDEA] p-4">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-[20px] border border-[rgba(4,39,24,0.08)] bg-[var(--act-wash-blue)] p-4">
           <span className="act-kicker !text-[10px]">Lokasi asli ({loc.all.length})</span>
           <div className="flex flex-wrap gap-1.5">
             {loc.all.map((l) => (
@@ -190,12 +190,12 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
           </article>
 
           {job.requirements.length > 0 && (
-             <section className="rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-[#D4E5CD] p-6 md:p-7">
+             <section className="rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-[var(--act-wash-sky)] p-6 md:p-7">
               <h2 className="act-heading text-lg text-[var(--act-ink)]">Kualifikasi</h2>
               <ul className="mt-4 space-y-3">
                 {job.requirements.map((r, i) => (
                   <li key={i} className="flex gap-3 text-[15px] leading-relaxed text-[var(--act-charcoal)]">
-                     <span className="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-[var(--act-iris)]" />
+                     <span className="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-[var(--act-green)]" />
                     {r}
                   </li>
                 ))}
@@ -224,7 +224,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                   <span className="act-kicker !text-[10px]">Kamu kuasai</span>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {job.matchedSkills.map((s) => (
-                       <span key={s} className="rounded-md bg-[#F2FBF6] px-2 py-0.5 text-[11px] font-semibold text-[var(--act-blue)]">✓ {s}</span>
+                       <span key={s} className="rounded-md bg-brand-50 px-2 py-0.5 text-[11px] font-semibold text-[var(--act-blue)]">✓ {s}</span>
                     ))}
                   </div>
                 </div>
@@ -234,7 +234,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                   <span className="act-kicker !text-[10px]">Perlu dipelajari</span>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {job.missingSkills.map((s) => (
-                       <span key={s} className="rounded-md bg-[#EBE3D2] px-2 py-0.5 text-[11px] font-semibold text-[#8A5A18]">{s}</span>
+                       <span key={s} className="rounded-md bg-amber-500/15 px-2 py-0.5 text-[11px] font-semibold text-amber-700">{s}</span>
                     ))}
                   </div>
                 </div>
@@ -252,10 +252,10 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
           </section>
 
           {/* About company */}
-           <aside className="rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-[#D2DDEA] p-6">
+           <aside className="rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-[var(--act-wash-lilac)] p-6">
             <span className="act-kicker !text-[10px]">Tentang perusahaan</span>
             <div className="mt-3 flex items-center gap-3">
-               <span className="inline-flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-[var(--act-iris)] font-bold text-white">{job.company.slice(0, 1).toUpperCase()}</span>
+               <span className="inline-flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-[var(--act-violet)] font-bold text-white">{job.company.slice(0, 1).toUpperCase()}</span>
               <div className="min-w-0">
                 <p className="truncate font-semibold text-[var(--act-ink)]">{job.company}</p>
                 <p className="truncate text-xs text-[var(--act-graphite)]">{loc.flag} {loc.primary}</p>
@@ -264,7 +264,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
              <div className="mt-4 border-t border-[rgba(4,39,24,0.1)] pt-4">
               <span className="act-kicker !text-[10px]">Sumber lowongan</span>
               <div className="mt-2 flex items-center gap-2">
-                <span className={`act-chip !text-[10px] ${src.kind === "native" ? "act-chip-iris" : src.kind === "external" ? "act-chip-blue" : "act-chip-mute"}`}>
+                <span className={`act-chip !text-[10px] ${src.kind === "native" ? "act-chip-teal" : src.kind === "external" ? "act-chip-blue" : "act-chip-mute"}`}>
                   {src.kind === "external" ? `via ${src.platform}` : src.kind === "native" ? "KarirKu (native)" : "Data contoh"}
                 </span>
               </div>

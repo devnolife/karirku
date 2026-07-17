@@ -11,10 +11,10 @@ import type { UserRole } from "@/lib/roles";
 
 const CAT_TONE: Record<GuideCategory, string> = {
   Platform: "act-chip-blue",
-  Remote: "act-chip-iris",
+  Remote: "act-chip-teal",
   Interview: "act-chip-amber",
   Resume: "act-chip-green",
-  Freelance: "act-chip-amber",
+  Freelance: "act-chip-violet",
   "Job board": "act-chip-mute",
 };
 
@@ -32,7 +32,7 @@ export function GuidesExplorer({
 
   return (
     <div className="space-y-6">
-      <nav aria-label="Filter panduan" className="flex flex-wrap items-center gap-2 rounded-[22px] border border-[rgba(4,39,24,0.08)] bg-[#F2FBF6] p-2">
+      <nav aria-label="Filter panduan" className="flex flex-wrap items-center gap-2 rounded-[22px] border border-[rgba(4,39,24,0.08)] bg-brand-50 p-2">
         <span className="px-2 text-xs font-semibold uppercase tracking-[0.1em] text-[var(--act-graphite)]">Topik</span>
         <FilterChip active={cat === "all"} onClick={() => setCat("all")}>
           Semua
@@ -45,7 +45,7 @@ export function GuidesExplorer({
       </nav>
 
       {featured && (
-        <article className="grid overflow-hidden rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-[#D4E5CD] shadow-[0_18px_36px_-30px_rgba(4,39,24,0.48)] md:grid-cols-12">
+        <article className="grid overflow-hidden rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-[var(--act-wash-sky)] shadow-[0_18px_36px_-30px_rgba(4,39,24,0.48)] md:grid-cols-12">
           <div className="flex flex-col justify-between p-6 md:col-span-8 md:p-8">
             <div>
               <div className="flex items-center gap-2">
@@ -63,7 +63,7 @@ export function GuidesExplorer({
               <Link href={`/guides/${featured.slug}`} className="studio-primary-link">Mulai membaca <span aria-hidden>→</span></Link>
             </div>
           </div>
-          <div className="hidden border-l border-[rgba(4,39,24,0.1)] bg-[#042718] p-7 text-white md:col-span-4 md:block">
+          <div className="hidden border-l border-[rgba(4,39,24,0.1)] bg-brand-950 p-7 text-white md:col-span-4 md:block">
             <span className="studio-dark-kicker">Catatan studio</span>
             <p className="act-heading mt-4 text-2xl leading-snug">Baca seperlunya, lalu langsung praktikkan satu langkah.</p>
             <p className="mt-4 text-sm leading-relaxed text-white/65">Panduan ringkas yang dirancang untuk mengubah persiapan menjadi progres nyata.</p>
@@ -77,7 +77,7 @@ export function GuidesExplorer({
         {guideRows.map((g) => {
           const relevant = g.forRoles.includes(highlightRole);
           return (
-            <article key={g.slug} className="grid gap-4 px-5 py-5 transition-colors hover:bg-[#F2FBF6] md:grid-cols-12 md:items-center md:px-6">
+            <article key={g.slug} className="grid gap-4 px-5 py-5 transition-colors hover:bg-brand-50 md:grid-cols-12 md:items-center md:px-6">
               <div className="md:col-span-2"><span className={`act-chip ${CAT_TONE[g.category]}`}>{g.category}</span></div>
               <div className="md:col-span-6">
                 <Link href={`/guides/${g.slug}`} className="group block">
@@ -121,7 +121,7 @@ export function GuidesExplorer({
       </section>
 
       {/* Interview practice CTA */}
-      <section className="flex flex-col items-start gap-4 rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-[#D2DDEA] p-6 sm:flex-row sm:items-center sm:justify-between">
+      <section className="flex flex-col items-start gap-4 rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-[var(--act-wash-blue)] p-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <span className="act-kicker">Latihan interview</span>
           <h3 className="act-heading mt-1.5 text-xl text-[var(--act-ink)]">

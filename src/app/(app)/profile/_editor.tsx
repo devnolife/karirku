@@ -72,7 +72,7 @@ export function ProfileSkillsEditor({
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold text-[var(--act-ink)]">{s.name}</span>
                 {s.verified ? (
-                  <span className="act-chip act-chip-iris !py-0.5 !text-[10px]">✓ verified</span>
+                  <span className="act-chip act-chip-teal !py-0.5 !text-[10px]">✓ verified</span>
                 ) : (
                   <span className="act-chip act-chip-mute !py-0.5 !text-[10px]">self-report</span>
                 )}

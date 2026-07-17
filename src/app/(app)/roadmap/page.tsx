@@ -43,7 +43,7 @@ export default async function RoadmapPage() {
         <div className="space-y-5">
           {current && (
             <section className="overflow-hidden rounded-[24px] border border-[rgba(25,143,56,0.24)] bg-[var(--act-sky-50)] shadow-[0_18px_36px_-28px_rgba(4,39,24,0.48)]">
-              <div className="flex flex-col gap-2 border-b border-[rgba(4,39,24,0.09)] bg-[#D4E5CD]/65 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-2 border-b border-[rgba(4,39,24,0.09)] bg-[var(--act-wash-sky)]/65 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <span className="act-kicker !text-[var(--act-blue)]">Fokus saat ini</span>
                   <h2 className="act-heading mt-1 text-lg text-[var(--act-ink)]">Milestone yang sedang kamu bangun</h2>

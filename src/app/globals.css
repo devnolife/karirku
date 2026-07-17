@@ -11,6 +11,24 @@
   --font-onest: var(--font-onest-v), ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-onest-v), ui-sans-serif, system-ui, sans-serif;
   --font-playfair: var(--font-playfair-v), ui-serif, Georgia, serif;
+
+  /* ---- KarirKu brand green scale ----
+     Custom scale around the product greens so components can use
+     bg-brand-50 / text-brand-600 instead of hardcoded [#hex] values.
+     Semantic accents use the Tailwind default palette with meaning:
+     blue = info/proses · violet = AI/premium · amber = pending/warning
+     rose = error/ditolak · teal = terverifikasi */
+  --color-brand-50: #F2FBF6;
+  --color-brand-100: #E4F3EB;
+  --color-brand-200: #C6F1DA;
+  --color-brand-300: #86EFAC;
+  --color-brand-400: #4ADE80;
+  --color-brand-500: #22C55E;
+  --color-brand-600: #198F38;
+  --color-brand-700: #136F2D;
+  --color-brand-800: #0B4A20;
+  --color-brand-900: #063420;
+  --color-brand-950: #042718;
 }
 
 @keyframes marquee {
@@ -68,12 +86,25 @@ select, input, textarea { font-family: inherit; }
   --act-ink: #0f0f0f;
   --act-onyx: #042718;
   --act-shadow: #242628;
+  /* Legacy accent names (kept for compatibility across act-* utilities).
+     --act-blue is the BRAND GREEN (primary). iris/magenta were remapped to
+     honest hues: iris = violet (AI/premium), magenta = rose (error). */
   --act-blue: #198F38;
-  --act-magenta: #B45309;
-  --act-iris: #0F766E;
+  --act-magenta: #E11D48;
+  --act-iris: #7C3AED;
+  /* Honest semantic aliases — prefer these in new code */
+  --act-green: #198F38;
+  --act-violet: #7C3AED;
+  --act-info: #2563EB;
+  --act-amber: #D97706;
+  --act-rose: #E11D48;
+  --act-teal: #0D9488;
   --act-wash-sky: #D4E5CD;
   --act-wash-lilac: #D2DDEA;
   --act-wash-petal: #EBE3D2;
+  --act-wash-violet: #E5DFF7;
+  --act-wash-blue: #D9E4F5;
+  --act-wash-rose: #F7E0E5;
   /* Sky thread — pulls the hero sky down through the page below */
   --act-sky-50: #F2FBF6;
   --act-sky-100: #E4F3EB;
@@ -89,7 +120,8 @@ select, input, textarea { font-family: inherit; }
 .act-page {
   background:
     radial-gradient(1100px 520px at 8% -8%, rgba(25, 143, 56, 0.05), transparent 60%),
-    radial-gradient(900px 600px at 100% 0%, rgba(15, 118, 110, 0.045), transparent 62%),
+    radial-gradient(900px 600px at 100% 0%, rgba(124, 58, 237, 0.04), transparent 62%),
+    radial-gradient(760px 460px at 52% 112%, rgba(37, 99, 235, 0.03), transparent 60%),
     var(--act-mist);
   color: var(--act-ink);
   font-family: var(--font-inter-v), ui-sans-serif, system-ui, -apple-system,
@@ -239,9 +271,9 @@ select, input, textarea { font-family: inherit; }
   border-radius: 12px;
   color: #ffffff;
 }
-.act-avatar-magenta { background: var(--act-magenta); }
-.act-avatar-iris { background: var(--act-iris); }
-.act-avatar-blue { background: var(--act-blue); }
+.act-avatar-magenta { background: var(--act-rose); }
+.act-avatar-iris { background: var(--act-violet); }
+.act-avatar-blue { background: var(--act-info); }
 
 /* FAQ native accordion plus/minus */
 .act-faq summary { list-style: none; cursor: pointer; }
@@ -337,7 +369,8 @@ select, input, textarea { font-family: inherit; }
 .app-canvas {
   background:
     radial-gradient(1100px 520px at 6% -8%, rgba(25, 143, 56, 0.07), transparent 58%),
-    radial-gradient(900px 600px at 100% 0%, rgba(15, 118, 110, 0.06), transparent 60%),
+    radial-gradient(900px 600px at 100% 0%, rgba(124, 58, 237, 0.05), transparent 60%),
+    radial-gradient(760px 480px at 52% 115%, rgba(37, 99, 235, 0.04), transparent 62%),
     #EBF1EC;
   color: var(--act-ink);
   font-family: var(--font-inter-v), ui-sans-serif, system-ui, -apple-system,
@@ -454,16 +487,22 @@ select, input, textarea { font-family: inherit; }
   font-size: 12px;
   font-weight: 600;
 }
-.act-chip-blue { background: rgba(25, 143, 56, 0.1); color: var(--act-blue); }
-.act-chip-iris { background: rgba(15, 118, 110, 0.1); color: var(--act-iris); }
+/* Meaningful chip hues: blue = info/proses · violet(iris) = AI/evaluasi
+   green = sukses/brand · amber = pending · rose(magenta) = ditolak/error
+   teal = terverifikasi · mute = arsip/nonaktif */
+.act-chip-blue { background: rgba(37, 99, 235, 0.09); color: #1D4ED8; }
+.act-chip-iris { background: rgba(124, 58, 237, 0.09); color: #6D28D9; }
+.act-chip-violet { background: rgba(124, 58, 237, 0.09); color: #6D28D9; }
 .act-chip-green { background: rgba(31, 157, 85, 0.12); color: #15803d; }
-.act-chip-magenta { background: rgba(180, 83, 9, 0.1); color: var(--act-magenta); }
+.act-chip-magenta { background: rgba(225, 29, 72, 0.09); color: #BE123C; }
+.act-chip-rose { background: rgba(225, 29, 72, 0.09); color: #BE123C; }
 .act-chip-amber { background: rgba(217, 119, 6, 0.14); color: #b45309; }
+.act-chip-teal { background: rgba(13, 148, 136, 0.11); color: #0F766E; }
 .act-chip-mute { background: rgba(15, 23, 42, 0.06); color: var(--act-graphite); }
 
 /* Soft pastel wash surfaces — the colorful card / section backgrounds */
 .act-wash-iris-soft {
-  background: radial-gradient(120% 130% at 50% 0%, #E7EDF4, var(--act-wash-lilac) 82%);
+  background: radial-gradient(120% 130% at 50% 0%, #EFEAFA, var(--act-wash-violet) 82%);
 }
 .act-wash-petal-soft {
   background: radial-gradient(120% 130% at 50% 0%, #F5EFE3, var(--act-wash-petal) 86%);
@@ -473,6 +512,15 @@ select, input, textarea { font-family: inherit; }
 }
 .act-wash-amber-soft {
   background: radial-gradient(120% 130% at 50% 0%, #fdf0d9, #fbe6bf 86%);
+}
+.act-wash-blue-soft {
+  background: radial-gradient(120% 130% at 50% 0%, #E8F0FB, var(--act-wash-blue) 86%);
+}
+.act-wash-violet-soft {
+  background: radial-gradient(120% 130% at 50% 0%, #F0EBFB, var(--act-wash-violet) 86%);
+}
+.act-wash-rose-soft {
+  background: radial-gradient(120% 130% at 50% 0%, #FBEEF1, var(--act-wash-rose) 86%);
 }
 
 /* Section index badge — a small colored numeral tile */
@@ -488,10 +536,13 @@ select, input, textarea { font-family: inherit; }
   font-size: 13px;
   color: #fff;
 }
-.act-num-blue { background: linear-gradient(140deg, #22C55E, var(--act-blue)); }
-.act-num-iris { background: linear-gradient(140deg, #14B8A6, var(--act-iris)); }
-.act-num-magenta { background: linear-gradient(140deg, #F59E0B, var(--act-magenta)); }
+.act-num-blue { background: linear-gradient(140deg, #60A5FA, var(--act-info)); }
+.act-num-iris { background: linear-gradient(140deg, #A78BFA, var(--act-violet)); }
+.act-num-magenta { background: linear-gradient(140deg, #FB7185, var(--act-rose)); }
 .act-num-mint { background: linear-gradient(140deg, #34d399, #059669); }
+.act-num-green { background: linear-gradient(140deg, #22C55E, var(--act-green)); }
+.act-num-amber { background: linear-gradient(140deg, #FBBF24, var(--act-amber)); }
+.act-num-teal { background: linear-gradient(140deg, #2DD4BF, var(--act-teal)); }
 
 /* Colored accent rail at a card's top edge */
 .act-rail { position: relative; }
@@ -502,11 +553,14 @@ select, input, textarea { font-family: inherit; }
   height: 4px;
   border-radius: 20px 20px 0 0;
 }
-.act-rail-blue::before { background: linear-gradient(90deg, #22C55E, var(--act-blue)); }
-.act-rail-iris::before { background: linear-gradient(90deg, #14B8A6, var(--act-iris)); }
+.act-rail-blue::before { background: linear-gradient(90deg, #60A5FA, var(--act-info)); }
+.act-rail-iris::before { background: linear-gradient(90deg, #A78BFA, var(--act-violet)); }
 .act-rail-mint::before { background: linear-gradient(90deg, #34d399, #059669); }
-.act-rail-magenta::before { background: linear-gradient(90deg, #F59E0B, var(--act-magenta)); }
-.act-rail-rainbow::before { background: linear-gradient(90deg, var(--act-blue), var(--act-iris) 55%, var(--act-magenta)); }
+.act-rail-magenta::before { background: linear-gradient(90deg, #FB7185, var(--act-rose)); }
+.act-rail-green::before { background: linear-gradient(90deg, #22C55E, var(--act-green)); }
+.act-rail-amber::before { background: linear-gradient(90deg, #FBBF24, var(--act-amber)); }
+.act-rail-teal::before { background: linear-gradient(90deg, #2DD4BF, var(--act-teal)); }
+.act-rail-rainbow::before { background: linear-gradient(90deg, var(--act-green), var(--act-violet) 38%, var(--act-info) 68%, var(--act-amber)); }
 
 /* Small colored provider/avatar tile */
 .act-tile {
@@ -627,7 +681,7 @@ select, input, textarea { font-family: inherit; }
     rgba(15, 23, 42, 0.16) 0px 28px 70px -28px;
 }
 
-/* ---- Gradient hairline card — white surface, 1px sky→iris border ---- */
+/* ---- Gradient hairline card — white surface, 1px multi-hue border ---- */
 .act-card-line {
   position: relative;
   border: 1px solid transparent;
@@ -637,9 +691,9 @@ select, input, textarea { font-family: inherit; }
     linear-gradient(
         135deg,
         rgba(34, 197, 94, 0.6),
-        rgba(15, 118, 110, 0.32) 38%,
+        rgba(124, 58, 237, 0.32) 38%,
         rgba(15, 23, 42, 0.08) 72%,
-        rgba(34, 197, 94, 0.25)
+        rgba(37, 99, 235, 0.28)
       )
       border-box;
   box-shadow:
@@ -668,6 +722,7 @@ select, input, textarea { font-family: inherit; }
 .act-cinema-scrim {
   background:
     radial-gradient(900px 420px at 50% 0%, rgba(34, 197, 94, 0.16), transparent 64%),
+    radial-gradient(720px 360px at 88% 96%, rgba(124, 58, 237, 0.12), transparent 62%),
     linear-gradient(
       to bottom,
       rgba(3, 18, 11, 0.88) 0%,
@@ -679,6 +734,7 @@ select, input, textarea { font-family: inherit; }
 .act-cinema-scrim-cta {
   background:
     radial-gradient(720px 320px at 50% 110%, rgba(34, 197, 94, 0.2), transparent 64%),
+    radial-gradient(640px 300px at 8% -6%, rgba(124, 58, 237, 0.14), transparent 60%),
     linear-gradient(
       to bottom,
       rgba(3, 18, 11, 0.72) 0%,
@@ -690,6 +746,7 @@ select, input, textarea { font-family: inherit; }
 .act-cinema-scrim-footer {
   background:
     radial-gradient(980px 440px at 50% 20%, rgba(34, 197, 94, 0.24), transparent 64%),
+    radial-gradient(760px 360px at 92% 42%, rgba(124, 58, 237, 0.12), transparent 60%),
     linear-gradient(
       to bottom,
       rgba(3, 18, 11, 0.55) 0%,
@@ -835,6 +892,23 @@ select, input, textarea { font-family: inherit; }
     0 10px 22px -10px var(--tile-glow, rgba(25, 143, 56, 0.55));
 }
 
+/* Hue presets — set the tile/rail CSS vars so .act-icon-tile and
+   .act-feature pick up a meaningful accent per feature. */
+.act-hue-green { --tile-from: #22C55E; --tile-to: #198F38; --tile-glow: rgba(25, 143, 56, 0.55); --rail-from: #22C55E; --rail-to: #198F38; }
+.act-hue-violet { --tile-from: #A78BFA; --tile-to: #7C3AED; --tile-glow: rgba(124, 58, 237, 0.5); --rail-from: #A78BFA; --rail-to: #7C3AED; }
+.act-hue-blue { --tile-from: #60A5FA; --tile-to: #2563EB; --tile-glow: rgba(37, 99, 235, 0.5); --rail-from: #60A5FA; --rail-to: #2563EB; }
+.act-hue-amber { --tile-from: #FBBF24; --tile-to: #D97706; --tile-glow: rgba(217, 119, 6, 0.5); --rail-from: #FBBF24; --rail-to: #D97706; }
+.act-hue-rose { --tile-from: #FB7185; --tile-to: #E11D48; --tile-glow: rgba(225, 29, 72, 0.45); --rail-from: #FB7185; --rail-to: #E11D48; }
+.act-hue-teal { --tile-from: #2DD4BF; --tile-to: #0D9488; --tile-glow: rgba(13, 148, 136, 0.5); --rail-from: #2DD4BF; --rail-to: #0D9488; }
+
+/* ---- AI gradient text — for AI/premium feature headings ---- */
+.act-ai-text {
+  background: linear-gradient(120deg, #7C3AED 10%, #2563EB 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 /* ---- Modern FAQ card accordion ---- */
 .act-faq-card {
   border: 1px solid rgba(15, 23, 42, 0.08);
@@ -871,7 +945,7 @@ select, input, textarea { font-family: inherit; }
 .act-footer-dark {
   background:
     radial-gradient(760px 340px at 10% 0%, rgba(34, 197, 94, 0.12), transparent 62%),
-    radial-gradient(620px 320px at 92% 8%, rgba(15, 118, 110, 0.1), transparent 60%),
+    radial-gradient(620px 320px at 92% 8%, rgba(124, 58, 237, 0.11), transparent 60%),
     linear-gradient(180deg, #04160E 0%, #031009 100%);
 }
 
@@ -897,12 +971,12 @@ select, input, textarea { font-family: inherit; }
 .act-hatch-blue {
   background-image: repeating-linear-gradient(
     -45deg,
-    rgba(25, 143, 56, 0.16) 0,
-    rgba(25, 143, 56, 0.16) 2px,
+    rgba(37, 99, 235, 0.16) 0,
+    rgba(37, 99, 235, 0.16) 2px,
     transparent 2px,
     transparent 6px
   );
-  background-color: rgba(25, 143, 56, 0.05);
+  background-color: rgba(37, 99, 235, 0.05);
 }
 
 /* Sidebar nav item — Donezo left active-indicator style.
@@ -953,7 +1027,7 @@ select, input, textarea { font-family: inherit; }
   color: #fff;
   background:
     radial-gradient(420px 200px at 85% 12%, rgba(34, 197, 94, 0.22), transparent 60%),
-    radial-gradient(360px 200px at 10% 100%, rgba(15, 118, 110, 0.22), transparent 60%),
+    radial-gradient(360px 200px at 10% 100%, rgba(124, 58, 237, 0.24), transparent 60%),
     linear-gradient(160deg, #042718 0%, #031B10 100%);
 }
 
@@ -965,6 +1039,7 @@ select, input, textarea { font-family: inherit; }
 .studio-shell {
   background:
     radial-gradient(820px 440px at 16% -10%, rgba(25, 143, 56, 0.08), transparent 68%),
+    radial-gradient(700px 400px at 96% -6%, rgba(124, 58, 237, 0.05), transparent 64%),
     #F2FBF6;
   color: #042718;
   font-family: var(--font-inter-v), ui-sans-serif, system-ui, sans-serif;
@@ -1185,7 +1260,7 @@ select, input, textarea { font-family: inherit; }
 .studio-text-link:hover { color: var(--act-onyx); text-decoration-color: currentColor; }
 
 .studio-readiness-card {
-  background: #f2fbf6;
+  background: radial-gradient(140% 130% at 100% 0%, #e4f3eb 0%, #f2fbf6 58%);
   border: 1px solid rgba(4, 39, 24, 0.09);
   border-radius: 24px;
   box-shadow: 0 12px 28px -24px rgba(4, 39, 24, 0.32);
@@ -1212,14 +1287,23 @@ select, input, textarea { font-family: inherit; }
 }
 
 .studio-next-move {
-  background: var(--act-onyx);
+  background:
+    radial-gradient(380px 220px at 92% -6%, rgba(124, 58, 237, 0.3), transparent 62%),
+    radial-gradient(320px 200px at 0% 105%, rgba(34, 197, 94, 0.2), transparent 60%),
+    var(--act-onyx);
   box-shadow: 0 18px 40px -30px rgba(4, 39, 24, 0.7);
   display: block;
   min-height: 218px;
   padding: 1.5rem;
   transition: background 180ms ease, transform 180ms ease;
 }
-.studio-next-move:hover { background: #063420; transform: translateY(-1px); }
+.studio-next-move:hover {
+  background:
+    radial-gradient(380px 220px at 92% -6%, rgba(124, 58, 237, 0.36), transparent 62%),
+    radial-gradient(320px 200px at 0% 105%, rgba(34, 197, 94, 0.26), transparent 60%),
+    #063420;
+  transform: translateY(-1px);
+}
 .studio-dark-kicker { color: #b8d8bf; font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.115em; text-transform: uppercase; }
 .studio-arrow-button {
   align-items: center;
@@ -1236,15 +1320,19 @@ select, input, textarea { font-family: inherit; }
 }
 .studio-next-move:hover .studio-arrow-button { background: rgba(255, 255, 255, 0.18); transform: translateX(2px); }
 
+/* Match card — AI matching = violet surface */
 .studio-match-card {
-  background: #e4f3eb;
+  background: radial-gradient(130% 140% at 88% -12%, #ece4fa 0%, #f2ecfc 46%, #f8f4fe 100%);
+  border-color: rgba(124, 58, 237, 0.16);
   display: flex;
   flex-direction: column;
   min-height: 218px;
   padding: 1.5rem;
   transition: background 180ms ease, border-color 180ms ease;
 }
-.studio-match-card:hover { background: #f2fbf6; border-color: rgba(25, 143, 56, 0.24); }
+.studio-match-card:hover { background: #f8f4fe; border-color: rgba(124, 58, 237, 0.32); }
+.studio-match-card .studio-section-kicker { color: var(--act-violet); }
+.studio-match-card .studio-card-footer { color: var(--act-violet); }
 .studio-card-footer,
 .studio-preview-footer {
   color: var(--act-blue);
@@ -1256,16 +1344,16 @@ select, input, textarea { font-family: inherit; }
 }
 
 .studio-kpi {
-  background: #fff;
+  background: linear-gradient(180deg, #ffffff 30%, var(--studio-kpi-tint, #ffffff) 100%);
   box-shadow: 0 10px 24px -24px rgba(4, 39, 24, 0.32);
   overflow: hidden;
   position: relative;
 }
 .studio-kpi::before { background: var(--studio-kpi-accent); content: ""; height: 3px; left: 1.25rem; position: absolute; right: 1.25rem; top: 0; }
-.studio-kpi-blue { --studio-kpi-accent: #198f38; --studio-kpi-value: #198f38; }
-.studio-kpi-iris { --studio-kpi-accent: #0f766e; --studio-kpi-value: #0f766e; }
-.studio-kpi-mint { --studio-kpi-accent: #042718; --studio-kpi-value: #042718; }
-.studio-kpi-magenta { --studio-kpi-accent: #b45309; --studio-kpi-value: #b45309; }
+.studio-kpi-blue { --studio-kpi-accent: #2563EB; --studio-kpi-value: #1D4ED8; --studio-kpi-tint: #EFF5FF; }
+.studio-kpi-iris { --studio-kpi-accent: #7C3AED; --studio-kpi-value: #6D28D9; --studio-kpi-tint: #F5F1FE; }
+.studio-kpi-mint { --studio-kpi-accent: #10B981; --studio-kpi-value: #042718; --studio-kpi-tint: #EFFBF4; }
+.studio-kpi-magenta { --studio-kpi-accent: #D97706; --studio-kpi-value: #B45309; --studio-kpi-tint: #FFF7EA; }
 .studio-kpi-label { color: var(--act-graphite); font-size: 0.75rem; font-weight: 650; }
 .studio-kpi-value { color: var(--studio-kpi-value); }
 
@@ -1274,22 +1362,35 @@ select, input, textarea { font-family: inherit; }
 .studio-preview-card {
   background: #fff;
   box-shadow: 0 14px 28px -28px rgba(4, 39, 24, 0.4);
+  overflow: hidden;
+  position: relative;
   transition: background 180ms ease, border-color 180ms ease;
 }
+.studio-preview-card::before {
+  background: var(--studio-preview-accent, var(--act-info));
+  content: "";
+  height: 3px;
+  left: 1.25rem;
+  position: absolute;
+  right: 1.25rem;
+  top: 0;
+}
 .studio-preview-card:hover { background: #fafffc; border-color: rgba(25, 143, 56, 0.25); }
-.studio-preview-blue { --studio-preview-accent: #198f38; }
-.studio-preview-iris { --studio-preview-accent: #0f766e; }
-.studio-preview-mint { --studio-preview-accent: #042718; }
-.studio-preview-magenta { --studio-preview-accent: #b45309; }
+.studio-preview-card .studio-preview-footer { color: var(--studio-preview-accent, var(--act-blue)); }
+.studio-preview-blue { --studio-preview-accent: #2563EB; }
+.studio-preview-iris { --studio-preview-accent: #7C3AED; }
+.studio-preview-mint { --studio-preview-accent: #10B981; }
+.studio-preview-magenta { --studio-preview-accent: #D97706; }
 .studio-preview-footer::after,
 .studio-card-footer::after { content: "→"; font-size: 1rem; margin-left: 0.375rem; transition: transform 160ms ease; }
 .studio-preview-card:hover .studio-preview-footer::after,
 .studio-match-card:hover .studio-card-footer::after { transform: translateX(2px); }
 
 .studio-skill-bar .act-track { background: rgba(4, 39, 24, 0.1); height: 0.4375rem; }
-.studio-skill-bar .act-track > i { background: #198f38; }
-.studio-skill-iris .act-track > i { background: #0f766e; }
-.studio-skill-critical .act-track > i { background: #b45309; }
+.studio-skill-bar .act-track > i { background: linear-gradient(90deg, #22C55E, #198f38); }
+.studio-skill-iris .act-track > i { background: linear-gradient(90deg, #A78BFA, #7C3AED); }
+.studio-skill-blue .act-track > i { background: linear-gradient(90deg, #60A5FA, #2563EB); }
+.studio-skill-critical .act-track > i { background: linear-gradient(90deg, #FBBF24, #D97706); }
 .studio-skill-target { background: rgba(4, 39, 24, 0.5); border-radius: 999px; bottom: -2px; position: absolute; top: -2px; width: 2px; }
 
 .studio-course-mark {

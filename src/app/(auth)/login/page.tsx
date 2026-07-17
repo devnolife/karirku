@@ -132,7 +132,7 @@ export default function LoginPage() {
 
 function RoleGlyph({ role }: { role: UserRole }) {
   const cfg: Record<UserRole, { bg: string; d: string }> = {
-    jobseeker: { bg: "bg-[linear-gradient(140deg,#22C55E,var(--act-blue))]", d: "M12 14a4 4 0 100-8 4 4 0 000 8zM5 20a7 7 0 0114 0" },
+    jobseeker: { bg: "bg-[linear-gradient(140deg,var(--color-brand-500),var(--act-blue))]", d: "M12 14a4 4 0 100-8 4 4 0 000 8zM5 20a7 7 0 0114 0" },
     freelancer: { bg: "bg-[linear-gradient(140deg,#14B8A6,var(--act-iris))]", d: "M4 7h16v12H4zM9 7V5a2 2 0 012-2h2a2 2 0 012 2v2" },
     company: { bg: "bg-[linear-gradient(140deg,#F59E0B,var(--act-magenta))]", d: "M4 20V5a1 1 0 011-1h9a1 1 0 011 1v15M15 9h4a1 1 0 011 1v10M7 8h2M7 12h2M7 16h2" },
     admin: { bg: "bg-[linear-gradient(140deg,#34d399,#059669)]", d: "M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z" },

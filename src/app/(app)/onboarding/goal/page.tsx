@@ -45,7 +45,7 @@ export default async function OnboardingGoalPage() {
           AI butuh tahu kamu mau kemana. Jawaban ini bisa diubah kapan aja —
           roadmap akan otomatis re-generate.
         </p>
-        <div className="mt-8 rounded-[20px] border border-[rgba(4,39,24,0.1)] bg-[#D4E5CD]/55 p-5">
+        <div className="mt-8 rounded-[20px] border border-[rgba(4,39,24,0.1)] bg-[var(--act-wash-sky)]/55 p-5">
           <span className="act-kicker">Tips</span>
           <ul className="mt-3 space-y-3 text-sm text-[var(--act-charcoal)]">
             <li className="flex gap-2.5">

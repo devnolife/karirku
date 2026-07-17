@@ -48,7 +48,7 @@ export default async function OnboardingSkillsPage() {
 
       <form action={saveSkillsAction} className="act-rise mt-8">
         <div className="act-card-2 overflow-hidden">
-          <div className="border-b border-[rgba(4,39,24,0.08)] bg-[#F2FBF6] px-6 py-4">
+          <div className="border-b border-[rgba(4,39,24,0.08)] bg-brand-50 px-6 py-4">
             <span className="act-kicker !text-[var(--act-blue)]">Pilih keahlianmu</span>
           </div>
           <div className="p-6 md:p-8">

@@ -17,7 +17,7 @@ export function SidebarPromo() {
       </p>
       <Link
         href="/guides"
-        className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-[#F2FBF6] px-4 py-2 text-[13px] font-semibold text-[#042718] transition hover:bg-white"
+        className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-brand-50 px-4 py-2 text-[13px] font-semibold text-brand-950 transition hover:bg-white"
       >
         Pelajari
       </Link>

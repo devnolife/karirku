@@ -8,6 +8,7 @@ interface Testimonial {
   name: string;
   role: string;
   avatar: string;
+  accent: string;
 }
 
 const TESTIMONIALS: Testimonial[] = [
@@ -17,6 +18,7 @@ const TESTIMONIALS: Testimonial[] = [
     name: "Raka Pradana",
     role: "Frontend Developer",
     avatar: "/images/photo-1507003211169-0a1dd7228f2d.jpg",
+    accent: "border-violet-300",
   },
   {
     quote:
@@ -24,6 +26,7 @@ const TESTIMONIALS: Testimonial[] = [
     name: "Nadia Rahmawati",
     role: "Fresh Graduate, Sistem Informasi",
     avatar: "/images/photo-1494790108377-be9c29b29330.jpg",
+    accent: "border-blue-300",
   },
   {
     quote:
@@ -31,6 +34,7 @@ const TESTIMONIALS: Testimonial[] = [
     name: "Bima Saputra",
     role: "Digital Marketer",
     avatar: "/images/photo-1472099645785-5658abf4ff4e.jpg",
+    accent: "border-teal-300",
   },
   {
     quote:
@@ -38,6 +42,7 @@ const TESTIMONIALS: Testimonial[] = [
     name: "Sinta Maharani",
     role: "HR Manager, Perusahaan Teknologi",
     avatar: "/images/photo-1438761681033-6461ffad8d80.jpg",
+    accent: "border-brand-300",
   },
   {
     quote:
@@ -45,6 +50,7 @@ const TESTIMONIALS: Testimonial[] = [
     name: "Arif Wicaksono",
     role: "Founder Startup EdTech",
     avatar: "/images/photo-1500648767791-00dcc994a43e.jpg",
+    accent: "border-violet-300",
   },
 ];
 
@@ -86,14 +92,18 @@ function TestimonialCard({
             className={
               isActive
                 ? "font-medium text-center transition-colors duration-500 text-white text-[20px] md:text-[26px] leading-[28px] md:leading-[34px] line-clamp-4"
-                : "font-medium text-center transition-colors duration-500 text-[#042718] text-[18px] md:text-[22px] leading-[24px] md:leading-[30px] line-clamp-3"
+                : "font-medium text-center transition-colors duration-500 text-brand-950 text-[18px] md:text-[22px] leading-[24px] md:leading-[30px] line-clamp-3"
             }
           >
             {testimonial.quote}
           </p>
         </div>
         <div className="flex flex-col items-center">
-          <div className="w-[48px] h-[48px] rounded-full overflow-hidden mb-[12px] border-2 border-white/20">
+          <div
+            className={`w-[48px] h-[48px] rounded-full overflow-hidden mb-[12px] border-2 ${
+              isActive ? "border-white/20" : testimonial.accent
+            }`}
+          >
             <img
               alt={testimonial.name}
               className="w-full h-full object-cover"
@@ -102,14 +112,14 @@ function TestimonialCard({
           </div>
           <p
             className={`font-medium text-[16px] md:text-[18px] leading-[28px] text-center mb-[4px] transition-colors duration-500 ${
-              isActive ? "text-white" : "text-[#042718]"
+              isActive ? "text-white" : "text-brand-950"
             }`}
           >
             {testimonial.name}
           </p>
           <p
             className={`text-[12px] md:text-[14px] leading-[20px] text-center transition-colors duration-500 ${
-              isActive ? "text-white/80" : "text-[#042718] opacity-80"
+              isActive ? "text-white/80" : "text-brand-950 opacity-80"
             }`}
           >
             {testimonial.role}
@@ -161,7 +171,7 @@ export function TestimonialsSection() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="lucide lucide-star w-3.5 h-3.5 text-[#138E5F] fill-[#138E5F]"
+              className="lucide lucide-star w-3.5 h-3.5 text-amber-500 fill-amber-500"
             >
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
             </svg>
@@ -169,12 +179,12 @@ export function TestimonialsSection() {
               Testimoni
             </span>
           </div>
-          <h2 className="text-[#042718] text-[28px] sm:text-[36px] md:text-[52px] font-semibold leading-tight tracking-tight max-w-[690px] mb-4 lg:mb-6">
+          <h2 className="text-brand-950 text-[28px] sm:text-[36px] md:text-[52px] font-semibold leading-tight tracking-tight max-w-[690px] mb-4 lg:mb-6">
             Dipercaya oleh mereka yang{" "}
             <i className="font-playfair text-[rgba(0,0,0,0.40)]">mengambil kendali</i> atas
             karirnya
           </h2>
-          <p className="text-[#042718] opacity-80 text-[16px] md:text-[18px] leading-[24px] md:leading-[28px] max-w-[576px]">
+          <p className="text-brand-950 opacity-80 text-[16px] md:text-[18px] leading-[24px] md:leading-[28px] max-w-[576px]">
             Lihat bagaimana talenta dan perusahaan menemukan kecocokan lebih cepat,
             membuktikan skill, dan membangun karir bersama CraftWorks.
           </p>
@@ -216,7 +226,7 @@ export function TestimonialsSection() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="lucide lucide-arrow-left w-5 h-5 md:w-6 md:h-6 text-[#042718]"
+              className="lucide lucide-arrow-left w-5 h-5 md:w-6 md:h-6 text-brand-950"
             >
               <path d="m12 19-7-7 7-7"></path>
               <path d="M19 12H5"></path>
@@ -226,7 +236,7 @@ export function TestimonialsSection() {
             type="button"
             aria-label="Testimoni berikutnya"
             onClick={goNext}
-            className="w-[48px] h-[48px] md:w-[60px] md:h-[60px] rounded-full transition-all duration-300 flex items-center justify-center cursor-pointer bg-[#042718] hover:bg-[#042718]/90 shadow-lg"
+            className="w-[48px] h-[48px] md:w-[60px] md:h-[60px] rounded-full transition-all duration-300 flex items-center justify-center cursor-pointer bg-brand-950 hover:bg-brand-950/90 shadow-lg"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

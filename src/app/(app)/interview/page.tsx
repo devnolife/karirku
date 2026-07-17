@@ -16,16 +16,16 @@ export default function InterviewPage() {
 
       <section className="mt-6 grid gap-5 lg:grid-cols-12">
         <header className="lg:col-span-7 lg:py-5">
-          <span className="studio-section-kicker">Ruang latihan</span>
+          <span className="studio-section-kicker !text-violet-700">Ruang latihan</span>
           <h1 className="act-display mt-3 text-4xl leading-[1.02] md:text-5xl">
-            Latih jawabanmu <span className="text-[var(--act-blue)]">dulu.</span>
+            Latih jawabanmu <span className="text-[var(--act-violet)]">dulu.</span>
           </h1>
           <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-[var(--act-charcoal)]">
             Pilih bidang, jawab pertanyaan satu per satu, lalu bandingkan dengan contoh jawaban terbaik. Mode demo, jawaban tidak disimpan.
           </p>
         </header>
-        <aside className="rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-[#F2FBF6] p-5 lg:col-span-5">
-          <span className="studio-section-kicker">Cara pakai</span>
+        <aside className="rounded-[24px] border border-violet-600/15 bg-violet-50 p-5 lg:col-span-5">
+          <span className="studio-section-kicker !text-violet-700">Cara pakai</span>
           <ol className="mt-3 space-y-2 text-sm leading-relaxed text-[var(--act-charcoal)]">
             <li><span className="font-semibold text-[var(--act-ink)]">01.</span> Pilih area yang ingin kamu latih.</li>
             <li><span className="font-semibold text-[var(--act-ink)]">02.</span> Jawab dengan struktur STAR.</li>

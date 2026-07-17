@@ -13,7 +13,7 @@ export function GuideTeaser({
     <section className="grid grid-cols-12 gap-8 border-t border-[rgba(4,39,24,0.08)] pt-8">
       <div className="col-span-12 md:col-span-4">
         <div className="flex items-center gap-2.5">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#D4E5CD] text-sm text-[var(--act-onyx)]">★</span>
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/15 text-sm text-amber-700">★</span>
           <span className="studio-section-kicker">Panduan</span>
         </div>
         <h2 className="act-display mt-4 text-3xl leading-[1.05] md:text-4xl">
@@ -32,7 +32,7 @@ export function GuideTeaser({
       <div className="col-span-12 md:col-span-8 md:col-start-5">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {items.map((it) => (
-            <Link key={it.href} href={it.href} className="block rounded-[20px] border border-[rgba(4,39,24,0.08)] bg-white p-5 shadow-[0_12px_24px_-26px_rgba(4,39,24,0.42)] transition-colors hover:bg-[#F2FBF6]">
+            <Link key={it.href} href={it.href} className="block rounded-[20px] border border-[rgba(4,39,24,0.08)] bg-white p-5 shadow-[0_12px_24px_-26px_rgba(4,39,24,0.42)] transition-colors hover:bg-brand-50">
               <h4 className="text-sm font-semibold text-[var(--act-ink)]">{it.title}</h4>
               <p className="mt-1 text-xs leading-relaxed text-[var(--act-graphite)]">{it.desc}</p>
             </Link>
@@ -40,7 +40,7 @@ export function GuideTeaser({
           {showInterview && (
             <Link
               href="/interview"
-              className="flex items-center justify-between rounded-[20px] border border-[rgba(4,39,24,0.08)] bg-[#D2DDEA] p-5 transition-colors hover:bg-[#D4E5CD] sm:col-span-2"
+              className="flex items-center justify-between rounded-[20px] border border-[rgba(4,39,24,0.08)] bg-[var(--act-wash-blue)] p-5 transition-colors hover:bg-[var(--act-wash-sky)] sm:col-span-2"
             >
               <div>
                 <h4 className="text-sm font-semibold text-[var(--act-ink)]">Latihan interview</h4>

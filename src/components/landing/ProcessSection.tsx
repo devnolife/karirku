@@ -17,6 +17,8 @@ interface ProcessStep {
   description: string;
   features: string[];
   image: string;
+  accentCls: string;
+  tileCls: string;
   icon: (className: string) => ReactNode;
 }
 
@@ -103,6 +105,8 @@ const steps: ProcessStep[] = [
       "Portofolio dan sertifikat dalam satu tempat",
     ],
     image: "/images/P01-Process-img-01.png",
+    accentCls: "text-brand-600",
+    tileCls: "border-brand-600/20 bg-brand-600/5",
     icon: userRoundIcon,
   },
   {
@@ -116,6 +120,8 @@ const steps: ProcessStep[] = [
       "Lebih dipercaya oleh perusahaan",
     ],
     image: "/images/P01-Process-img-01.png",
+    accentCls: "text-teal-600",
+    tileCls: "border-teal-600/20 bg-teal-600/5",
     icon: badgeCheckIcon,
   },
   {
@@ -129,6 +135,8 @@ const steps: ProcessStep[] = [
       "Notifikasi saat ada peluang baru",
     ],
     image: "/images/P01-Process-img-01.png",
+    accentCls: "text-violet-600",
+    tileCls: "border-violet-600/20 bg-violet-600/5",
     icon: zapIcon,
   },
   {
@@ -142,6 +150,8 @@ const steps: ProcessStep[] = [
       "Pantau status lamaran secara real-time",
     ],
     image: "/images/P01-Process-img-01.png",
+    accentCls: "text-blue-600",
+    tileCls: "border-blue-600/20 bg-blue-600/5",
     icon: sendIcon,
   },
 ];
@@ -149,7 +159,7 @@ const steps: ProcessStep[] = [
 function CheckItem({ label }: { label: string }) {
   return (
     <motion.div className="flex items-center gap-3" {...fadeUp}>
-      <div className="w-5 h-5 rounded-full bg-[#198F38]/10 flex items-center justify-center shrink-0">
+      <div className="w-5 h-5 rounded-full bg-brand-600/10 flex items-center justify-center shrink-0">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -160,12 +170,12 @@ function CheckItem({ label }: { label: string }) {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="lucide lucide-check w-3 h-3 text-[#198F38] stroke-[3px]"
+          className="lucide lucide-check w-3 h-3 text-brand-600 stroke-[3px]"
         >
           <path d="M20 6 9 17l-5-5"></path>
         </svg>
       </div>
-      <span className="text-[#042718] font-inter text-base font-medium leading-6 tracking-[-0.3px]">
+      <span className="text-brand-950 font-inter text-base font-medium leading-6 tracking-[-0.3px]">
         {label}
       </span>
     </motion.div>
@@ -185,7 +195,7 @@ export function ProcessSection() {
         <div className="flex flex-col items-start gap-12 lg:gap-16">
           <div className="flex flex-col items-start">
             <motion.div
-              className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#198F38]/10 bg-[#198F38]/5 whitespace-nowrap mb-6"
+              className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand-600/10 bg-brand-600/5 whitespace-nowrap mb-6"
               {...fadeUp}
             >
               <svg
@@ -198,7 +208,7 @@ export function ProcessSection() {
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="lucide lucide-sparkles w-4 h-4 text-[#198F38]"
+                className="lucide lucide-sparkles w-4 h-4 text-brand-600"
               >
                 <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path>
                 <path d="M20 3v4"></path>
@@ -206,12 +216,12 @@ export function ProcessSection() {
                 <path d="M4 17v2"></path>
                 <path d="M5 18H3"></path>
               </svg>
-              <span className="text-[#198F38] text-center font-inter text-base font-normal leading-6 tracking-[-0.3px]">
+              <span className="text-brand-600 text-center font-inter text-base font-normal leading-6 tracking-[-0.3px]">
                 Cara Kerja
               </span>
             </motion.div>
             <motion.h2
-              className="text-[#042718] font-onest text-[32px] sm:text-[44px] lg:text-[52px] font-semibold leading-tight lg:leading-[58px] tracking-[-1.2px] lg:tracking-[-1.8px] w-full lg:max-w-[556px] text-left"
+              className="text-brand-950 font-onest text-[32px] sm:text-[44px] lg:text-[52px] font-semibold leading-tight lg:leading-[58px] tracking-[-1.2px] lg:tracking-[-1.8px] w-full lg:max-w-[556px] text-left"
               {...fadeUp}
             >
               Kelola karirmu
@@ -240,14 +250,14 @@ export function ProcessSection() {
                     >
                       {s.icon(
                         `w-[22px] h-[22px] ${
-                          isActive ? "text-[#198F38]" : "text-[#042718]/60"
+                          isActive ? s.accentCls : "text-brand-950/60"
                         }`
                       )}
                       <span
                         className={`font-inter text-base sm:text-[18px] leading-[28px] whitespace-nowrap ${
                           isActive
-                            ? "text-[#198F38] font-medium"
-                            : "text-[#042718]/60 font-normal"
+                            ? `${s.accentCls} font-medium`
+                            : "text-brand-950/60 font-normal"
                         }`}
                       >
                         {s.tabLabel}
@@ -258,25 +268,25 @@ export function ProcessSection() {
               </motion.div>
             </div>
             <div className="w-full">
-              <div className="w-full bg-white rounded-[32px] border border-[#042718]/[0.04] shadow-[0_0_20px_0_rgba(4,39,24,0.04)] flex flex-col lg:flex-row items-center justify-between p-6 lg:pt-4 lg:pr-4 lg:pb-4 lg:pl-16 gap-12 lg:gap-0 overflow-hidden">
+              <div className="w-full bg-white rounded-[32px] border border-brand-950/[0.04] shadow-[0_0_20px_0_rgba(4,39,24,0.04)] flex flex-col lg:flex-row items-center justify-between p-6 lg:pt-4 lg:pr-4 lg:pb-4 lg:pl-16 gap-12 lg:gap-0 overflow-hidden">
                 <div
                   key={activeStep}
                   className="w-full lg:w-[534px] flex flex-col items-start text-left"
                 >
                   <motion.div
-                    className="w-16 h-16 rounded-xl border border-[#042718]/10 bg-white shadow-sm flex items-center justify-center p-4 mb-3"
+                    className={`w-16 h-16 rounded-xl border ${step.tileCls} shadow-sm flex items-center justify-center p-4 mb-3`}
                     {...fadeUp}
                   >
-                    {step.icon("w-8 h-8 text-[#198F38]")}
+                    {step.icon(`w-8 h-8 ${step.accentCls}`)}
                   </motion.div>
                   <motion.h3
-                    className="text-[#042718] font-onest text-[28px] lg:text-[34px] font-semibold leading-tight lg:leading-[38px] tracking-[-1px] mb-4"
+                    className="text-brand-950 font-onest text-[28px] lg:text-[34px] font-semibold leading-tight lg:leading-[38px] tracking-[-1px] mb-4"
                     {...fadeUp}
                   >
                     {step.title}
                   </motion.h3>
                   <motion.p
-                    className="text-[#042718] font-inter text-base lg:text-[18px] font-normal leading-relaxed lg:leading-[28px] opacity-80 mb-8"
+                    className="text-brand-950 font-inter text-base lg:text-[18px] font-normal leading-relaxed lg:leading-[28px] opacity-80 mb-8"
                     {...fadeUp}
                   >
                     {step.description}
@@ -288,7 +298,7 @@ export function ProcessSection() {
                   </div>
                   <button
                     type="button"
-                    className="flex items-center gap-3 py-2 rounded-full bg-[#042718] group cursor-pointer relative h-14 transition-all duration-300 flex-row pl-5 pr-2"
+                    className="flex items-center gap-3 py-2 rounded-full bg-brand-950 group cursor-pointer relative h-14 transition-all duration-300 flex-row pl-5 pr-2"
                   >
                     <span className="font-inter text-base lg:text-[18px] font-medium leading-[28px] text-white">
                       Coba Gratis
@@ -305,7 +315,7 @@ export function ProcessSection() {
                           strokeWidth="2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          className="lucide lucide-arrow-up-right w-4 h-4 text-[#042718]"
+                          className="lucide lucide-arrow-up-right w-4 h-4 text-brand-950"
                         >
                           <path d="M7 7h10v10"></path>
                           <path d="M7 17 17 7"></path>

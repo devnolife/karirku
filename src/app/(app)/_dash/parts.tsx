@@ -81,8 +81,14 @@ export function ReadinessCard({ score, last }: { score: number; last: number }) 
       <div className="mt-5 flex items-center gap-5">
         <div className="relative h-[122px] w-[122px] flex-none">
           <svg viewBox="0 0 128 128" className="h-full w-full -rotate-90">
+            <defs>
+              <linearGradient id="readiness-ring" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="var(--act-sky-bright)" />
+                <stop offset="100%" stopColor="var(--act-sky-deep)" />
+              </linearGradient>
+            </defs>
             <circle cx="64" cy="64" r={r} fill="none" stroke="rgba(4,39,24,0.1)" strokeWidth="10" />
-            <circle cx="64" cy="64" r={r} fill="none" stroke="#198F38" strokeWidth="10" strokeDasharray={`${dash} ${c}`} strokeLinecap="round" />
+            <circle cx="64" cy="64" r={r} fill="none" stroke="url(#readiness-ring)" strokeWidth="10" strokeDasharray={`${dash} ${c}`} strokeLinecap="round" />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="act-display text-4xl text-[var(--act-ink)]">{score}</span>
@@ -102,7 +108,7 @@ export function ReadinessCard({ score, last }: { score: number; last: number }) 
 }
 
 /* ---------------- Skill bar ---------------- */
-export function SkillBar({ skill, tone = "blue" }: { skill: SkillView; tone?: "blue" | "iris" }) {
+export function SkillBar({ skill, tone = "green" }: { skill: SkillView; tone?: "green" | "blue" | "iris" }) {
   const pct = Math.min(100, (skill.current / skill.required) * 100);
   const gap = Math.max(0, skill.required - skill.current);
   const critical = gap > 25;
@@ -122,7 +128,7 @@ export function SkillBar({ skill, tone = "blue" }: { skill: SkillView; tone?: "b
       </div>
       {gap > 0 && (
         <p className="mt-1.5 text-[11px] font-medium text-[var(--act-graphite)]">
-          {critical ? <span className="text-[var(--act-magenta)]">prioritas tinggi · </span> : ""}gap {gap}
+          {critical ? <span className="text-amber-700">prioritas tinggi · </span> : ""}gap {gap}
         </p>
       )}
     </div>
@@ -133,7 +139,7 @@ export function SkillBar({ skill, tone = "blue" }: { skill: SkillView; tone?: "b
 export function MilestoneRow({ milestone: m }: { milestone: MilestoneView }) {
   const statusConfig = {
     done: { text: "Done", chip: "act-chip-green", badge: "bg-[linear-gradient(140deg,#34d399,#059669)] text-white" },
-    in_progress: { text: "In progress", chip: "act-chip-blue", badge: "bg-[linear-gradient(140deg,#22C55E,var(--act-blue))] text-white" },
+    in_progress: { text: "In progress", chip: "act-chip-blue", badge: "bg-[linear-gradient(140deg,#60A5FA,var(--act-info))] text-white" },
     upcoming: { text: "Upcoming", chip: "act-chip-mute", badge: "bg-[var(--act-mist)] text-[var(--act-graphite)] border border-[rgba(15,23,42,0.1)]" },
   }[m.status];
   return (
@@ -162,7 +168,7 @@ export function MilestoneRow({ milestone: m }: { milestone: MilestoneView }) {
 
 /* ---------------- Job row ---------------- */
 export function JobRow({ job: j }: { job: JobView }) {
-  const matchClass = j.matchPct >= 80 ? "text-[var(--act-magenta)]" : j.matchPct >= 70 ? "text-[var(--act-iris)]" : "text-[var(--act-graphite)]";
+  const matchClass = j.matchPct >= 80 ? "text-[var(--act-green)]" : j.matchPct >= 70 ? "text-amber-600" : "text-[var(--act-graphite)]";
   return (
     <li className="act-rowhover grid grid-cols-12 items-center gap-3 px-5 py-4">
       <div className="col-span-2">
@@ -171,7 +177,7 @@ export function JobRow({ job: j }: { job: JobView }) {
       </div>
       <div className="col-span-8 min-w-0">
         <h4 className="truncate font-semibold text-[var(--act-ink)]">
-          <Link href={`/jobs/${j.id}`} className="hover:text-[var(--act-magenta)] hover:underline">{j.title}</Link>
+          <Link href={`/jobs/${j.id}`} className="hover:text-[var(--act-green)] hover:underline">{j.title}</Link>
         </h4>
         <p className="text-xs text-[var(--act-graphite)]">
           <span className="font-semibold text-[var(--act-charcoal)]">{j.company}</span> · {j.location}
@@ -216,18 +222,18 @@ export function MarketChart({ data }: { data: { label: string; value: number }[]
       <svg viewBox={`0 0 ${w} ${h}`} className="h-28 w-full" aria-label="Market trend">
         <defs>
           <linearGradient id="chartArea" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--act-magenta)" stopOpacity="0.22" />
-            <stop offset="100%" stopColor="var(--act-magenta)" stopOpacity="0" />
+            <stop offset="0%" stopColor="var(--act-info)" stopOpacity="0.22" />
+            <stop offset="100%" stopColor="var(--act-info)" stopOpacity="0" />
           </linearGradient>
           <linearGradient id="chartLine" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#F59E0B" />
-            <stop offset="100%" stopColor="var(--act-magenta)" />
+            <stop offset="0%" stopColor="#60A5FA" />
+            <stop offset="100%" stopColor="var(--act-info)" />
           </linearGradient>
         </defs>
         <path d={area} fill="url(#chartArea)" />
         <path d={path} fill="none" stroke="url(#chartLine)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         {points.map(([x, y], i) => (
-          <circle key={i} cx={x} cy={y} r={i === points.length - 1 ? 4.5 : 0} fill="var(--act-magenta)" stroke="#fff" strokeWidth="2" />
+          <circle key={i} cx={x} cy={y} r={i === points.length - 1 ? 4.5 : 0} fill="var(--act-info)" stroke="#fff" strokeWidth="2" />
         ))}
       </svg>
       <div className="mt-1 flex justify-between text-[10px] font-medium text-[var(--act-graphite)]">
@@ -240,9 +246,9 @@ export function MarketChart({ data }: { data: { label: string; value: number }[]
 /* ---------------- Course row ---------------- */
 export function CourseRow({ course: c, idx }: { course: CourseView; idx: number }) {
   const tiles = [
-    "bg-[linear-gradient(140deg,#22C55E,var(--act-blue))]",
-    "bg-[linear-gradient(140deg,#14B8A6,var(--act-iris))]",
-    "bg-[linear-gradient(140deg,#F59E0B,var(--act-magenta))]",
+    "bg-[linear-gradient(140deg,#22C55E,var(--act-green))]",
+    "bg-[linear-gradient(140deg,#A78BFA,var(--act-violet))]",
+    "bg-[linear-gradient(140deg,#60A5FA,var(--act-info))]",
     "bg-[linear-gradient(140deg,#34d399,#059669)]",
     "bg-[linear-gradient(140deg,#fbbf24,#d97706)]",
   ];

@@ -16,6 +16,7 @@ interface StatCard {
   stat: string;
   statLabel: string;
   bgColor: string;
+  statCls: string;
 }
 
 const statCards: StatCard[] = [
@@ -26,7 +27,8 @@ const statCards: StatCard[] = [
       "Profil terverifikasi, readiness score, dan AI matching membantu tim rekrutmen menemukan talenta yang tepat tanpa menyaring ratusan CV secara manual.",
     stat: "42%",
     statLabel: "Lebih cepat menemukan kandidat siap kerja",
-    bgColor: "bg-[#D2DDEA]",
+    bgColor: "bg-[var(--act-wash-lilac)]",
+    statCls: "text-brand-600",
   },
   {
     logoAlt: "Catalyst",
@@ -35,7 +37,8 @@ const statCards: StatCard[] = [
       "Setiap pelamar datang dengan skill yang sudah tervalidasi dan portofolio nyata, sehingga proses seleksi langsung fokus pada talenta paling potensial.",
     stat: "34%",
     statLabel: "Peningkatan kualitas pelamar di setiap lowongan",
-    bgColor: "bg-[#EBE3D2]",
+    bgColor: "bg-[var(--act-wash-petal)]",
+    statCls: "text-violet-600",
   },
   {
     logoAlt: "Naxus",
@@ -44,7 +47,8 @@ const statCards: StatCard[] = [
       "Pipeline rekrutmen terstruktur dengan shortlist otomatis dan insight kandidat real-time untuk keputusan hiring yang lebih cepat dan akurat.",
     stat: "26%",
     statLabel: "Pengurangan waktu screening kandidat",
-    bgColor: "bg-[#D4E5CD]",
+    bgColor: "bg-[var(--act-wash-sky)]",
+    statCls: "text-amber-600",
   },
 ];
 
@@ -56,7 +60,7 @@ export function LogosStatsSection() {
           <div className="flex flex-col md:flex-row md:justify-between md:items-end mb-10 md:mb-[64px] gap-8">
             <motion.h1
               {...fadeUp}
-              className="max-w-[584px] text-[36px] md:text-[52px] font-heading font-semibold leading-[42px] md:leading-[58px] tracking-[-1.2px] md:tracking-[-1.8px] text-[#042718]"
+              className="max-w-[584px] text-[36px] md:text-[52px] font-heading font-semibold leading-[42px] md:leading-[58px] tracking-[-1.2px] md:tracking-[-1.8px] text-brand-950"
             >
               Fondasi karir yang lebih cerdas untuk{" "}
               <span className="font-playfair italic text-[rgba(0,0,0,0.40)]">
@@ -66,7 +70,7 @@ export function LogosStatsSection() {
             </motion.h1>
             <motion.button
               {...fadeUp}
-              className="flex items-center h-[56px] min-w-fit w-max bg-[#042718] rounded-full group cursor-pointer transition-colors duration-300 hover:bg-[#063b25] overflow-hidden gap-[12px] pl-[20px] pr-[8px]"
+              className="flex items-center h-[56px] min-w-fit w-max bg-brand-950 rounded-full group cursor-pointer transition-colors duration-300 hover:bg-[#063b25] overflow-hidden gap-[12px] pl-[20px] pr-[8px]"
               tabIndex={0}
             >
               <div className="order-1 font-sans text-[18px] font-medium leading-[28px] text-white whitespace-nowrap">
@@ -83,7 +87,7 @@ export function LogosStatsSection() {
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="lucide lucide-arrow-up-right w-[16px] h-[16px] text-[#042718]"
+                  className="lucide lucide-arrow-up-right w-[16px] h-[16px] text-brand-950"
                 >
                   <path d="M7 7h10v10" />
                   <path d="M7 17 17 7" />
@@ -108,14 +112,14 @@ export function LogosStatsSection() {
                     />
                   </div>
                 </div>
-                <p className="font-sans text-[16px] md:text-[18px] font-medium leading-[24px] md:leading-[28px] text-[#042718] opacity-80 min-h-0 md:min-h-[112px]">
+                <p className="font-sans text-[16px] md:text-[18px] font-medium leading-[24px] md:leading-[28px] text-brand-950 opacity-80 min-h-0 md:min-h-[112px]">
                   {card.description}
                 </p>
                 <div className="mt-12 md:mt-[80px]">
-                  <h2 className="font-heading text-[40px] md:text-[52px] font-semibold leading-[46px] md:leading-[58px] tracking-[-1.2px] md:tracking-[-1.8px] text-[#042718]">
+                  <h2 className={`font-heading text-[40px] md:text-[52px] font-semibold leading-[46px] md:leading-[58px] tracking-[-1.2px] md:tracking-[-1.8px] ${card.statCls}`}>
                     <span>{card.stat}</span>
                   </h2>
-                  <p className="mt-[12px] md:mt-[16px] font-sans text-[16px] md:text-[18px] font-normal leading-[24px] md:leading-[28px] text-[#042718] opacity-80">
+                  <p className="mt-[12px] md:mt-[16px] font-sans text-[16px] md:text-[18px] font-normal leading-[24px] md:leading-[28px] text-brand-950 opacity-80">
                     {card.statLabel}
                   </p>
                 </div>

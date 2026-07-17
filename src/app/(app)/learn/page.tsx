@@ -38,7 +38,7 @@ export default async function LearnPage() {
               {courses.map((course, index) => (
                 <li key={course.id} className="act-card-2 flex min-h-[184px] flex-col p-5 transition-colors hover:border-[rgba(25,143,56,0.25)] hover:bg-[#FAFFFC]">
                   <div className="flex items-start justify-between gap-3">
-                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#D4E5CD] font-semibold text-[var(--act-onyx)]">
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--act-wash-sky)] font-semibold text-[var(--act-onyx)]">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                     {course.priceIdr === 0 ? (
@@ -60,8 +60,8 @@ export default async function LearnPage() {
           )}
         </section>
         <aside className="act-card-2 h-fit overflow-hidden lg:col-span-2">
-          <div className="border-b border-[rgba(4,39,24,0.08)] bg-[#D2DDEA]/45 px-5 py-4">
-            <span className="act-kicker !text-[#38536A]">Arah belajarmu</span>
+          <div className="border-b border-[rgba(4,39,24,0.08)] bg-amber-500/10 px-5 py-4">
+            <span className="act-kicker !text-amber-700">Arah belajarmu</span>
             <h2 className="act-heading mt-1 text-lg text-[var(--act-ink)]">Fokus skill</h2>
           </div>
           {gap.missingNames.length === 0 ? (
@@ -72,7 +72,7 @@ export default async function LearnPage() {
             <ol className="divide-y divide-[rgba(4,39,24,0.08)]">
               {gap.missingNames.slice(0, 6).map((name, i) => (
                 <li key={name} className="flex items-center gap-3 px-5 py-4">
-                  <span className="act-display flex h-7 w-7 items-center justify-center rounded-full bg-[#D4E5CD] text-sm text-[var(--act-onyx)]">{i + 1}</span>
+                  <span className="act-display flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/15 text-sm text-amber-800">{i + 1}</span>
                   <div className="min-w-0">
                     <p className="text-sm font-semibold text-[var(--act-ink)]">{name}</p>
                     <p className="text-xs text-[var(--act-graphite)]">diminta lowongan, belum kamu kuasai</p>

@@ -41,7 +41,7 @@ export function InterviewSimulator() {
           <button
             key={t.key}
             onClick={() => start(t.key)}
-            className="group flex items-center justify-between rounded-[20px] border border-[rgba(4,39,24,0.08)] bg-[#F2FBF6] p-6 text-left transition-colors hover:bg-[#D4E5CD]"
+            className="group flex items-center justify-between rounded-[20px] border border-violet-600/15 bg-violet-50 p-6 text-left transition-colors hover:bg-violet-100"
           >
             <div>
               <h3 className="act-heading text-lg text-[var(--act-ink)]">{t.label}</h3>
@@ -63,7 +63,7 @@ export function InterviewSimulator() {
     const answeredCount = questions.filter((_, i) => (answers[i] ?? "").trim().length > 0).length;
     return (
       <div className="space-y-6">
-        <section className="rounded-[24px] border border-[rgba(4,39,24,0.1)] bg-[#D4E5CD] p-6">
+        <section className="rounded-[24px] border border-[rgba(4,39,24,0.1)] bg-[var(--act-wash-sky)] p-6">
           <span className="act-kicker">Selesai</span>
           <h2 className="act-display mt-2 text-3xl text-[var(--act-ink)]">
             {answeredCount}<span className="text-[var(--act-graphite)]">/{questions.length}</span> dijawab
@@ -79,14 +79,14 @@ export function InterviewSimulator() {
               <span className={`act-chip ${chipFor(q.category)}`}>{q.category}</span>
               <h3 className="mt-3 text-base font-semibold text-[var(--act-ink)]">{q.question}</h3>
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-xl bg-[#F2FBF6] p-3">
+                <div className="rounded-xl bg-brand-50 p-3">
                   <div className="act-kicker !text-[10px]">Jawabanmu</div>
                   <p className="mt-1 text-sm text-[var(--act-charcoal)]">
                     {(answers[i] ?? "").trim() || <span className="text-[var(--act-graphite)]">(kosong)</span>}
                   </p>
                 </div>
-                <div className="rounded-xl border border-[rgba(4,39,24,0.08)] bg-[#D2DDEA] p-3">
-                  <div className="act-kicker !text-[10px]">Contoh jawaban</div>
+                <div className="rounded-xl border border-violet-600/15 bg-violet-600/10 p-3">
+                  <div className="act-kicker !text-[10px] !text-violet-700">Contoh jawaban</div>
                   <p className="mt-1 text-sm text-[var(--act-charcoal)]">{q.sample}</p>
                 </div>
               </div>
@@ -130,7 +130,7 @@ export function InterviewSimulator() {
           <span>Soal {index + 1} / {questions.length}</span>
         </div>
         <div className="act-track mt-2">
-          <i style={{ width: `${progress}%`, background: "var(--act-blue)" }} />
+          <i style={{ width: `${progress}%`, background: "linear-gradient(90deg, #A78BFA, var(--act-violet))" }} />
         </div>
       </div>
 
@@ -145,7 +145,7 @@ export function InterviewSimulator() {
           {showHint ? "Sembunyikan hint" : "Lihat hint"}
         </button>
         {showHint && (
-          <p className="mt-2 rounded-xl bg-[#F2FBF6] p-3 text-sm text-[var(--act-charcoal)]">
+          <p className="mt-2 rounded-xl bg-brand-50 p-3 text-sm text-[var(--act-charcoal)]">
             Hint: {q.hint}
           </p>
         )}
@@ -165,8 +165,8 @@ export function InterviewSimulator() {
           {revealed[index] ? "Sembunyikan contoh jawaban" : "Lihat contoh jawaban"}
         </button>
         {revealed[index] && (
-          <div className="mt-2 rounded-2xl border border-[rgba(4,39,24,0.08)] bg-[#D2DDEA] p-4">
-            <div className="act-kicker !text-[10px]">Contoh jawaban terbaik</div>
+          <div className="mt-2 rounded-2xl border border-violet-600/15 bg-violet-600/10 p-4">
+            <div className="act-kicker !text-[10px] !text-violet-700">Contoh jawaban terbaik</div>
             <p className="mt-1.5 text-sm leading-relaxed text-[var(--act-charcoal)]">{q.sample}</p>
           </div>
         )}

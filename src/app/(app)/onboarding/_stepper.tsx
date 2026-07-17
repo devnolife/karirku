@@ -21,7 +21,7 @@ export function OnboardingStepper({ current }: { current: 1 | 2 | 3 }) {
               href={s.href}
               className={
                 active
-                  ? "flex items-center gap-2 rounded-full bg-[var(--act-onyx)] px-3.5 py-1.5 text-sm font-semibold text-white"
+                  ? "flex items-center gap-2 rounded-full bg-brand-600 px-3.5 py-1.5 text-sm font-semibold text-white"
                   : done
                     ? "flex items-center gap-2 rounded-full bg-[var(--act-sky-50)] px-3.5 py-1.5 text-sm font-semibold text-[var(--act-blue)]"
                     : "flex items-center gap-2 rounded-full bg-[var(--act-mist)] px-3.5 py-1.5 text-sm font-medium text-[var(--act-graphite)]"
@@ -30,7 +30,7 @@ export function OnboardingStepper({ current }: { current: 1 | 2 | 3 }) {
               <span
                 className={
                   active
-                    ? "flex h-5 w-5 items-center justify-center rounded-full bg-white text-[11px] font-bold text-[var(--act-onyx)]"
+                    ? "flex h-5 w-5 items-center justify-center rounded-full bg-white text-[11px] font-bold text-brand-600"
                     : done
                       ? "flex h-5 w-5 items-center justify-center rounded-full bg-[var(--act-blue)] text-[11px] font-bold text-white"
                       : "flex h-5 w-5 items-center justify-center rounded-full border border-[rgba(15,23,42,0.2)] text-[11px] font-bold"

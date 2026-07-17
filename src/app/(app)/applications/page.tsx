@@ -9,7 +9,7 @@ const STATUS_TONE: Record<string, string> = {
   interview: "act-chip-iris",
   offered: "act-chip-green",
   accepted: "act-chip-green",
-  rejected: "act-chip-mute",
+  rejected: "act-chip-rose",
   ghosted: "act-chip-mute",
   withdrawn: "act-chip-mute",
 };
@@ -41,19 +41,19 @@ export default async function ApplicationsPage() {
         <>
           <section aria-label="Ringkasan pipeline" className="grid grid-cols-3 overflow-hidden rounded-[22px] border border-[rgba(4,39,24,0.08)] bg-white shadow-[0_14px_28px_-26px_rgba(4,39,24,0.42)]">
             <div className="border-r border-[rgba(4,39,24,0.08)] px-4 py-4 sm:px-5"><span className="studio-section-kicker">Terkirim</span><p className="act-display mt-2 text-3xl text-[var(--act-ink)]">{apps.length}</p></div>
-            <div className="border-r border-[rgba(4,39,24,0.08)] bg-[#F2FBF6] px-4 py-4 sm:px-5"><span className="studio-section-kicker">Berjalan</span><p className="act-display mt-2 text-3xl text-[var(--act-blue)]">{activeCount}</p></div>
-            <div className="bg-[#D4E5CD] px-4 py-4 sm:px-5"><span className="studio-section-kicker">Hasil positif</span><p className="act-display mt-2 text-3xl text-[var(--act-onyx)]">{outcomeCount}</p></div>
+            <div className="border-r border-[rgba(4,39,24,0.08)] bg-violet-50 px-4 py-4 sm:px-5"><span className="studio-section-kicker !text-violet-700">Berjalan</span><p className="act-display mt-2 text-3xl text-[var(--act-violet)]">{activeCount}</p></div>
+            <div className="bg-[var(--act-wash-sky)] px-4 py-4 sm:px-5"><span className="studio-section-kicker">Hasil positif</span><p className="act-display mt-2 text-3xl text-[var(--act-onyx)]">{outcomeCount}</p></div>
           </section>
           <nav aria-label="Tahap lamaran" className="flex flex-wrap gap-2">
             <span className="rounded-full border border-[rgba(4,39,24,0.08)] bg-white px-3 py-1.5 text-xs font-semibold text-[var(--act-charcoal)]">Semua · {apps.length}</span>
-            <span className="rounded-full bg-[#F2FBF6] px-3 py-1.5 text-xs font-semibold text-[var(--act-blue)]">Dilamar</span>
-            <span className="rounded-full bg-[#D2DDEA] px-3 py-1.5 text-xs font-semibold text-[var(--act-iris)]">Proses</span>
-            <span className="rounded-full bg-[#EBE3D2] px-3 py-1.5 text-xs font-semibold text-[#8A5A18]">Keputusan</span>
+            <span className="rounded-full bg-blue-600/10 px-3 py-1.5 text-xs font-semibold text-blue-700">Dilamar</span>
+            <span className="rounded-full bg-violet-600/10 px-3 py-1.5 text-xs font-semibold text-violet-700">Proses</span>
+            <span className="rounded-full bg-amber-500/15 px-3 py-1.5 text-xs font-semibold text-amber-700">Keputusan</span>
           </nav>
           <section aria-label="Daftar lamaran" className="overflow-hidden rounded-[24px] border border-[rgba(4,39,24,0.08)] bg-white shadow-[0_16px_32px_-28px_rgba(4,39,24,0.48)]">
           <ul className="divide-y divide-[rgba(4,39,24,0.08)]">
             {apps.map((a) => (
-              <li key={a.id} className="grid grid-cols-12 items-center gap-3 px-5 py-5 transition-colors hover:bg-[#F2FBF6] md:px-6">
+              <li key={a.id} className="grid grid-cols-12 items-center gap-3 px-5 py-5 transition-colors hover:bg-brand-50 md:px-6">
                 <div className="col-span-12 md:col-span-6">
                   <span className="studio-section-kicker">Peluang</span>
                   <div className="mt-1 text-[15px] font-semibold text-[var(--act-ink)]">{a.jobTitle}</div>
