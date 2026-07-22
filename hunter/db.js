@@ -113,6 +113,44 @@ function migrate(db) {
   st.run("match_threshold", "60");           // skor minimum untuk auto-apply
   st.run("keywords", JSON.stringify(["full stack","react","next.js","react native","node","typescript","python","fastapi","mobile","frontend","backend","javascript","ai","llm"]));
   st.run("avoid_keywords", JSON.stringify(["wordpress","shopify","salesforce","magento",".net","c#","c++","angular","java ","kotlin","flutter only","unity","devops only"]));
+
+  // idempotent column additions (SQLite has no IF NOT EXISTS for columns)
+  const jobCols = db.prepare(`PRAGMA table_info(jobs)`).all().map((c) => c.name);
+  if (!jobCols.includes("image_path")) {
+    db.exec(`ALTER TABLE jobs ADD COLUMN image_path TEXT`); // screenshot for manually added jobs
+  }
+
+  // operator profile (data diri) — single JSON doc consumed by the apply engine / LLM
+  st.run("profile", JSON.stringify({
+    full_name: "Andi Agung Dwi Arya",
+    headline: "Full-Stack & AI/ML Engineer",
+    email: "andi_agung@student.unismuh.ac.id",
+    phone: "",
+    location: "Makassar, Indonesia",
+    birth_date: "",
+    links: {
+      github: "https://github.com/devnolife",
+      linkedin: "https://www.linkedin.com/in/andi-agung-63522b224/",
+      portfolio: "",
+      jobstreet: "https://id.jobstreet.com/id/profile/me",
+    },
+    summary: "Full-Stack & AI/ML Engineer, 5+ tahun ngoding harian sejak 2021, 205+ repo original. Flagship: Saku Sultan (e-wallet React Native/Expo, live di App Store & Play Store).",
+    education: { degree: "S1 (Sarjana)", institution: "Universitas Muhammadiyah Makassar", field: "Informatika", grad_year: "" },
+    years_experience_total: 5,
+    years_experience_mobile: 4,
+    skills: ["react", "next.js", "react native", "expo", "node", "typescript", "python", "fastapi", "go", "postgresql", "llm", "rag"],
+    flagship_projects: [
+      { name: "Saku Sultan", url: "https://play.google.com/store/apps/details?id=com.saku_sultan", note: "E-wallet RN/Expo, live App Store + Play Store" },
+      { name: "SINTEKMu", url: "https://simtekmu.teknik.unismuh.ac.id", note: "Dashboard enterprise Next.js" },
+      { name: "fokusngajar.id", url: "https://fokusngajar.id", note: "Produk LLM production (backend Go)" },
+    ],
+    screening: {
+      salary_floor_juta: 10,
+      english_level: "menulis dengan mahir",
+      languages: ["Indonesia", "Inggris"],
+      remote_preference: "remote",
+    },
+  }));
 }
 
 // ---- helpers -------------------------------------------------------------

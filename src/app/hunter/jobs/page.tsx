@@ -21,7 +21,7 @@ export default async function JobsQueue({
   const jobs = hunterDb()
     .getDb()
     .prepare(
-      `SELECT id, platform, title, company, url, salary_min, salary_max, currency, remote, match_score, status, skip_reason
+      `SELECT id, platform, title, company, url, salary_min, salary_max, currency, remote, match_score, status, skip_reason, image_path
        FROM jobs ${where.length ? "WHERE " + where.join(" AND ") : ""}
        ORDER BY match_score DESC, found_at DESC LIMIT 150`
     )
@@ -47,14 +47,19 @@ export default async function JobsQueue({
     <div className="space-y-5">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <h1 className="text-2xl font-extrabold">Jobs Queue ({jobs.length})</h1>
-        <ActionButton action="scan" label="Scan All" />
+        <div className="flex gap-2">
+          <Link href="/hunter/jobs/new" className="px-3 py-1.5 rounded-md bg-emerald-600 hover:bg-emerald-700 text-sm font-semibold">
+            ＋ Add Job
+          </Link>
+          <ActionButton action="scan" label="Scan All" />
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-4">
         <div className="flex gap-1.5 items-center">
           <span className="text-xs text-slate-500 mr-1">Platform:</span>
           {filters("platform", "", platform, "all")}
-          {["jobstreet", "freelancer", "linkedin", "upwork"].map((p) => filters("platform", p, platform, p))}
+          {["jobstreet", "freelancer", "linkedin", "upwork", "manual"].map((p) => filters("platform", p, platform, p))}
         </div>
         <div className="flex gap-1.5 items-center">
           <span className="text-xs text-slate-500 mr-1">Status:</span>
@@ -86,6 +91,14 @@ export default async function JobsQueue({
                 {j.company ? ` · ${j.company}` : ""}
                 {j.salary_min ? ` · ${j.currency === "USD" ? "$" : "Rp "}${j.salary_min}${j.salary_max ? "–" + j.salary_max : ""}${j.currency === "USD" ? "" : " jt"}` : ""}
                 {j.remote ? " · remote" : ""}
+                {j.image_path ? (
+                  <>
+                    {" · "}
+                    <a href={`/api/hunter/uploads/${j.image_path}`} target="_blank" className="text-amber-400 hover:underline">
+                      📷 screenshot
+                    </a>
+                  </>
+                ) : null}
               </div>
               {j.skip_reason ? <div className="text-xs text-red-400/80 mt-1">skip: {String(j.skip_reason)}</div> : null}
             </div>

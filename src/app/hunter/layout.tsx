@@ -12,6 +12,7 @@ const NAV = [
   { href: "/hunter", label: "Overview" },
   { href: "/hunter/jobs", label: "Jobs Queue" },
   { href: "/hunter/applications", label: "Applications" },
+  { href: "/hunter/profile", label: "Data Diri" },
   { href: "/hunter/settings", label: "Settings" },
 ];
 
