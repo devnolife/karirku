@@ -14,9 +14,12 @@ export type ApplyActionResult =
  * Server action dipanggil dari tombol Lamar. Native → catat + revalidate.
  * Eksternal → catat lalu redirect ke URL lamaran asli.
  */
-export async function applyAction(jobId: string): Promise<ApplyActionResult> {
+export async function applyAction(
+  jobId: string,
+  impressionId?: string,
+): Promise<ApplyActionResult> {
   const user = await requireUser();
-  const res = await applyToJob(user.id, jobId);
+  const res = await applyToJob(user.id, jobId, impressionId);
 
   if (!res.ok) {
     if (res.reason === "already_applied") return { status: "already" };

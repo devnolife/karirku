@@ -2,21 +2,16 @@ import { requireUser } from "@/lib/auth";
 import { getUserApplications, statusLabel } from "@/server/queries/applications";
 import { PageHeader } from "../_dash/parts";
 import { Empty } from "@/components/ui/empty";
-
-const STATUS_TONE: Record<string, string> = {
-  applied: "act-chip-blue",
-  screened: "act-chip-iris",
-  interview: "act-chip-iris",
-  offered: "act-chip-green",
-  accepted: "act-chip-green",
-  rejected: "act-chip-mute",
-  ghosted: "act-chip-mute",
-  withdrawn: "act-chip-mute",
-};
+import { ApplicationStatusControl } from "./_status-control";
+import { GmailOutcomeAssist } from "./_gmail-assist";
+import { getGmailOutcomeAssist } from "@/server/queries/gmail-outcomes";
 
 export default async function ApplicationsPage() {
   const user = await requireUser();
-  const apps = await getUserApplications(user.id);
+  const [apps, gmailAssist] = await Promise.all([
+    getUserApplications(user.id),
+    getGmailOutcomeAssist(user.id),
+  ]);
   const nativeCount = apps.filter((a) => a.mode === "native").length;
 
   return (
@@ -27,6 +22,8 @@ export default async function ApplicationsPage() {
         meta={`${apps.length} lamaran · ${nativeCount} in-platform`}
         action={<span className="act-chip act-chip-blue">{apps.length} total</span>}
       />
+
+      <GmailOutcomeAssist assist={gmailAssist} />
 
       {apps.length === 0 ? (
         <Empty
@@ -53,13 +50,38 @@ export default async function ApplicationsPage() {
                     <div className="text-xs text-[var(--act-graphite)]">
                       <span className="font-semibold text-[var(--act-charcoal)]">{a.company}</span> · {a.location}
                     </div>
+                    {a.timeline.length > 0 && (
+                      <details className="mt-2 text-[11px] text-[var(--act-graphite)]">
+                        <summary className="cursor-pointer font-semibold text-[var(--act-blue)]">
+                          Riwayat status ({a.timeline.length})
+                        </summary>
+                        <ol className="mt-1.5 space-y-1 border-l border-[rgba(15,23,42,0.12)] pl-3">
+                          {a.timeline.map((event) => (
+                            <li key={event.id}>
+                              <span className="font-semibold text-[var(--act-charcoal)]">
+                                {statusLabel(event.status)}
+                              </span>
+                              {" · "}
+                              {event.occurredAt}
+                              {" · "}
+                              {event.source === "email" ? "saran email" : event.source}
+                              {event.note ? ` — ${event.note}` : ""}
+                            </li>
+                          ))}
+                        </ol>
+                      </details>
+                    )}
                   </div>
                   <div className="col-span-4 md:col-span-2">
                     <span className="act-chip act-chip-mute">{a.mode === "native" ? "In-platform" : "Eksternal"}</span>
                   </div>
                   <div className="col-span-4 text-xs text-[var(--act-graphite)] md:col-span-2">{a.appliedAt}</div>
                   <div className="col-span-4 md:col-span-2">
-                    <span className={`act-chip ${STATUS_TONE[a.status] ?? "act-chip-mute"}`}>{statusLabel(a.status)}</span>
+                    <ApplicationStatusControl
+                      key={`${a.id}-${a.status}`}
+                      applicationId={a.id}
+                      currentStatus={a.status}
+                    />
                   </div>
                   <div className="col-span-12 text-left md:col-span-1 md:text-right">
                     {a.applyUrl ? (

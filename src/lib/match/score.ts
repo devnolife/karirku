@@ -30,7 +30,7 @@ const SKILL_ALIASES: Record<string, string> = {
 };
 
 /** Normalisasi dasar + alias → bentuk kanonik untuk perbandingan. */
-function canonical(skill: string): string {
+export function canonicalSkill(skill: string): string {
   const base = skill.trim().toLowerCase().replace(/\s+/g, " ");
   return SKILL_ALIASES[base] ?? base;
 }
@@ -55,14 +55,14 @@ export interface SkillMatchResult {
  */
 export function skillCoverageScore(userSkills: string[], jobSkills: string[]): SkillMatchResult {
   const userSet = new Set(
-    userSkills.map((s) => canonical(s)).filter((s) => s.length > 0),
+    userSkills.map((s) => canonicalSkill(s)).filter((s) => s.length > 0),
   );
 
   // Dedupe skill lowongan by kanonik, simpan label asli pertama + urutannya.
   const seen = new Set<string>();
   const jobEntries: { label: string; key: string }[] = [];
   for (const raw of jobSkills) {
-    const key = canonical(raw);
+    const key = canonicalSkill(raw);
     if (!key || seen.has(key)) continue;
     seen.add(key);
     jobEntries.push({ label: raw.trim(), key });

@@ -4,6 +4,10 @@ import { QUEUE_NAMES } from "@/lib/queue";
 import { runScrape, type ScrapeJobData } from "@/lib/scraper/run";
 import { handleEmbed, type EmbedData } from "./handlers/embed";
 import { handleEnrichListing, type EnrichListingData } from "./handlers/enrich";
+import {
+  handleMarketIntel,
+  type MarketIntelJobData,
+} from "./handlers/market-intel";
 
 /**
  * BullMQ workers entrypoint.
@@ -23,7 +27,8 @@ const scraperWorker = new Worker<ScrapeJobData>(
     const summary = await runScrape(job.data);
     console.log(
       `[scraper] job ${job.id} done — scanned=${summary.scanned} found=${summary.found} ` +
-        `enqueued=${summary.enqueued} duplicates=${summary.duplicates} errors=${summary.errors.length}`,
+        `enqueued=${summary.enqueued} duplicates=${summary.duplicates} ` +
+        `deactivated=${summary.deactivated} errors=${summary.errors.length}`,
     );
     if (summary.errors.length) {
       for (const e of summary.errors) console.warn(`[scraper]   ⚠ ${e.portal}: ${e.message}`);
@@ -51,11 +56,16 @@ const embedWorker = new Worker<EmbedData>(
   { connection, concurrency: 4 }
 );
 
-const marketIntelWorker = new Worker(
+const marketIntelWorker = new Worker<MarketIntelJobData>(
   QUEUE_NAMES.marketIntel,
   async (job) => {
     console.log(`[market-intel] job ${job.id}`, job.data);
-    // TODO: aggregate role stats
+    const summary = await handleMarketIntel(job.data);
+    console.log(
+      `[market-intel] job ${job.id} done — date=${summary.snapshotDate} ` +
+        `jobs=${summary.jobs} groups=${summary.groups}`,
+    );
+    return summary;
   },
   { connection, concurrency: 1 }
 );

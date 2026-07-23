@@ -58,6 +58,7 @@ export default async function JobsPage({
   const goal = await getActiveGoal(user.id);
   const [jobs, market] = await Promise.all([
     getJobMatches(user.id, limit, {
+      surface: "jobs",
       region: activeTab.region,
       q: q || undefined,
       type,
@@ -66,8 +67,17 @@ export default async function JobsPage({
     }),
     getRoleMarket(goal?.targetRole ?? null),
   ]);
-  const roleLabel = goal?.targetRole?.split(" ").slice(0, 2).join(" ") ?? "Semua role";
+  const roleLabel = market.roleName;
   const hasFilter = Boolean(q || type || level || salary);
+  const formatMarketSalary = (value: number | null) =>
+    value === null
+      ? "belum cukup data"
+      : new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+          maximumFractionDigits: 0,
+          notation: "compact",
+        }).format(value);
 
   return (
     <div className="act-rise app-page space-y-8">
@@ -75,7 +85,11 @@ export default async function JobsPage({
         kicker="Market"
         title={<>Job match <span className="text-[var(--act-magenta)]">& trend.</span></>}
         meta="Lowongan Indonesia diutamakan, lalu remote & global"
-        action={<span className="act-chip act-chip-mute">{market.openPositions} posisi</span>}
+        action={
+          <span className={`act-chip ${market.ready ? "act-chip-green" : "act-chip-amber"}`}>
+            {market.ready ? `${market.openPositions} posisi` : "data pasar terbatas"}
+          </span>
+        }
       />
 
       {/* Search */}
@@ -181,14 +195,50 @@ export default async function JobsPage({
             className="act-bezel-core overflow-hidden p-5"
             style={{ "--core-bg": "radial-gradient(120% 130% at 50% 0%, #fbf3e4, var(--act-wash-petal) 86%)" } as React.CSSProperties}
           >
-            <span className="act-kicker">Demand by level</span>
+            <span className="act-kicker">Market intelligence</span>
             <h3 className="act-heading mt-2 text-2xl">{roleLabel}</h3>
-            <p className="mt-1 text-sm text-[var(--act-graphite)]">Sebaran {market.openPositions} posisi</p>
-            <MarketChart data={market.trend} />
-            <div className="mt-3 flex items-center justify-between border-t border-[rgba(15,23,42,0.07)] pt-3">
-              <span className="act-kicker">Posisi aktif</span>
-              <span className="act-chip act-chip-green">{market.openPositions}</span>
+            <p className="mt-1 text-sm text-[var(--act-graphite)]">
+              {market.snapshotDate
+                ? `Snapshot ${market.snapshotDate} · ≥${market.sourceCount} sumber`
+                : "Belum ada snapshot pasar"}
+            </p>
+            {market.trend.length > 0 ? (
+              <MarketChart data={market.trend} />
+            ) : (
+              <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+                {market.message}
+              </div>
+            )}
+            <div className="mt-4 grid grid-cols-2 gap-3 border-t border-[rgba(15,23,42,0.07)] pt-4">
+              <div>
+                <span className="act-kicker !text-[10px]">Posisi aktif</span>
+                <p className="mt-1 font-semibold text-[var(--act-ink)]">{market.openPositions}</p>
+              </div>
+              <div>
+                <span className="act-kicker !text-[10px]">Median gaji</span>
+                <p className="mt-1 text-sm font-semibold text-[var(--act-ink)]">
+                  {formatMarketSalary(market.salaryP50)}
+                </p>
+                <p className="text-[10px] text-[var(--act-graphite)]">
+                  {market.salarySampleSize} sampel
+                </p>
+              </div>
             </div>
+            {market.topSkills.length > 0 && (
+              <div className="mt-4">
+                <span className="act-kicker !text-[10px]">Skill paling diminta</span>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {market.topSkills.map((skill) => (
+                    <span key={skill.name} className="act-chip act-chip-mute">
+                      {skill.name} · {skill.count}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {market.message && (
+              <p className="mt-4 text-xs text-[var(--act-graphite)]">{market.message}</p>
+            )}
           </div>
         </div>
       </div>

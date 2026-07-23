@@ -10,6 +10,12 @@
  */
 
 import { prisma } from "@/lib/db";
+import {
+  highestStageReached,
+  statusLabel,
+  type ApplicationStatusValue,
+} from "@/lib/applications/status";
+import { markRecommendationInteraction } from "@/server/services/recommendation-interactions";
 
 const EXTERNAL_SOURCES = new Set(["greenhouse", "lever", "ashby", "kalibrr", "http"]);
 
@@ -19,7 +25,11 @@ export type ApplyResult =
   | { ok: false; reason: "not_found" | "already_applied" };
 
 /** Lamar ke sebuah job. Idempoten — tolak kalau sudah pernah melamar. */
-export async function applyToJob(userId: string, jobId: string): Promise<ApplyResult> {
+export async function applyToJob(
+  userId: string,
+  jobId: string,
+  impressionId?: string,
+): Promise<ApplyResult> {
   const job = await prisma.job.findUnique({
     where: { id: jobId },
     select: { id: true, source: true, sourceUrl: true, companyProfileId: true, isActive: true },
@@ -41,8 +51,29 @@ export async function applyToJob(userId: string, jobId: string): Promise<ApplyRe
       jobId,
       mode: isNative ? "native" : "external",
       status: "applied",
+      events: {
+        create: {
+          status: "applied",
+          source: "system",
+          note: "Lamaran dicatat oleh Karirku.",
+        },
+      },
     },
   });
+  try {
+    await markRecommendationInteraction(
+      userId,
+      jobId,
+      "apply",
+      impressionId,
+    );
+  } catch (error) {
+    console.warn(
+      `[recommendation] gagal mencatat apply: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    );
+  }
 
   if (isNative) return { ok: true, mode: "native" };
   if (isExternal && job.sourceUrl) {
@@ -61,22 +92,16 @@ export type ApplicationRow = {
   status: string;
   appliedAt: string;
   applyUrl: string | null;
+  timeline: Array<{
+    id: string;
+    status: string;
+    source: "manual" | "email" | "system";
+    note: string | null;
+    occurredAt: string;
+  }>;
 };
 
-const STATUS_LABEL: Record<string, string> = {
-  applied: "Dilamar",
-  screened: "Di-screening",
-  interview: "Interview",
-  offered: "Ditawari",
-  accepted: "Diterima",
-  rejected: "Ditolak",
-  ghosted: "Tanpa kabar",
-  withdrawn: "Dibatalkan",
-};
-
-export function statusLabel(status: string): string {
-  return STATUS_LABEL[status] ?? status;
-}
+export { statusLabel };
 
 /** Daftar lamaran user (terbaru dulu). */
 export async function getUserApplications(userId: string): Promise<ApplicationRow[]> {
@@ -86,6 +111,10 @@ export async function getUserApplications(userId: string): Promise<ApplicationRo
     include: {
       job: {
         select: { title: true, company: true, location: true, source: true, sourceUrl: true },
+      },
+      events: {
+        orderBy: { occurredAt: "desc" },
+        take: 5,
       },
     },
   });
@@ -99,7 +128,81 @@ export async function getUserApplications(userId: string): Promise<ApplicationRo
     status: a.status,
     appliedAt: a.appliedAt.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }),
     applyUrl: EXTERNAL_SOURCES.has(a.job.source) ? a.job.sourceUrl : null,
+    timeline: a.events.map((event) => ({
+      id: event.id,
+      status: event.status,
+      source: event.source,
+      note: event.note,
+      occurredAt: event.occurredAt.toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }),
+    })),
   }));
+}
+
+export type UpdateApplicationStatusResult =
+  | { ok: true }
+  | { ok: false; reason: "not_found" };
+
+/** Update snapshot + append immutable event, always scoped to the owner. */
+export async function updateApplicationStatus(
+  userId: string,
+  applicationId: string,
+  status: ApplicationStatusValue,
+  note?: string,
+): Promise<UpdateApplicationStatusResult> {
+  return prisma.$transaction(async (tx) => {
+    const locked = await tx.$queryRaw<Array<{ id: string }>>`
+      SELECT id
+      FROM applications
+      WHERE id = ${applicationId}::uuid AND user_id = ${userId}::uuid
+      FOR UPDATE
+    `;
+    if (!locked.length) return { ok: false, reason: "not_found" } as const;
+
+    const application = await tx.application.findUnique({
+      where: { id: applicationId },
+      include: { outcome: true },
+    });
+    if (!application) return { ok: false, reason: "not_found" } as const;
+
+    const cleanNote = note?.trim().slice(0, 2_000) || null;
+    const stageReached = highestStageReached(
+      application.outcome?.stageReached,
+      status,
+    );
+
+    await tx.application.update({
+      where: { id: application.id },
+      data: {
+        status,
+        events: {
+          create: {
+            status,
+            source: "manual",
+            note: cleanNote,
+            confidence: 1,
+          },
+        },
+        outcome: {
+          upsert: {
+            create: {
+              stageReached,
+              feedback: cleanNote,
+            },
+            update: {
+              stageReached,
+              ...(cleanNote ? { feedback: cleanNote } : {}),
+            },
+          },
+        },
+      },
+    });
+
+    return { ok: true } as const;
+  });
 }
 
 /** Set jobId yang sudah dilamar user (untuk tandai tombol "Sudah dilamar"). */

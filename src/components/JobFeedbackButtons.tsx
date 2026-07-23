@@ -7,7 +7,15 @@ import { useState, useTransition } from "react";
  * Tombol feedback lowongan: simpan / sembunyikan / tidak relevan.
  * Feedback jadi sinyal ranking — rekomendasi belajar dari data, bukan menebak.
  */
-export function JobFeedbackButtons({ jobId, saved }: { jobId: string; saved?: boolean }) {
+export function JobFeedbackButtons({
+  jobId,
+  impressionId,
+  saved,
+}: {
+  jobId: string;
+  impressionId?: string;
+  saved?: boolean;
+}) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [isSaved, setIsSaved] = useState(!!saved);
@@ -16,7 +24,7 @@ export function JobFeedbackButtons({ jobId, saved }: { jobId: string; saved?: bo
     await fetch(`/api/jobs/${jobId}/feedback`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action }),
+      body: JSON.stringify({ action, impressionId }),
     });
     startTransition(() => router.refresh());
   }

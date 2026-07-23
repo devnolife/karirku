@@ -8,6 +8,7 @@
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { corsJson, corsPreflight, unauthorized, userFromRequest } from "../_lib";
+import { markRecommendationInteraction } from "@/server/services/recommendation-interactions";
 
 const ReportSchema = z.object({
   url: z.url(),
@@ -64,9 +65,26 @@ export async function POST(req: Request) {
           });
           if (!existing) {
             await prisma.application.create({
-              data: { userId, jobId: job.id, mode: "external", status: "applied" },
+              data: {
+                userId,
+                jobId: job.id,
+                mode: "external",
+                status: "applied",
+                events: {
+                  create: {
+                    status: "applied",
+                    source: "system",
+                    note: "Submit terdeteksi oleh extension Karirku.",
+                  },
+                },
+              },
             });
           }
+          await markRecommendationInteraction(
+            userId,
+            job.id,
+            "apply",
+          );
           applicationRecorded = true;
         }
       }

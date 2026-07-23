@@ -69,3 +69,6 @@ next-env.d.ts
 # Agent skills (local only, do not push)
 .agents/
 skills-lock.json
+
+# graphify knowledge-graph cache (generated, local only)
+/graphify-out/

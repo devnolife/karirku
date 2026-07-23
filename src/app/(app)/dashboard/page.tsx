@@ -27,7 +27,7 @@ async function JobseekerOverview() {
     getReadiness(user.id),
     getSkillGap(user.id),
     getRoadmap(user.id),
-    getJobMatches(user.id, 1),
+    getJobMatches(user.id, 1, { surface: "dashboard" }),
     getRecommendedCourses(user.id, 1),
   ]);
 

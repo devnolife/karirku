@@ -7,6 +7,7 @@ import { prisma } from "@/lib/db";
 import { skillCoverageScore } from "@/lib/match/score";
 import { readinessScore, type ReadinessBand } from "@/lib/match/readiness";
 import { PIPELINE_OPTIONS, type PipelineStatus } from "@/lib/pipeline";
+import { highestStageReached } from "@/lib/applications/status";
 
 const JOB_TYPE_LABEL: Record<string, string> = {
   fulltime: "Full-time",
@@ -402,15 +403,45 @@ export async function updateApplicationStatus(
   const cpId = await companyProfileId(userId);
   if (!cpId) return false;
 
-  const app = await prisma.application.findFirst({
-    where: { id: applicationId, job: { companyProfileId: cpId } },
-    select: { id: true },
+  return prisma.$transaction(async (tx) => {
+    const locked = await tx.$queryRaw<Array<{ id: string }>>`
+      SELECT a.id
+      FROM applications a
+      INNER JOIN jobs j ON j.id = a.job_id
+      WHERE a.id = ${applicationId}::uuid
+        AND j.company_profile_id = ${cpId}::uuid
+      FOR UPDATE
+    `;
+    if (!locked.length) return false;
+    const application = await tx.application.findUnique({
+      where: { id: applicationId },
+      include: { outcome: true },
+    });
+    if (!application) return false;
+    const stageReached = highestStageReached(
+      application.outcome?.stageReached,
+      status,
+    );
+    await tx.application.update({
+      where: { id: applicationId },
+      data: {
+        status,
+        events: {
+          create: {
+            status,
+            source: "system",
+            confidence: 1,
+            note: "Status diperbarui oleh perusahaan.",
+          },
+        },
+        outcome: {
+          upsert: {
+            create: { stageReached },
+            update: { stageReached },
+          },
+        },
+      },
+    });
+    return true;
   });
-  if (!app) return false;
-
-  await prisma.application.update({
-    where: { id: applicationId },
-    data: { status },
-  });
-  return true;
 }

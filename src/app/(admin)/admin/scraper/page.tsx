@@ -1,8 +1,17 @@
-import { getQueueStats, getRecentIngest } from "@/server/queries/admin";
+import {
+  getAdminJobSources,
+  getQueueStats,
+  getRecentIngest,
+} from "@/server/queries/admin";
 import { PageHead, StatusDot } from "../../_ui";
+import { toggleJobSourceAction } from "@/server/actions/admin";
 
 export default async function AdminScraperPage() {
-  const [queues, ingest] = await Promise.all([getQueueStats(), getRecentIngest(10)]);
+  const [queues, ingest, sources] = await Promise.all([
+    getQueueStats(),
+    getRecentIngest(10),
+    getAdminJobSources(),
+  ]);
 
   const total = queues.reduce(
     (a, q) => ({
@@ -29,6 +38,59 @@ export default async function AdminScraperPage() {
         <Q label="Berjalan" value={total.active} tone="blue" />
         <Q label="Selesai" value={total.completed} tone="green" />
         <Q label="Gagal" value={total.failed} tone="magenta" />
+      </section>
+
+      <section className="act-card-2 overflow-hidden">
+        <div className="flex items-center justify-between border-b border-[rgba(15,23,42,0.07)] px-5 py-3.5">
+          <div>
+            <span className="act-kicker">Job source registry</span>
+            <p className="mt-1 text-xs text-[var(--act-graphite)]">
+              Career page dan ATS publik yang stabil; tanpa bypass anti-bot.
+            </p>
+          </div>
+          <span className="act-chip act-chip-mute">
+            {sources.filter((source) => source.enabled).length}/{sources.length} aktif
+          </span>
+        </div>
+        <ul className="divide-y divide-[rgba(15,23,42,0.07)]">
+          {sources.map((source) => (
+            <li key={source.id} className="grid grid-cols-12 items-center gap-3 px-5 py-4">
+              <div className="col-span-12 min-w-0 md:col-span-5">
+                <p className="truncate text-sm font-semibold text-[var(--act-ink)]">
+                  {source.name}
+                </p>
+                <p className="truncate text-xs text-[var(--act-graphite)]">
+                  {source.provider} · {source.region ?? "region bebas"} · {source.jobCount} job
+                </p>
+              </div>
+              <div className="col-span-6 text-xs text-[var(--act-graphite)] md:col-span-4">
+                {source.lastError ? (
+                  <span className="text-[var(--act-magenta)]" title={source.lastError}>
+                    Error: {source.lastError.slice(0, 70)}
+                  </span>
+                ) : source.lastSuccessAt ? (
+                  <>Sukses {source.lastSuccessAt}</>
+                ) : (
+                  <>Belum pernah scan</>
+                )}
+              </div>
+              <div className="col-span-3 md:col-span-1">
+                <StatusDot
+                  tone={source.enabled ? "green" : "mute"}
+                  label={source.enabled ? "aktif" : "nonaktif"}
+                />
+              </div>
+              <form
+                action={toggleJobSourceAction.bind(null, source.id)}
+                className="col-span-3 text-right md:col-span-2"
+              >
+                <button type="submit" className="act-pill-ghost !px-3 !py-1.5 !text-xs">
+                  {source.enabled ? "Nonaktifkan" : "Aktifkan"}
+                </button>
+              </form>
+            </li>
+          ))}
+        </ul>
       </section>
 
       {/* Per-queue breakdown */}

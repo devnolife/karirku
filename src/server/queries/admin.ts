@@ -163,6 +163,43 @@ export async function getAdminCourses(limit = 30): Promise<AdminCourseRow[]> {
 
 export type QueueStat = { name: string; waiting: number; active: number; completed: number; failed: number };
 
+export type AdminJobSourceRow = {
+  id: string;
+  name: string;
+  provider: string;
+  careersUrl: string;
+  region: string | null;
+  enabled: boolean;
+  lastScanAt: string | null;
+  lastSuccessAt: string | null;
+  lastError: string | null;
+  jobCount: number;
+};
+
+export async function getAdminJobSources(): Promise<AdminJobSourceRow[]> {
+  const sources = await prisma.jobSource.findMany({
+    orderBy: [{ enabled: "desc" }, { name: "asc" }],
+    include: { _count: { select: { jobs: true } } },
+  });
+  const format = (value: Date | null) =>
+    value?.toLocaleString("id-ID", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    }) ?? null;
+  return sources.map((source) => ({
+    id: source.id,
+    name: source.name,
+    provider: source.provider,
+    careersUrl: source.careersUrl,
+    region: source.region,
+    enabled: source.enabled,
+    lastScanAt: format(source.lastScanAt),
+    lastSuccessAt: format(source.lastSuccessAt),
+    lastError: source.lastError,
+    jobCount: source._count.jobs,
+  }));
+}
+
 /** Statistik antrian BullMQ (real). Aman kalau Redis tidak tersedia → 0. */
 export async function getQueueStats(): Promise<QueueStat[]> {
   try {

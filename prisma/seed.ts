@@ -7,6 +7,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { seedUsers } from "./seed/users";
 import { seedMarketplace } from "./seed/marketplace";
 import { seedCourses } from "./seed/courses";
+import { seedJobSources } from "./seed/job-sources";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
@@ -203,6 +204,7 @@ async function main() {
   const total = await prisma.skillTaxonomy.count();
   console.log(`✅ Skill taxonomy: ${total} rows`);
 
+  await seedJobSources(prisma);
   await seedUsers(prisma);
   await seedMarketplace(prisma);
   await seedCourses(prisma);

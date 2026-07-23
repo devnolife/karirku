@@ -36,6 +36,14 @@ export type JobView = {
   missingSkills?: string[];
   /** Alasan skor (role/lokasi/gaji sesuai preferensi, dst). */
   matchReasons?: string[];
+  /** Confidence evidence 0-1 dari scorer V2 shadow; bukan score yang tampil. */
+  matchConfidence?: number;
+  /** Kesiapan terhadap job ini (bukan readiness target-role global). */
+  jobReadiness?: number;
+  /** Versi score yang sedang ditampilkan; V2 tetap shadow sampai lolos gate. */
+  scoreVersion?: "v1" | "v2";
+  /** Sampled exposure ID used for causal interaction attribution. */
+  impressionId?: string;
   saved?: boolean;
   applyUrl?: string;
   applied?: boolean;

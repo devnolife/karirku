@@ -202,7 +202,12 @@ export function JobRow({ job: j }: { job: JobView }) {
       </div>
       <div className="col-span-8 min-w-0">
         <h4 className="truncate font-semibold text-[var(--act-ink)]">
-          <Link href={`/jobs/${j.id}`} className="hover:text-[var(--act-magenta)] hover:underline">{j.title}</Link>
+          <Link
+            href={`/jobs/${j.id}${j.impressionId ? `?imp=${encodeURIComponent(j.impressionId)}` : ""}`}
+            className="hover:text-[var(--act-magenta)] hover:underline"
+          >
+            {j.title}
+          </Link>
         </h4>
         <p className="text-xs text-[var(--act-graphite)]">
           <span className="font-semibold text-[var(--act-charcoal)]">{j.company}</span> · {j.location}
@@ -238,15 +243,39 @@ export function JobRow({ job: j }: { job: JobView }) {
             {j.matchReasons.join(" · ")}
           </p>
         )}
+        {j.matchConfidence !== undefined && (
+          <p className="mt-1 text-[10px] text-[var(--act-graphite)]">
+            Confidence data{" "}
+            <span className="font-semibold text-[var(--act-charcoal)]">
+              {j.matchConfidence >= 0.75
+                ? "tinggi"
+                : j.matchConfidence >= 0.5
+                  ? "sedang"
+                  : "rendah"}
+            </span>
+            {j.jobReadiness !== undefined
+              ? ` · kesiapan job ${j.jobReadiness}%`
+              : " · skill job belum lengkap"}
+          </p>
+        )}
         <div className="mt-1.5">
-          <JobFeedbackButtons jobId={j.id} saved={j.saved} />
+          <JobFeedbackButtons
+            jobId={j.id}
+            impressionId={j.impressionId}
+            saved={j.saved}
+          />
         </div>
       </div>
       <div className="col-span-2 text-right">
         <p className="text-xs font-semibold text-[var(--act-ink)]">{j.salary}</p>
         <p className="act-kicker !text-[10px]">{j.posted}</p>
         <div className="mt-1.5">
-          <ApplyButton jobId={j.id} alreadyApplied={!!j.applied} isExternal={!!j.applyUrl} />
+          <ApplyButton
+            jobId={j.id}
+            impressionId={j.impressionId}
+            alreadyApplied={!!j.applied}
+            isExternal={!!j.applyUrl}
+          />
         </div>
       </div>
     </li>
@@ -255,14 +284,15 @@ export function JobRow({ job: j }: { job: JobView }) {
 
 /* ---------------- Market chart ---------------- */
 export function MarketChart({ data }: { data: { label: string; value: number }[] }) {
+  if (data.length === 0) return null;
   const w = 280;
   const h = 110;
   const max = Math.max(...data.map((d) => d.value));
   const min = Math.min(...data.map((d) => d.value));
   const range = max - min || 1;
-  const step = w / (data.length - 1);
+  const step = data.length > 1 ? w / (data.length - 1) : 0;
   const points = data.map((d, i) => {
-    const x = i * step;
+    const x = data.length > 1 ? i * step : w / 2;
     const y = h - ((d.value - min) / range) * (h - 12) - 6;
     return [x, y] as const;
   });

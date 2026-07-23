@@ -17,8 +17,16 @@ Fitur premium (add-on terpisah dari tier Pro, mis. **Auto-Apply**) dikontrol lew
 tabel `entitlements` (`src/lib/entitlements.ts`) — admin toggle per user di
 `/admin/users`. Akun admin (`admin@craft.works`) sudah ter-seed via
 `seedUsers()` (lihat `prisma/seed/users.ts`); login lewat tombol role di
-halaman login (`signInAs`), tidak perlu Google OAuth. Detail desain:
+halaman login (`signInAs`) atau GitHub OAuth. Hunter adalah alat internal
+single-operator: halaman dan seluruh API-nya admin-only, sedangkan apply juga
+memerlukan entitlement. Detail desain:
 `docs/superpowers/specs/2026-07-06-hunter-premium-foundation-design.md`.
+
+Rekomendasi lowongan saat ini memakai **V1 sebagai ranking aktif** dan
+**Recommendation V2 dalam shadow mode**. V2 menghitung skill, semantic match,
+readiness per-job, preferensi, freshness, kualitas data, dan feedback, tetapi
+tidak mengganti ranking sebelum metrik admin memenuhi gate. Jalankan
+`pnpm recommendation:evaluate` untuk evaluasi offline.
 
 Quick start:
 
@@ -29,6 +37,7 @@ docker compose up -d         # Postgres + Redis + MinIO + Ollama
 pnpm exec prisma migrate deploy
 pnpm db:seed                 # skill taxonomy + 4 user (1/role) + marketplace + admin
 pnpm embed:all               # generate embedding (768d) untuk jobs/courses/profiles
+pnpm market:intel            # enqueue snapshot pasar harian
 pnpm dev                     # → http://localhost:3000
 ```
 
@@ -48,8 +57,9 @@ ke URL asli. Tambah/ubah perusahaan target di
 `pnpm scan`).
 
 Login page punya tombol **"Masuk sebagai {role}"** (jobseeker / freelancer /
-company / admin) yang membuat sesi real untuk user hasil seed dan redirect ke
-dashboard masing-masing. Konten editorial (panduan & bank soal interview) bersifat
+company / admin) untuk user hasil seed, serta GitHub OAuth untuk akun nyata.
+Gmail OAuth terpisah dan hanya meminta `gmail.readonly` untuk menyarankan status
+lamaran; user tetap wajib mengonfirmasi. Konten editorial (panduan & bank soal interview) bersifat
 statis di [`src/lib/content/`](./src/lib/content/).
 
 Blueprint produk lengkap ada di [`plan.md`](./plan.md).
@@ -73,7 +83,7 @@ Fitur guidance loop (AI roadmap, scraper, worker) aktif di Sprint 3-4.
 |-------|-----------|
 | Framework | Next.js 16 (App Router) + TypeScript |
 | UI | TailwindCSS 4 |
-| Auth | NextAuth v5 (Auth.js) + Google |
+| Auth | DB session + GitHub OAuth; Gmail OAuth read-only terpisah |
 | DB | PostgreSQL 16 + pgvector |
 | ORM | Prisma 7 |
 | Cache / Queue | Redis 7 + BullMQ |
@@ -95,6 +105,8 @@ pnpm worker           # BullMQ workers (terminal terpisah)
 # utility
 pnpm ai:smoke         # test koneksi AI
 pnpm scan             # enqueue scan lowongan (portal ATS) → scraperQueue
+pnpm market:intel     # enqueue agregasi RoleMarketStat harian
+pnpm recommendation:evaluate # evaluasi V1 vs V2 shadow
 pnpm db:studio        # Prisma Studio GUI
 pnpm typecheck        # TypeScript check
 pnpm lint
@@ -104,14 +116,16 @@ pnpm build
 ## Job scanner (portal ATS)
 
 Scanner "zero-token" menarik daftar lowongan langsung dari JSON API publik
-**Greenhouse / Ashby / Lever** — tanpa scraping HTML, tanpa token AI. Provider
-ada di [`src/lib/scraper/providers/`](./src/lib/scraper/providers); tambah portal
-target di [`src/lib/scraper/portals.ts`](./src/lib/scraper/portals.ts).
+**Greenhouse / Ashby / Lever** — tanpa scraping HTML, tanpa token AI. Career
+page lain dapat memakai provider Firecrawl lokal. Registry sumber berada di
+tabel `job_sources` dan dikelola dari `/admin/scraper`; seed/fallback
+deterministik ada di [`src/lib/scraper/source-seed.ts`](./src/lib/scraper/source-seed.ts).
 
 ```bash
-# 1) set enabled:true + slug perusahaan di src/lib/scraper/portals.ts
-pnpm scan       # enqueue job ke scraperQueue
-pnpm worker     # worker memproses: scan → dedupe (Job.sourceUrl) → enrichQueue
+# 1) aktifkan sumber dari /admin/scraper atau seed JobSource
+pnpm scan          # enqueue scan registry aktif
+pnpm worker        # scan → dedupe/hash → enrich → embed
+pnpm market:intel  # snapshot role/lokasi/skill/gaji/trend
 ```
 
 Provider mendeteksi portal otomatis dari pola URL (`job-boards.greenhouse.io/<slug>`,
@@ -119,13 +133,14 @@ Provider mendeteksi portal otomatis dari pola URL (`job-boards.greenhouse.io/<sl
 (proteksi SSRF). Scraper HTML untuk portal Indonesia (Jobstreet/Dicoding/Prakerja)
 masih skeleton.
 
-**Filosofi**: Karir.ai = **1 platform agregasi + pengukur kecocokan**, bukan
-otomasi lamaran. Setiap lowongan menyimpan `sourceUrl` (link posting asli) —
-user melamar langsung di website perusahaan. Yang kita bantu adalah *mengukur*:
+**Filosofi**: Karir.ai = **lapisan keputusan dan bantuan apply yang terkendali**,
+bukan pengganti LinkedIn/JobStreet. Setiap lowongan menyimpan `sourceUrl`; user
+melamar di situs resmi. Extension boleh mengisi form, memasang CV, dan memakai
+ulang jawaban yang telah disetujui, tetapi **tidak pernah auto-submit**. Yang kita
+ukur dan jelaskan:
 [`src/lib/match/score.ts`](./src/lib/match/score.ts) → `skillCoverageScore(userSkills, jobSkills)`
-menghasilkan `matchPct` + daftar skill `matched`/`missing` (deterministik, untuk
-skill-gap & rekomendasi course). Nanti dapat dilengkapi semantic similarity via
-`Job.embedding` sebagai composite score.
+menghasilkan `matchPct` + skill `matched`/`missing`; V2 menambahkan confidence,
+readiness per-job, freshness, data quality, dan preference fit.
 
 ## Service endpoints (lokal)
 
@@ -164,16 +179,29 @@ prisma/
 └── seed.ts              skill taxonomy seed
 ```
 
-## Setup Google OAuth
+## Setup OAuth
+
+### GitHub login
+
+1. Buat GitHub OAuth App.
+2. Callback: `http://localhost:3000/api/auth/github/callback`.
+3. Isi `GITHUB_CLIENT_ID` dan `GITHUB_CLIENT_SECRET`.
+
+### Gmail outcome assistant
 
 1. Buka [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials)
 2. Create OAuth 2.0 Client ID (Web application)
-3. Authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
-4. Copy Client ID & Secret ke `.env.local`:
+3. Authorized redirect URI: `http://localhost:3000/api/auth/gmail/callback`
+4. Isi Client ID, Secret, dan encryption key di `.env.local`:
    ```
    GOOGLE_CLIENT_ID="..."
    GOOGLE_CLIENT_SECRET="..."
+   OAUTH_TOKEN_ENCRYPTION_KEY="hasil-openssl-rand-base64-32"
    ```
+
+Gmail hanya dibaca sebagai metadata minimum untuk membuat saran
+`screened/interview/offered/rejected`; status aplikasi tidak berubah sebelum
+user menekan **Konfirmasi**.
 
 ## Troubleshooting
 

@@ -5,6 +5,7 @@ import { requireUser } from "@/lib/auth";
 import { getJobDetail } from "@/server/queries/jobs";
 import { parseLocation, locationFlag } from "@/lib/location";
 import { describeJobSource } from "@/lib/source";
+import { RecommendationOpenTracker } from "@/components/RecommendationOpenTracker";
 import { ApplyButton } from "@/components/ApplyButton";
 
 const REGION_BADGE: Record<string, { label: string; cls: string }> = {
@@ -58,8 +59,17 @@ function Fact({ icon, tone, label, value }: { icon: ReactNode; tone: string; lab
   );
 }
 
-export default async function JobDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function JobDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ imp?: string }>;
+}) {
   const { id } = await params;
+  const { imp } = await searchParams;
+  const impressionId =
+    imp && /^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(imp) ? imp : undefined;
   const user = await requireUser();
   const job = await getJobDetail(user.id, id);
   if (!job) notFound();
@@ -74,6 +84,10 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
 
   return (
     <div className="act-rise app-page space-y-6">
+      <RecommendationOpenTracker
+        jobId={job.id}
+        impressionId={impressionId}
+      />
       <Link href="/jobs" className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--act-graphite)] transition-colors hover:text-[var(--act-ink)]">
         ← Kembali ke Lowongan
       </Link>
@@ -119,13 +133,27 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
                 <span className="act-kicker mt-0.5 !text-[9px]">match</span>
               </div>
             </div>
+            <div className="text-right text-[10px] text-[var(--act-graphite)]">
+              <p>score {job.scoreVersion.toUpperCase()}</p>
+              <p>
+                confidence{" "}
+                <strong className="text-[var(--act-charcoal)]">
+                  {Math.round(job.matchConfidence * 100)}%
+                </strong>
+              </p>
+            </div>
           </div>
         </div>
 
         {/* CTA */}
         <div className="mt-7 border-t border-[rgba(15,23,42,0.08)] pt-6">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-            <ApplyButton jobId={job.id} alreadyApplied={job.applied} isExternal={!!job.applyUrl} />
+            <ApplyButton
+              jobId={job.id}
+              impressionId={impressionId}
+              alreadyApplied={job.applied}
+              isExternal={!!job.applyUrl}
+            />
             <span className="text-sm text-[var(--act-graphite)]">
               <span className="font-semibold text-[var(--act-ink)]">{job.matchedSkills.length}</span> dari{" "}
               <span className="font-semibold text-[var(--act-ink)]">{job.skills.length || "-"}</span> skill kamu cocok
@@ -212,6 +240,54 @@ export default async function JobDetailPage({ params }: { params: Promise<{ id: 
 
         {/* Sidebar */}
         <div className="space-y-6">
+          <div className="act-card-2 p-6">
+            <span className="act-kicker !text-[10px]">Bukti rekomendasi</span>
+            <div className="mt-4 space-y-3 text-sm">
+              <div className="flex justify-between gap-3">
+                <span className="text-[var(--act-graphite)]">Kesiapan job</span>
+                <strong className="text-[var(--act-ink)]">
+                  {job.jobReadiness !== null
+                    ? `${job.jobReadiness}%`
+                    : "data skill kurang"}
+                </strong>
+              </div>
+              <div className="flex justify-between gap-3">
+                <span className="text-[var(--act-graphite)]">Freshness</span>
+                <strong className="text-[var(--act-ink)]">
+                  {job.freshnessScore !== null
+                    ? `${job.freshnessScore}%`
+                    : "belum diketahui"}
+                </strong>
+              </div>
+              <div className="flex justify-between gap-3">
+                <span className="text-[var(--act-graphite)]">Kualitas data</span>
+                <strong className="text-[var(--act-ink)]">
+                  {job.dataQualityScore !== null
+                    ? `${job.dataQualityScore}%`
+                    : "belum diukur"}
+                </strong>
+              </div>
+              <div className="flex justify-between gap-3">
+                <span className="text-[var(--act-graphite)]">Proof karir</span>
+                <strong className="text-right text-[var(--act-ink)]">
+                  {job.proofSources.length
+                    ? job.proofSources.join(", ")
+                    : "belum ada"}
+                </strong>
+              </div>
+            </div>
+            {job.matchConfidence < 0.5 && (
+              <p className="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                Confidence rendah: beberapa data lowongan belum lengkap. Gunakan
+                skor sebagai petunjuk, bukan keputusan final.
+              </p>
+            )}
+            <p className="mt-3 text-[10px] leading-relaxed text-[var(--act-graphite)]">
+              Kesiapan memakai skill terverifikasi, milestone, dan proof profil
+              (CV/GitHub/portfolio) sebagai proxy—bukan jaminan diterima.
+            </p>
+          </div>
+
           {/* Skills coverage */}
           <div className="act-card-2 p-6">
             <div className="flex items-baseline justify-between">
