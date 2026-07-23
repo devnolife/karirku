@@ -10,10 +10,12 @@ import { applyAction } from "@/server/actions/apply";
  */
 export function ApplyButton({
   jobId,
+  impressionId,
   alreadyApplied,
   isExternal,
 }: {
   jobId: string;
+  impressionId?: string;
   alreadyApplied: boolean;
   isExternal: boolean;
 }) {
@@ -22,7 +24,7 @@ export function ApplyButton({
 
   if (applied) {
     return (
-      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#059669]">
+      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--act-teal)]">
         ✓ Sudah dilamar
       </span>
     );
@@ -30,7 +32,7 @@ export function ApplyButton({
 
   function onApply() {
     startTransition(async () => {
-      const res = await applyAction(jobId);
+      const res = await applyAction(jobId, impressionId);
       // Untuk eksternal, action redirect (tidak balik ke sini). Native → update state.
       if (res.status === "applied" || res.status === "already") setApplied(true);
     });

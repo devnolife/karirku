@@ -1,5 +1,11 @@
 import { NextRequest } from "next/server";
-import { actionToArgs, spawnHunter } from "@/lib/hunter";
+import {
+  actionToArgs,
+  releaseHunter,
+  reserveHunter,
+  spawnHunter,
+} from "@/lib/hunter";
+import { authorizeHunterApi } from "@/lib/hunter-access";
 
 export const dynamic = "force-dynamic";
 
@@ -10,8 +16,39 @@ export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({}));
   const action = typeof body.action === "string" ? body.action : "";
+  const access = await authorizeHunterApi({
+    requireAutoApply: action === "apply",
+  });
+  if (!access.ok) return access.response;
+
   const args = actionToArgs(action, body);
-  if (!args) return Response.json({ error: "unknown action: " + action }, { status: 400 });
-  const { pid } = spawnHunter(args);
-  return Response.json({ ok: true, pid, args });
+  if (!args) {
+    return Response.json(
+      { error: "invalid_action", message: "Action atau parameter tidak valid." },
+      { status: 400 },
+    );
+  }
+  const reservation = reserveHunter(action);
+  if (!reservation.ok) {
+    const busy = reservation.lock;
+    return Response.json(
+      {
+        error: "hunter_busy",
+        message: `Hunter sedang menjalankan ${busy?.command ?? "command lain"}.`,
+        lock: busy,
+      },
+      { status: 409 },
+    );
+  }
+  try {
+    const { pid } = spawnHunter(args, reservation.lock.ownerId);
+    return Response.json({ ok: true, pid, args }, { status: 202 });
+  } catch (error) {
+    releaseHunter(reservation.lock.ownerId);
+    console.error("[hunter] gagal menjalankan command:", error);
+    return Response.json(
+      { error: "spawn_failed", message: "Hunter tidak dapat dijalankan." },
+      { status: 500 },
+    );
+  }
 }

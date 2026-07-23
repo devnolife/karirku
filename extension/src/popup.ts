@@ -12,6 +12,7 @@ import {
 
 const statusEl = document.getElementById("status") as HTMLDivElement;
 const connectBtn = document.getElementById("connect") as HTMLButtonElement;
+const disconnectBtn = document.getElementById("disconnect") as HTMLButtonElement;
 const enabledEl = document.getElementById("enabled") as HTMLInputElement;
 const apiBaseEl = document.getElementById("apiBase") as HTMLInputElement;
 
@@ -42,9 +43,11 @@ async function refresh(): Promise<void> {
   if (connected && user) {
     statusEl.textContent = `✅ Terhubung sebagai ${user.name ?? user.email ?? "user"}`;
     connectBtn.textContent = "Hubungkan ulang";
+    disconnectBtn.hidden = false;
   } else {
     statusEl.textContent = "⬜ Belum terhubung. Login di karirku, lalu klik Hubungkan.";
     connectBtn.textContent = "Hubungkan ke Karirku";
+    disconnectBtn.hidden = true;
   }
 }
 
@@ -57,6 +60,15 @@ connectBtn.addEventListener("click", async () => {
   if (!res.ok) statusEl.textContent = `❌ ${res.error}`;
   else await refresh();
   connectBtn.disabled = false;
+});
+
+disconnectBtn.addEventListener("click", async () => {
+  disconnectBtn.disabled = true;
+  statusEl.textContent = "Memutuskan koneksi…";
+  const res = await sendBg({ kind: "DISCONNECT" });
+  if (!res.ok) statusEl.textContent = `❌ ${res.error}`;
+  else await refresh();
+  disconnectBtn.disabled = false;
 });
 
 enabledEl.addEventListener("change", async () => {

@@ -71,30 +71,34 @@ export function LandingAnimator() {
         gsap.from(el.querySelectorAll(".gs-word"), {
           yPercent: 110,
           opacity: 0,
-          duration: 0.9,
-          ease: "power3.out",
-          stagger: 0.045,
+          duration: 1.1,
+          ease: "expo.out",
+          stagger: 0.05,
         });
       });
 
-      /* ---------- HERO fade-in blocks ---------- */
+      /* ---------- HERO fade-in blocks — heavy blur-settle ---------- */
       gsap.utils.toArray<HTMLElement>("[data-gs='hero-fade']").forEach((el, i) => {
         gsap.from(el, {
-          y: 20,
+          y: 24,
           opacity: 0,
-          duration: 0.8,
-          ease: "power2.out",
-          delay: 0.4 + i * 0.1,
+          filter: "blur(6px)",
+          duration: 1,
+          ease: "expo.out",
+          delay: 0.45 + i * 0.12,
+          clearProps: "filter",
         });
       });
 
-      /* ---------- Section enter (scroll trigger) ---------- */
+      /* ---------- Section enter (scroll trigger) — blur-reveal ---------- */
       gsap.utils.toArray<HTMLElement>("[data-gs='section']").forEach((el) => {
         gsap.from(el, {
-          y: 28,
+          y: 36,
           opacity: 0,
-          duration: 0.8,
-          ease: "power2.out",
+          filter: "blur(8px)",
+          duration: 1,
+          ease: "expo.out",
+          clearProps: "filter",
           scrollTrigger: {
             trigger: el,
             start: "top 85%",
@@ -103,15 +107,16 @@ export function LandingAnimator() {
         });
       });
 
-      /* ---------- Stagger child groups ---------- */
+      /* ---------- Stagger child groups — overshoot settle ---------- */
       gsap.utils.toArray<HTMLElement>("[data-gs='stagger-parent']").forEach((parent) => {
         const kids = parent.querySelectorAll<HTMLElement>("[data-gs='stagger-child']");
         if (!kids.length) return;
         gsap.from(kids, {
-          y: 24,
+          y: 30,
           opacity: 0,
-          duration: 0.7,
-          ease: "power2.out",
+          scale: 0.97,
+          duration: 0.9,
+          ease: "back.out(1.4)",
           stagger: 0.08,
           scrollTrigger: {
             trigger: parent,
@@ -210,6 +215,47 @@ export function LandingAnimator() {
           transformOrigin: "50% 50%",
         });
       });
+
+      /* ---------- Magnetic CTA pills — pull toward cursor (desktop only) ---------- */
+      if (window.matchMedia("(pointer: fine)").matches) {
+        gsap.utils
+          .toArray<HTMLElement>(".act-pill, .act-pill-light, .act-pill-hero")
+          .forEach((el) => {
+            const xTo = gsap.quickTo(el, "x", { duration: 0.4, ease: "power3.out" });
+            const yTo = gsap.quickTo(el, "y", { duration: 0.4, ease: "power3.out" });
+            const onMove = (e: MouseEvent) => {
+              const r = el.getBoundingClientRect();
+              xTo((e.clientX - (r.left + r.width / 2)) * 0.22);
+              yTo((e.clientY - (r.top + r.height / 2)) * 0.22);
+            };
+            const onLeave = () => {
+              xTo(0);
+              yTo(0);
+            };
+            el.addEventListener("mousemove", onMove);
+            el.addEventListener("mouseleave", onLeave);
+          });
+
+        /* ---------- 3D tilt — showcase card tracks the pointer ---------- */
+        gsap.utils.toArray<HTMLElement>("[data-gs-tilt]").forEach((el) => {
+          gsap.set(el, { transformPerspective: 900 });
+          const rxTo = gsap.quickTo(el, "rotationX", { duration: 0.6, ease: "power3.out" });
+          const ryTo = gsap.quickTo(el, "rotationY", { duration: 0.6, ease: "power3.out" });
+          const onMove = (e: MouseEvent) => {
+            const r = el.getBoundingClientRect();
+            const px = (e.clientX - r.left) / r.width - 0.5;
+            const py = (e.clientY - r.top) / r.height - 0.5;
+            ryTo(px * 7);
+            rxTo(-py * 5);
+          };
+          const onLeave = () => {
+            rxTo(0);
+            ryTo(0);
+          };
+          el.addEventListener("mousemove", onMove);
+          el.addEventListener("mouseleave", onLeave);
+        });
+      }
 
       /* ---------- Counter-rotate to keep content upright inside orbits ---------- */
       gsap.utils.toArray<HTMLElement>("[data-gs='orbit-item']").forEach((el) => {

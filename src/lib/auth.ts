@@ -112,11 +112,22 @@ export async function signInAs(role: UserRole): Promise<void> {
     );
   }
 
+  await createSessionForUser(user.id, user.role as UserRole);
+}
+
+/** Buat sesi DB + cookie untuk user tertentu (dipakai dev login & OAuth). */
+export async function createSessionForUser(
+  userId: string,
+  role: UserRole,
+): Promise<void> {
   const sessionToken = randomBytes(32).toString("hex");
+  const expires = new Date(Date.now() + SESSION_TTL_MS);
   await prisma.session.create({
-    data: { sessionToken, userId: user.id, expires },
+    data: { sessionToken, userId, expires },
   });
 
+  const jar = await cookies();
+  const base = { sameSite: "lax" as const, path: "/", expires };
   jar.set(SESSION_COOKIE, sessionToken, { ...base, httpOnly: true });
   jar.set(ROLE_COOKIE, role, { ...base, httpOnly: false });
 }

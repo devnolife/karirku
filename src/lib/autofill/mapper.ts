@@ -54,8 +54,10 @@ function buildUserPrompt(
       placeholder: f.placeholder,
     }),
   );
-  // experience/education Json dibuang dari prompt bila terlalu besar
-  const { experience: _e, education: _d, ...flat } = profile;
+  // experience/education JSON dibuang dari prompt bila terlalu besar.
+  const flat: Partial<ProfileData> = { ...profile };
+  delete flat.experience;
+  delete flat.education;
   return [
     `Job page: ${snapshot.url}`,
     snapshot.jobTitle ? `Job title: ${snapshot.jobTitle}` : "",

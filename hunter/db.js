@@ -96,6 +96,14 @@ function migrate(db) {
     key TEXT PRIMARY KEY,
     value TEXT NOT NULL
   );
+
+  CREATE TABLE IF NOT EXISTS command_locks (
+    name TEXT PRIMARY KEY,
+    owner_id TEXT NOT NULL,
+    pid INTEGER,
+    command TEXT NOT NULL,
+    acquired_at INTEGER NOT NULL
+  );
   `);
 
   // seed accounts (idempotent)

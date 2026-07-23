@@ -39,7 +39,7 @@ export function QuizRunner({
   if (result) {
     return (
       <div className="act-card-2 p-8 text-center">
-        <div className={`act-display text-6xl ${result.passed ? "text-[#059669]" : "text-[var(--act-magenta)]"}`}>
+        <div className={`act-display text-6xl ${result.passed ? "text-[var(--act-teal)]" : "text-[var(--act-rose)]"}`}>
           {result.correct}/{result.total}
         </div>
         <h2 className="act-heading mt-4 text-2xl text-[var(--act-ink)]">

@@ -23,7 +23,7 @@ export async function OPTIONS() {
 }
 
 export async function POST(req: Request) {
-  const userId = userFromRequest(req);
+  const userId = await userFromRequest(req);
   if (!userId) return unauthorized();
 
   let report;
@@ -64,9 +64,25 @@ export async function POST(req: Request) {
           });
           if (!existing) {
             await prisma.application.create({
-              data: { userId, jobId: job.id, mode: "external", status: "applied" },
+              data: {
+                userId,
+                jobId: job.id,
+                mode: "external",
+                status: "applied",
+                events: {
+                  create: {
+                    status: "applied",
+                    source: "system",
+                    note: "Submit terdeteksi oleh extension Karirku.",
+                  },
+                },
+              },
             });
           }
+          // Attribution to a recommendation impression is handled causally at
+          // in-app apply-click time (see applyToJob). A submit detected purely
+          // on the portal has no impression the user acted through, so we record
+          // the application but intentionally do not attribute an impression.
           applicationRecorded = true;
         }
       }

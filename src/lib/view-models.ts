@@ -14,10 +14,11 @@ export type SkillView = {
 };
 
 export type MilestoneView = {
+  id: string;
   week: number;
   title: string;
   status: "done" | "in_progress" | "upcoming";
-  courses: { title: string; provider: string; hours: number }[];
+  courses: { title: string; provider: string; hours: number; url?: string }[];
 };
 
 export type JobView = {
@@ -29,6 +30,21 @@ export type JobView = {
   posted: string;
   matchPct: number;
   skills: string[];
+  /** Skill lowongan yang kamu punya — penjelasan "kenapa cocok". */
+  matchedSkills?: string[];
+  /** Skill lowongan yang belum kamu punya — skill gap. */
+  missingSkills?: string[];
+  /** Alasan skor (role/lokasi/gaji sesuai preferensi, dst). */
+  matchReasons?: string[];
+  /** Confidence evidence 0-1 dari scorer V2 shadow; bukan score yang tampil. */
+  matchConfidence?: number;
+  /** Kesiapan terhadap job ini (bukan readiness target-role global). */
+  jobReadiness?: number;
+  /** Versi score yang sedang ditampilkan; V2 tetap shadow sampai lolos gate. */
+  scoreVersion?: "v1" | "v2";
+  /** Sampled exposure ID used for causal interaction attribution. */
+  impressionId?: string;
+  saved?: boolean;
   applyUrl?: string;
   applied?: boolean;
   sourceLabel?: string;

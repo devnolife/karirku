@@ -43,7 +43,7 @@ export interface FieldMapping {
   value: string;
   /** 0..1 — adapter selalu 1.0; LLM sesuai keyakinannya. */
   confidence: number;
-  source: "adapter" | "llm";
+  source: "adapter" | "llm" | "saved";
   /** true untuk jawaban esai yang dibuat AI — wajib highlight review. */
   aiGenerated?: boolean;
 }

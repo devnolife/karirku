@@ -138,31 +138,35 @@ export const DEMO_SKILL_GAP: SkillGap = {
 
 const DEMO_MILESTONES: MilestoneView[] = [
   {
+    id: "demo-ms-1",
     week: 1,
     title: "Fondasi Testing dengan Jest",
     status: "done",
     courses: [{ title: "Testing React Applications", provider: "Coursera", hours: 18 }],
   },
   {
+    id: "demo-ms-2",
     week: 2,
     title: "React Testing Library hands-on",
     status: "done",
     courses: [{ title: "Testing React Applications", provider: "Coursera", hours: 18 }],
   },
   {
+    id: "demo-ms-3",
     week: 3,
     title: "TypeScript generics & utility types",
     status: "in_progress",
     courses: [{ title: "TypeScript Deep Dive", provider: "Dicoding", hours: 32 }],
   },
-  { week: 4, title: "Mini project: Todo app + tests", status: "upcoming", courses: [] },
+  { id: "demo-ms-4", week: 4, title: "Mini project: Todo app + tests", status: "upcoming", courses: [] },
   {
+    id: "demo-ms-5",
     week: 5,
     title: "Accessibility fundamentals",
     status: "upcoming",
     courses: [{ title: "Web Accessibility", provider: "Coursera", hours: 12 }],
   },
-  { week: 6, title: "Mock interview & resume review", status: "upcoming", courses: [] },
+  { id: "demo-ms-6", week: 6, title: "Mock interview & resume review", status: "upcoming", courses: [] },
 ];
 
 export const DEMO_ROADMAP: RoadmapData = {
@@ -270,6 +274,12 @@ export const DEMO_JOB_DETAILS: Record<string, JobDetail> = Object.fromEntries(
         (s) => !DEMO_SKILL_ITEMS.some((u) => u.name.toLowerCase() === s.toLowerCase()),
       ),
       matchPct: j.matchPct,
+      matchConfidence: 0.6,
+      jobReadiness: 60,
+      scoreVersion: "v1",
+      freshnessScore: null,
+      dataQualityScore: null,
+      proofSources: [],
       posted: j.posted,
       source: "demo",
       applyUrl: null,
@@ -352,6 +362,7 @@ export const DEMO_APPLICATIONS: ApplicationRow[] = [
     status: "interview",
     appliedAt: "3 Jul 2026",
     applyUrl: null,
+    timeline: [],
   },
   {
     id: "demo-app-2",
@@ -362,6 +373,7 @@ export const DEMO_APPLICATIONS: ApplicationRow[] = [
     status: "applied",
     appliedAt: "27 Jun 2026",
     applyUrl: null,
+    timeline: [],
   },
 ];
 
@@ -382,6 +394,25 @@ export const DEMO_PROFILE_DATA: ProfileData = {
   summary:
     "3 tahun membangun antarmuka web di agency; sedang transisi ke product company. Fokus di React, TypeScript, dan kualitas kode (testing, a11y).",
   skills: DEMO_OWNED_SKILLS,
+  contact: {
+    phone: "0812-0000-0000",
+    city: "Jakarta",
+    country: "Indonesia",
+    linkedinUrl: "https://linkedin.com/in/demo",
+    githubUrl: "https://github.com/demo",
+    portfolioUrl: "https://demo.dev",
+    currentTitle: "Frontend Developer",
+    currentCompany: "Agency X",
+    yearsExperience: 3,
+    expectedSalaryIdr: 12_000_000,
+  },
+  preferences: {
+    desiredRoles: ["Frontend Engineer", "UI Engineer"],
+    preferredLocations: ["Jakarta", "Remote"],
+    remoteOnly: false,
+    minSalaryIdr: 10_000_000,
+    desiredLevel: "Mid-level",
+  },
 };
 
 const CATALOG: Array<[string, string[]]> = [

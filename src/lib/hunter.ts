@@ -21,6 +21,21 @@ interface HunterDbModule {
   setSetting(key: string, value: string): void;
 }
 
+interface HunterLock {
+  ownerId: string;
+  pid: number | null;
+  command: string;
+  startedAt: string;
+}
+
+interface HunterLockModule {
+  reserveLock(command: string):
+    | { ok: true; lock: HunterLock }
+    | { ok: false; lock: HunterLock | null };
+  isLocked(): HunterLock | null;
+  releaseLock(ownerId: string): void;
+}
+
 let cached: HunterDbModule | null = null;
 
 export function hunterDb(): HunterDbModule {
@@ -34,21 +49,77 @@ export function gmailStatus(): Row {
 }
 
 /** Fire-and-forget a hunter CLI command; the engine logs into the runs table. */
-export function spawnHunter(args: string[]): { pid: number | undefined } {
+export function spawnHunter(
+  args: string[],
+  lockOwnerId?: string,
+): { pid: number | undefined } {
   const child = spawn(process.execPath, ["hunter/run.js", ...args], {
     cwd: process.cwd(),
     detached: true,
     stdio: "ignore",
+    env: lockOwnerId
+      ? { ...process.env, HUNTER_LOCK_OWNER: lockOwnerId }
+      : process.env,
   });
   child.unref();
   return { pid: child.pid };
 }
 
-const ALLOWED_ACTIONS: Record<string, (body: Row) => string[]> = {
-  scan: (b) => ["scan", typeof b.platform === "string" ? b.platform : "all"],
-  apply: (b) =>
-    typeof b.jobId === "number" ? ["apply", "--job", String(b.jobId)] : ["apply", "--auto", "--limit", String(b.limit ?? 3)],
-  "sync-email": (b) => ["sync-email", "--days", String(b.days ?? 30)],
+export function hunterBusy(): HunterLock | null {
+  const locks = projectRequire("./hunter/lock.js") as HunterLockModule;
+  return locks.isLocked();
+}
+
+export function reserveHunter(command: string):
+  | { ok: true; lock: HunterLock }
+  | { ok: false; lock: HunterLock | null } {
+  const locks = projectRequire("./hunter/lock.js") as HunterLockModule;
+  return locks.reserveLock(command);
+}
+
+export function releaseHunter(ownerId: string): void {
+  const locks = projectRequire("./hunter/lock.js") as HunterLockModule;
+  locks.releaseLock(ownerId);
+}
+
+const SCAN_PLATFORMS = new Set([
+  "all",
+  "freelancer",
+  "jobstreet",
+  "linkedin",
+  "upwork",
+]);
+
+function integerInRange(
+  value: unknown,
+  fallback: number,
+  min: number,
+  max: number,
+): number | null {
+  if (value === undefined || value === null || value === "") return fallback;
+  const parsed = typeof value === "number" ? value : Number(String(value));
+  if (!Number.isInteger(parsed) || parsed < min || parsed > max) return null;
+  return parsed;
+}
+
+const ALLOWED_ACTIONS: Record<string, (body: Row) => string[] | null> = {
+  scan: (b) => {
+    const platform =
+      typeof b.platform === "string" ? b.platform.toLowerCase() : "all";
+    return SCAN_PLATFORMS.has(platform) ? ["scan", platform] : null;
+  },
+  apply: (b) => {
+    if (b.jobId !== undefined) {
+      const jobId = integerInRange(b.jobId, 0, 1, Number.MAX_SAFE_INTEGER);
+      return jobId ? ["apply", "--job", String(jobId)] : null;
+    }
+    const limit = integerInRange(b.limit, 3, 1, 20);
+    return limit ? ["apply", "--auto", "--limit", String(limit)] : null;
+  },
+  "sync-email": (b) => {
+    const days = integerInRange(b.days, 30, 1, 90);
+    return days ? ["sync-email", "--days", String(days)] : null;
+  },
   "import-applied": () => ["import-applied"],
   full: () => ["full"],
 };
