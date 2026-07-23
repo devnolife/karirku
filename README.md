@@ -136,8 +136,10 @@ masih skeleton.
 **Filosofi**: Karir.ai = **lapisan keputusan dan bantuan apply yang terkendali**,
 bukan pengganti LinkedIn/JobStreet. Setiap lowongan menyimpan `sourceUrl`; user
 melamar di situs resmi. Extension boleh mengisi form, memasang CV, dan memakai
-ulang jawaban yang telah disetujui, tetapi **tidak pernah auto-submit**. Yang kita
-ukur dan jelaskan:
+ulang jawaban yang telah disetujui, tetapi **tidak pernah auto-submit**. Setiap
+sesi autofill dicatat dan ditampilkan kembali ke user di panel **Aktivitas
+autofill** halaman Lamaran ([`src/server/queries/autofill.ts`](./src/server/queries/autofill.ts))
+— transparansi atas apa yang dibantu isi. Yang kita ukur dan jelaskan:
 [`src/lib/match/score.ts`](./src/lib/match/score.ts) → `skillCoverageScore(userSkills, jobSkills)`
 menghasilkan `matchPct` + skill `matched`/`missing`; V2 menambahkan confidence,
 readiness per-job, freshness, data quality, dan preference fit.

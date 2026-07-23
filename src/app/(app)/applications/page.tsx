@@ -4,13 +4,16 @@ import { PageHeader } from "../_dash/parts";
 import { Empty } from "@/components/ui/empty";
 import { ApplicationStatusControl } from "./_status-control";
 import { GmailOutcomeAssist } from "./_gmail-assist";
+import { AutofillActivityPanel } from "./_autofill-activity";
 import { getGmailOutcomeAssist } from "@/server/queries/gmail-outcomes";
+import { getAutofillActivity } from "@/server/queries/autofill";
 
 export default async function ApplicationsPage() {
   const user = await requireUser();
-  const [apps, gmailAssist] = await Promise.all([
+  const [apps, gmailAssist, autofillActivity] = await Promise.all([
     getUserApplications(user.id),
     getGmailOutcomeAssist(user.id),
+    getAutofillActivity(user.id),
   ]);
   const nativeCount = apps.filter((a) => a.mode === "native").length;
 
@@ -24,6 +27,8 @@ export default async function ApplicationsPage() {
       />
 
       <GmailOutcomeAssist assist={gmailAssist} />
+
+      <AutofillActivityPanel activity={autofillActivity} />
 
       {apps.length === 0 ? (
         <Empty
