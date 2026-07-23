@@ -78,3 +78,35 @@ export const LearningPathSchema = z.object({
 export type LearningPathPlan = z.infer<typeof LearningPathSchema>;
 export type PathMilestonePlan = z.infer<typeof PathMilestoneSchema>;
 export type PathPhasePlan = z.infer<typeof PathPhaseSchema>;
+
+// ---------- Import lowongan (Asisten Lamar) ----------
+
+/**
+ * Ekstraksi lowongan dari teks bebas / hasil OCR gambar / isi halaman link.
+ * Toleran: semua field opsional dengan default supaya parser tak gagal walau
+ * sumber tak lengkap. Normalisasi lebih lanjut dilakukan downstream.
+ */
+export const JobPostingExtractionSchema = z.object({
+  title: z.string().default(""),
+  company: z.string().default(""),
+  location: z.string().default(""),
+  employmentType: z.string().default(""),
+  level: z.string().default(""),
+  description: z.string().default(""),
+  requirements: z.array(z.string().min(1)).default([]),
+  skills: z.array(z.string().min(1)).default([]),
+  salaryText: z.string().default(""),
+  applyEmail: z.string().default(""),
+  applyUrl: z.string().default(""),
+});
+
+export type JobPostingExtraction = z.infer<typeof JobPostingExtractionSchema>;
+
+/** Draft pesan lamaran (email/WhatsApp/surat) yang di-generate AI. */
+export const ApplicationDraftSchema = z.object({
+  subject: z.string().default(""),
+  message: z.string().min(1),
+  highlights: z.array(z.string().min(1)).default([]),
+});
+
+export type ApplicationDraftPlan = z.infer<typeof ApplicationDraftSchema>;

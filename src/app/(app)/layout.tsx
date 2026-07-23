@@ -16,6 +16,7 @@ const IC = {
   candidates: "M9 11a4 4 0 100-8 4 4 0 000 8zm-7 9a7 7 0 0114 0M17 11a4 4 0 000-8",
   profile: "M12 14a4 4 0 100-8 4 4 0 000 8zM5 20a7 7 0 0114 0",
   applications: "M9 11l3 3 8-8M5 12a7 7 0 0011 5.7",
+  assistant: "M5 3l1.6 3.4L10 8 6.6 9.6 5 13 3.4 9.6 0 8l3.4-1.6L5 3zm12 5l1 2.2L20 11l-2 1-1 2-1-2-2-1 2-.8L17 8zM12 14l1.2 2.6L16 18l-2.8 1.4L12 22l-1.2-2.6L8 18l2.8-1.4L12 14z",
 };
 
 const NAV_BY_ROLE: Record<UserRole, SideItem[]> = {
@@ -25,6 +26,7 @@ const NAV_BY_ROLE: Record<UserRole, SideItem[]> = {
     { href: "/skills", label: "Skill-gap", icon: IC.skills },
     { href: "/roadmap", label: "Roadmap", icon: IC.roadmap },
     { href: "/jobs", label: "Lowongan", icon: IC.jobs },
+    { href: "/apply-assistant", label: "Asisten Lamar", icon: IC.assistant },
     { href: "/applications", label: "Lamaran", icon: IC.applications },
     { href: "/learn", label: "Belajar", icon: IC.learn },
     { href: "/onboarding", label: "Goal", icon: IC.goal },
@@ -35,6 +37,7 @@ const NAV_BY_ROLE: Record<UserRole, SideItem[]> = {
     { href: "/profile", label: "Profil", icon: IC.profile },
     { href: "/projects", label: "Projects", icon: IC.projects },
     { href: "/proposals", label: "Proposal", icon: IC.proposals },
+    { href: "/apply-assistant", label: "Asisten Lamar", icon: IC.assistant },
     { href: "/onboarding", label: "Goal", icon: IC.goal },
     { href: "/guides", label: "Panduan", icon: IC.guides },
   ],

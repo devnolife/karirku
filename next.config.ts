@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
   // turbopack config silences the webpack/turbopack mismatch warning
   // and keeps the dev server lean.
   turbopack: {},
+  experimental: {
+    // Asisten Lamar mengirim data URL gambar (sudah dikecilkan) ke server action.
+    serverActions: { bodySizeLimit: "8mb" },
+  },
 };
 
 export default nextConfig;

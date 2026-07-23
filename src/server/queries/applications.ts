@@ -18,7 +18,7 @@ import {
 } from "@/lib/applications/status";
 import { markRecommendationInteraction } from "@/server/services/recommendation-interactions";
 
-const EXTERNAL_SOURCES = new Set(["greenhouse", "lever", "ashby", "kalibrr", "http"]);
+const EXTERNAL_SOURCES = new Set(["greenhouse", "lever", "ashby", "kalibrr", "import", "http"]);
 
 export type ApplyResult =
   | { ok: true; mode: "native" }
@@ -168,7 +168,10 @@ export async function getUserApplications(userId: string): Promise<ApplicationRo
     mode: a.mode as "native" | "external",
     status: a.status,
     appliedAt: a.appliedAt.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }),
-    applyUrl: EXTERNAL_SOURCES.has(a.job.source) ? a.job.sourceUrl : null,
+    applyUrl:
+      EXTERNAL_SOURCES.has(a.job.source) && /^(https?:|mailto:)/i.test(a.job.sourceUrl ?? "")
+        ? a.job.sourceUrl
+        : null,
     timeline: a.events.map((event) => ({
       id: event.id,
       status: event.status,
