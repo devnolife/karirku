@@ -30,9 +30,9 @@ const nextConfig: NextConfig = {
       // Izinkan Server Action saat app diakses lewat port-forward / tunnel VS Code
       // (di balik proxy, header Host bisa beda dengan Origin → default-nya diblok).
       allowedOrigins: [
-        "localhost:3000",
-        "127.0.0.1:3000",
-        "10.33.33.11:3000",
+        "localhost:3030",
+        "127.0.0.1:3030",
+        "10.33.33.11:3030",
         "*.devtunnels.ms",
         "*.app.github.dev",
         "*.githubpreview.dev",

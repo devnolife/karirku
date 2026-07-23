@@ -7,7 +7,7 @@
     enabled: "kai_enabled",
     user: "kai_user"
   };
-  var DEFAULT_API_BASE = "http://localhost:3000";
+  var DEFAULT_API_BASE = "http://localhost:3030";
 
   // extension/src/popup.ts
   var statusEl = document.getElementById("status");

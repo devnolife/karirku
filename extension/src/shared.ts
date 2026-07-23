@@ -78,4 +78,4 @@ export const STORAGE_KEYS = {
   user: "kai_user",
 } as const;
 
-export const DEFAULT_API_BASE = "http://localhost:3000";
+export const DEFAULT_API_BASE = "http://localhost:3030";

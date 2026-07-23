@@ -38,7 +38,7 @@ pnpm exec prisma migrate deploy
 pnpm db:seed                 # skill taxonomy + 4 user (1/role) + marketplace + admin
 pnpm embed:all               # generate embedding (768d) untuk jobs/courses/profiles
 pnpm market:intel            # enqueue snapshot pasar harian
-pnpm dev                     # → http://localhost:3000
+pnpm dev                     # → http://localhost:3030
 ```
 
 ### Lowongan live (data asli)
@@ -99,7 +99,7 @@ Fitur guidance loop (AI roadmap, scraper, worker) aktif di Sprint 3-4.
 ./scripts/dev-setup.sh
 
 # development
-pnpm dev              # Next.js di http://localhost:3000
+pnpm dev              # Next.js di http://localhost:3030
 pnpm worker           # BullMQ workers (terminal terpisah)
 
 # utility
@@ -148,8 +148,8 @@ readiness per-job, freshness, data quality, dan preference fit.
 
 | Service | URL |
 |---------|-----|
-| Next.js | http://localhost:3000 |
-| Health check | http://localhost:3000/api/health |
+| Next.js | http://localhost:3030 |
+| Health check | http://localhost:3030/api/health |
 | Postgres | localhost:5432 (`karirku` / `karirku`) |
 | Redis | localhost:6379 |
 | MinIO console | http://localhost:9001 (`karirku` / `karirku-dev-secret`) |
@@ -186,14 +186,14 @@ prisma/
 ### GitHub login
 
 1. Buat GitHub OAuth App.
-2. Callback: `http://localhost:3000/api/auth/github/callback`.
+2. Callback: `http://localhost:3030/api/auth/github/callback`.
 3. Isi `GITHUB_CLIENT_ID` dan `GITHUB_CLIENT_SECRET`.
 
 ### Gmail outcome assistant
 
 1. Buka [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials)
 2. Create OAuth 2.0 Client ID (Web application)
-3. Authorized redirect URI: `http://localhost:3000/api/auth/gmail/callback`
+3. Authorized redirect URI: `http://localhost:3030/api/auth/gmail/callback`
 4. Isi Client ID, Secret, dan encryption key di `.env.local`:
    ```
    GOOGLE_CLIENT_ID="..."

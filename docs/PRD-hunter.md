@@ -158,5 +158,5 @@ node hunter/run.js sync-email --days 30   # tarik & cocokkan email
 node hunter/run.js full                   # scan all + sync email
 
 # Dashboard
-npm run dev  →  http://localhost:3000/hunter
+npm run dev  →  http://localhost:3030/hunter
 ```
