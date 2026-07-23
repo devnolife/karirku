@@ -8,7 +8,6 @@
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { corsJson, corsPreflight, unauthorized, userFromRequest } from "../_lib";
-import { markRecommendationInteraction } from "@/server/services/recommendation-interactions";
 
 const ReportSchema = z.object({
   url: z.url(),
@@ -80,11 +79,10 @@ export async function POST(req: Request) {
               },
             });
           }
-          await markRecommendationInteraction(
-            userId,
-            job.id,
-            "apply",
-          );
+          // Attribution to a recommendation impression is handled causally at
+          // in-app apply-click time (see applyToJob). A submit detected purely
+          // on the portal has no impression the user acted through, so we record
+          // the application but intentionally do not attribute an impression.
           applicationRecorded = true;
         }
       }
