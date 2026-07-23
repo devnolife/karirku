@@ -8,11 +8,17 @@
  */
 
 import { NextResponse } from "next/server";
-import { bearerFromRequest, verifyToken } from "@/lib/autofill/token";
+import { prisma } from "@/lib/db";
+import {
+  bearerFromRequest,
+  hashToken,
+  tokenRecordIsActive,
+  verifyToken,
+} from "@/lib/autofill/token";
 
 export const CORS_HEADERS: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
   "Access-Control-Max-Age": "86400",
 };
@@ -28,9 +34,21 @@ export function corsPreflight(): NextResponse {
   return new NextResponse(null, { status: 204, headers: CORS_HEADERS });
 }
 
-/** Ambil userId dari bearer token; null bila tidak valid. */
-export function userFromRequest(req: Request): string | null {
-  return verifyToken(bearerFromRequest(req));
+/**
+ * Ambil userId dari bearer token. Dalam DB mode, token juga wajib masih
+ * tercatat di `extension_tokens`; menghapus row tersebut langsung merevoke.
+ */
+export async function userFromRequest(req: Request): Promise<string | null> {
+  const token = bearerFromRequest(req);
+  const userId = verifyToken(token);
+  if (!token || !userId) return null;
+  if (!process.env.DATABASE_URL) return userId;
+
+  const stored = await prisma.extensionToken.findUnique({
+    where: { tokenHash: hashToken(token) },
+    select: { userId: true, scope: true, expiresAt: true },
+  });
+  return tokenRecordIsActive(userId, stored) ? userId : null;
 }
 
 export function unauthorized(): NextResponse {

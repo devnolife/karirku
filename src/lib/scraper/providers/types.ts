@@ -12,13 +12,29 @@ export interface RawListing {
   title: string;
   /** URL absolut posting — dipakai sebagai kunci dedupe (Job.sourceUrl). */
   url: string;
+  /** Stable provider identity, preferred over URL when available. */
+  externalId?: string;
   /** Nama perusahaan; bisa kosong kalau sumber tidak mengeksposnya. */
   company: string;
   /** Lokasi; bisa kosong. */
   location: string;
+  /** Deskripsi hanya bila provider benar-benar mengembalikannya. */
+  description?: string;
+  /** Requirements terstruktur bila tersedia dari provider. */
+  requirements?: string[];
+  /** Tipe kerja hasil normalisasi dari metadata provider. */
+  type?: "fulltime" | "parttime" | "contract" | "remote" | "hybrid" | "onsite";
+  /** Rentang gaji bulanan dalam currency sumber, bila tersedia. */
+  salaryMin?: number;
+  salaryMax?: number;
+  currency?: string;
+  /** Timestamp publikasi dari provider, dalam ISO-8601. */
+  postedAt?: string;
 }
 
 export interface PortalEntry {
+  /** Primary key JobSource; kosong hanya untuk fallback tanpa DB. */
+  jobSourceId?: string;
   /** Label perusahaan; muncul di log dan sebagai fallback company. */
   name: string;
   /** Default true. */
@@ -29,6 +45,8 @@ export interface PortalEntry {
   api?: string;
   /** Provider id eksplisit — melewati detect(). */
   provider?: string;
+  /** Region informasional dari registry. */
+  region?: string | null;
 }
 
 export interface FetchOptions {

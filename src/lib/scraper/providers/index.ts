@@ -7,6 +7,7 @@
  */
 
 import ashby from "./ashby";
+import firecrawl from "./firecrawl";
 import greenhouse from "./greenhouse";
 import { makeHttpCtx } from "./http";
 import lever from "./lever";
@@ -14,7 +15,7 @@ import type { PortalEntry, Provider, RawListing } from "./types";
 
 export type { PortalEntry, Provider, RawListing } from "./types";
 
-const PROVIDERS: Provider[] = [greenhouse, ashby, lever];
+const PROVIDERS: Provider[] = [greenhouse, ashby, lever, firecrawl];
 
 const BY_ID = new Map(PROVIDERS.map((p) => [p.id, p]));
 

@@ -6,10 +6,10 @@
 import type {
   BgRequest,
   BgResponse,
-  FieldMapping,
   FormFieldInfo,
   FormSnapshot,
   MapResult,
+  ResumeFilePayload,
 } from "./shared";
 
 const ATTR = "data-kai-id";
@@ -234,6 +234,48 @@ function applyMappings(
   return filled;
 }
 
+// ---------- injeksi file CV ----------
+
+/** Isi input[type=file] dengan CV dari server via DataTransfer. */
+async function attachResume(elements: Map<string, Fillable>): Promise<number> {
+  const fileInputs: HTMLInputElement[] = [];
+  for (const el of elements.values()) {
+    if (el instanceof HTMLInputElement && el.type === "file") {
+      const hay = `${el.name} ${el.id} ${el.accept} ${labelFor(el) ?? ""}`.toLowerCase();
+      // hanya field yang jelas untuk CV/resume; cover letter file dilewati
+      if (/resume|cv|curriculum/.test(hay) || fileInputs.length === 0) fileInputs.push(el);
+    }
+  }
+  if (fileInputs.length === 0) return 0;
+
+  const res = await sendBg<ResumeFilePayload>({ kind: "GET_RESUME_FILE" });
+  if (!res.ok) return 0;
+
+  const { fileName, mimeType, base64 } = res.data;
+  const bin = atob(base64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  const file = new File([bytes], fileName, { type: mimeType });
+
+  let attached = 0;
+  for (const input of fileInputs) {
+    try {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      input.files = dt.files;
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      input.style.outline = STYLE_OK;
+      input.style.outlineOffset = "1px";
+      input.title = `CV terpasang: ${fileName} — cek sebelum submit`;
+      attached++;
+    } catch {
+      // input file bisa menolak set programatik di beberapa portal — biarkan manual
+    }
+  }
+  return attached;
+}
+
 // ---------- overlay UI ----------
 
 function el<K extends keyof HTMLElementTagNameMap>(
@@ -291,6 +333,166 @@ function showPanel(lines: string[], tone: "info" | "error" = "info"): void {
   document.body.appendChild(panel);
 }
 
+const SOURCE_BADGE: Record<string, { label: string; bg: string; fg: string }> = {
+  adapter: { label: "profil", bg: "#d1fae5", fg: "#065f46" },
+  saved: { label: "tersimpan", bg: "#e0e7ff", fg: "#3730a3" },
+  llm: { label: "AI", bg: "#fef3c7", fg: "#92400e" },
+};
+
+/**
+ * Panel review per-field: nilai yang diisi, badge sumber, edit inline,
+ * dan simpan jawaban ke answer bank. Submit tetap 100% oleh user.
+ */
+function showReviewPanel(
+  result: MapResult,
+  elements: Map<string, Fillable>,
+  fields: FormFieldInfo[],
+  extra: string[],
+): void {
+  document.getElementById(PANEL_ID)?.remove();
+  const byselector = new Map(fields.map((f) => [f.selector, f]));
+
+  const panel = el("div", {
+    position: "fixed",
+    bottom: "76px",
+    right: "20px",
+    zIndex: "2147483647",
+    background: "#ffffff",
+    color: "#111827",
+    border: "1px solid #e5e7eb",
+    borderRadius: "12px",
+    boxShadow: "0 8px 24px rgba(0,0,0,.16)",
+    padding: "12px 14px",
+    width: "340px",
+    maxHeight: "60vh",
+    overflowY: "auto",
+    font: "13px/1.5 system-ui, sans-serif",
+  });
+  panel.id = PANEL_ID;
+
+  panel.appendChild(
+    el("div", { fontWeight: "700", marginBottom: "6px" }, `Review isian (${result.mappings.length} field)`),
+  );
+  for (const line of extra) panel.appendChild(el("div", { margin: "2px 0", color: "#4b5563", fontSize: "12px" }, line));
+
+  for (const m of result.mappings) {
+    const field = byselector.get(m.selector);
+    const target = elements.get(m.selector) ?? document.querySelector<Fillable>(m.selector);
+    const row = el("div", {
+      borderTop: "1px solid #f3f4f6",
+      padding: "8px 0 6px",
+    });
+
+    const head = el("div", { display: "flex", alignItems: "center", gap: "6px" });
+    const badge = SOURCE_BADGE[m.source] ?? SOURCE_BADGE.llm;
+    const badgeEl = el(
+      "span",
+      {
+        background: badge.bg,
+        color: badge.fg,
+        borderRadius: "6px",
+        padding: "1px 6px",
+        fontSize: "10px",
+        fontWeight: "700",
+        flexShrink: "0",
+      },
+      m.aiGenerated ? "✨ AI" : badge.label,
+    );
+    const labelEl = el(
+      "span",
+      { fontSize: "11px", color: "#374151", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
+      field?.label || field?.name || m.selector,
+    );
+    labelEl.title = field?.label ?? "";
+    head.appendChild(badgeEl);
+    head.appendChild(labelEl);
+    row.appendChild(head);
+
+    const isLong = m.value.length > 60 || field?.type === "textarea";
+    const input = document.createElement(isLong ? "textarea" : "input") as
+      | HTMLInputElement
+      | HTMLTextAreaElement;
+    input.value = m.value;
+    Object.assign(input.style, {
+      width: "100%",
+      marginTop: "4px",
+      border: "1px solid #e5e7eb",
+      borderRadius: "6px",
+      padding: "4px 6px",
+      font: "12px system-ui, sans-serif",
+      background: "#fafafa",
+    } satisfies Partial<CSSStyleDeclaration>);
+    if (isLong) (input as HTMLTextAreaElement).rows = 3;
+    // Edit inline → langsung diterapkan ke field form.
+    input.addEventListener("input", () => {
+      if (!target) return;
+      if (target instanceof HTMLSelectElement) return; // select diubah di form langsung
+      setNativeValue(target, input.value);
+    });
+    row.appendChild(input);
+
+    // Simpan jawaban pertanyaan (label panjang = kemungkinan screening question).
+    const label = field?.label ?? "";
+    if (label.trim().length >= 12) {
+      const saveBtn = el(
+        "button",
+        {
+          marginTop: "4px",
+          border: "none",
+          background: "#eef2ff",
+          color: "#3730a3",
+          borderRadius: "6px",
+          padding: "2px 8px",
+          cursor: "pointer",
+          font: "11px system-ui, sans-serif",
+        },
+        "💾 Simpan jawaban",
+      );
+      saveBtn.addEventListener("click", () => {
+        void sendBg({ kind: "SAVE_ANSWERS", answers: [{ question: label.trim(), answer: input.value }] }).then(
+          (r) => {
+            saveBtn.textContent = r.ok ? "✓ Tersimpan" : "Gagal menyimpan";
+          },
+        );
+      });
+      row.appendChild(saveBtn);
+    }
+
+    panel.appendChild(row);
+  }
+
+  if (result.unmapped.length) {
+    panel.appendChild(
+      el(
+        "div",
+        { borderTop: "1px solid #f3f4f6", padding: "8px 0 2px", color: "#b91c1c", fontSize: "12px" },
+        `⬜ ${result.unmapped.length} field kosong (merah) — isi manual.`,
+      ),
+    );
+  }
+
+  panel.appendChild(
+    el("div", { marginTop: "8px", fontSize: "12px", color: "#4b5563" }, "Periksa semua isian, lalu submit sendiri."),
+  );
+
+  const close = el(
+    "button",
+    {
+      marginTop: "8px",
+      border: "none",
+      background: "#f3f4f6",
+      borderRadius: "8px",
+      padding: "4px 10px",
+      cursor: "pointer",
+      font: "12px system-ui, sans-serif",
+    },
+    "Tutup",
+  );
+  close.addEventListener("click", () => panel.remove());
+  panel.appendChild(close);
+  document.body.appendChild(panel);
+}
+
 async function runAutofill(): Promise<void> {
   const btn = document.getElementById(BTN_ID) as HTMLButtonElement | null;
   if (btn) {
@@ -317,15 +519,15 @@ async function runAutofill(): Promise<void> {
 
   lastResult = res.data;
   filledCount = applyMappings(res.data, elements);
+  const cvAttached = await attachResume(elements);
 
   const aiCount = res.data.mappings.filter((m) => m.aiGenerated).length;
-  showPanel([
+  const savedCount = res.data.mappings.filter((m) => m.source === "saved").length;
+  showReviewPanel(res.data, elements, fields, [
     `✅ ${filledCount} dari ${fields.length} field terisi.`,
+    cvAttached ? `📎 CV terpasang otomatis — cek field upload.` : "",
+    savedCount ? `💾 ${savedCount} dari jawaban tersimpanmu.` : "",
     aiCount ? `✨ ${aiCount} jawaban dibuat AI (kuning) — mohon review.` : "",
-    res.data.unmapped.length
-      ? `⬜ ${res.data.unmapped.length} field dibiarkan kosong (merah) — isi manual.`
-      : "",
-    "Periksa semua isian, lalu submit sendiri.",
   ].filter(Boolean));
 
   void sendBg({

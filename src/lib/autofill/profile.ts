@@ -66,10 +66,60 @@ export async function getProfileData(userId: string): Promise<ProfileData | null
     firstName,
     lastName,
     email: user.email,
+    phone: profile?.phone ?? undefined,
+    city: profile?.city ?? undefined,
+    country: profile?.country ?? undefined,
+    linkedinUrl: profile?.linkedinUrl ?? undefined,
+    githubUrl: profile?.githubUrl ?? undefined,
+    portfolioUrl: profile?.portfolioUrl ?? undefined,
+    currentTitle: profile?.currentTitle ?? undefined,
+    currentCompany: profile?.currentCompany ?? undefined,
+    yearsExperience: profile?.yearsExperience ?? undefined,
+    expectedSalaryIdr: profile?.expectedSalaryIdr ?? undefined,
     headline: profile?.headline ?? undefined,
     summary: profile?.summary ?? undefined,
     skills: profile?.skills ?? [],
     experience: profile?.experience ?? undefined,
     education: profile?.education ?? undefined,
   };
+}
+
+/**
+ * Daftar field autofill untuk completeness meter — makin lengkap,
+ * makin banyak field form yang bisa diisi otomatis.
+ */
+export const AUTOFILL_FIELD_LABELS: Array<{ key: keyof ProfileData; label: string }> = [
+  { key: "fullName", label: "Nama lengkap" },
+  { key: "email", label: "Email" },
+  { key: "phone", label: "No. HP" },
+  { key: "city", label: "Kota" },
+  { key: "country", label: "Negara" },
+  { key: "linkedinUrl", label: "LinkedIn" },
+  { key: "githubUrl", label: "GitHub" },
+  { key: "portfolioUrl", label: "Portfolio" },
+  { key: "currentTitle", label: "Posisi saat ini" },
+  { key: "currentCompany", label: "Perusahaan saat ini" },
+  { key: "yearsExperience", label: "Lama pengalaman" },
+  { key: "expectedSalaryIdr", label: "Ekspektasi gaji" },
+  { key: "summary", label: "Ringkasan" },
+  { key: "skills", label: "Skill" },
+];
+
+/** Hitung kelengkapan data autofill (terisi, total, persen). */
+export function autofillCompleteness(profile: ProfileData): {
+  filled: number;
+  total: number;
+  pct: number;
+  missing: string[];
+} {
+  let filled = 0;
+  const missing: string[] = [];
+  for (const { key, label } of AUTOFILL_FIELD_LABELS) {
+    const v = profile[key];
+    const has = Array.isArray(v) ? v.length > 0 : v !== undefined && v !== null && v !== "";
+    if (has) filled += 1;
+    else missing.push(label);
+  }
+  const total = AUTOFILL_FIELD_LABELS.length;
+  return { filled, total, pct: Math.round((filled / total) * 100), missing };
 }

@@ -4,6 +4,7 @@
  */
 
 import type { HttpCtx, PortalEntry, Provider, RawListing } from "./types";
+import { cleanRichText } from "@/lib/html";
 
 const ALLOWED_HOSTS = new Set([
   "boards-api.greenhouse.io",
@@ -30,18 +31,23 @@ function assertGreenhouseUrl(url: string): string {
 function resolveApiUrl(entry: PortalEntry): string | null {
   if (entry.api) {
     assertGreenhouseUrl(entry.api);
-    return entry.api;
+    const url = new URL(entry.api);
+    url.searchParams.set("content", "true");
+    return url.toString();
   }
   const url = entry.careersUrl ?? "";
   const match = url.match(/job-boards(?:\.eu)?\.greenhouse\.io\/([^/?#]+)/);
-  if (match) return `https://boards-api.greenhouse.io/v1/boards/${match[1]}/jobs`;
+  if (match) return `https://boards-api.greenhouse.io/v1/boards/${match[1]}/jobs?content=true`;
   return null;
 }
 
 interface GreenhouseJob {
+  id?: number;
   title?: string;
   absolute_url?: string;
   location?: { name?: string };
+  content?: string;
+  first_published?: string;
 }
 
 const provider: Provider = {
@@ -66,12 +72,18 @@ const provider: Provider = {
     const jobs = Array.isArray(json?.jobs) ? json.jobs : [];
     return jobs
       .filter((j) => j.absolute_url)
-      .map((j) => ({
-        title: (j.title ?? "").trim(),
-        url: j.absolute_url as string,
-        company: entry.name,
-        location: j.location?.name ?? "",
-      }));
+      .map((j) => {
+        const description = cleanRichText(j.content ?? "");
+        return {
+          title: (j.title ?? "").trim(),
+          url: j.absolute_url as string,
+          ...(j.id !== undefined ? { externalId: String(j.id) } : {}),
+          company: entry.name,
+          location: j.location?.name ?? "",
+          ...(description ? { description } : {}),
+          ...(j.first_published ? { postedAt: j.first_published } : {}),
+        };
+      });
   },
 };
 

@@ -4,7 +4,7 @@ import { Sk } from "../_dash/skeleton";
 export default function GuidesLoading() {
   return (
     <div
-      className="mx-auto max-w-[1400px] space-y-8 px-6 py-12"
+      className="app-page space-y-8"
       role="status"
       aria-label="Memuat panduan"
     >

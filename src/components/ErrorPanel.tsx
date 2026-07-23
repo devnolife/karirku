@@ -24,7 +24,7 @@ export function ErrorPanel({
   return (
     <div className="mx-auto flex min-h-[60vh] max-w-[1200px] items-center px-6 py-8 md:px-10">
       <div className="act-rise act-card-2 act-rail act-rail-magenta w-full max-w-lg p-8 md:p-10">
-        <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[rgba(242,0,202,0.1)] text-[var(--act-magenta)]">
+        <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[rgba(245,158,11,0.1)] text-[var(--act-magenta)]">
           <svg
             viewBox="0 0 24 24"
             className="h-5 w-5"

@@ -1,9 +1,13 @@
 import { NextRequest } from "next/server";
 import { hunterDb } from "@/lib/hunter";
+import { authorizeHunterApi } from "@/lib/hunter-access";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
+  const access = await authorizeHunterApi();
+  if (!access.ok) return access.response;
+
   const sp = request.nextUrl.searchParams;
   const platform = sp.get("platform");
   const replyStatus = sp.get("replyStatus");

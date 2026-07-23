@@ -80,6 +80,26 @@ export function hashToken(token: string): string {
   return createHash("sha256").update(token).digest("hex");
 }
 
+export type StoredTokenRecord = {
+  userId: string;
+  scope: string;
+  expiresAt: Date;
+};
+
+/** Validate the DB record that makes a stateless token revocable. */
+export function tokenRecordIsActive(
+  expectedUserId: string,
+  record: StoredTokenRecord | null,
+  now = Date.now(),
+): boolean {
+  return Boolean(
+    record &&
+      record.userId === expectedUserId &&
+      record.scope === TOKEN_SCOPE &&
+      record.expiresAt.getTime() > now,
+  );
+}
+
 /** Ambil bearer token dari header Authorization. */
 export function bearerFromRequest(req: Request): string | null {
   const h = req.headers.get("authorization") ?? "";

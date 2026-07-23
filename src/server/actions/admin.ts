@@ -14,6 +14,7 @@ import {
   hasEntitlement,
   revokeEntitlement,
 } from "@/lib/entitlements";
+import { prisma } from "@/lib/db";
 
 async function requireAdmin() {
   const user = await requireUser();
@@ -36,4 +37,21 @@ export async function toggleAutoApplyEntitlementAction(userId: string): Promise<
     await grantEntitlement(userId, FEATURE_HUNTER_AUTO_APPLY, "toggled manual via /admin/users");
   }
   revalidatePath("/admin/users");
+}
+
+export async function toggleJobSourceAction(sourceId: string): Promise<void> {
+  await requireAdmin();
+  if (!/^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(sourceId)) {
+    throw new Error("ID sumber tidak valid.");
+  }
+  const source = await prisma.jobSource.findUnique({
+    where: { id: sourceId },
+    select: { enabled: true },
+  });
+  if (!source) throw new Error("Sumber lowongan tidak ditemukan.");
+  await prisma.jobSource.update({
+    where: { id: sourceId },
+    data: { enabled: !source.enabled },
+  });
+  revalidatePath("/admin/scraper");
 }

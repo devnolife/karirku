@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { ApplyButton } from "@/components/ApplyButton";
+import { JobFeedbackButtons } from "@/components/JobFeedbackButtons";
+import { MilestoneStatusButton } from "@/components/MilestoneStatusButton";
+import { CountUp, RingProgress } from "./motion";
 import type {
   SkillView,
   MilestoneView,
@@ -20,7 +23,7 @@ export function PageHeader({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="studio-page-header flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         {kicker && <span className="act-eyebrow">{kicker}</span>}
         <h1 className={`act-display text-3xl leading-[1.05] md:text-4xl ${kicker ? "mt-3" : ""}`}>{title}</h1>
@@ -31,7 +34,7 @@ export function PageHeader({
   );
 }
 
-/* ---------------- KPI ---------------- */
+/* ---------------- KPI — double-bezel tile ---------------- */
 export function Kpi({
   label,
   value,
@@ -47,54 +50,63 @@ export function Kpi({
   tone: "blue" | "iris" | "mint" | "magenta";
   accent?: boolean;
 }) {
+  const valueColor = {
+    blue: "text-[var(--act-blue)]",
+    iris: "text-[var(--act-iris)]",
+    mint: "text-[var(--act-teal)]",
+    magenta: "text-[var(--act-magenta)]",
+  }[tone];
+  const coreBg = {
+    blue: "radial-gradient(120% 130% at 50% 0%, #ffffff 30%, var(--act-sky-100) 130%)",
+    iris: "radial-gradient(120% 130% at 50% 0%, #ffffff 30%, #eceafa 130%)",
+    mint: "radial-gradient(120% 130% at 50% 0%, #ffffff 30%, #e2f1eb 130%)",
+    magenta: "radial-gradient(120% 130% at 50% 0%, #ffffff 30%, #f9eedb 130%)",
+  }[tone];
   return (
-    <div className={`studio-kpi studio-kpi-${tone} p-5`}>
-      <span className="studio-kpi-label">{label}</span>
-      <div className="mt-2 flex items-baseline gap-1">
-        <span className="act-display studio-kpi-value text-4xl">
-          {accent ? "+" : ""}
-          {value}
-        </span>
-        {unit && <span className="text-lg font-semibold text-[var(--act-graphite)]">{unit}</span>}
+    <div className="act-bezel act-bezel-lift">
+      <div className="act-bezel-core p-4" style={{ "--core-bg": coreBg } as React.CSSProperties}>
+        <span className="act-kicker">{label}</span>
+        <div className="mt-2 flex items-baseline gap-1">
+          <span className={`act-display text-4xl ${valueColor}`}>
+            {accent ? "+" : ""}
+            {typeof value === "number" ? <CountUp to={value} /> : value}
+          </span>
+          {unit && <span className="text-lg font-semibold text-[var(--act-graphite)]">{unit}</span>}
+        </div>
+        <p className="mt-1 text-xs text-[var(--act-graphite)]">{caption}</p>
       </div>
-      <p className="mt-1 text-xs text-[var(--act-graphite)]">{caption}</p>
     </div>
   );
 }
 
-/* ---------------- Readiness ring ---------------- */
+/* ---------------- Readiness ring — double-bezel hero tile ---------------- */
 export function ReadinessCard({ score, last }: { score: number; last: number }) {
-  const r = 54;
-  const c = 2 * Math.PI * r;
-  const dash = (Math.max(0, Math.min(score, 100)) / 100) * c;
-  const delta = score - last;
-  const status = score >= 80 ? "Siap memperluas peluangmu." : score >= 60 ? "Kamu makin dekat ke target." : "Bangun fondasi untuk targetmu.";
   return (
-    <div className="studio-readiness-card w-full p-5 sm:p-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <span className="studio-section-kicker">Career readiness</span>
-          <p className="mt-1 text-sm leading-relaxed text-[var(--act-graphite)]">{status}</p>
-        </div>
-        <span className="studio-ready-status">Studio score</span>
-      </div>
-      <div className="mt-5 flex items-center gap-5">
-        <div className="relative h-[122px] w-[122px] flex-none">
-          <svg viewBox="0 0 128 128" className="h-full w-full -rotate-90">
-            <circle cx="64" cy="64" r={r} fill="none" stroke="rgba(4,39,24,0.1)" strokeWidth="10" />
-            <circle cx="64" cy="64" r={r} fill="none" stroke="#198F38" strokeWidth="10" strokeDasharray={`${dash} ${c}`} strokeLinecap="round" />
-          </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="act-display text-4xl text-[var(--act-ink)]">{score}</span>
-            <span className="text-xs font-semibold text-[var(--act-blue)]">dari 100</span>
+    <div className="act-bezel w-full">
+      <div
+        className="act-bezel-core p-5"
+        style={{
+          "--core-bg":
+            "radial-gradient(130% 140% at 50% 0%, var(--act-sky-100), var(--act-wash-sky) 90%)",
+        } as React.CSSProperties}
+      >
+        <span className="act-kicker">Career readiness</span>
+        <div className="mt-3 flex items-center gap-5">
+          <div className="relative h-[128px] w-[128px] flex-none">
+            <RingProgress score={score} />
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="act-display text-4xl text-[var(--act-ink)]">
+                <CountUp to={score} />
+              </span>
+              <span className="text-xs font-semibold text-[var(--act-blue)]">persen</span>
+            </div>
           </div>
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-xs font-medium text-[var(--act-graphite)]">Dibanding minggu lalu</p>
-          <p className="act-display mt-1 text-xl text-[var(--act-ink)]">{last} poin</p>
-          <span className="studio-delta mt-3">
-            {delta > 0 ? `+${delta}` : delta} poin minggu ini
-          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-xs text-[var(--act-graphite)]">Naik dari</p>
+            <p className="act-display text-xl text-[var(--act-ink)]">{last}%</p>
+            <p className="mt-1 text-xs text-[var(--act-graphite)]">minggu lalu</p>
+            <span className="act-chip act-chip-green mt-3">+{score - last} poin minggu ini</span>
+          </div>
         </div>
       </div>
     </div>
@@ -106,8 +118,13 @@ export function SkillBar({ skill, tone = "blue" }: { skill: SkillView; tone?: "b
   const pct = Math.min(100, (skill.current / skill.required) * 100);
   const gap = Math.max(0, skill.required - skill.current);
   const critical = gap > 25;
+  const fill = critical
+    ? "linear-gradient(90deg, #eab264, var(--act-magenta))"
+    : tone === "iris"
+      ? "linear-gradient(90deg, #948ae3, var(--act-iris))"
+      : "linear-gradient(90deg, var(--act-sky-bright), var(--act-sky-deep))";
   return (
-    <div className={`studio-skill-bar ${critical ? "studio-skill-critical" : `studio-skill-${tone}`} `}>
+    <div>
       <div className="flex items-baseline justify-between">
         <span className="text-sm font-semibold text-[var(--act-ink)]">{skill.name}</span>
         <span className="text-xs font-medium text-[var(--act-graphite)]">
@@ -117,8 +134,8 @@ export function SkillBar({ skill, tone = "blue" }: { skill: SkillView; tone?: "b
         </span>
       </div>
       <div className="act-track mt-2">
-        <i style={{ width: `${pct}%` }} />
-        <span className="studio-skill-target" style={{ left: `${Math.min(100, skill.required)}%` }} aria-hidden />
+        <i style={{ width: `${pct}%`, background: fill }} />
+        <span className="absolute top-[-2px] bottom-[-2px] w-[2px] rounded bg-[var(--act-onyx)] opacity-40" style={{ left: `${Math.min(100, skill.required)}%` }} aria-hidden />
       </div>
       {gap > 0 && (
         <p className="mt-1.5 text-[11px] font-medium text-[var(--act-graphite)]">
@@ -132,9 +149,9 @@ export function SkillBar({ skill, tone = "blue" }: { skill: SkillView; tone?: "b
 /* ---------------- Milestone row ---------------- */
 export function MilestoneRow({ milestone: m }: { milestone: MilestoneView }) {
   const statusConfig = {
-    done: { text: "Done", chip: "act-chip-green", badge: "bg-[linear-gradient(140deg,#34d399,#059669)] text-white" },
-    in_progress: { text: "In progress", chip: "act-chip-blue", badge: "bg-[linear-gradient(140deg,#22C55E,var(--act-blue))] text-white" },
-    upcoming: { text: "Upcoming", chip: "act-chip-mute", badge: "bg-[var(--act-mist)] text-[var(--act-graphite)] border border-[rgba(15,23,42,0.1)]" },
+    done: { text: "Selesai", chip: "act-chip-green", badge: "bg-[linear-gradient(140deg,#5eb3a4,var(--act-teal))] text-white" },
+    in_progress: { text: "Berjalan", chip: "act-chip-blue", badge: "bg-[linear-gradient(140deg,#5cb3e8,var(--act-blue))] text-white" },
+    upcoming: { text: "Menunggu", chip: "act-chip-mute", badge: "bg-[var(--act-mist)] text-[var(--act-graphite)] border border-[rgba(15,23,42,0.1)]" },
   }[m.status];
   return (
     <li className="act-rowhover grid grid-cols-12 gap-4 px-5 py-5">
@@ -147,7 +164,20 @@ export function MilestoneRow({ milestone: m }: { milestone: MilestoneView }) {
           <ul className="mt-1.5 space-y-0.5">
             {m.courses.map((c) => (
               <li key={c.title} className="text-xs text-[var(--act-graphite)]">
-                <span className="font-semibold text-[var(--act-charcoal)]">{c.provider}</span> · {c.title} · {c.hours}h
+                <span className="font-semibold text-[var(--act-charcoal)]">{c.provider}</span> ·{" "}
+                {c.url ? (
+                  <a
+                    href={c.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline decoration-dotted underline-offset-2 hover:text-[var(--act-iris)]"
+                  >
+                    {c.title}
+                  </a>
+                ) : (
+                  c.title
+                )}{" "}
+                · {c.hours}h
               </li>
             ))}
           </ul>
@@ -155,6 +185,7 @@ export function MilestoneRow({ milestone: m }: { milestone: MilestoneView }) {
       </div>
       <div className="col-span-12 flex items-center gap-2 md:col-span-3 md:justify-end">
         <span className={`act-chip ${statusConfig.chip}`}>{statusConfig.text}</span>
+        <MilestoneStatusButton milestoneId={m.id} status={m.status} />
       </div>
     </li>
   );
@@ -171,7 +202,12 @@ export function JobRow({ job: j }: { job: JobView }) {
       </div>
       <div className="col-span-8 min-w-0">
         <h4 className="truncate font-semibold text-[var(--act-ink)]">
-          <Link href={`/jobs/${j.id}`} className="hover:text-[var(--act-magenta)] hover:underline">{j.title}</Link>
+          <Link
+            href={`/jobs/${j.id}${j.impressionId ? `?imp=${encodeURIComponent(j.impressionId)}` : ""}`}
+            className="hover:text-[var(--act-magenta)] hover:underline"
+          >
+            {j.title}
+          </Link>
         </h4>
         <p className="text-xs text-[var(--act-graphite)]">
           <span className="font-semibold text-[var(--act-charcoal)]">{j.company}</span> · {j.location}
@@ -180,16 +216,66 @@ export function JobRow({ job: j }: { job: JobView }) {
           )}
         </p>
         <div className="mt-1.5 flex flex-wrap gap-1.5">
-          {j.skills.map((s) => (
-            <span key={s} className="rounded-md bg-[rgba(25,143,56,0.08)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--act-blue)]">{s}</span>
-          ))}
+          {j.skills.map((s) => {
+            const owned = j.matchedSkills?.some((m) => m.toLowerCase() === s.toLowerCase());
+            return (
+              <span
+                key={s}
+                title={owned ? "Kamu punya skill ini" : "Belum ada di profilmu"}
+                className={
+                  owned
+                    ? "inline-flex items-center gap-0.5 rounded-md bg-[rgba(0,200,120,0.10)] px-1.5 py-0.5 text-[10px] font-semibold text-[#0a7a4b]"
+                    : "rounded-md bg-[rgba(0,152,242,0.08)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--act-blue)]"
+                }
+              >
+                {owned && (
+                  <svg viewBox="0 0 24 24" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <path d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+                {s}
+              </span>
+            );
+          })}
+        </div>
+        {j.matchReasons && j.matchReasons.length > 0 && (
+          <p className="mt-1 truncate text-[10px] text-[var(--act-graphite)]" title={j.matchReasons.join(" · ")}>
+            {j.matchReasons.join(" · ")}
+          </p>
+        )}
+        {j.matchConfidence !== undefined && (
+          <p className="mt-1 text-[10px] text-[var(--act-graphite)]">
+            Confidence data{" "}
+            <span className="font-semibold text-[var(--act-charcoal)]">
+              {j.matchConfidence >= 0.75
+                ? "tinggi"
+                : j.matchConfidence >= 0.5
+                  ? "sedang"
+                  : "rendah"}
+            </span>
+            {j.jobReadiness !== undefined
+              ? ` · kesiapan job ${j.jobReadiness}%`
+              : " · skill job belum lengkap"}
+          </p>
+        )}
+        <div className="mt-1.5">
+          <JobFeedbackButtons
+            jobId={j.id}
+            impressionId={j.impressionId}
+            saved={j.saved}
+          />
         </div>
       </div>
       <div className="col-span-2 text-right">
         <p className="text-xs font-semibold text-[var(--act-ink)]">{j.salary}</p>
         <p className="act-kicker !text-[10px]">{j.posted}</p>
         <div className="mt-1.5">
-          <ApplyButton jobId={j.id} alreadyApplied={!!j.applied} isExternal={!!j.applyUrl} />
+          <ApplyButton
+            jobId={j.id}
+            impressionId={j.impressionId}
+            alreadyApplied={!!j.applied}
+            isExternal={!!j.applyUrl}
+          />
         </div>
       </div>
     </li>
@@ -198,14 +284,15 @@ export function JobRow({ job: j }: { job: JobView }) {
 
 /* ---------------- Market chart ---------------- */
 export function MarketChart({ data }: { data: { label: string; value: number }[] }) {
+  if (data.length === 0) return null;
   const w = 280;
   const h = 110;
   const max = Math.max(...data.map((d) => d.value));
   const min = Math.min(...data.map((d) => d.value));
   const range = max - min || 1;
-  const step = w / (data.length - 1);
+  const step = data.length > 1 ? w / (data.length - 1) : 0;
   const points = data.map((d, i) => {
-    const x = i * step;
+    const x = data.length > 1 ? i * step : w / 2;
     const y = h - ((d.value - min) / range) * (h - 12) - 6;
     return [x, y] as const;
   });
@@ -220,7 +307,7 @@ export function MarketChart({ data }: { data: { label: string; value: number }[]
             <stop offset="100%" stopColor="var(--act-magenta)" stopOpacity="0" />
           </linearGradient>
           <linearGradient id="chartLine" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#F59E0B" />
+            <stop offset="0%" stopColor="#eab264" />
             <stop offset="100%" stopColor="var(--act-magenta)" />
           </linearGradient>
         </defs>
@@ -240,11 +327,12 @@ export function MarketChart({ data }: { data: { label: string; value: number }[]
 /* ---------------- Course row ---------------- */
 export function CourseRow({ course: c, idx }: { course: CourseView; idx: number }) {
   const tiles = [
-    "bg-[linear-gradient(140deg,#22C55E,var(--act-blue))]",
-    "bg-[linear-gradient(140deg,#14B8A6,var(--act-iris))]",
-    "bg-[linear-gradient(140deg,#F59E0B,var(--act-magenta))]",
-    "bg-[linear-gradient(140deg,#34d399,#059669)]",
-    "bg-[linear-gradient(140deg,#fbbf24,#d97706)]",
+    "bg-[linear-gradient(140deg,#5cb3e8,var(--act-blue))]",
+    "bg-[linear-gradient(140deg,#948ae3,var(--act-iris))]",
+    "bg-[linear-gradient(140deg,#5eb3a4,var(--act-teal))]",
+    "bg-[linear-gradient(140deg,#eab264,var(--act-magenta))]",
+    "bg-[linear-gradient(140deg,#d98da0,var(--act-rose))]",
+    "bg-[linear-gradient(140deg,#97b58c,var(--act-sage))]",
   ];
   return (
     <li className="act-rowhover grid grid-cols-12 items-center gap-3 px-5 py-4">
@@ -253,8 +341,12 @@ export function CourseRow({ course: c, idx }: { course: CourseView; idx: number 
       </div>
       <div className="col-span-7 sm:col-span-8">
         <h4 className="text-sm font-semibold leading-snug text-[var(--act-ink)]">{c.title}</h4>
-        <p className="mt-1 text-xs text-[var(--act-graphite)]">
-          {c.provider} · {c.level} · {c.hours}h · <span className="text-[#d97706]">★</span> {c.rating}
+        <p className="mt-1 flex items-center gap-1 text-xs text-[var(--act-graphite)]">
+          {c.provider} · {c.level} · {c.hours}h ·
+          <svg viewBox="0 0 24 24" className="h-3 w-3 text-[#d97706]" fill="currentColor" aria-hidden>
+            <path d="M12 2l2.9 6.26 6.6.7-4.9 4.5 1.35 6.54L12 16.77 6.05 20l1.35-6.54-4.9-4.5 6.6-.7L12 2z" />
+          </svg>
+          {c.rating}
         </p>
       </div>
       <div className="col-span-3 text-right">
@@ -294,11 +386,10 @@ export function EmptyState({
 }) {
   return (
     <div
-      className={`flex flex-col items-center justify-center rounded-[18px] border border-dashed border-[rgba(15,23,42,0.14)] bg-[var(--act-mist)] text-center ${
-        compact ? "px-6 py-10" : "px-8 py-16"
-      }`}
+      className={`flex flex-col items-center justify-center rounded-[18px] border border-dashed border-[rgba(15,23,42,0.14)] bg-[var(--act-mist)] text-center ${compact ? "px-6 py-10" : "px-8 py-16"
+        }`}
     >
-      <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[rgba(25,143,56,0.09)] text-[var(--act-blue)]">
+      <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[rgba(0,152,242,0.09)] text-[var(--act-blue)]">
         <svg
           viewBox="0 0 24 24"
           className="h-[22px] w-[22px]"
@@ -319,7 +410,7 @@ export function EmptyState({
   );
 }
 
-/* ---------------- Overview preview card ---------------- */
+/* ---------------- Overview preview card — double-bezel link ---------------- */
 export function PreviewCard({
   href,
   kicker,
@@ -333,17 +424,26 @@ export function PreviewCard({
   children: React.ReactNode;
   tone?: "blue" | "iris" | "magenta" | "mint";
 }) {
+  const kickerColor = {
+    blue: "!text-[var(--act-blue)]",
+    iris: "!text-[var(--act-iris)]",
+    magenta: "!text-[var(--act-magenta)]",
+    mint: "!text-[var(--act-teal)]",
+  }[tone];
   return (
-    <Link href={href} className={`studio-preview-card studio-preview-${tone} group flex h-full flex-col p-5 sm:p-6`}>
-      <div className="flex items-center justify-between">
-        <span className="studio-section-kicker">{kicker}</span>
-        <svg viewBox="0 0 24 24" className="h-4 w-4 text-[var(--act-graphite)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--act-blue)]" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <path d="M5 12h14M13 5l7 7-7 7" />
-        </svg>
+    <Link href={href} className="act-bezel group block">
+      <div className="act-bezel-core p-5">
+        <div className="flex items-center justify-between">
+          <span className={`act-kicker ${kickerColor}`}>{kicker}</span>
+          <span className="act-disc">
+            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M5 12h14M13 5l7 7-7 7" />
+            </svg>
+          </span>
+        </div>
+        <h3 className="act-heading mt-1.5 text-lg text-[var(--act-ink)]">{title}</h3>
+        <div className="mt-3">{children}</div>
       </div>
-      <h3 className="act-heading mt-1.5 text-lg text-[var(--act-ink)]">{title}</h3>
-      <div className="mt-4 flex-1">{children}</div>
-      <span className="studio-preview-footer">Lihat detail</span>
     </Link>
   );
 }
@@ -369,9 +469,6 @@ export function StatCard({
   /** Kartu highlight gelap (onyx solid, teks putih). */
   featured?: boolean;
 }) {
-  const base = featured
-    ? "bg-[var(--act-onyx)] text-white border-transparent"
-    : "act-card-2";
   const inner = (
     <>
       <div className="flex items-start justify-between gap-2">
@@ -417,11 +514,23 @@ export function StatCard({
       )}
     </>
   );
-  const cls = `group block rounded-[20px] p-5 ${base} ` + (featured ? "" : "act-rowhover");
+  const cls = "group block act-bezel " + (href ? "" : "act-bezel-lift");
+  const coreStyle = featured
+    ? ({
+      "--core-bg": "var(--act-onyx)",
+      boxShadow:
+        "inset 0 1px 1px rgba(255,255,255,0.12), rgba(15,23,42,0.35) 0px 14px 34px -16px",
+    } as React.CSSProperties)
+    : undefined;
+  const body = (
+    <div className="act-bezel-core p-5" style={coreStyle}>
+      {inner}
+    </div>
+  );
   return href ? (
-    <Link href={href} className={cls}>{inner}</Link>
+    <Link href={href} className={cls}>{body}</Link>
   ) : (
-    <div className={cls}>{inner}</div>
+    <div className={cls}>{body}</div>
   );
 }
 
@@ -566,7 +675,7 @@ export function HatchedBars({
                   (d.active
                     ? "bg-[linear-gradient(180deg,var(--act-sky-bright),var(--act-sky-deep))]"
                     : filled
-                      ? "bg-[rgba(25,143,56,0.25)]"
+                      ? "bg-[rgba(0,152,242,0.25)]"
                       : "act-hatch")
                 }
                 style={{ height: `${h}%` }}

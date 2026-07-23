@@ -173,6 +173,39 @@
     }
     return filled;
   }
+  async function attachResume(elements) {
+    const fileInputs = [];
+    for (const el2 of elements.values()) {
+      if (el2 instanceof HTMLInputElement && el2.type === "file") {
+        const hay = `${el2.name} ${el2.id} ${el2.accept} ${labelFor(el2) ?? ""}`.toLowerCase();
+        if (/resume|cv|curriculum/.test(hay) || fileInputs.length === 0) fileInputs.push(el2);
+      }
+    }
+    if (fileInputs.length === 0) return 0;
+    const res = await sendBg({ kind: "GET_RESUME_FILE" });
+    if (!res.ok) return 0;
+    const { fileName, mimeType, base64 } = res.data;
+    const bin = atob(base64);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    const file = new File([bytes], fileName, { type: mimeType });
+    let attached = 0;
+    for (const input of fileInputs) {
+      try {
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        input.files = dt.files;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+        input.style.outline = STYLE_OK;
+        input.style.outlineOffset = "1px";
+        input.title = `CV terpasang: ${fileName} \u2014 cek sebelum submit`;
+        attached++;
+      } catch {
+      }
+    }
+    return attached;
+  }
   function el(tag, css, text) {
     const node = document.createElement(tag);
     Object.assign(node.style, css);
@@ -220,6 +253,141 @@
     panel.appendChild(close);
     document.body.appendChild(panel);
   }
+  var SOURCE_BADGE = {
+    adapter: { label: "profil", bg: "#d1fae5", fg: "#065f46" },
+    saved: { label: "tersimpan", bg: "#e0e7ff", fg: "#3730a3" },
+    llm: { label: "AI", bg: "#fef3c7", fg: "#92400e" }
+  };
+  function showReviewPanel(result, elements, fields, extra) {
+    document.getElementById(PANEL_ID)?.remove();
+    const byselector = new Map(fields.map((f) => [f.selector, f]));
+    const panel = el("div", {
+      position: "fixed",
+      bottom: "76px",
+      right: "20px",
+      zIndex: "2147483647",
+      background: "#ffffff",
+      color: "#111827",
+      border: "1px solid #e5e7eb",
+      borderRadius: "12px",
+      boxShadow: "0 8px 24px rgba(0,0,0,.16)",
+      padding: "12px 14px",
+      width: "340px",
+      maxHeight: "60vh",
+      overflowY: "auto",
+      font: "13px/1.5 system-ui, sans-serif"
+    });
+    panel.id = PANEL_ID;
+    panel.appendChild(
+      el("div", { fontWeight: "700", marginBottom: "6px" }, `Review isian (${result.mappings.length} field)`)
+    );
+    for (const line of extra) panel.appendChild(el("div", { margin: "2px 0", color: "#4b5563", fontSize: "12px" }, line));
+    for (const m of result.mappings) {
+      const field = byselector.get(m.selector);
+      const target = elements.get(m.selector) ?? document.querySelector(m.selector);
+      const row = el("div", {
+        borderTop: "1px solid #f3f4f6",
+        padding: "8px 0 6px"
+      });
+      const head = el("div", { display: "flex", alignItems: "center", gap: "6px" });
+      const badge = SOURCE_BADGE[m.source] ?? SOURCE_BADGE.llm;
+      const badgeEl = el(
+        "span",
+        {
+          background: badge.bg,
+          color: badge.fg,
+          borderRadius: "6px",
+          padding: "1px 6px",
+          fontSize: "10px",
+          fontWeight: "700",
+          flexShrink: "0"
+        },
+        m.aiGenerated ? "\u2728 AI" : badge.label
+      );
+      const labelEl = el(
+        "span",
+        { fontSize: "11px", color: "#374151", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
+        field?.label || field?.name || m.selector
+      );
+      labelEl.title = field?.label ?? "";
+      head.appendChild(badgeEl);
+      head.appendChild(labelEl);
+      row.appendChild(head);
+      const isLong = m.value.length > 60 || field?.type === "textarea";
+      const input = document.createElement(isLong ? "textarea" : "input");
+      input.value = m.value;
+      Object.assign(input.style, {
+        width: "100%",
+        marginTop: "4px",
+        border: "1px solid #e5e7eb",
+        borderRadius: "6px",
+        padding: "4px 6px",
+        font: "12px system-ui, sans-serif",
+        background: "#fafafa"
+      });
+      if (isLong) input.rows = 3;
+      input.addEventListener("input", () => {
+        if (!target) return;
+        if (target instanceof HTMLSelectElement) return;
+        setNativeValue(target, input.value);
+      });
+      row.appendChild(input);
+      const label = field?.label ?? "";
+      if (label.trim().length >= 12) {
+        const saveBtn = el(
+          "button",
+          {
+            marginTop: "4px",
+            border: "none",
+            background: "#eef2ff",
+            color: "#3730a3",
+            borderRadius: "6px",
+            padding: "2px 8px",
+            cursor: "pointer",
+            font: "11px system-ui, sans-serif"
+          },
+          "\u{1F4BE} Simpan jawaban"
+        );
+        saveBtn.addEventListener("click", () => {
+          void sendBg({ kind: "SAVE_ANSWERS", answers: [{ question: label.trim(), answer: input.value }] }).then(
+            (r) => {
+              saveBtn.textContent = r.ok ? "\u2713 Tersimpan" : "Gagal menyimpan";
+            }
+          );
+        });
+        row.appendChild(saveBtn);
+      }
+      panel.appendChild(row);
+    }
+    if (result.unmapped.length) {
+      panel.appendChild(
+        el(
+          "div",
+          { borderTop: "1px solid #f3f4f6", padding: "8px 0 2px", color: "#b91c1c", fontSize: "12px" },
+          `\u2B1C ${result.unmapped.length} field kosong (merah) \u2014 isi manual.`
+        )
+      );
+    }
+    panel.appendChild(
+      el("div", { marginTop: "8px", fontSize: "12px", color: "#4b5563" }, "Periksa semua isian, lalu submit sendiri.")
+    );
+    const close = el(
+      "button",
+      {
+        marginTop: "8px",
+        border: "none",
+        background: "#f3f4f6",
+        borderRadius: "8px",
+        padding: "4px 10px",
+        cursor: "pointer",
+        font: "12px system-ui, sans-serif"
+      },
+      "Tutup"
+    );
+    close.addEventListener("click", () => panel.remove());
+    panel.appendChild(close);
+    document.body.appendChild(panel);
+  }
   async function runAutofill() {
     const btn = document.getElementById(BTN_ID);
     if (btn) {
@@ -243,12 +411,14 @@
     }
     lastResult = res.data;
     filledCount = applyMappings(res.data, elements);
+    const cvAttached = await attachResume(elements);
     const aiCount = res.data.mappings.filter((m) => m.aiGenerated).length;
-    showPanel([
+    const savedCount = res.data.mappings.filter((m) => m.source === "saved").length;
+    showReviewPanel(res.data, elements, fields, [
       `\u2705 ${filledCount} dari ${fields.length} field terisi.`,
-      aiCount ? `\u2728 ${aiCount} jawaban dibuat AI (kuning) \u2014 mohon review.` : "",
-      res.data.unmapped.length ? `\u2B1C ${res.data.unmapped.length} field dibiarkan kosong (merah) \u2014 isi manual.` : "",
-      "Periksa semua isian, lalu submit sendiri."
+      cvAttached ? `\u{1F4CE} CV terpasang otomatis \u2014 cek field upload.` : "",
+      savedCount ? `\u{1F4BE} ${savedCount} dari jawaban tersimpanmu.` : "",
+      aiCount ? `\u2728 ${aiCount} jawaban dibuat AI (kuning) \u2014 mohon review.` : ""
     ].filter(Boolean));
     void sendBg({
       kind: "REPORT",

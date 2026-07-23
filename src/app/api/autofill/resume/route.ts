@@ -15,7 +15,7 @@ export async function OPTIONS() {
 }
 
 export async function GET(req: Request) {
-  const userId = userFromRequest(req);
+  const userId = await userFromRequest(req);
   if (!userId) return unauthorized();
 
   if (!process.env.DATABASE_URL) {
@@ -24,20 +24,28 @@ export async function GET(req: Request) {
   }
 
   try {
-    const resume = await prisma.resume.findFirst({
-      where: { userId },
-      orderBy: { createdAt: "desc" },
-      select: { id: true, content: true, createdAt: true },
-    });
-    if (!resume) {
+    const [resume, file] = await Promise.all([
+      prisma.resume.findFirst({
+        where: { userId },
+        orderBy: { createdAt: "desc" },
+        select: { id: true, content: true, createdAt: true },
+      }),
+      prisma.resumeFile.findUnique({
+        where: { userId },
+        select: { fileName: true, mimeType: true, sizeBytes: true },
+      }),
+    ]);
+    const fileUrl = file ? "/api/autofill/resume/file" : null;
+    if (!resume && !file) {
       return corsJson({ available: false, fileUrl: null, content: null });
     }
     return corsJson({
       available: true,
-      // fileUrl diisi saat integrasi MinIO/pdf-gen tersedia.
-      fileUrl: null,
-      content: resume.content,
-      createdAt: resume.createdAt.toISOString(),
+      fileUrl,
+      fileName: file?.fileName ?? null,
+      mimeType: file?.mimeType ?? null,
+      content: resume?.content ?? null,
+      createdAt: resume?.createdAt.toISOString() ?? null,
     });
   } catch (err) {
     console.warn(

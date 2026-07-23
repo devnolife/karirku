@@ -4,6 +4,7 @@
  */
 
 import type { HttpCtx, PortalEntry, Provider, RawListing } from "./types";
+import { cleanRichText } from "@/lib/html";
 
 const ALLOWED_HOSTS = new Set(["api.ashbyhq.com"]);
 
@@ -28,9 +29,25 @@ function resolveApiUrl(entry: PortalEntry): string | null {
 }
 
 interface AshbyJob {
+  id?: string;
   title?: string;
   jobUrl?: string;
   location?: string;
+  employmentType?: string;
+  isRemote?: boolean;
+  publishedAt?: string;
+  descriptionHtml?: string;
+  descriptionPlain?: string;
+}
+
+function inferType(job: AshbyJob): RawListing["type"] {
+  const value = `${job.location ?? ""} ${job.employmentType ?? ""}`.toLowerCase();
+  if (value.includes("part-time") || value.includes("part time")) return "parttime";
+  if (value.includes("contract")) return "contract";
+  if (value.includes("hybrid")) return "hybrid";
+  if (job.isRemote || value.includes("remote")) return "remote";
+  if (value.includes("on-site") || value.includes("onsite")) return "onsite";
+  return "fulltime";
 }
 
 const provider: Provider = {
@@ -49,12 +66,19 @@ const provider: Provider = {
     const jobs = Array.isArray(json?.jobs) ? json.jobs : [];
     return jobs
       .filter((j) => j.jobUrl)
-      .map((j) => ({
-        title: (j.title ?? "").trim(),
-        url: j.jobUrl as string,
-        company: entry.name,
-        location: j.location ?? "",
-      }));
+      .map((j) => {
+        const description = cleanRichText(j.descriptionHtml ?? j.descriptionPlain ?? "");
+        return {
+          title: (j.title ?? "").trim(),
+          url: j.jobUrl as string,
+          ...(j.id ? { externalId: j.id } : {}),
+          company: entry.name,
+          location: j.location ?? "",
+          type: inferType(j),
+          ...(description ? { description } : {}),
+          ...(j.publishedAt ? { postedAt: j.publishedAt } : {}),
+        };
+      });
   },
 };
 

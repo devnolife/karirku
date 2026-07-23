@@ -42,13 +42,14 @@ export async function getRoadmap(userId: string): Promise<RoadmapData> {
   const courseIds = [...new Set(path.milestones.flatMap((m) => m.courseIds))];
   const courses = courseIds.length
     ? await prisma.course.findMany({
-        where: { id: { in: courseIds } },
-        select: { id: true, title: true, provider: true, durationHours: true },
-      })
+      where: { id: { in: courseIds } },
+      select: { id: true, title: true, provider: true, durationHours: true, sourceUrl: true },
+    })
     : [];
   const courseById = new Map(courses.map((c) => [c.id, c]));
 
   const milestones: MilestoneView[] = path.milestones.map((m) => ({
+    id: m.id,
     week: m.weekNumber,
     title: m.title,
     status: mapStatus(m.status),
@@ -59,6 +60,7 @@ export async function getRoadmap(userId: string): Promise<RoadmapData> {
         title: c.title,
         provider: c.provider ?? "—",
         hours: Math.round(c.durationHours ?? 0),
+        url: c.sourceUrl,
       })),
   }));
 

@@ -17,9 +17,56 @@ const linkedin = require("./platforms/linkedin");
 const upwork = require("./platforms/upwork");
 const remoteboards = require("./platforms/remoteboards");
 const gmail = require("./email/gmail");
+const { acquireLock, releaseLock } = require("./lock");
 
 const args = process.argv.slice(2);
 const cmd = args[0] || "status";
+const MUTATING_COMMANDS = new Set([
+  "scan",
+  "apply",
+  "bid",
+  "sync-email",
+  "gmail-auth",
+  "import-applied",
+  "full",
+]);
+let lockHeld = false;
+let lockOwnerId = null;
+
+if (MUTATING_COMMANDS.has(cmd)) {
+  const acquired = acquireLock(cmd, {
+    ownerId: process.env.HUNTER_LOCK_OWNER || undefined,
+    pid: process.pid,
+  });
+  if (!acquired.ok) {
+    const owner = acquired.lock;
+    console.error(
+      `Hunter sedang menjalankan ${owner?.command || "command lain"}` +
+        `${owner?.pid ? ` (pid ${owner.pid})` : ""}.`,
+    );
+    process.exit(3);
+  }
+  lockHeld = true;
+  lockOwnerId = acquired.lock.ownerId;
+}
+
+function cleanupLock() {
+  if (!lockHeld) return;
+  releaseLock(lockOwnerId);
+  lockHeld = false;
+  lockOwnerId = null;
+}
+
+process.once("exit", cleanupLock);
+process.once("SIGINT", () => {
+  cleanupLock();
+  process.exit(130);
+});
+process.once("SIGTERM", () => {
+  cleanupLock();
+  process.exit(143);
+});
+
 function flag(name, fallback) {
   const i = args.indexOf("--" + name);
   return i >= 0 ? args[i + 1] : fallback;
@@ -141,4 +188,9 @@ async function applyAuto(limit) {
       console.log("Unknown command: " + cmd);
       process.exitCode = 2;
   }
-})().catch((e) => { console.error("FATAL:", e.message); process.exit(1); });
+})()
+  .catch((e) => {
+    console.error("FATAL:", e.message);
+    process.exitCode = 1;
+  })
+  .finally(cleanupLock);

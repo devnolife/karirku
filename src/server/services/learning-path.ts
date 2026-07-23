@@ -10,6 +10,7 @@ import { prisma } from "@/lib/db";
 import { generateLearningPath } from "@/lib/ai/path-generator";
 import type { GapAnalysis } from "@/lib/ai/schemas";
 import { getSkillGap } from "@/server/queries/skills";
+import { getReadiness } from "@/server/queries/readiness";
 
 /** Bentuk GapAnalysis dari skill-gap deterministik milik user. */
 async function buildGapAnalysis(userId: string): Promise<GapAnalysis> {
@@ -67,4 +68,60 @@ export async function regenerateUserPath(userId: string): Promise<RegenerateResu
 export async function hasAnyPath(userId: string): Promise<boolean> {
   const count = await prisma.learningPath.count({ where: { userId } });
   return count > 0;
+}
+
+export type MilestoneStatusValue = "pending" | "in_progress" | "done";
+
+export type SetMilestoneStatusResult =
+  | { ok: true }
+  | { ok: false; reason: "not_found" };
+
+/**
+ * Update status milestone milik user + sinkronkan progres yang tersimpan:
+ * - path.progressPct = % milestone done
+ * - path.readinessScore & goal.readinessScore = readiness live terbaru
+ * Guard ownership: milestone harus berada di path milik user.
+ */
+export async function setMilestoneStatus(
+  userId: string,
+  milestoneId: string,
+  status: MilestoneStatusValue,
+): Promise<SetMilestoneStatusResult> {
+  const milestone = await prisma.pathMilestone.findFirst({
+    where: { id: milestoneId, path: { userId } },
+    select: { id: true, pathId: true },
+  });
+  if (!milestone) return { ok: false, reason: "not_found" };
+
+  await prisma.pathMilestone.update({
+    where: { id: milestone.id },
+    data: {
+      status,
+      completedAt: status === "done" ? new Date() : null,
+    },
+  });
+
+  // Sinkronkan progressPct path dari status milestone terkini.
+  const [doneCount, totalCount] = await Promise.all([
+    prisma.pathMilestone.count({ where: { pathId: milestone.pathId, status: "done" } }),
+    prisma.pathMilestone.count({ where: { pathId: milestone.pathId } }),
+  ]);
+  const progressPct = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
+
+  // Readiness live (coverage + verified + portfolio + milestones) → persist
+  // ke path & goal supaya skor tersimpan tidak basi.
+  const readiness = await getReadiness(userId);
+
+  await Promise.all([
+    prisma.learningPath.update({
+      where: { id: milestone.pathId },
+      data: { progressPct, readinessScore: readiness.score },
+    }),
+    prisma.careerGoal.updateMany({
+      where: { userId, status: "active" },
+      data: { readinessScore: readiness.score },
+    }),
+  ]);
+
+  return { ok: true };
 }
