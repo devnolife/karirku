@@ -1,0 +1,96 @@
+
+> karirku@0.1.0 dev D:\devnolife\tools-ai-data\karirku
+> node --max-old-space-size=2048 node_modules/next/dist/bin/next dev
+
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://172.20.10.3:3000
+✓ Ready in 692ms
+
+ GET /login 200 in 3.1s (next.js: 2.6s, proxy.ts: 168ms, application-code: 388ms)
+ GET /login 200 in 84ms (next.js: 4ms, proxy.ts: 5ms, application-code: 75ms)
+ GET /login 200 in 112ms (next.js: 5ms, proxy.ts: 11ms, application-code: 96ms)
+ GET /dashboard 200 in 852ms (next.js: 649ms, proxy.ts: 16ms, application-code: 186ms)
+ POST /login 303 in 884ms (next.js: 3ms, proxy.ts: 5ms, application-code: 877ms)
+  └─ ƒ <inline action>("jobseeker") in 9ms src/app/(auth)/login/page.tsx
+ GET /profile 200 in 406ms (next.js: 358ms, proxy.ts: 4ms, application-code: 43ms)
+ GET /skills 200 in 445ms (next.js: 379ms, proxy.ts: 8ms, application-code: 59ms)
+⨯ Error: [craftworks] DATABASE_URL belum di-set — prisma tidak tersedia. Set DATABASE_URL di .env.local untuk mengaktifkan mode full-stack.
+    at Object.get (src\lib\db.ts:25:13)
+    at hasAnyPath (src\server\services\learning-path.ts:68:30)
+    at RoadmapPage (src\app\(app)\roadmap\page.tsx:13:15)
+  23 |   return new Proxy({} as PrismaClient, {
+  24 |     get() {
+> 25 |       throw new Error(STUB_MESSAGE);
+     |             ^
+  26 |     },
+  27 |   });
+  28 | } {
+  digest: '1343323717'
+}
+ GET /roadmap 200 in 657ms (next.js: 543ms, proxy.ts: 3ms, application-code: 111ms)
+[browser] Error: [craftworks] DATABASE_URL belum di-set — prisma tidak tersedia. Set DATABASE_URL di .env.local untuk mengaktifkan mode full-stack.
+    at Object.get (src\lib\db.ts:25:13)
+    at hasAnyPath (src\server\services\learning-path.ts:68:30)
+    at RoadmapPage (src\app\(app)\roadmap\page.tsx:13:15)
+    at AppError (src/app/(app)/error.tsx:12:10)
+  23 |   return new Proxy({} as PrismaClient, {
+  24 |     get() {
+> 25 |       throw new Error(STUB_MESSAGE);
+     |             ^
+  26 |     },
+  27 |   });
+  28 | } (src/components/ErrorPanel.tsx:21:13)
+[browser] Error: [craftworks] DATABASE_URL belum di-set — prisma tidak tersedia. Set DATABASE_URL di .env.local untuk mengaktifkan mode full-stack.
+    at Object.get (src\lib\db.ts:25:13)
+    at hasAnyPath (src\server\services\learning-path.ts:68:30)
+    at RoadmapPage (src\app\(app)\roadmap\page.tsx:13:15)
+    at AppError (src/app/(app)/error.tsx:12:10)
+  23 |   return new Proxy({} as PrismaClient, {
+  24 |     get() {
+> 25 |       throw new Error(STUB_MESSAGE);
+     |             ^
+  26 |     },
+  27 |   });
+  28 | } (src/components/ErrorPanel.tsx:21:13)
+ GET /applications 200 in 304ms (next.js: 264ms, proxy.ts: 4ms, application-code: 35ms)
+⨯ Error: [craftworks] DATABASE_URL belum di-set — prisma tidak tersedia. Set DATABASE_URL di .env.local untuk mengaktifkan mode full-stack.
+    at Object.get (src\lib\db.ts:25:13)
+    at hasAnyPath (src\server\services\learning-path.ts:68:30)
+    at RoadmapPage (src\app\(app)\roadmap\page.tsx:13:15)
+  23 |   return new Proxy({} as PrismaClient, {
+  24 |     get() {
+> 25 |       throw new Error(STUB_MESSAGE);
+     |             ^
+  26 |     },
+  27 |   });
+  28 | } {
+  digest: '1343323717'
+}
+ GET /roadmap 200 in 47ms (next.js: 6ms, proxy.ts: 4ms, application-code: 38ms)
+[browser] Error: [craftworks] DATABASE_URL belum di-set — prisma tidak tersedia. Set DATABASE_URL di .env.local untuk mengaktifkan mode full-stack.
+    at Object.get (src\lib\db.ts:25:13)
+    at hasAnyPath (src\server\services\learning-path.ts:68:30)
+    at RoadmapPage (src\app\(app)\roadmap\page.tsx:13:15)
+    at AppError (src/app/(app)/error.tsx:12:10)
+  23 |   return new Proxy({} as PrismaClient, {
+  24 |     get() {
+> 25 |       throw new Error(STUB_MESSAGE);
+     |             ^
+  26 |     },
+  27 |   });
+  28 | } (src/components/ErrorPanel.tsx:21:13)
+[browser] Error: [craftworks] DATABASE_URL belum di-set — prisma tidak tersedia. Set DATABASE_URL di .env.local untuk mengaktifkan mode full-stack.
+    at Object.get (src\lib\db.ts:25:13)
+    at hasAnyPath (src\server\services\learning-path.ts:68:30)
+    at RoadmapPage (src\app\(app)\roadmap\page.tsx:13:15)
+    at AppError (src/app/(app)/error.tsx:12:10)
+  23 |   return new Proxy({} as PrismaClient, {
+  24 |     get() {
+> 25 |       throw new Error(STUB_MESSAGE);
+     |             ^
+  26 |     },
+  27 |   });
+  28 | } (src/components/ErrorPanel.tsx:21:13)
+ GET /skills 200 in 62ms (next.js: 3ms, proxy.ts: 4ms, application-code: 55ms)
+ GET /dashboard 200 in 56ms (next.js: 3ms, proxy.ts: 4ms, application-code: 49ms)
