@@ -9,6 +9,7 @@ import type { PrismaClient } from "@prisma/client";
 
 type SeedUser = {
   email: string;
+  username: string;
   name: string;
   role: "jobseeker" | "freelancer" | "company" | "admin";
   headline?: string;
@@ -18,6 +19,7 @@ type SeedUser = {
 const USERS: SeedUser[] = [
   {
     email: "dev@karir.local",
+    username: "dimas",
     name: "Dimas Prakoso",
     role: "jobseeker",
     headline: "Frontend Engineer (aspiring)",
@@ -26,6 +28,7 @@ const USERS: SeedUser[] = [
   },
   {
     email: "sari@craft.works",
+    username: "sari",
     name: "Sari Wulandari",
     role: "freelancer",
     headline: "Freelance UI/UX & Frontend Developer",
@@ -34,11 +37,13 @@ const USERS: SeedUser[] = [
   },
   {
     email: "hr@nara.id",
+    username: "nara",
     name: "PT Nara Teknologi",
     role: "company",
   },
   {
     email: "admin@craft.works",
+    username: "admin",
     name: "Admin CraftWorks",
     role: "admin",
   },
@@ -52,11 +57,12 @@ export async function seedUsers(prisma: PrismaClient): Promise<void> {
       where: { email: u.email },
       create: {
         email: u.email,
+        username: u.username,
         name: u.name,
         role: u.role,
         emailVerified: new Date(),
       },
-      update: { name: u.name, role: u.role },
+      update: { username: u.username, name: u.name, role: u.role },
     });
 
     // Profile untuk jobseeker & freelancer

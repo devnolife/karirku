@@ -8,6 +8,7 @@ import {
   Playfair_Display,
 } from "next/font/google";
 import "./globals.css";
+import { ChunkErrorReload } from "@/components/ChunkErrorReload";
 
 // v4 "Clean Paper Desk" — the active design system.
 // Display/heading -> Bricolage Grotesque. Body/UI -> Plus Jakarta Sans
@@ -71,6 +72,7 @@ export default function RootLayout({
         className="min-h-full flex flex-col"
         suppressHydrationWarning
       >
+        <ChunkErrorReload />
         {children}
       </body>
     </html>

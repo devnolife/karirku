@@ -48,6 +48,7 @@ import type {
 export const DEMO_USERS: Record<UserRole, SessionUser> = {
   jobseeker: {
     id: "demo-jobseeker",
+    username: "dimas",
     name: "Dimas Prakoso",
     email: "dimas@craft.works",
     image: null,
@@ -55,6 +56,7 @@ export const DEMO_USERS: Record<UserRole, SessionUser> = {
   },
   freelancer: {
     id: "demo-freelancer",
+    username: "sari",
     name: "Sari Wulandari",
     email: "sari@craft.works",
     image: null,
@@ -62,6 +64,7 @@ export const DEMO_USERS: Record<UserRole, SessionUser> = {
   },
   company: {
     id: "demo-company",
+    username: "nara",
     name: "PT Nara Teknologi",
     email: "hr@nara.id",
     image: null,
@@ -69,6 +72,7 @@ export const DEMO_USERS: Record<UserRole, SessionUser> = {
   },
   admin: {
     id: "demo-admin",
+    username: "admin",
     name: "Admin CraftWorks",
     email: "admin@craft.works",
     image: null,

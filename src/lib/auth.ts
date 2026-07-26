@@ -1,8 +1,10 @@
 /**
  * Auth — DUAL MODE.
  *
- * Production (`DATABASE_URL` di-set): sesi ber-DB. Login (dev/demo) memilih
- * user real per role dari tabel `users`, membuat baris `sessions` + cookie
+ * Production (`DATABASE_URL` di-set): sesi ber-DB. Login (dev/demo) menerima
+ * email ATAU username; kalau identifier cocok dengan user nyata, sesi dibuat
+ * untuk user itu. Kalau tidak cocok, UI jatuh ke pemilihan role (memilih user
+ * seed per role). Keduanya membuat baris `sessions` + cookie
  * `authjs.session-token` (httpOnly). `auth()` memvalidasi token ke DB.
  *
  * Demo (`DATABASE_URL` kosong): sesi cookie murni — token `demo:<role>` +
@@ -20,6 +22,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "./db";
 import { isProductionMode } from "./mode";
 import { homeForRole, isValidRole, type UserRole } from "./roles";
+import { looksLikeEmail, normalizeIdentifier } from "./username";
 
 export const SESSION_COOKIE = "authjs.session-token";
 export const ROLE_COOKIE = "cw_role";
@@ -29,6 +32,7 @@ const DEMO_TOKEN_PREFIX = "demo:";
 export type SessionUser = {
   id: string;
   name: string;
+  username: string | null;
   email: string;
   image: string | null;
   role: UserRole;
@@ -63,6 +67,7 @@ export async function auth(): Promise<Session | null> {
     user: {
       id: u.id,
       name: u.name ?? u.email,
+      username: u.username,
       email: u.email,
       image: u.image,
       role: u.role as UserRole,
@@ -73,8 +78,13 @@ export async function auth(): Promise<Session | null> {
 /** User aktif atau redirect ke /login. Dipakai halaman di balik middleware. */
 export async function requireUser(): Promise<SessionUser> {
   const session = await auth();
-  if (!session) redirect("/login");
-  return session.user;
+  if (session) return session.user;
+
+  // Cookie ada tapi sesi tidak valid (kedaluwarsa / baris terhapus / ganti
+  // mode). Tanpa penanda `stale`, middleware memantulkan balik ke home role
+  // karena ia hanya cek keberadaan cookie → redirect loop tak berujung.
+  const hasCookie = !!(await cookies()).get(SESSION_COOKIE)?.value;
+  redirect(hasCookie ? "/login?stale=1" : "/login");
 }
 
 /** Bentuk { user } non-null (redirect kalau belum login). Pengganti getMockSession. */
@@ -113,6 +123,56 @@ export async function signInAs(role: UserRole): Promise<void> {
   }
 
   await createSessionForUser(user.id, user.role as UserRole);
+}
+
+/**
+ * Cari user berdasarkan identifier login: email ATAU username.
+ * Username disimpan lowercase, jadi input dinormalisasi dulu.
+ */
+async function findUserByIdentifier(identifier: string) {
+  const value = normalizeIdentifier(identifier);
+  if (!value) return null;
+
+  return prisma.user.findFirst({
+    where: looksLikeEmail(value) ? { email: value } : { username: value },
+  });
+}
+
+/** Sesi demo (tanpa DB): cocokkan identifier ke DEMO_USERS. */
+async function demoUserByIdentifier(identifier: string): Promise<SessionUser | null> {
+  const value = normalizeIdentifier(identifier);
+  if (!value) return null;
+
+  const { DEMO_USERS } = await import("./mock/demo");
+  return (
+    Object.values(DEMO_USERS).find(
+      (u) => u.email.toLowerCase() === value || u.username === value,
+    ) ?? null
+  );
+}
+
+/**
+ * Login memakai email ATAU username.
+ *
+ * Mengembalikan role saat identifier cocok dengan user nyata (sesi dibuat),
+ * atau `null` kalau tidak ditemukan — pemanggil yang memutuskan fallback-nya.
+ */
+export async function signInWithIdentifier(
+  identifier: string,
+): Promise<UserRole | null> {
+  if (!isProductionMode()) {
+    const user = await demoUserByIdentifier(identifier);
+    if (!user) return null;
+    await signInAs(user.role);
+    return user.role;
+  }
+
+  const user = await findUserByIdentifier(identifier);
+  if (!user) return null;
+
+  const role = user.role as UserRole;
+  await createSessionForUser(user.id, role);
+  return role;
 }
 
 /** Buat sesi DB + cookie untuk user tertentu (dipakai dev login & OAuth). */

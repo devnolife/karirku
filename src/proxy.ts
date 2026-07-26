@@ -63,6 +63,14 @@ export default function proxy(request: NextRequest) {
 
   // Sudah login tapi membuka /login → lempar ke home sesuai role.
   if (pathname === "/login") {
+    // `stale=1` dikirim requireUser() saat cookie ada tapi sesi tidak valid.
+    // Bersihkan cookie dan biarkan halaman login tampil, jangan dipantulkan.
+    if (request.nextUrl.searchParams.has("stale")) {
+      const response = NextResponse.next();
+      response.cookies.delete("authjs.session-token");
+      response.cookies.delete("cw_role");
+      return response;
+    }
     return isLoggedIn
       ? NextResponse.redirect(new URL(homeForRole(role), request.url))
       : NextResponse.next();
