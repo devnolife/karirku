@@ -60,6 +60,11 @@ export default function proxy(request: NextRequest) {
 
   const isLoggedIn = !!request.cookies.get("authjs.session-token")?.value;
   const role = resolveRole(request.cookies.get("cw_role")?.value);
+  // "0" = user baru yang belum menyelesaikan onboarding. Cookie hilang
+  // dianggap sudah onboarding (fail-open) agar sesi lama tidak terganggu.
+  const needsOnboarding =
+    request.cookies.get("cw_onboarded")?.value === "0" &&
+    (role === "jobseeker" || role === "freelancer");
 
   // Sudah login tapi membuka /login → lempar ke home sesuai role.
   if (pathname === "/login") {
@@ -69,11 +74,13 @@ export default function proxy(request: NextRequest) {
       const response = NextResponse.next();
       response.cookies.delete("authjs.session-token");
       response.cookies.delete("cw_role");
+      response.cookies.delete("cw_onboarded");
       return response;
     }
-    return isLoggedIn
-      ? NextResponse.redirect(new URL(homeForRole(role), request.url))
-      : NextResponse.next();
+    if (!isLoggedIn) return NextResponse.next();
+    return NextResponse.redirect(
+      new URL(needsOnboarding ? "/onboarding" : homeForRole(role), request.url),
+    );
   }
 
   const required = requiredRoleFor(pathname);
@@ -84,6 +91,12 @@ export default function proxy(request: NextRequest) {
     const url = new URL("/login", request.url);
     url.searchParams.set("from", pathname);
     return NextResponse.redirect(url);
+  }
+
+  // Login pertama: kunci ke alur onboarding sampai selesai, supaya user baru
+  // tidak mendarat di dashboard yang masih kosong.
+  if (needsOnboarding && !pathname.startsWith("/onboarding")) {
+    return NextResponse.redirect(new URL("/onboarding", request.url));
   }
 
   // Route yang cukup butuh login (semua role boleh, termasuk admin).

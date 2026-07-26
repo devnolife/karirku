@@ -26,6 +26,7 @@ import { looksLikeEmail, normalizeIdentifier } from "./username";
 
 export const SESSION_COOKIE = "authjs.session-token";
 export const ROLE_COOKIE = "cw_role";
+export const ONBOARDED_COOKIE = "cw_onboarded";
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const DEMO_TOKEN_PREFIX = "demo:";
 
@@ -99,17 +100,22 @@ export async function getRole(): Promise<UserRole | null> {
   return session?.user.role ?? null;
 }
 
-/** Login sebagai user untuk sebuah role (dev/demo). */
-export async function signInAs(role: UserRole): Promise<void> {
+/**
+ * Login sebagai user untuk sebuah role (dev/demo).
+ * Mengembalikan `true` kalau user sudah menyelesaikan onboarding.
+ */
+export async function signInAs(role: UserRole): Promise<boolean> {
   const jar = await cookies();
   const expires = new Date(Date.now() + SESSION_TTL_MS);
   const base = { sameSite: "lax" as const, path: "/", expires };
 
   if (!isProductionMode()) {
-    // Demo: token cookie murni, tanpa baris DB.
+    // Demo: token cookie murni, tanpa baris DB. Fixture demo selalu dianggap
+    // sudah onboarding karena datanya sudah lengkap.
     jar.set(SESSION_COOKIE, `${DEMO_TOKEN_PREFIX}${role}`, { ...base, httpOnly: true });
     jar.set(ROLE_COOKIE, role, { ...base, httpOnly: false });
-    return;
+    jar.set(ONBOARDED_COOKIE, "1", { ...base, httpOnly: false });
+    return true;
   }
 
   const user = await prisma.user.findFirst({
@@ -122,7 +128,8 @@ export async function signInAs(role: UserRole): Promise<void> {
     );
   }
 
-  await createSessionForUser(user.id, user.role as UserRole);
+  await createSessionForUser(user.id, user.role as UserRole, user.onboardedAt);
+  return !roleNeedsOnboarding(user.role as UserRole) || !!user.onboardedAt;
 }
 
 /**
@@ -154,31 +161,49 @@ async function demoUserByIdentifier(identifier: string): Promise<SessionUser | n
 /**
  * Login memakai email ATAU username.
  *
- * Mengembalikan role saat identifier cocok dengan user nyata (sesi dibuat),
- * atau `null` kalau tidak ditemukan — pemanggil yang memutuskan fallback-nya.
+ * Mengembalikan role + status onboarding saat identifier cocok dengan user
+ * nyata (sesi dibuat), atau `null` kalau tidak ditemukan — pemanggil yang
+ * memutuskan fallback-nya.
  */
 export async function signInWithIdentifier(
   identifier: string,
-): Promise<UserRole | null> {
+): Promise<{ role: UserRole; onboarded: boolean } | null> {
   if (!isProductionMode()) {
     const user = await demoUserByIdentifier(identifier);
     if (!user) return null;
     await signInAs(user.role);
-    return user.role;
+    return { role: user.role, onboarded: true };
   }
 
   const user = await findUserByIdentifier(identifier);
   if (!user) return null;
 
   const role = user.role as UserRole;
-  await createSessionForUser(user.id, role);
-  return role;
+  await createSessionForUser(user.id, role, user.onboardedAt);
+  return {
+    role,
+    onboarded: !roleNeedsOnboarding(role) || !!user.onboardedAt,
+  };
+}
+
+/** Halaman tujuan setelah login: onboarding dulu untuk user baru. */
+export function landingFor(role: UserRole, onboarded: boolean): string {
+  return onboarded ? homeForRole(role) : "/onboarding";
+}
+
+/**
+ * Role yang memakai alur onboarding (skill → goal → review).
+ * Company & admin tidak punya konsep ini.
+ */
+export function roleNeedsOnboarding(role: UserRole): boolean {
+  return role === "jobseeker" || role === "freelancer";
 }
 
 /** Buat sesi DB + cookie untuk user tertentu (dipakai dev login & OAuth). */
 export async function createSessionForUser(
   userId: string,
   role: UserRole,
+  onboardedAt?: Date | null,
 ): Promise<void> {
   const sessionToken = randomBytes(32).toString("hex");
   const expires = new Date(Date.now() + SESSION_TTL_MS);
@@ -186,10 +211,45 @@ export async function createSessionForUser(
     data: { sessionToken, userId, expires },
   });
 
+  // `onboardedAt` tidak selalu dikirim pemanggil (mis. OAuth) — ambil dari DB
+  // supaya cookie tidak pernah salah menandai user lama sebagai user baru.
+  const onboarded =
+    onboardedAt !== undefined
+      ? onboardedAt
+      : (
+          await prisma.user.findUnique({
+            where: { id: userId },
+            select: { onboardedAt: true },
+          })
+        )?.onboardedAt ?? null;
+
   const jar = await cookies();
   const base = { sameSite: "lax" as const, path: "/", expires };
   jar.set(SESSION_COOKIE, sessionToken, { ...base, httpOnly: true });
   jar.set(ROLE_COOKIE, role, { ...base, httpOnly: false });
+  jar.set(
+    ONBOARDED_COOKIE,
+    !roleNeedsOnboarding(role) || onboarded ? "1" : "0",
+    { ...base, httpOnly: false },
+  );
+}
+
+/** Tandai user selesai onboarding (idempotent) + segarkan cookie routing. */
+export async function markOnboarded(userId: string): Promise<void> {
+  if (isProductionMode()) {
+    await prisma.user.updateMany({
+      where: { id: userId, onboardedAt: null },
+      data: { onboardedAt: new Date() },
+    });
+  }
+
+  const jar = await cookies();
+  jar.set(ONBOARDED_COOKIE, "1", {
+    sameSite: "lax",
+    path: "/",
+    httpOnly: false,
+    expires: new Date(Date.now() + SESSION_TTL_MS),
+  });
 }
 
 /** Logout: hapus baris sesi (kalau ada DB) + cookie. */
@@ -201,13 +261,14 @@ export async function signOut(options?: { redirectTo?: string }): Promise<never>
   }
   jar.delete(SESSION_COOKIE);
   jar.delete(ROLE_COOKIE);
+  jar.delete(ONBOARDED_COOKIE);
   redirect(options?.redirectTo ?? "/");
 }
 
-/** Server action helper: login lalu redirect ke home role. */
+/** Server action helper: login lalu redirect ke tujuan sesuai role & onboarding. */
 export async function signIn(role: UserRole): Promise<never> {
-  await signInAs(role);
-  redirect(homeForRole(role));
+  const onboarded = await signInAs(role);
+  redirect(landingFor(role, onboarded));
 }
 
 /**

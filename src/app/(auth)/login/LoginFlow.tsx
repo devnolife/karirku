@@ -44,9 +44,15 @@ export function LoginFlow() {
           className="mt-8 space-y-4"
           onSubmit={(e) => {
             e.preventDefault();
+            // Baca dari FormData, bukan state: nilai input tetap terbaca
+            // walau submit terjadi sebelum React sempat sinkron.
+            const value = String(
+              new FormData(e.currentTarget).get("identifier") ?? "",
+            ).trim();
+            setEmail(value);
             setError(null);
             startTransition(async () => {
-              const res = await signInWithIdentifierAction(email);
+              const res = await signInWithIdentifierAction(value);
               // Sukses = server action redirect, jadi baris ini hanya
               // tercapai saat identifier tidak dikenali.
               setError(res.error);

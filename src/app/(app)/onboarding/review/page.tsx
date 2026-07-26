@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { requireUser } from "@/lib/auth";
+import { markOnboarded, requireUser } from "@/lib/auth";
 import { getProfile } from "@/server/queries/profile";
 import { getActiveGoal } from "@/server/queries/goal";
 import { OnboardingStepper } from "../_stepper";
 
 async function finishAction() {
   "use server";
+  const user = await requireUser();
+  await markOnboarded(user.id);
   redirect("/dashboard");
 }
 

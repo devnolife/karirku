@@ -61,8 +61,15 @@ export async function seedUsers(prisma: PrismaClient): Promise<void> {
         name: u.name,
         role: u.role,
         emailVerified: new Date(),
+        // Akun demo sudah punya data kurasi — jangan dipaksa lewat onboarding.
+        onboardedAt: new Date(),
       },
-      update: { username: u.username, name: u.name, role: u.role },
+      update: {
+        username: u.username,
+        name: u.name,
+        role: u.role,
+        onboardedAt: new Date(),
+      },
     });
 
     // Profile untuk jobseeker & freelancer
