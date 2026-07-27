@@ -347,11 +347,19 @@ Build web butuh token registry dengan `read:packages` (`NODE_AUTH_TOKEN` /
 
 ## Memisahkan web dan engine ke VM berbeda
 
-Bisa, dan hampir semuanya cuma soal env var — karena semua yang dipakai web
-dari core adalah klien jaringan: Prisma bicara TCP ke Postgres, BullMQ ke
-Redis, modul AI lewat HTTP ke Ollama, upload lewat HTTP ke S3/MinIO. Sisanya
-(`match/*`, `roles`, `mode`, `location`, `content/*`) logika murni tanpa I/O
-yang ikut ter-bundle saat build.
+Bisa. Sudah diuji: aplikasi di-boot tanpa satu pun env engine-lokal
+(`HUNTER_*`, `TESSERACT_BIN`, `FIRECRAWL_SERVICE_URL`), dengan `REDIS_URL` dan
+`OLLAMA_BASE_URL` menunjuk alamat jaringan — landing page `HTTP 200`,
+`/api/auth/session` `HTTP 200`, log tanpa satu pun error Prisma atau koneksi.
+
+Alasannya semua yang dipakai web dari core adalah klien jaringan: Prisma
+bicara TCP ke Postgres, BullMQ ke Redis, modul AI lewat HTTP ke Ollama, upload
+lewat HTTP ke S3/MinIO. Dari seluruh `src/` core, **hanya `src/ocr.ts`** yang
+menyentuh `node:fs`. Sisanya (`match/*`, `roles`, `mode`, `location`,
+`content/*`) logika murni tanpa I/O yang ikut ter-bundle saat build.
+
+Dua hal yang harus dibereskan dulu: konfigurasi jaringan Postgres/MinIO/Redis
+(di bawah), dan rute Hunter (paling bawah).
 
 ### Env per VM
 
@@ -372,8 +380,32 @@ Jebakan paling gampang terlewat: `OAUTH_TOKEN_ENCRYPTION_KEY` dan
 yang dienkripsi satu sisi tidak bisa didekripsi sisi lain, dan gejalanya baru
 muncul saat runtime.
 
-Pastikan juga Postgres/Redis mendengarkan di alamat yang bisa dijangkau VM web
-(bukan `127.0.0.1`) dan dibatasi lewat firewall/VPC, bukan dibuka ke internet.
+### Prasyarat infra — kerjakan ini dulu
+
+Layanan data harus bisa dijangkau VM web. Periksa dengan `ss -ltn`:
+
+```
+127.0.0.1:5432   ← Postgres: TIDAK terjangkau dari VM lain
+127.0.0.1:9000   ← MinIO:    TIDAK terjangkau dari VM lain
+0.0.0.0:6379     ← Redis:    terjangkau
+0.0.0.0:11434    ← Ollama:   terjangkau
+```
+
+Yang perlu dilakukan sebelum memisahkan VM:
+
+1. **Postgres** — set `listen_addresses` di `postgresql.conf` dan tambahkan
+   baris `pg_hba.conf` untuk subnet VM web (pakai `scram-sha-256`, jangan
+   `trust`). Perlu restart.
+2. **MinIO** — bind ke alamat yang terjangkau, atau ganti ke S3 terkelola.
+3. **Redis** — saat ini menerima koneksi dari jaringan **tanpa password**
+   (`redis-cli ping` dari mana saja menjawab `PONG`). Set `requirepass` dan
+   masukkan kredensialnya ke `REDIS_URL` **sebelum** VM lain diberi akses.
+   Queue BullMQ berisi payload pekerjaan, jadi ini bukan sekadar formalitas.
+4. Batasi keempatnya lewat firewall/VPC ke IP VM web saja — jangan ke internet.
+
+Catatan: `docker-compose.yml` di repo core adalah stack pengembangan. Di mesin
+ini layanan tersebut berjalan sebagai instalasi native, jadi konfigurasinya
+diubah lewat berkas config sistem, bukan lewat compose.
 
 ### Satu batasan: Hunter
 
@@ -383,13 +415,23 @@ Hunter tidak bisa dipisah, karena web memakainya secara lokal:
   proses Node di mesin yang sama.
 - 10 file membaca `hunterDb()`, yaitu berkas **SQLite lokal** (`HUNTER_DB`).
 
-Jadi kalau web dipindah ke VM sendiri, halaman `/hunter/*` akan gagal saat
-runtime. Kabar baiknya, ketergantungan ini **terisolasi penuh** di
-`src/app/hunter/**` dan `src/app/api/hunter/**` — tidak ada layout, nav, atau
-komponen global yang menyentuhnya. Pilihannya:
+Jadi kalau web dipindah ke VM sendiri, rute `/hunter/*` **tidak error — justru
+itu masalahnya.** `hunter/db.js` memanggil `fs.mkdirSync()` lalu
+`new Database(DB_PATH)`, dan better-sqlite3 **membuat berkas baru** kalau belum
+ada, lengkap dengan seed. Sudah diverifikasi: menunjuk `HUNTER_DB` ke path
+kosong menghasilkan `runs: 0` tapi `accounts: 5` akun demo hasil seed.
 
-1. **Biarkan Hunter di VM engine** dan jangan layani rute `/hunter/*` dari VM
-   web. Karena terisolasi, ini tidak butuh perubahan kode sama sekali.
+Artinya di VM web, halaman Hunter akan tampak berfungsi sambil menyajikan
+database kosong berisi akun contoh — gagal diam-diam, bukan gagal berisik.
+
+Kabar baiknya, ketergantungan ini **terisolasi penuh** di `src/app/hunter/**`
+dan `src/app/api/hunter/**` — tidak ada layout, nav, atau komponen global yang
+menyentuhnya. Pilihannya:
+
+1. **Biarkan Hunter di VM engine**, dan **blokir `/hunter/*` serta
+   `/api/hunter/*` di reverse proxy VM web.** Pemblokiran ini wajib, bukan
+   opsional — tanpa itu rute tersebut menyajikan data seed yang menyesatkan.
+   Tidak butuh perubahan kode.
 2. **Proxy lewat control API core** — `karirku-core` sudah menyediakan
    `/api/hunter/status`, `/api/hunter/runs`, dan `/api/hunter/actions`
    (lihat `CORE_URL` + `CORE_API_KEY` di bawah). Route Hunter di sini perlu
