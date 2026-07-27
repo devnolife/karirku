@@ -24,6 +24,7 @@ devnolife/karirku  (Next.js app)  ──depends on──▶  @devnolife/karirku-
 | Queues | `src/queue/` | BullMQ queue definitions |
 | Workers | `src/workers/` | Job handlers + worker entrypoint |
 | Autofill | `src/autofill/` | Extension autofill engine, adapters, rules |
+| Control API | `src/server/` | HTTP surface for driving the engine remotely (`pnpm serve`) |
 | Hunter | `hunter/` + `src/hunter.ts` | CommonJS job-automation engine, spawned as a child process |
 
 ## Install
@@ -112,6 +113,86 @@ pnpm link ../karirku-core
 Run `pnpm build` here after changing core code so the web app picks up the new
 `dist/`. Undo the link before shipping.
 
+## Control API — driving the engine over the network
+
+The web app embeds this package in-process. That is fine when both run on the
+same box, but it means the only way to trigger a scrape or pause a queue is to
+open a shell on that box.
+
+`pnpm serve` starts a small HTTP control API so the engine can be driven from
+anywhere — the same shape as the `core-llm` service in guru-pintar: bearer-key
+auth, a CORS allowlist, a per-key rate limit and an open `/health` probe.
+
+```bash
+pnpm serve            # 127.0.0.1 only — default, nothing is exposed
+pnpm serve --public   # bind 0.0.0.0, reachable at http://<ip>:4310
+pnpm serve --tunnel   # loopback + cloudflared, gives a public https URL
+```
+
+`--public` and `--tunnel` generate a key into `.env.local` on first run and
+print it. **The server refuses to bind anywhere but loopback while
+`CORE_API_KEYS` is empty**, so a public port can never be left unauthenticated.
+
+### Endpoints
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/health` | database / redis / ollama probe — **no key required** |
+| `GET` | `/api/status` | services + queue counts + hunter lock, in one call |
+| `GET` | `/api/queues` | job counts and paused flag per queue |
+| `POST` | `/api/queues/:name/pause` · `/resume` | stop and restart a queue |
+| `POST` | `/api/jobs/scan` | enqueue a portal scrape |
+| `POST` | `/api/jobs/market-intel` | enqueue today's aggregation (deduplicated) |
+| `POST` | `/api/jobs/embed` | enqueue one embedding — `{ table, id }` |
+| `GET` | `/api/jobs/:queue/:id` | inspect a job |
+| `GET` | `/api/hunter/status` · `/runs` | lock and gmail state, recent runs |
+| `POST` | `/api/hunter/actions` | `scan` · `apply` · `sync-email` · `import-applied` · `full` |
+
+Everything except `/health` needs `Authorization: Bearer <key>`.
+
+### Client
+
+`pnpm ctl` speaks to the API and prints raw JSON, so it pipes into `jq`:
+
+```bash
+export CORE_URL=https://your-host.example.com
+export CORE_API_KEY=...
+
+pnpm ctl status
+pnpm ctl scan
+pnpm ctl pause scraper
+pnpm ctl hunter run apply --limit 3
+pnpm ctl queues | jq '.queues.scraper.waiting'
+```
+
+Or plain curl:
+
+```bash
+curl -H "Authorization: Bearer $CORE_API_KEY" "$CORE_URL/api/status"
+```
+
+### Choosing an exposure mode
+
+| | Reachability | Cost |
+| --- | --- | --- |
+| `--public` | needs a routable IP, plus a firewall/NAT rule for the port | plain HTTP — put it behind a TLS proxy before using it for real |
+| `--tunnel` | works behind NAT with no port opened at all | depends on cloudflared; the quick-tunnel URL changes on restart |
+
+For anything long-lived, prefer a named cloudflared tunnel or a reverse proxy
+that terminates TLS, and keep `CORE_HOST=127.0.0.1` so the port is only
+reachable through it.
+
+### Security notes
+
+- Keys are compared in constant time, and only an 8-character prefix is ever
+  used for rate-limit bookkeeping — full tokens never reach the logs.
+- Rate limiting is per key, so one throttled client cannot lock out another,
+  and `/health` stays reachable while a key is being throttled.
+- `CORE_ALLOWED_ORIGINS` is empty by default: no browser origin is allowed
+  until you name one.
+- `/api/hunter/actions` reuses the same argument allowlist as the web route, so
+  the API cannot be used to smuggle arbitrary arguments into the engine.
+
 ## Scripts
 
 | Script | Purpose |
@@ -120,6 +201,10 @@ Run `pnpm build` here after changing core code so the web app picks up the new
 | `pnpm typecheck` | `tsc --noEmit` across src, tests, scripts, prisma |
 | `pnpm test` | Node test runner over `tests/` |
 | `pnpm lint` | ESLint, including the "stay framework-agnostic" boundary rule |
+| `pnpm serve` | Control API — add `--public` or `--tunnel` to expose it |
+| `pnpm serve:start` | Control API from the built `dist/` (production) |
+| `pnpm ctl <cmd>` | Remote control client; `pnpm ctl help` lists commands |
+| `pnpm worker` | BullMQ workers |
 | `pnpm db:migrate` / `db:deploy` / `db:seed` / `db:studio` | Prisma workflows |
 | `pnpm scan` / `market:intel` / `ai:smoke` / `match:check` / `embed:all` / `ingest:live` | Engine one-off scripts |
 

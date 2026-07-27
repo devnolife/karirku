@@ -33,6 +33,10 @@
       "types": "./dist/queue/index.d.ts",
       "default": "./dist/queue/index.js"
     },
+    "./server": {
+      "types": "./dist/server/index.d.ts",
+      "default": "./dist/server/index.js"
+    },
     "./workers": {
       "types": "./dist/workers/index.d.ts",
       "default": "./dist/workers/index.js"
@@ -60,8 +64,13 @@
     "clean": "rm -rf dist *.tsbuildinfo",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "test": "tsx --test tests/applications/*.test.ts tests/autofill/*.test.ts tests/content/*.test.ts tests/match/*.test.ts tests/scraper/*.test.ts tests/hunter/*.test.ts",
+    "test": "tsx --test tests/applications/*.test.ts tests/autofill/*.test.ts tests/content/*.test.ts tests/match/*.test.ts tests/scraper/*.test.ts tests/hunter/*.test.ts tests/server/*.test.ts",
     "worker": "tsx watch src/workers/index.ts",
+    "serve": "bash scripts/serve.sh",
+    "serve:dev": "tsx src/server/main.ts",
+    "serve:watch": "tsx watch src/server/main.ts",
+    "serve:start": "node dist/server/main.js",
+    "ctl": "tsx scripts/ctl.ts",
     "worker:start": "node dist/workers/index.js",
     "hunter": "node hunter/run.js",
     "db:generate": "prisma generate",

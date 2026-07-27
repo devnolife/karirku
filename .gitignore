@@ -25,6 +25,7 @@
 npm-debug.log*
 pnpm-debug.log*
 *.log
+/.dev-logs
 
 # misc
 .DS_Store
