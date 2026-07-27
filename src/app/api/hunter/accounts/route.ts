@@ -1,4 +1,4 @@
-import { hunterDb, gmailStatus } from "@/lib/hunter";
+import { hunterDb, gmailStatus } from "@/core/hunter";
 import { authorizeHunterApi } from "@/lib/hunter-access";
 
 export const dynamic = "force-dynamic";

@@ -5,7 +5,7 @@ import {
   describeAutofillMethod,
   describeAutofillStatus,
   summarizeAutofillActivity,
-} from "@/lib/autofill/activity";
+} from "@/core/autofill/activity";
 
 test("autofillHost menghapus www dan mengambil hostname", () => {
   assert.equal(autofillHost("https://www.jobs.lever.co/acme/123"), "jobs.lever.co");

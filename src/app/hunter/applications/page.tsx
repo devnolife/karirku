@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { hunterDb } from "@/lib/hunter";
+import { hunterDb } from "@/core/hunter";
 import { ActionButton } from "../actions-client";
 
 export const dynamic = "force-dynamic";

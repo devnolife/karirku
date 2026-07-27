@@ -6,8 +6,8 @@
  * (talent ↔ lowongan) tetap akurat.
  */
 
-import { prisma } from "@/lib/db";
-import { isProductionMode } from "@/lib/mode";
+import { prisma } from "@/core/db";
+import { isProductionMode } from "@/core/mode";
 
 export type SkillOption = {
   id: string;
@@ -309,7 +309,7 @@ export async function regenerateProfileEmbedding(userId: string): Promise<void> 
 
     if (!text.trim()) return;
 
-    const { generateEmbedding, setEmbedding } = await import("@/lib/ai/embeddings");
+    const { generateEmbedding, setEmbedding } = await import("@/core/ai/embeddings");
     const vec = await generateEmbedding(text);
     await setEmbedding("profiles", profile.id, vec);
   } catch (err) {

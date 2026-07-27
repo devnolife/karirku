@@ -4,9 +4,9 @@
  * di lowongan yang cocok (data real), bukan hardcoded.
  */
 
-import { prisma } from "@/lib/db";
-import { isProductionMode } from "@/lib/mode";
-import { skillCoverageScore } from "@/lib/match/score";
+import { prisma } from "@/core/db";
+import { isProductionMode } from "@/core/mode";
+import { skillCoverageScore } from "@/core/match/score";
 import type { SkillTone, SkillView } from "@/lib/view-models";
 import {
   loadUserContext,

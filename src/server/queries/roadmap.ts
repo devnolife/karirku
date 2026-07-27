@@ -2,8 +2,8 @@
  * Roadmap: milestone learning path user (real, dari path_milestones).
  */
 
-import { prisma } from "@/lib/db";
-import { isProductionMode } from "@/lib/mode";
+import { prisma } from "@/core/db";
+import { isProductionMode } from "@/core/mode";
 import type { MilestoneView } from "@/lib/view-models";
 
 function mapStatus(s: string): MilestoneView["status"] {

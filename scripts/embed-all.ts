@@ -14,8 +14,8 @@ type Table = "jobs" | "courses" | "profiles";
 const CONCURRENCY = 4;
 
 async function main() {
-  const { prisma } = await import("@/lib/db");
-  const { handleEmbed } = await import("@/server/workers/handlers/embed");
+  const { prisma } = await import("@/core/db");
+  const { handleEmbed } = await import("@/core/workers/handlers/embed");
 
   const tables: Table[] = ["jobs", "courses", "profiles"];
   let totalDone = 0;

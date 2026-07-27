@@ -2,9 +2,9 @@ import { google } from "googleapis";
 import { createHash } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/db";
-import { gmailOAuthClient, GMAIL_READONLY_SCOPE } from "@/lib/gmail/oauth";
-import { encryptSecret } from "@/lib/security/secrets";
+import { prisma } from "@/core/db";
+import { gmailOAuthClient, GMAIL_READONLY_SCOPE } from "@/core/gmail/oauth";
+import { encryptSecret } from "@/core/security/secrets";
 import { GMAIL_STATE_COOKIE } from "../route";
 
 function redirectResult(origin: string, value: string) {

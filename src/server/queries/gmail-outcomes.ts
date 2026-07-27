@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/db";
-import { highestStageReached } from "@/lib/applications/status";
+import { prisma } from "@/core/db";
+import { highestStageReached } from "@/core/applications/status";
 
 export type GmailOutcomeSuggestionView = {
   id: string;

@@ -1,9 +1,9 @@
-import { prisma } from "@/lib/db";
+import { prisma } from "@/core/db";
 import {
   evaluateRecommendationShadow,
   type RecommendationObservation,
-} from "@/lib/match/evaluation";
-import { RECOMMENDATION_SCORE_VERSION } from "@/lib/match/v2";
+} from "@/core/match/evaluation";
+import { RECOMMENDATION_SCORE_VERSION } from "@/core/match/v2";
 
 const INTERVIEW_STATUSES = new Set(["interview", "offered", "accepted"]);
 

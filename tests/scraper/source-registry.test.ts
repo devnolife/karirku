@@ -1,8 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { fallbackPortals } from "@/lib/scraper/source-seed";
-import { jobSourceToPortalEntry } from "@/lib/scraper/sources";
+import { fallbackPortals } from "@/core/scraper/source-seed";
+import { jobSourceToPortalEntry } from "@/core/scraper/sources";
 
 test("JobSource rows map to PortalEntry without spreading arbitrary config", () => {
   const portal = jobSourceToPortalEntry({

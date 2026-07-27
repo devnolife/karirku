@@ -6,9 +6,9 @@
  * dua — lebih hemat & robust. Path lama dinonaktifkan saat regenerate.
  */
 
-import { prisma } from "@/lib/db";
-import { generateLearningPath } from "@/lib/ai/path-generator";
-import type { GapAnalysis } from "@/lib/ai/schemas";
+import { prisma } from "@/core/db";
+import { generateLearningPath } from "@/core/ai/path-generator";
+import type { GapAnalysis } from "@/core/ai/schemas";
 import { getSkillGap } from "@/server/queries/skills";
 import { getReadiness } from "@/server/queries/readiness";
 

@@ -14,7 +14,7 @@ import {
   hasEntitlement,
   revokeEntitlement,
 } from "@/lib/entitlements";
-import { prisma } from "@/lib/db";
+import { prisma } from "@/core/db";
 
 async function requireAdmin() {
   const user = await requireUser();

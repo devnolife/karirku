@@ -3,16 +3,16 @@
  * dari tabel jobs) memakai match engine. Mengembalikan top-N untuk ditampilkan.
  */
 
-import { prisma } from "@/lib/db";
-import { isProductionMode } from "@/lib/mode";
-import { skillCoverageScore } from "@/lib/match/score";
-import { compositeScore } from "@/lib/match/composite";
+import { prisma } from "@/core/db";
+import { isProductionMode } from "@/core/mode";
+import { skillCoverageScore } from "@/core/match/score";
+import { compositeScore } from "@/core/match/composite";
 import {
   listingFreshnessScore,
   preferenceFitScore,
   recommendationDisplayVersion,
   scoreRecommendationV2,
-} from "@/lib/match/v2";
+} from "@/core/match/v2";
 import type { JobView } from "@/lib/view-models";
 import { loadUserContext } from "./context";
 import { getAppliedJobIds } from "./applications";
@@ -24,14 +24,14 @@ import {
 } from "./readiness";
 import type { UserReadinessSignals } from "./readiness";
 import type { UserContext } from "./context";
-import type { SkillMatchResult } from "@/lib/match/score";
-import { classifyJobRegion, regionRank, parseLocation, type JobRegion } from "@/lib/location";
-import { describeJobSource } from "@/lib/source";
+import type { SkillMatchResult } from "@/core/match/score";
+import { classifyJobRegion, regionRank, parseLocation, type JobRegion } from "@/core/location";
+import { describeJobSource } from "@/core/source";
 import { logShadowImpressions } from "@/server/services/recommendation-shadow";
 import {
   normalizeRole,
   percentile,
-} from "@/server/workers/market-intel-helpers";
+} from "@/core/workers/market-intel-helpers";
 
 /**
  * Kemiripan semantik (pgvector) antara embedding profil user dan tiap lowongan.

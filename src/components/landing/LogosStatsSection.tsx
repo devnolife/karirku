@@ -1,6 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
+
+const MotionLink = motion.create(Link);
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -64,10 +67,10 @@ export function LogosStatsSection() {
               </span>{" "}
               berskala
             </motion.h1>
-            <motion.button
+            <MotionLink
+              href="/login"
               {...fadeUp}
               className="flex items-center h-[56px] min-w-fit w-max bg-[#042718] rounded-full group cursor-pointer transition-colors duration-300 hover:bg-[#063b25] overflow-hidden gap-[12px] pl-[20px] pr-[8px]"
-              tabIndex={0}
             >
               <div className="order-1 font-sans text-[18px] font-medium leading-[28px] text-white whitespace-nowrap">
                 Coba Gratis
@@ -89,7 +92,7 @@ export function LogosStatsSection() {
                   <path d="M7 17 17 7" />
                 </svg>
               </div>
-            </motion.button>
+            </MotionLink>
           </div>
           <div className="flex flex-col lg:flex-row gap-[24px]">
             {statCards.map((card) => (

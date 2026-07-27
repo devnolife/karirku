@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireUser } from "@/lib/auth";
 import { updateApplicationStatus } from "@/server/queries/company";
-import type { PipelineStatus } from "@/lib/pipeline";
+import type { PipelineStatus } from "@/core/pipeline";
 
 export type StageUpdateResult = { ok: boolean };
 

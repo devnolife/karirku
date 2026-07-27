@@ -19,10 +19,10 @@ import { randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
-import { prisma } from "./db";
-import { isProductionMode } from "./mode";
-import { homeForRole, isValidRole, type UserRole } from "./roles";
-import { looksLikeEmail, normalizeIdentifier } from "./username";
+import { prisma } from "@/core/db";
+import { isProductionMode } from "@/core/mode";
+import { homeForRole, isValidRole, type UserRole } from "@/core/roles";
+import { looksLikeEmail, normalizeIdentifier } from "@/core/username";
 
 export const SESSION_COOKIE = "authjs.session-token";
 export const ROLE_COOKIE = "cw_role";

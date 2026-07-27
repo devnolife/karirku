@@ -6,8 +6,8 @@ import {
   GUIDE_CATEGORIES,
   type Guide,
   type GuideCategory,
-} from "@/lib/content/guides";
-import type { UserRole } from "@/lib/roles";
+} from "@/core/content/guides";
+import type { UserRole } from "@/core/roles";
 
 const CAT_TONE: Record<GuideCategory, string> = {
   Platform: "act-chip-blue",

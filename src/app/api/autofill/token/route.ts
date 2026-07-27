@@ -5,13 +5,13 @@
  */
 
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { prisma } from "@/core/db";
 import {
   bearerFromRequest,
   hashToken,
   issueToken,
   TOKEN_SCOPE,
-} from "@/lib/autofill/token";
+} from "@/core/autofill/token";
 import { corsJson, corsPreflight, userFromRequest } from "../_lib";
 
 export async function OPTIONS() {

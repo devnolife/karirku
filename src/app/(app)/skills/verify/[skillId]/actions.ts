@@ -1,7 +1,7 @@
 "use server";
 
 import { requireUser } from "@/lib/auth";
-import { scoreQuiz, type QuizQuestion } from "@/lib/ai/quiz";
+import { scoreQuiz, type QuizQuestion } from "@/core/ai/quiz";
 import { getUserSkill, markSkillVerified, regenerateProfileEmbedding } from "@/server/queries/profile";
 import { revalidatePath } from "next/cache";
 

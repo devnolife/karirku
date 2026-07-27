@@ -5,8 +5,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { compositeScore, COMPOSITE_WEIGHTS } from "@/lib/match/composite";
-import { skillCoverageScore } from "@/lib/match/score";
+import { compositeScore, COMPOSITE_WEIGHTS } from "@/core/match/composite";
+import { skillCoverageScore } from "@/core/match/score";
 
 test("compositeScore: dengan semantic memakai bobot penuh", () => {
   const r = compositeScore({ semanticSimilarity: 0.8, skillCoveragePct: 60, readinessScore: 50 });

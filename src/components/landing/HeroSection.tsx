@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
@@ -73,6 +73,17 @@ function CraftWorksLogo() {
 }
 
 export function HeroSection() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
+
   return (
     <section className="relative w-full overflow-hidden min-h-[800px] lg:min-h-[900px]">
       <div className="absolute inset-0 z-0">
@@ -115,7 +126,14 @@ export function HeroSection() {
                 </div>
               </div>
             </Link>
-            <button className="lg:hidden p-2 text-[#042718] bg-white/20 backdrop-blur-md rounded-full">
+            <button
+              type="button"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-expanded={menuOpen}
+              aria-controls="hero-mobile-menu"
+              aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
+              className="lg:hidden p-2 text-[#042718] bg-white/20 backdrop-blur-md rounded-full transition-colors hover:bg-white/30"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -127,14 +145,61 @@ export function HeroSection() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 className="lucide lucide-menu"
+                aria-hidden
               >
-                <line x1="4" x2="20" y1="12" y2="12" />
-                <line x1="4" x2="20" y1="6" y2="6" />
-                <line x1="4" x2="20" y1="18" y2="18" />
+                {menuOpen ? (
+                  <>
+                    <line x1="18" x2="6" y1="6" y2="18" />
+                    <line x1="6" x2="18" y1="6" y2="18" />
+                  </>
+                ) : (
+                  <>
+                    <line x1="4" x2="20" y1="12" y2="12" />
+                    <line x1="4" x2="20" y1="6" y2="6" />
+                    <line x1="4" x2="20" y1="18" y2="18" />
+                  </>
+                )}
               </svg>
             </button>
           </div>
         </nav>
+
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              id="hero-mobile-menu"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              className="lg:hidden mt-4 rounded-2xl border border-white/40 bg-white/80 backdrop-blur-md p-2 shadow-lg"
+            >
+              <ul className="flex flex-col">
+                {navLinks.map((link) => (
+                  <li key={link.label}>
+                    <a
+                      href={link.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="block rounded-xl px-4 py-3 font-inter text-base leading-6 tracking-[-0.3px] text-[#042718] transition-colors hover:bg-[#042718]/5"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/login"
+                onClick={() => setMenuOpen(false)}
+                className="mt-1 flex items-center justify-between gap-3 rounded-xl bg-[#042718] px-4 py-3 font-inter text-base font-medium leading-6 tracking-[-0.3px] text-white"
+              >
+                Mulai Sekarang
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white">
+                  <ArrowUpRightIcon className="lucide lucide-arrow-up-right w-3 h-3 text-[#042718]" />
+                </span>
+              </Link>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <div className="flex flex-col items-center mt-12 lg:mt-[80px]">
           <motion.div
             {...fadeUp}
@@ -184,19 +249,21 @@ export function HeroSection() {
             Bangun profil karir yang menonjol, verifikasi skill-mu, dan biarkan AI
             mencocokkanmu dengan lowongan serta proyek yang paling tepat.
           </motion.p>
-          <motion.button
-            {...fadeUp}
-            className="flex items-center gap-3 py-2 rounded-full bg-[#042718] mt-8 lg:mt-12 group cursor-pointer relative h-14 border border-white/20 transition-all duration-300 flex-row pl-5 pr-2"
-          >
-            <span className="font-inter text-base lg:text-[18px] font-medium leading-[28px] text-white">
-              Coba Gratis
-            </span>
-            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center relative overflow-hidden shrink-0">
-              <div>
-                <ArrowUpRightIcon className="lucide lucide-arrow-up-right w-4 h-4 text-[#042718]" />
+          <motion.div {...fadeUp} className="mt-8 lg:mt-12">
+            <Link
+              href="/login"
+              className="flex items-center gap-3 py-2 rounded-full bg-[#042718] group cursor-pointer relative h-14 border border-white/20 transition-all duration-300 hover:bg-[#063b25] flex-row pl-5 pr-2"
+            >
+              <span className="font-inter text-base lg:text-[18px] font-medium leading-[28px] text-white">
+                Coba Gratis
+              </span>
+              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center relative overflow-hidden shrink-0">
+                <div>
+                  <ArrowUpRightIcon className="lucide lucide-arrow-up-right w-4 h-4 text-[#042718]" />
+                </div>
               </div>
-            </div>
-          </motion.button>
+            </Link>
+          </motion.div>
           <motion.div
             {...fadeUp}
             className="mt-20 lg:mt-[220px] flex flex-col items-center gap-10 w-full"

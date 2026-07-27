@@ -5,7 +5,7 @@ import {
   issueToken,
   tokenRecordIsActive,
   verifyToken,
-} from "@/lib/autofill/token";
+} from "@/core/autofill/token";
 
 test("issueToken → verifyToken mengembalikan userId yang sama", () => {
   const { token } = issueToken("user-123");

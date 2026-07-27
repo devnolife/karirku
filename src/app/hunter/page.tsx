@@ -1,4 +1,4 @@
-import { hunterDb, gmailStatus } from "@/lib/hunter";
+import { hunterDb, gmailStatus } from "@/core/hunter";
 import { ActionButton } from "./actions-client";
 
 export const dynamic = "force-dynamic";

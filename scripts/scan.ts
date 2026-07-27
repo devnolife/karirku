@@ -8,8 +8,8 @@
  * Prereq: Redis berjalan (REDIS_URL).
  */
 import "dotenv/config";
-import { scraperQueue } from "@/lib/queue";
-import { loadEnabledPortalRegistry } from "@/lib/scraper/sources";
+import { scraperQueue } from "@/core/queue";
+import { loadEnabledPortalRegistry } from "@/core/scraper/sources";
 
 async function main() {
   const registry = await loadEnabledPortalRegistry();

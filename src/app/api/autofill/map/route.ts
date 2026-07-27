@@ -4,10 +4,10 @@
  */
 
 import { z } from "zod";
-import { prisma } from "@/lib/db";
-import { mapForm } from "@/lib/autofill/engine";
-import { getSavedAnswers } from "@/lib/autofill/answers";
-import { getProfileData } from "@/lib/autofill/profile";
+import { prisma } from "@/core/db";
+import { mapForm } from "@/core/autofill/engine";
+import { getSavedAnswers } from "@/core/autofill/answers";
+import { getProfileData } from "@/core/autofill/profile";
 import { corsJson, corsPreflight, unauthorized, userFromRequest } from "../_lib";
 
 const FieldSchema = z.object({

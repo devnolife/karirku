@@ -6,7 +6,7 @@
  * history exists; backdating current jobs would create false trends.
  */
 import "dotenv/config";
-import { marketIntelQueue } from "@/lib/queue";
+import { marketIntelQueue } from "@/core/queue";
 
 async function main(): Promise<void> {
   if (process.argv.slice(2).length) {

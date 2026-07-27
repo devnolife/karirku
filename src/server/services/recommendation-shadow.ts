@@ -1,9 +1,9 @@
 import { createHash, randomUUID } from "node:crypto";
-import { prisma } from "@/lib/db";
+import { prisma } from "@/core/db";
 import {
   RECOMMENDATION_SCORE_VERSION,
   type ScoreV2Components,
-} from "@/lib/match/v2";
+} from "@/core/match/v2";
 
 export type ShadowCandidate = {
   jobId: string;

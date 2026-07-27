@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { extractListingsFromMarkdown } from "@/lib/scraper/providers/firecrawl";
+import { extractListingsFromMarkdown } from "@/core/scraper/providers/firecrawl";
 
 const BASE = "https://contoh.co.id/karir";
 

@@ -14,7 +14,7 @@
 import { config as loadEnv } from "dotenv";
 loadEnv({ path: ".env" });
 loadEnv({ path: ".env.local", override: true });
-import { cleanRichText, cleanText, decodeEntities } from "@/lib/html";
+import { cleanRichText, cleanText, decodeEntities } from "@/core/html";
 
 type Provider = "greenhouse" | "lever" | "ashby" | "kalibrr";
 
@@ -370,8 +370,8 @@ async function fetchCompany(co: Company): Promise<NormalizedJob[]> {
 }
 
 async function main() {
-  const { prisma } = await import("@/lib/db");
-  const { generateEmbedding, setEmbedding } = await import("@/lib/ai/embeddings");
+  const { prisma } = await import("@/core/db");
+  const { generateEmbedding, setEmbedding } = await import("@/core/ai/embeddings");
 
   const taxonomy = await prisma.skillTaxonomy.findMany({ select: { name: true, aliases: true } });
   const matcher = buildMatcher(taxonomy);

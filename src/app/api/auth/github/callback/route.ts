@@ -4,9 +4,9 @@
  */
 
 import { NextResponse, type NextRequest } from "next/server";
-import { prisma } from "@/lib/db";
+import { prisma } from "@/core/db";
 import { createSessionForUser } from "@/lib/auth";
-import { homeForRole, type UserRole } from "@/lib/roles";
+import { homeForRole, type UserRole } from "@/core/roles";
 import { syncGithubSkills } from "@/server/services/github-skills";
 import { STATE_COOKIE } from "../route";
 

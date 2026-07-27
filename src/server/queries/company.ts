@@ -3,12 +3,12 @@
  * talent search (reverse matching), dan statistik dashboard. Semua real dari DB.
  */
 
-import { prisma } from "@/lib/db";
-import { isProductionMode } from "@/lib/mode";
-import { skillCoverageScore } from "@/lib/match/score";
-import { readinessScore, type ReadinessBand } from "@/lib/match/readiness";
-import { PIPELINE_OPTIONS, type PipelineStatus } from "@/lib/pipeline";
-import { highestStageReached } from "@/lib/applications/status";
+import { prisma } from "@/core/db";
+import { isProductionMode } from "@/core/mode";
+import { skillCoverageScore } from "@/core/match/score";
+import { readinessScore, type ReadinessBand } from "@/core/match/readiness";
+import { PIPELINE_OPTIONS, type PipelineStatus } from "@/core/pipeline";
+import { highestStageReached } from "@/core/applications/status";
 
 const JOB_TYPE_LABEL: Record<string, string> = {
   fulltime: "Full-time",
@@ -103,7 +103,7 @@ export async function createNativeJob(
 
   // Embedding best-effort — tak menggagalkan posting kalau AI down.
   try {
-    const { generateEmbedding, setEmbedding } = await import("@/lib/ai/embeddings");
+    const { generateEmbedding, setEmbedding } = await import("@/core/ai/embeddings");
     const text = [input.title, cp.name, input.location, input.skills.join(", "), input.description]
       .filter(Boolean)
       .join("\n");

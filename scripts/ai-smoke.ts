@@ -6,8 +6,8 @@
  * Prereq: `ollama pull llama3.1:8b && ollama pull nomic-embed-text`
  */
 import "dotenv/config";
-import { ai } from "@/lib/ai/client";
-import { MODELS } from "@/lib/ai/models";
+import { ai } from "@/core/ai/client";
+import { MODELS } from "@/core/ai/models";
 
 async function main() {
   console.log(`🤖 Testing AI at ${process.env.OLLAMA_BASE_URL ?? "http://localhost:11434/v1"}`);

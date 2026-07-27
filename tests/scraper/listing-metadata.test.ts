@@ -5,7 +5,7 @@ import {
   canonicalJobUrl,
   computeListingContentHash,
   scoreListingQuality,
-} from "@/lib/scraper/listing-metadata";
+} from "@/core/scraper/listing-metadata";
 
 test("canonical job URL removes tracking but preserves identity params", () => {
   assert.equal(

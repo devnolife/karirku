@@ -60,9 +60,9 @@ export default function LoginPage() {
 
           <p className="mt-8 text-xs text-[var(--act-graphite)]">
             Dengan masuk, kamu setuju{" "}
-            <Link href="#" className="font-medium text-[var(--act-ink)] underline underline-offset-2">Syarat</Link>
+            <Link href="/terms" className="font-medium text-[var(--act-ink)] underline underline-offset-2">Syarat</Link>
             {" & "}
-            <Link href="#" className="font-medium text-[var(--act-ink)] underline underline-offset-2">Privasi</Link>.
+            <Link href="/privacy" className="font-medium text-[var(--act-ink)] underline underline-offset-2">Privasi</Link>.
           </p>
         </div>
       </section>

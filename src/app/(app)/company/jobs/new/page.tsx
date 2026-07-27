@@ -19,7 +19,7 @@ async function createJobAction(formData: FormData) {
   if (!title) throw new Error("Judul lowongan wajib diisi");
 
   const skills = (formData.getAll("skill") as string[]).filter(Boolean);
-  const { prisma } = await import("@/lib/db");
+  const { prisma } = await import("@/core/db");
   const taxo = skills.length ? await prisma.skillTaxonomy.findMany({ where: { id: { in: skills } }, select: { name: true } }) : [];
   const skillNames = taxo.map((skill) => skill.name);
   const salaryMin = Number(formData.get("salaryMin") ?? 0) || null;

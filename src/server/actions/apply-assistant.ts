@@ -1,17 +1,17 @@
 "use server";
 
 import { requireUser } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { prisma } from "@/core/db";
 import { revalidatePath } from "next/cache";
-import { cleanRichText } from "@/lib/html";
-import { hostFromUrl } from "@/lib/source";
+import { cleanRichText } from "@/core/html";
+import { hostFromUrl } from "@/core/source";
 import { getProfile } from "@/server/queries/profile";
 import {
   extractJobFromText,
   extractJobFromImage,
   draftApplicationMessage,
-} from "@/lib/ai/apply-assistant";
-import type { JobPostingExtraction } from "@/lib/ai/schemas";
+} from "@/core/ai/apply-assistant";
+import type { JobPostingExtraction } from "@/core/ai/schemas";
 import type {
   AnalyzeResult,
   ApplyChannel,
@@ -20,7 +20,7 @@ import type {
   ExtractedJob,
   ImportMode,
   SaveResult,
-} from "@/lib/apply-assistant/types";
+} from "@/core/apply-assistant/types";
 
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 

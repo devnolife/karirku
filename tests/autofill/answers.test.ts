@@ -5,9 +5,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { normalizeQuestionKey, matchSavedAnswers } from "@/lib/autofill/answers";
-import { mapForm } from "@/lib/autofill/engine";
-import type { FormFieldInfo, ProfileData } from "@/lib/autofill/types";
+import { normalizeQuestionKey, matchSavedAnswers } from "@/core/autofill/answers";
+import { mapForm } from "@/core/autofill/engine";
+import type { FormFieldInfo, ProfileData } from "@/core/autofill/types";
 
 const PROFILE: ProfileData = {
   fullName: "Budi Santoso",

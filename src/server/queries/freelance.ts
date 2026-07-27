@@ -3,9 +3,9 @@
  * (stats/portfolio/proposals) yang disimpan di Profile.experience JSON.
  */
 
-import { prisma } from "@/lib/db";
-import { isProductionMode } from "@/lib/mode";
-import { skillCoverageScore } from "@/lib/match/score";
+import { prisma } from "@/core/db";
+import { isProductionMode } from "@/core/mode";
+import { skillCoverageScore } from "@/core/match/score";
 
 function formatBudget(min: number | null, max: number | null, durationDays: number | null): string {
   const jt = (n: number) => {

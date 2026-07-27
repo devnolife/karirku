@@ -3,14 +3,14 @@
  * extension Karirku. Read-only; submit form selalu dilakukan user sendiri.
  */
 
-import { prisma } from "@/lib/db";
+import { prisma } from "@/core/db";
 import {
   autofillHost,
   describeAutofillMethod,
   describeAutofillStatus,
   summarizeAutofillActivity,
   type AutofillActivitySummary,
-} from "@/lib/autofill/activity";
+} from "@/core/autofill/activity";
 
 export type AutofillSessionRow = {
   id: string;

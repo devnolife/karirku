@@ -4,7 +4,7 @@ import {
   releaseHunter,
   reserveHunter,
   spawnHunter,
-} from "@/lib/hunter";
+} from "@/core/hunter";
 import { authorizeHunterApi } from "@/lib/hunter-access";
 
 export const dynamic = "force-dynamic";

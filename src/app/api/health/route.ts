@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/db";
-import { redis } from "@/lib/redis";
+import { prisma } from "@/core/db";
+import { redis } from "@/core/redis";
 import { NextResponse } from "next/server";
 
 interface ServiceStatus {

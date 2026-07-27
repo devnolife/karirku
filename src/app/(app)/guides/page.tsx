@@ -1,5 +1,5 @@
 import { getSession } from "@/lib/auth";
-import { GUIDES } from "@/lib/content/guides";
+import { GUIDES } from "@/core/content/guides";
 import { GuidesExplorer } from "./GuidesExplorer";
 
 export default async function GuidesPage() {

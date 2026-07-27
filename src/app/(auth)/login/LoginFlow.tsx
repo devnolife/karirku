@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import type { UserRole } from "@/lib/roles";
+import type { UserRole } from "@/core/roles";
 import { signInAction, signInWithIdentifierAction } from "./actions";
 
 /**

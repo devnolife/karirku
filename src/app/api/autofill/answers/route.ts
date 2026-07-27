@@ -5,7 +5,7 @@
  */
 
 import { z } from "zod";
-import { upsertSavedAnswer } from "@/lib/autofill/answers";
+import { upsertSavedAnswer } from "@/core/autofill/answers";
 import { corsJson, corsPreflight, unauthorized, userFromRequest } from "../_lib";
 
 const BodySchema = z.object({

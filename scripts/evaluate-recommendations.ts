@@ -4,7 +4,7 @@ loadEnv({ path: ".env" });
 loadEnv({ path: ".env.local", override: true });
 
 async function main() {
-  const { prisma } = await import("@/lib/db");
+  const { prisma } = await import("@/core/db");
   const { getRecommendationShadowMetrics } = await import(
     "@/server/queries/recommendation-metrics"
   );

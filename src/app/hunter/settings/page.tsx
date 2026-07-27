@@ -1,4 +1,4 @@
-import { hunterDb } from "@/lib/hunter";
+import { hunterDb } from "@/core/hunter";
 import { SettingsForm } from "./settings-form";
 
 export const dynamic = "force-dynamic";

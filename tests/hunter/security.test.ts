@@ -5,7 +5,7 @@ import fs from "node:fs";
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
 
-import { actionToArgs } from "@/lib/hunter";
+import { actionToArgs } from "@/core/hunter";
 import { hunterAccessStatus } from "@/lib/hunter-access";
 
 test("Hunter access hanya mengizinkan admin", () => {

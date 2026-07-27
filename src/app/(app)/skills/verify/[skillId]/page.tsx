@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { getUserSkill } from "@/server/queries/profile";
-import { generateSkillQuiz, AiJsonError } from "@/lib/ai/quiz";
+import { generateSkillQuiz, AiJsonError } from "@/core/ai/quiz";
 import { QuizRunner } from "./_runner";
 import { gradeQuiz, stashAnswers } from "./actions";
 

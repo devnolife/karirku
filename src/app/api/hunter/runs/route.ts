@@ -1,4 +1,4 @@
-import { hunterDb } from "@/lib/hunter";
+import { hunterDb } from "@/core/hunter";
 import { authorizeHunterApi } from "@/lib/hunter-access";
 
 export const dynamic = "force-dynamic";

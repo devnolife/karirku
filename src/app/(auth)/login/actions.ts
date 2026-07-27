@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { landingFor, signIn, signInWithIdentifier } from "@/lib/auth";
-import type { UserRole } from "@/lib/roles";
+import type { UserRole } from "@/core/roles";
 
 /** Login dev/demo: buat sesi untuk user seed dengan role terpilih. */
 export async function signInAction(role: UserRole): Promise<void> {

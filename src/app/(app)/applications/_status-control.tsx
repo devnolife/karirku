@@ -5,7 +5,7 @@ import {
   APPLICATION_STATUSES,
   statusLabel,
   type ApplicationStatusValue,
-} from "@/lib/applications/status";
+} from "@/core/applications/status";
 import { updateApplicationStatusAction } from "@/server/actions/applications";
 
 export function ApplicationStatusControl({

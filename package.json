@@ -13,7 +13,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
-    "worker": "tsx watch src/server/workers/index.ts",
+    "worker": "tsx watch src/core/workers/index.ts",
     "scan": "tsx scripts/scan.ts",
     "market:intel": "tsx scripts/market-intel.ts",
     "ai:smoke": "tsx scripts/ai-smoke.ts",
@@ -24,7 +24,8 @@
     "test": "tsx --test tests/autofill/*.test.ts tests/applications/*.test.ts tests/entitlements/*.test.ts tests/gmail/*.test.ts tests/match/*.test.ts tests/content/*.test.ts tests/scraper/*.test.ts tests/hunter/*.test.ts",
     "embed:all": "tsx scripts/embed-all.ts",
     "ingest:live": "tsx scripts/ingest-live.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "typecheck:core": "tsc --noEmit -p tsconfig.core.json"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.2",

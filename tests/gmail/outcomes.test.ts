@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { decryptSecret, encryptSecret } from "@/lib/security/secrets";
+import { decryptSecret, encryptSecret } from "@/core/security/secrets";
 import {
   applicationEmailMatchScore,
   classifyRecruitmentEmail,

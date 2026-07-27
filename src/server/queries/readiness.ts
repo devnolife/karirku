@@ -3,16 +3,16 @@
  * milestones), bukan membaca skor tersimpan yang bisa basi.
  */
 
-import { prisma } from "@/lib/db";
-import { isProductionMode } from "@/lib/mode";
-import { readinessScore } from "@/lib/match/readiness";
+import { prisma } from "@/core/db";
+import { isProductionMode } from "@/core/mode";
+import { readinessScore } from "@/core/match/readiness";
 import type { ReadinessView } from "@/lib/view-models";
 import { getSkillGap } from "./skills";
 import { getRoadmap } from "./roadmap";
 import { loadUserContext } from "./context";
 import type { UserContext } from "./context";
 import type { UserSkillItem } from "./context";
-import { canonicalSkill } from "@/lib/match/score";
+import { canonicalSkill } from "@/core/match/score";
 
 export type UserReadinessSignals = {
   verifiedRatio: number;

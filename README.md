@@ -53,14 +53,14 @@ pnpm ingest:live   # scrape GitLab/Figma/Dropbox → ekstraksi skill → embed
 Lowongan live (`source=greenhouse`) tampil di `/jobs` dengan tombol **Lamar**
 ke URL asli. Tambah/ubah perusahaan target di
 [`scripts/ingest-live.ts`](./scripts/ingest-live.ts) atau lewat pipeline BullMQ
-([`src/lib/scraper/portals.ts`](./src/lib/scraper/portals.ts) + `pnpm worker` +
+([`src/core/scraper/portals.ts`](./src/core/scraper/portals.ts) + `pnpm worker` +
 `pnpm scan`).
 
 Login page punya tombol **"Masuk sebagai {role}"** (jobseeker / freelancer /
 company / admin) untuk user hasil seed, serta GitHub OAuth untuk akun nyata.
 Gmail OAuth terpisah dan hanya meminta `gmail.readonly` untuk menyarankan status
 lamaran; user tetap wajib mengonfirmasi. Konten editorial (panduan & bank soal interview) bersifat
-statis di [`src/lib/content/`](./src/lib/content/).
+statis di [`src/core/content/`](./src/core/content/).
 
 Blueprint produk lengkap ada di [`plan.md`](./plan.md).
 Fitur guidance loop (AI roadmap, scraper, worker) aktif di Sprint 3-4.
@@ -119,7 +119,7 @@ Scanner "zero-token" menarik daftar lowongan langsung dari JSON API publik
 **Greenhouse / Ashby / Lever** — tanpa scraping HTML, tanpa token AI. Career
 page lain dapat memakai provider Firecrawl lokal. Registry sumber berada di
 tabel `job_sources` dan dikelola dari `/admin/scraper`; seed/fallback
-deterministik ada di [`src/lib/scraper/source-seed.ts`](./src/lib/scraper/source-seed.ts).
+deterministik ada di [`src/core/scraper/source-seed.ts`](./src/core/scraper/source-seed.ts).
 
 ```bash
 # 1) aktifkan sumber dari /admin/scraper atau seed JobSource
@@ -140,7 +140,7 @@ ulang jawaban yang telah disetujui, tetapi **tidak pernah auto-submit**. Setiap
 sesi autofill dicatat dan ditampilkan kembali ke user di panel **Aktivitas
 autofill** halaman Lamaran ([`src/server/queries/autofill.ts`](./src/server/queries/autofill.ts))
 — transparansi atas apa yang dibantu isi. Yang kita ukur dan jelaskan:
-[`src/lib/match/score.ts`](./src/lib/match/score.ts) → `skillCoverageScore(userSkills, jobSkills)`
+[`src/core/match/score.ts`](./src/core/match/score.ts) → `skillCoverageScore(userSkills, jobSkills)`
 menghasilkan `matchPct` + skill `matched`/`missing`; V2 menambahkan confidence,
 readiness per-job, freshness, data quality, dan preference fit.
 
@@ -157,25 +157,49 @@ readiness per-job, freshness, data quality, dan preference fit.
 
 ## Struktur
 
+Repo ini dibagi **dua bagian** yang batasnya ditegakkan lewat ESLint:
+
+| Bagian | Lokasi | Isi | Boleh impor |
+| --- | --- | --- | --- |
+| **Fullstack Next.js** | `src/app`, `src/components`, `src/server/{actions,queries,services}`, `src/lib` | UI, routing, server actions, query layer, session/auth, demo fixtures | Next.js, React, **dan** `src/core` |
+| **Core / LLM & OCR** | `src/core` | Engine: LLM, embedding, OCR, matching, scraper, queue, workers, akses data | Hanya Node + library eksternal |
+
+Arah dependensi **satu arah**: web → core, tidak pernah sebaliknya. Aturan
+`no-restricted-imports` di [`eslint.config.mjs`](./eslint.config.mjs) memblokir
+`src/core` mengimpor `next`, `react`, `@/app`, `@/components`, `@/server`, atau
+`@/lib`. Karena itu bagian core bisa diverifikasi berdiri sendiri:
+
+```bash
+pnpm typecheck:core   # kompilasi src/core tanpa DOM, React, atau plugin Next
+pnpm worker           # jalankan engine sebagai proses Node terpisah
+```
+
 ```
 src/
-├── app/                 Next.js App Router
+├── app/                 [WEB] Next.js App Router
 │   ├── (auth)/login
+│   ├── (marketing)/     halaman publik: about/careers/contact/terms/privacy
 │   ├── (app)/           layout authenticated
 │   │   ├── dashboard
 │   │   └── onboarding
 │   └── api/
 │       ├── auth         NextAuth handler
 │       └── health       cek DB/Redis/Ollama
-├── lib/
-│   ├── ai/              client + models + prompts
-│   ├── queue/           BullMQ queue definitions
-│   ├── scraper/         providers/ (Greenhouse/Ashby/Lever) + skeleton Jobstreet/Dicoding/Prakerja
-│   ├── auth.ts
-│   ├── db.ts
-│   └── redis.ts
-├── server/workers       BullMQ workers entrypoint
-└── middleware.ts
+├── components/          [WEB] UI (landing, dashboard, shared)
+├── server/              [WEB] actions/ queries/ services/
+├── lib/                 [WEB] glue yang butuh Next: auth.ts, entitlements.ts,
+│                        hunter-access.ts, mock/, site.ts, view-models.ts
+└── core/                [CORE] engine — bebas Next.js
+    ├── ai/              client + models + prompts + embeddings + extractors
+    ├── ocr.ts           OCR poster/screenshot lowongan (tesseract)
+    ├── match/           scoring, readiness, composite, evaluation
+    ├── scraper/         providers/ (Greenhouse/Ashby/Lever) + Jobstreet/Dicoding/Prakerja
+    ├── queue/           BullMQ queue definitions
+    ├── workers/         BullMQ workers entrypoint
+    ├── autofill/        engine autofill + adapters ATS
+    ├── content/         konten statis (panduan, roadmap reference)
+    ├── db.ts
+    └── redis.ts
 prisma/
 ├── schema.prisma        full schema (blueprint §8)
 └── seed.ts              skill taxonomy seed
@@ -220,7 +244,7 @@ newgrp docker   # atau logout & login
 - Model ~5GB — butuh koneksi stabil
 
 ### Embedding dimension mismatch
-Dev memakai `nomic-embed-text` (dim 768). Kalau ganti ke BGE-M3 (1024), edit `src/lib/ai/models.ts` **dan** `prisma/schema.prisma` (semua `vector(768)` → `vector(1024)`), lalu re-migrate + re-embed semua data.
+Dev memakai `nomic-embed-text` (dim 768). Kalau ganti ke BGE-M3 (1024), edit `src/core/ai/models.ts` **dan** `prisma/schema.prisma` (semua `vector(768)` → `vector(1024)`), lalu re-migrate + re-embed semua data.
 
 ## Lisensi
 

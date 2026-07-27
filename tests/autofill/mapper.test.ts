@@ -1,10 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import type OpenAI from "openai";
-import { mapWithLlm } from "@/lib/autofill/mapper";
-import { mapForm } from "@/lib/autofill/engine";
-import { DEMO_PROFILE } from "@/lib/autofill/profile";
-import type { FormFieldInfo, FormSnapshot } from "@/lib/autofill/types";
+import { mapWithLlm } from "@/core/autofill/mapper";
+import { mapForm } from "@/core/autofill/engine";
+import { DEMO_PROFILE } from "@/core/autofill/profile";
+import type { FormFieldInfo, FormSnapshot } from "@/core/autofill/types";
 
 function fakeClient(content: string | Error): OpenAI {
   return {

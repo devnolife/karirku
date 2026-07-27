@@ -5,7 +5,7 @@ import {
   INTERVIEW_TRACKS,
   INTERVIEW_QUESTIONS,
   type InterviewTrack,
-} from "@/lib/content/interview";
+} from "@/core/content/interview";
 
 type Phase = "pick" | "quiz" | "summary";
 

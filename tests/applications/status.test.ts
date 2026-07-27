@@ -5,7 +5,7 @@ import {
   highestStageReached,
   isApplicationStatus,
   statusLabel,
-} from "@/lib/applications/status";
+} from "@/core/applications/status";
 
 test("status aplikasi tervalidasi dan berlabel", () => {
   assert.equal(isApplicationStatus("interview"), true);

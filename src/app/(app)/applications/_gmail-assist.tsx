@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { statusLabel } from "@/lib/applications/status";
+import { statusLabel } from "@/core/applications/status";
 import {
   decideGmailSuggestionAction,
   disconnectGmailAction,

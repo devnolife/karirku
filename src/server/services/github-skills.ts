@@ -11,7 +11,7 @@
  * Tidak menurunkan proficiency yang sudah lebih tinggi dari sumber lain.
  */
 
-import { prisma } from "@/lib/db";
+import { prisma } from "@/core/db";
 
 type GithubRepo = {
   name: string;

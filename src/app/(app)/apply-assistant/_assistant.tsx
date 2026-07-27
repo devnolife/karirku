@@ -16,7 +16,7 @@ import {
   type ExtractedJob,
   type ImportMode,
   type ImportOrigin,
-} from "@/lib/apply-assistant/types";
+} from "@/core/apply-assistant/types";
 
 type Step = "input" | "review" | "draft";
 

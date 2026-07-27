@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 const fadeUp = {
@@ -286,9 +287,9 @@ export function ProcessSection() {
                       <CheckItem key={feature} label={feature} />
                     ))}
                   </div>
-                  <button
-                    type="button"
-                    className="flex items-center gap-3 py-2 rounded-full bg-[#042718] group cursor-pointer relative h-14 transition-all duration-300 flex-row pl-5 pr-2"
+                  <Link
+                    href="/login"
+                    className="flex items-center gap-3 py-2 rounded-full bg-[#042718] group cursor-pointer relative h-14 transition-all duration-300 hover:bg-[#063b25] flex-row pl-5 pr-2 w-max"
                   >
                     <span className="font-inter text-base lg:text-[18px] font-medium leading-[28px] text-white">
                       Coba Gratis
@@ -312,7 +313,7 @@ export function ProcessSection() {
                         </svg>
                       </div>
                     </div>
-                  </button>
+                  </Link>
                 </div>
                 <div className="w-full lg:w-[516px] h-[400px] sm:h-[500px] lg:h-[560px] relative rounded-[24px] overflow-hidden flex items-center justify-center">
                   <div className="absolute inset-0 z-0">

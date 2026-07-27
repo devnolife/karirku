@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { updateStageAction } from "@/server/actions/pipeline";
-import { PIPELINE_OPTIONS, type PipelineStatus } from "@/lib/pipeline";
+import { PIPELINE_OPTIONS, type PipelineStatus } from "@/core/pipeline";
 
 /**
  * Dropdown untuk mengubah stage lamaran kandidat. Optimistic: update label

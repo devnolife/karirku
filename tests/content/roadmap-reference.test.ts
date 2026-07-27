@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { roadmapShUrl } from "@/lib/content/roadmap-reference";
+import { roadmapShUrl } from "@/core/content/roadmap-reference";
 
 test("roadmapShUrl: role frontend umum", () => {
   assert.equal(roadmapShUrl("Frontend Engineer"), "https://roadmap.sh/frontend");

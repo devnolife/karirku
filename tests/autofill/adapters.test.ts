@@ -1,9 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { applyRules, GENERIC_RULES, matchOption } from "@/lib/autofill/rules";
-import { findAdapter } from "@/lib/autofill/adapters";
-import { DEMO_PROFILE } from "@/lib/autofill/profile";
-import type { FormFieldInfo } from "@/lib/autofill/types";
+import { applyRules, GENERIC_RULES, matchOption } from "@/core/autofill/rules";
+import { findAdapter } from "@/core/autofill/adapters";
+import { DEMO_PROFILE } from "@/core/autofill/profile";
+import type { FormFieldInfo } from "@/core/autofill/types";
 
 function field(partial: Partial<FormFieldInfo> & { selector: string }): FormFieldInfo {
   return { type: "text", ...partial };

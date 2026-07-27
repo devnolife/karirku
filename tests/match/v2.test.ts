@@ -5,13 +5,13 @@ import {
   listingFreshnessScore,
   preferenceFitScore,
   scoreRecommendationV2,
-} from "@/lib/match/v2";
+} from "@/core/match/v2";
 import {
   readinessForJob,
   verifiedRatioForJob,
 } from "@/server/queries/readiness";
 import { shouldSampleShadow } from "@/server/services/recommendation-shadow";
-import { evaluateRecommendationShadow } from "@/lib/match/evaluation";
+import { evaluateRecommendationShadow } from "@/core/match/evaluation";
 
 test("scorer V2 menurunkan confidence saat semantic/data quality hilang", () => {
   const complete = scoreRecommendationV2({

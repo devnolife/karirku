@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { GUIDES } from "@/lib/content/guides";
+import { GUIDES } from "@/core/content/guides";
 
 export function generateStaticParams() {
   return GUIDES.map((g) => ({ slug: g.slug }));

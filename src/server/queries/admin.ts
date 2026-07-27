@@ -2,10 +2,10 @@
  * Agregasi untuk panel admin — semua dari DB / BullMQ (bukan mock).
  */
 
-import { prisma } from "@/lib/db";
-import { isProductionMode } from "@/lib/mode";
+import { prisma } from "@/core/db";
+import { isProductionMode } from "@/core/mode";
 import { FEATURE_HUNTER_AUTO_APPLY } from "@/lib/entitlements";
-import type { UserRole } from "@/lib/roles";
+import type { UserRole } from "@/core/roles";
 
 export type PlatformStats = {
   totalUsers: number;
@@ -228,7 +228,7 @@ export async function getAdminJobSources(): Promise<AdminJobSourceRow[]> {
 /** Statistik antrian BullMQ (real). Aman kalau Redis tidak tersedia → 0. */
 export async function getQueueStats(): Promise<QueueStat[]> {
   if (!isProductionMode()) {
-    // Demo: jangan import @/lib/queue sama sekali — modul itu membuka
+    // Demo: jangan import @/core/queue sama sekali — modul itu membuka
     // koneksi Redis saat load. Nama antrian di-hardcode selaras QUEUE_NAMES.
     return ["scraper", "enrich", "embed", "market-intel"].map((name) => ({
       name,
@@ -239,7 +239,7 @@ export async function getQueueStats(): Promise<QueueStat[]> {
     }));
   }
 
-  const { allQueues } = await import("@/lib/queue");
+  const { allQueues } = await import("@/core/queue");
   try {
     return await Promise.all(
       allQueues.map(async (q) => {

@@ -11,8 +11,8 @@
  * tier Pro — lihat docs/superpowers/specs/2026-07-06-hunter-premium-foundation-design.md).
  */
 
-import { prisma } from "./db";
-import { isProductionMode } from "./mode";
+import { prisma } from "@/core/db";
+import { isProductionMode } from "@/core/mode";
 import {
   applyGrant,
   applyRevoke,

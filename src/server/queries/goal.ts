@@ -3,8 +3,8 @@
  * Server-only (mengimpor Prisma).
  */
 
-import { prisma } from "@/lib/db";
-import { isProductionMode } from "@/lib/mode";
+import { prisma } from "@/core/db";
+import { isProductionMode } from "@/core/mode";
 
 export type GoalTrack = "fulltime" | "freelance" | "both";
 

@@ -3,7 +3,7 @@ import {
   getUserGrowth,
   getRecentIngest,
 } from "@/server/queries/admin";
-import { ROLE_LABEL } from "@/lib/roles";
+import { ROLE_LABEL } from "@/core/roles";
 import { PageHead, StatusDot } from "../_ui";
 import {
   getRecommendationDataHealth,

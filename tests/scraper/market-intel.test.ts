@@ -9,8 +9,8 @@ import {
   normalizeRole,
   percentile,
   type MarketJobInput,
-} from "@/server/workers/market-intel-helpers";
-import { parseSnapshotDate } from "@/server/workers/handlers/market-intel";
+} from "@/core/workers/market-intel-helpers";
+import { parseSnapshotDate } from "@/core/workers/handlers/market-intel";
 
 test("market normalization canonicalizes role, city, and remote", () => {
   assert.equal(normalizeRole("Senior Backend Developer (Remote)"), "Backend Engineer");

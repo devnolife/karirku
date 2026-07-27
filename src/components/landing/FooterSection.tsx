@@ -1,7 +1,9 @@
 "use client";
 
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { SITE } from "@/lib/site";
 
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
@@ -30,10 +32,10 @@ const productLinks: FooterLink[] = [
 ];
 
 const companyLinks: FooterLink[] = [
-  { label: "Tentang", href: "#" },
+  { label: "Tentang", href: "/about" },
   { label: "Blog", href: "/guides" },
-  { label: "Karir", href: "#" },
-  { label: "Kontak", href: "#" },
+  { label: "Karir", href: "/careers" },
+  { label: "Kontak", href: "/contact" },
 ];
 
 function SparklesIcon({ className }: { className: string }) {
@@ -160,11 +162,106 @@ function InstagramIcon() {
   );
 }
 
-const socialLinks = [
-  { label: "Instagram", icon: <InstagramIcon /> },
-  { label: "LinkedIn", icon: <LinkedinIcon /> },
-  { label: "X / Twitter", icon: <TwitterIcon /> },
-];
+const socialIcons: Record<string, React.ReactNode> = {
+  Instagram: <InstagramIcon />,
+  LinkedIn: <LinkedinIcon />,
+  "X / Twitter": <TwitterIcon />,
+};
+
+const socialLinks = SITE.social.map((social) => ({
+  ...social,
+  icon: socialIcons[social.label] ?? null,
+}));
+
+type SubscribeStatus = "idle" | "loading" | "success" | "error";
+
+function NewsletterForm() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<SubscribeStatus>("idle");
+  const [message, setMessage] = useState("");
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (status === "loading") return;
+
+    const value = email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)) {
+      setStatus("error");
+      setMessage("Masukkan alamat email yang valid.");
+      return;
+    }
+
+    setStatus("loading");
+    setMessage("");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: value }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) throw new Error(data.error ?? "Gagal berlangganan.");
+      setStatus("success");
+      setMessage("Terima kasih! Cek inbox kamu untuk update berikutnya.");
+      setEmail("");
+    } catch (err) {
+      setStatus("error");
+      setMessage(err instanceof Error ? err.message : "Gagal berlangganan. Coba lagi nanti.");
+    }
+  }
+
+  return (
+    <motion.div {...fadeUp} className="mt-2 w-full lg:w-[440px]">
+      <form
+        onSubmit={handleSubmit}
+        className="relative w-full flex flex-col sm:flex-row items-stretch sm:items-center p-3 sm:p-[6px] gap-3 sm:gap-0 rounded-[28px] sm:rounded-full border border-white/60 bg-white/15 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.05)]"
+      >
+        <label htmlFor="newsletter-email" className="sr-only">
+          Alamat email
+        </label>
+        <input
+          id="newsletter-email"
+          name="email"
+          placeholder="Masukkan email kamu"
+          type="email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (status !== "idle") {
+              setStatus("idle");
+              setMessage("");
+            }
+          }}
+          aria-invalid={status === "error"}
+          className="flex-1 bg-transparent border-none outline-none px-4 py-2 sm:py-0 font-sans text-[18px] text-[#042718] placeholder:text-[#042718]/60"
+        />
+        <button
+          type="submit"
+          disabled={status === "loading"}
+          className="flex items-center justify-between sm:justify-start gap-3 bg-white pl-6 pr-2 py-2 sm:pl-[24px] sm:pr-[8px] sm:py-[8px] rounded-full shadow-sm hover:shadow-md transition-all duration-300 group disabled:opacity-70 disabled:cursor-not-allowed"
+        >
+          <span className="font-sans text-[18px] font-medium text-[#042718] whitespace-nowrap">
+            {status === "loading" ? "Mengirim…" : "Berlangganan"}
+          </span>
+          <div className="w-[36px] h-[36px] bg-[#042718] rounded-full flex items-center justify-center transition-colors duration-300 shrink-0">
+            <ArrowRightIcon className="lucide lucide-arrow-right text-white" />
+          </div>
+        </button>
+      </form>
+      {message ? (
+        <p
+          role="status"
+          aria-live="polite"
+          className={`mt-3 px-2 font-sans text-[15px] leading-[22px] ${
+            status === "error" ? "text-[#B3261E]" : "text-[#138E5F]"
+          }`}
+        >
+          {message}
+        </p>
+      ) : null}
+    </motion.div>
+  );
+}
 
 export function FooterSection() {
   return (
@@ -251,28 +348,7 @@ export function FooterSection() {
                 Tips karir, lowongan pilihan, dan wawasan industri &mdash; langsung ke inbox
                 kamu.
               </motion.p>
-              <motion.form
-                {...fadeUp}
-                onSubmit={(event) => event.preventDefault()}
-                className="mt-2 relative w-full lg:w-[440px] flex flex-col sm:flex-row items-stretch sm:items-center p-3 sm:p-[6px] gap-3 sm:gap-0 rounded-[28px] sm:rounded-full border border-white/60 bg-white/15 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.05)]"
-              >
-                <input
-                  placeholder="Masukkan email kamu"
-                  type="email"
-                  className="flex-1 bg-transparent border-none outline-none px-4 py-2 sm:py-0 font-sans text-[18px] text-[#042718] placeholder:text-[#042718]/60"
-                />
-                <button
-                  type="submit"
-                  className="flex items-center justify-between sm:justify-start gap-3 bg-white pl-6 pr-2 py-2 sm:pl-[24px] sm:pr-[8px] sm:py-[8px] rounded-full shadow-sm hover:shadow-md transition-all duration-300 group"
-                >
-                  <span className="font-sans text-[18px] font-medium text-[#042718]">
-                    Berlangganan
-                  </span>
-                  <div className="w-[36px] h-[36px] bg-[#042718] rounded-full flex items-center justify-center transition-colors duration-300 shrink-0">
-                    <ArrowRightIcon className="lucide lucide-arrow-right text-white" />
-                  </div>
-                </button>
-              </motion.form>
+              <NewsletterForm />
             </div>
             <div className="lg:ml-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:flex lg:flex-nowrap gap-y-12 gap-x-8 lg:gap-[64px] w-full lg:w-auto">
               <div className="lg:w-[152px] flex flex-col gap-[20px] relative">
@@ -336,13 +412,27 @@ export function FooterSection() {
                 <ul className="flex flex-col gap-[16px]">
                   {socialLinks.map((social) => (
                     <motion.li key={social.label} {...fadeUp}>
-                      <a
-                        href="#"
-                        className="flex items-center gap-3 text-[#042718] font-sans text-[18px] font-normal leading-[28px] opacity-80 hover:opacity-100 hover:font-medium transition-all"
-                      >
-                        {social.icon}
-                        {social.label}
-                      </a>
+                      {social.href ? (
+                        <a
+                          href={social.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 text-[#042718] font-sans text-[18px] font-normal leading-[28px] opacity-80 hover:opacity-100 hover:font-medium transition-all"
+                        >
+                          {social.icon}
+                          {social.label}
+                        </a>
+                      ) : (
+                        <span
+                          aria-disabled="true"
+                          title={`${social.label} — segera hadir`}
+                          className="flex items-center gap-3 text-[#042718] font-sans text-[18px] font-normal leading-[28px] opacity-40 cursor-default"
+                        >
+                          {social.icon}
+                          {social.label}
+                          <span className="text-[12px] uppercase tracking-wider">Segera</span>
+                        </span>
+                      )}
                     </motion.li>
                   ))}
                 </ul>
@@ -362,12 +452,12 @@ export function FooterSection() {
             className="w-full lg:w-[1248px] mt-[24px] pt-8 flex flex-col lg:flex-row items-center justify-between gap-6"
           >
             <div className="flex items-center gap-8 text-white font-sans text-[18px] font-normal leading-[28px] opacity-80">
-              <a href="#" className="hover:opacity-100 hover:font-medium transition-all">
+              <Link href="/terms" className="hover:opacity-100 hover:font-medium transition-all">
                 Syarat &amp; Ketentuan
-              </a>
-              <a href="#" className="hover:opacity-100 hover:font-medium transition-all">
+              </Link>
+              <Link href="/privacy" className="hover:opacity-100 hover:font-medium transition-all">
                 Kebijakan Privasi
-              </a>
+              </Link>
             </div>
             <div className="text-white font-sans text-[18px] font-normal leading-[28px] opacity-80 text-center lg:text-left">
               &copy; 2026 CraftWorks. Hak cipta dilindungi.

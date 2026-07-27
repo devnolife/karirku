@@ -9,13 +9,13 @@
  *  - Dedupe unik per (user, job).
  */
 
-import { prisma } from "@/lib/db";
-import { isProductionMode } from "@/lib/mode";
+import { prisma } from "@/core/db";
+import { isProductionMode } from "@/core/mode";
 import {
   highestStageReached,
   statusLabel,
   type ApplicationStatusValue,
-} from "@/lib/applications/status";
+} from "@/core/applications/status";
 import { markRecommendationInteraction } from "@/server/services/recommendation-interactions";
 
 const EXTERNAL_SOURCES = new Set(["greenhouse", "lever", "ashby", "kalibrr", "import", "http"]);
