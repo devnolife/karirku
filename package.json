@@ -1,6 +1,6 @@
 {
   "name": "@devnolife/karirku-core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Karirku engine: LLM, OCR, matching, scraping, queues, workers and data access. Framework-agnostic — no Next.js, no React.",
   "license": "UNLICENSED",
   "private": false,
