@@ -1,5 +1,5 @@
 import { getSession, signOut as authSignOut } from "@/lib/auth";
-import { ROLE_LABEL, type UserRole } from "@/core/roles";
+import { ROLE_LABEL, type UserRole } from "@devnolife/karirku-core/roles";
 import { type SideItem } from "./_sidebar";
 import { AppShell } from "./_shell";
 

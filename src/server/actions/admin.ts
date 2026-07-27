@@ -14,7 +14,7 @@ import {
   hasEntitlement,
   revokeEntitlement,
 } from "@/lib/entitlements";
-import { prisma } from "@/core/db";
+import { prisma } from "@devnolife/karirku-core/db";
 
 async function requireAdmin() {
   const user = await requireUser();

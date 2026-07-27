@@ -1,6 +1,6 @@
 import { requireUser } from "@/lib/auth";
 import { getProfile } from "@/server/queries/profile";
-import { isOcrAvailable } from "@/core/ocr";
+import { isOcrAvailable } from "@devnolife/karirku-core/ocr";
 import { PageHeader } from "../_dash/parts";
 import { ApplyAssistant } from "./_assistant";
 

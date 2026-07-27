@@ -1,5 +1,5 @@
-import { prisma } from "@/core/db";
-import { highestStageReached } from "@/core/applications/status";
+import { prisma } from "@devnolife/karirku-core/db";
+import { highestStageReached } from "@devnolife/karirku-core/applications/status";
 
 export type GmailOutcomeSuggestionView = {
   id: string;

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireUser } from "@/lib/auth";
-import { isApplicationStatus } from "@/core/applications/status";
+import { isApplicationStatus } from "@devnolife/karirku-core/applications/status";
 import { updateApplicationStatus } from "@/server/queries/applications";
 
 export type UpdateApplicationStatusActionResult = {

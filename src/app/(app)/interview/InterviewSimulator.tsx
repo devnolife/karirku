@@ -5,7 +5,7 @@ import {
   INTERVIEW_TRACKS,
   INTERVIEW_QUESTIONS,
   type InterviewTrack,
-} from "@/core/content/interview";
+} from "@devnolife/karirku-core/content/interview";
 
 type Phase = "pick" | "quiz" | "summary";
 

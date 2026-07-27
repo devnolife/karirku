@@ -1,9 +1,9 @@
-import { prisma } from "@/core/db";
+import { prisma } from "@devnolife/karirku-core/db";
 import {
   evaluateRecommendationShadow,
   type RecommendationObservation,
-} from "@/core/match/evaluation";
-import { RECOMMENDATION_SCORE_VERSION } from "@/core/match/v2";
+} from "@devnolife/karirku-core/match/evaluation";
+import { RECOMMENDATION_SCORE_VERSION } from "@devnolife/karirku-core/match/v2";
 
 const INTERVIEW_STATUSES = new Set(["interview", "offered", "accepted"]);
 

@@ -5,13 +5,13 @@
  */
 
 import { auth } from "@/lib/auth";
-import { prisma } from "@/core/db";
+import { prisma } from "@devnolife/karirku-core/db";
 import {
   bearerFromRequest,
   hashToken,
   issueToken,
   TOKEN_SCOPE,
-} from "@/core/autofill/token";
+} from "@devnolife/karirku-core/autofill/token";
 import { corsJson, corsPreflight, userFromRequest } from "../_lib";
 
 export async function OPTIONS() {

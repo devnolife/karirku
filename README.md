@@ -6,6 +6,33 @@
 
 ---
 
+## Dua repo
+
+Produk ini dipecah jadi **dua repository**:
+
+| Repo | Isi | Dipublikasikan sebagai |
+| --- | --- | --- |
+| **`devnolife/karirku`** (repo ini) | Aplikasi Next.js: UI, routing, server actions, query layer, session/auth | — |
+| [`devnolife/karirku-core`](https://github.com/devnolife/karirku-core) | Engine: LLM, OCR, matching, scraper, queue, workers, Hunter, **dan seluruh akses data** (Prisma schema + migrations + seed) | `@devnolife/karirku-core` di GitHub Packages |
+
+Arah dependensi **satu arah**: web → core, tidak pernah sebaliknya.
+
+```
+devnolife/karirku  ──depends on──▶  @devnolife/karirku-core
+```
+
+Konsekuensi praktis:
+
+- **Database dimiliki core.** `prisma migrate`, `db:seed`, dan `prisma studio`
+  dijalankan dari repo core, bukan dari sini.
+- **Worker dijalankan dari core** (`pnpm worker`), bukan dari sini.
+- Repo ini mengimpor engine lewat subpath publik saja, mis.
+  `@devnolife/karirku-core/db`. ESLint memblokir impor ke `dist/`, `src/`, atau
+  `generated/` milik package, dan memblokir `@prisma/client` langsung supaya
+  tidak pernah ada dua instance PrismaClient.
+
+---
+
 ## Status
 
 **Full-stack mode** — aplikasi memakai **data real dari PostgreSQL** (pgvector) untuk
@@ -16,7 +43,7 @@ mock data.
 Fitur premium (add-on terpisah dari tier Pro, mis. **Auto-Apply**) dikontrol lewat
 tabel `entitlements` (`src/lib/entitlements.ts`) — admin toggle per user di
 `/admin/users`. Akun admin (`admin@craft.works`) sudah ter-seed via
-`seedUsers()` (lihat `prisma/seed/users.ts`); login lewat tombol role di
+`seedUsers()` (lihat `prisma/seed/users.ts` di repo core); login lewat tombol role di
 halaman login (`signInAs`) atau GitHub OAuth. Hunter adalah alat internal
 single-operator: halaman dan seluruh API-nya admin-only, sedangkan apply juga
 memerlukan entitlement. Detail desain:
@@ -31,15 +58,26 @@ tidak mengganti ranking sebelum metrik admin memenuhi gate. Jalankan
 Quick start:
 
 ```bash
+# 1) engine + infra + database (repo tetangga)
+git clone https://github.com/devnolife/karirku-core.git ../karirku-core
+cd ../karirku-core
 pnpm install
 cp .env.example .env.local   # isi DATABASE_URL, REDIS_URL, OLLAMA_*, dst.
 docker compose up -d         # Postgres + Redis + MinIO + Ollama
-pnpm exec prisma migrate deploy
+pnpm db:deploy
 pnpm db:seed                 # skill taxonomy + 4 user (1/role) + marketplace + admin
 pnpm embed:all               # generate embedding (768d) untuk jobs/courses/profiles
 pnpm market:intel            # enqueue snapshot pasar harian
+pnpm build                   # wajib: web mengimpor dist/ milik core
+
+# 2) aplikasi web (repo ini)
+cd -
+pnpm install
+cp .env.example .env.local
 pnpm dev                     # → http://localhost:3030
 ```
+
+Atau jalankan `./scripts/dev-setup.sh` yang melakukan semuanya sekaligus.
 
 ### Lowongan live (data asli)
 
@@ -47,20 +85,19 @@ Selain seed, aplikasi bisa menarik **lowongan asli** dari job board publik
 (Greenhouse) lengkap dengan deskripsi + URL lamaran nyata:
 
 ```bash
-pnpm ingest:live   # scrape GitLab/Figma/Dropbox → ekstraksi skill → embed
+pnpm ingest:live   # dijalankan dari repo karirku-core
 ```
 
 Lowongan live (`source=greenhouse`) tampil di `/jobs` dengan tombol **Lamar**
-ke URL asli. Tambah/ubah perusahaan target di
-[`scripts/ingest-live.ts`](./scripts/ingest-live.ts) atau lewat pipeline BullMQ
-([`src/core/scraper/portals.ts`](./src/core/scraper/portals.ts) + `pnpm worker` +
-`pnpm scan`).
+ke URL asli. Tambah/ubah perusahaan target di `scripts/ingest-live.ts` atau lewat
+pipeline BullMQ (`src/scraper/portals.ts` + `pnpm worker` + `pnpm scan`) — semuanya
+di repo [`karirku-core`](https://github.com/devnolife/karirku-core).
 
 Login page punya tombol **"Masuk sebagai {role}"** (jobseeker / freelancer /
 company / admin) untuk user hasil seed, serta GitHub OAuth untuk akun nyata.
 Gmail OAuth terpisah dan hanya meminta `gmail.readonly` untuk menyarankan status
 lamaran; user tetap wajib mengonfirmasi. Konten editorial (panduan & bank soal interview) bersifat
-statis di [`src/core/content/`](./src/core/content/).
+statis di `src/content/` pada repo core.
 
 Blueprint produk lengkap ada di [`plan.md`](./plan.md).
 Fitur guidance loop (AI roadmap, scraper, worker) aktif di Sprint 3-4.
@@ -95,23 +132,54 @@ Fitur guidance loop (AI roadmap, scraper, worker) aktif di Sprint 3-4.
 ## Quick start
 
 ```bash
-# satu kali — start docker stack + migrate + seed + pull AI models
+# satu kali — setup engine repo, docker stack, migrate, seed, pull AI models
 ./scripts/dev-setup.sh
 
-# development
+# development (repo ini)
 pnpm dev              # Next.js di http://localhost:3030
-pnpm worker           # BullMQ workers (terminal terpisah)
+pnpm typecheck        # TypeScript check
+pnpm test
+pnpm lint
+pnpm build
+pnpm recommendation:evaluate  # evaluasi V1 vs V2 shadow
 
-# utility
+# development (repo karirku-core, terminal terpisah)
+cd ../karirku-core
+pnpm worker           # BullMQ workers
 pnpm ai:smoke         # test koneksi AI
 pnpm scan             # enqueue scan lowongan (portal ATS) → scraperQueue
 pnpm market:intel     # enqueue agregasi RoleMarketStat harian
-pnpm recommendation:evaluate # evaluasi V1 vs V2 shadow
 pnpm db:studio        # Prisma Studio GUI
-pnpm typecheck        # TypeScript check
-pnpm lint
-pnpm build
 ```
+
+### Mengerjakan web dan engine bersamaan
+
+Menerbitkan versi core setiap kali ada perubahan itu menyakitkan. Untuk dev
+lokal, `package.json` repo ini memakai override yang menautkan checkout core
+tetangga:
+
+```json
+{
+  "pnpm": {
+    "overrides": {
+      "@devnolife/karirku-core": "link:../karirku-core"
+    }
+  }
+}
+```
+
+Alurnya: ubah kode di `../karirku-core` → `pnpm build` di sana → perubahan
+langsung terpakai di sini. **Hapus blok `overrides` itu** begitu package sudah
+terbit di GitHub Packages, supaya `pnpm install` menarik versi rilis
+(`"@devnolife/karirku-core": "^0.1.0"`) alih-alih symlink lokal.
+
+Autentikasi registry (butuh token dengan `read:packages`):
+
+```bash
+npm config set //npm.pkg.github.com/:_authToken <TOKEN>
+```
+
+`.npmrc` di repo ini sudah memetakan scope `@devnolife` ke GitHub Packages.
 
 ## Job scanner (portal ATS)
 
@@ -119,10 +187,12 @@ Scanner "zero-token" menarik daftar lowongan langsung dari JSON API publik
 **Greenhouse / Ashby / Lever** — tanpa scraping HTML, tanpa token AI. Career
 page lain dapat memakai provider Firecrawl lokal. Registry sumber berada di
 tabel `job_sources` dan dikelola dari `/admin/scraper`; seed/fallback
-deterministik ada di [`src/core/scraper/source-seed.ts`](./src/core/scraper/source-seed.ts).
+deterministik ada di `src/scraper/source-seed.ts` pada repo core.
 
 ```bash
 # 1) aktifkan sumber dari /admin/scraper atau seed JobSource
+# 2) sisanya dijalankan dari repo karirku-core:
+cd ../karirku-core
 pnpm scan          # enqueue scan registry aktif
 pnpm worker        # scan → dedupe/hash → enrich → embed
 pnpm market:intel  # snapshot role/lokasi/skill/gaji/trend
@@ -140,7 +210,7 @@ ulang jawaban yang telah disetujui, tetapi **tidak pernah auto-submit**. Setiap
 sesi autofill dicatat dan ditampilkan kembali ke user di panel **Aktivitas
 autofill** halaman Lamaran ([`src/server/queries/autofill.ts`](./src/server/queries/autofill.ts))
 — transparansi atas apa yang dibantu isi. Yang kita ukur dan jelaskan:
-[`src/core/match/score.ts`](./src/core/match/score.ts) → `skillCoverageScore(userSkills, jobSkills)`
+`src/match/score.ts` di repo core → `skillCoverageScore(userSkills, jobSkills)`
 menghasilkan `matchPct` + skill `matched`/`missing`; V2 menambahkan confidence,
 readiness per-job, freshness, data quality, dan preference fit.
 
@@ -157,53 +227,52 @@ readiness per-job, freshness, data quality, dan preference fit.
 
 ## Struktur
 
-Repo ini dibagi **dua bagian** yang batasnya ditegakkan lewat ESLint:
-
-| Bagian | Lokasi | Isi | Boleh impor |
-| --- | --- | --- | --- |
-| **Fullstack Next.js** | `src/app`, `src/components`, `src/server/{actions,queries,services}`, `src/lib` | UI, routing, server actions, query layer, session/auth, demo fixtures | Next.js, React, **dan** `src/core` |
-| **Core / LLM & OCR** | `src/core` | Engine: LLM, embedding, OCR, matching, scraper, queue, workers, akses data | Hanya Node + library eksternal |
-
-Arah dependensi **satu arah**: web → core, tidak pernah sebaliknya. Aturan
-`no-restricted-imports` di [`eslint.config.mjs`](./eslint.config.mjs) memblokir
-`src/core` mengimpor `next`, `react`, `@/app`, `@/components`, `@/server`, atau
-`@/lib`. Karena itu bagian core bisa diverifikasi berdiri sendiri:
-
-```bash
-pnpm typecheck:core   # kompilasi src/core tanpa DOM, React, atau plugin Next
-pnpm worker           # jalankan engine sebagai proses Node terpisah
-```
+Repo ini **hanya** berisi lapisan Next.js. Engine ada di repo terpisah dan
+masuk lewat `node_modules`.
 
 ```
-src/
-├── app/                 [WEB] Next.js App Router
-│   ├── (auth)/login
-│   ├── (marketing)/     halaman publik: about/careers/contact/terms/privacy
-│   ├── (app)/           layout authenticated
-│   │   ├── dashboard
-│   │   └── onboarding
-│   └── api/
-│       ├── auth         NextAuth handler
-│       └── health       cek DB/Redis/Ollama
-├── components/          [WEB] UI (landing, dashboard, shared)
-├── server/              [WEB] actions/ queries/ services/
-├── lib/                 [WEB] glue yang butuh Next: auth.ts, entitlements.ts,
-│                        hunter-access.ts, mock/, site.ts, view-models.ts
-└── core/                [CORE] engine — bebas Next.js
-    ├── ai/              client + models + prompts + embeddings + extractors
-    ├── ocr.ts           OCR poster/screenshot lowongan (tesseract)
-    ├── match/           scoring, readiness, composite, evaluation
-    ├── scraper/         providers/ (Greenhouse/Ashby/Lever) + Jobstreet/Dicoding/Prakerja
-    ├── queue/           BullMQ queue definitions
-    ├── workers/         BullMQ workers entrypoint
-    ├── autofill/        engine autofill + adapters ATS
-    ├── content/         konten statis (panduan, roadmap reference)
-    ├── db.ts
-    └── redis.ts
-prisma/
-├── schema.prisma        full schema (blueprint §8)
-└── seed.ts              skill taxonomy seed
+karirku/                      [repo ini — aplikasi Next.js]
+├── src/
+│   ├── app/                  Next.js App Router
+│   │   ├── (auth)/login
+│   │   ├── (marketing)/      halaman publik: about/careers/contact/terms/privacy
+│   │   ├── (app)/            layout authenticated (dashboard, onboarding, …)
+│   │   └── api/              NextAuth handler, health, newsletter, hunter, …
+│   ├── components/           UI (landing, dashboard, shared)
+│   ├── server/               actions/ queries/ services/
+│   ├── lib/                  glue yang butuh Next: auth.ts, entitlements.ts,
+│   │                         hunter-access.ts, mock/, site.ts, view-models.ts
+│   └── types/
+├── extension/                browser extension (bicara ke API web)
+└── tests/                    entitlements, gmail, hunter (access), match (v2)
+
+karirku-core/                 [repo terpisah — @devnolife/karirku-core]
+├── src/
+│   ├── ai/                   client + models + prompts + embeddings + extractors
+│   ├── ocr.ts                OCR poster/screenshot lowongan (tesseract)
+│   ├── match/                scoring, readiness, composite, evaluation
+│   ├── scraper/              providers/ (Greenhouse/Ashby/Lever) + portal ID
+│   ├── queue/                BullMQ queue definitions
+│   ├── workers/              BullMQ workers entrypoint
+│   ├── autofill/             engine autofill + adapters ATS
+│   ├── content/              konten statis (panduan, roadmap reference)
+│   ├── db.ts                 Prisma client (pemilik tunggal DB)
+│   └── redis.ts
+├── prisma/                   schema + migrations + seed
+├── hunter/                   engine CommonJS (job automation)
+└── docker-compose.yml        Postgres/pgvector, Redis, MinIO, Ollama
 ```
+
+Batas ini ditegakkan ESLint. Aturan `no-restricted-imports` di
+[`eslint.config.mjs`](./eslint.config.mjs) memblokir:
+
+- impor ke internal package (`@devnolife/karirku-core/dist`, `/src`, `/generated`)
+  — pakai subpath publik saja, mis. `@devnolife/karirku-core/db`;
+- `@prisma/client` langsung — DB dimiliki core, jadi client diambil dari
+  `@devnolife/karirku-core/db` dan tipenya dari `@devnolife/karirku-core/prisma`.
+  Ini yang menjamin hanya ada **satu** instance PrismaClient;
+- sisa impor `@/core/*` dari sebelum pemisahan.
+
 
 ## Setup OAuth
 
@@ -232,7 +301,8 @@ user menekan **Konfirmasi**.
 ## Troubleshooting
 
 ### `permission denied` saat `docker compose up`
-User kamu belum di grup `docker`:
+Docker stack ada di repo `karirku-core`. Kalau gagal, user kamu belum di grup
+`docker`:
 ```bash
 sudo usermod -aG docker $USER
 newgrp docker   # atau logout & login
@@ -244,7 +314,31 @@ newgrp docker   # atau logout & login
 - Model ~5GB — butuh koneksi stabil
 
 ### Embedding dimension mismatch
-Dev memakai `nomic-embed-text` (dim 768). Kalau ganti ke BGE-M3 (1024), edit `src/core/ai/models.ts` **dan** `prisma/schema.prisma` (semua `vector(768)` → `vector(1024)`), lalu re-migrate + re-embed semua data.
+Dev memakai `nomic-embed-text` (dim 768). Kalau ganti ke BGE-M3 (1024), semua
+perubahannya ada di repo [`karirku-core`](https://github.com/devnolife/karirku-core):
+edit `src/ai/models.ts` **dan** `prisma/schema.prisma` (semua `vector(768)` →
+`vector(1024)`), lalu re-migrate + re-embed semua data, dan rilis versi core baru.
+
+## Deploy
+
+Dua repo → dua artefak yang di-deploy terpisah:
+
+| Artefak | Dari repo | Proses |
+| --- | --- | --- |
+| Web app | `karirku` | `pnpm build` → `pnpm start` (Next.js server) |
+| Worker | `karirku-core` | `pnpm build` → `pnpm worker:start` (proses Node) |
+| Migrasi DB | `karirku-core` | `pnpm db:deploy` — dijalankan **sekali**, sebelum web/worker rilis |
+| Infra | `karirku-core` | `docker-compose.yml` (Postgres/pgvector, Redis, MinIO, Ollama) |
+
+Urutan rilis yang aman saat schema berubah:
+
+1. Rilis versi baru `@devnolife/karirku-core` (tag → GitHub Actions publish).
+2. Jalankan `pnpm db:deploy` dari core.
+3. Deploy worker (core).
+4. Bump dependency di repo ini, lalu deploy web.
+
+Build web butuh token registry dengan `read:packages` (`NODE_AUTH_TOKEN` /
+`npm config set //npm.pkg.github.com/:_authToken`).
 
 ## Lisensi
 

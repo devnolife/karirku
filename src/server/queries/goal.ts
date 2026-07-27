@@ -3,8 +3,8 @@
  * Server-only (mengimpor Prisma).
  */
 
-import { prisma } from "@/core/db";
-import { isProductionMode } from "@/core/mode";
+import { prisma } from "@devnolife/karirku-core/db";
+import { isProductionMode } from "@devnolife/karirku-core/mode";
 
 export type GoalTrack = "fulltime" | "freelance" | "both";
 

@@ -3,16 +3,16 @@
  * milestones), bukan membaca skor tersimpan yang bisa basi.
  */
 
-import { prisma } from "@/core/db";
-import { isProductionMode } from "@/core/mode";
-import { readinessScore } from "@/core/match/readiness";
+import { prisma } from "@devnolife/karirku-core/db";
+import { isProductionMode } from "@devnolife/karirku-core/mode";
+import { readinessScore } from "@devnolife/karirku-core/match/readiness";
 import type { ReadinessView } from "@/lib/view-models";
 import { getSkillGap } from "./skills";
 import { getRoadmap } from "./roadmap";
 import { loadUserContext } from "./context";
 import type { UserContext } from "./context";
 import type { UserSkillItem } from "./context";
-import { canonicalSkill } from "@/core/match/score";
+import { canonicalSkill } from "@devnolife/karirku-core/match/score";
 
 export type UserReadinessSignals = {
   verifiedRatio: number;

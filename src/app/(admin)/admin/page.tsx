@@ -3,7 +3,7 @@ import {
   getUserGrowth,
   getRecentIngest,
 } from "@/server/queries/admin";
-import { ROLE_LABEL } from "@/core/roles";
+import { ROLE_LABEL } from "@devnolife/karirku-core/roles";
 import { PageHead, StatusDot } from "../_ui";
 import {
   getRecommendationDataHealth,

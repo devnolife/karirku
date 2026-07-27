@@ -1,4 +1,29 @@
+import fs from "node:fs";
+import path from "node:path";
 import type { NextConfig } from "next";
+
+const PROJECT_ROOT = import.meta.dirname;
+
+/**
+ * The engine lives in a separate repo (@devnolife/karirku-core). Installed from
+ * the registry it sits inside node_modules and Turbopack resolves it normally.
+ * While developing both repos together it is linked from a sibling checkout,
+ * so its real path falls outside this directory — and Turbopack refuses to
+ * resolve past its inferred root. Widen the root only in that case, so a
+ * production build never reaches outside the project.
+ */
+function turbopackRoot(): string {
+  const linked = path.join(PROJECT_ROOT, "node_modules", "@devnolife", "karirku-core");
+  try {
+    const real = fs.realpathSync(linked);
+    if (!real.startsWith(PROJECT_ROOT + path.sep)) {
+      return path.dirname(PROJECT_ROOT);
+    }
+  } catch {
+    // Not installed yet — fall through to the default.
+  }
+  return PROJECT_ROOT;
+}
 
 const nextConfig: NextConfig = {
   // Hunter engine loads better-sqlite3 (native addon) at runtime.
@@ -19,10 +44,10 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Next.js 16 uses Turbopack by default. Setting an explicit (empty)
-  // turbopack config silences the webpack/turbopack mismatch warning
-  // and keeps the dev server lean.
-  turbopack: {},
+  // Next.js 16 uses Turbopack by default.
+  turbopack: {
+    root: turbopackRoot(),
+  },
   experimental: {
     serverActions: {
       // Asisten Lamar mengirim data URL gambar (sudah dikecilkan) ke server action.

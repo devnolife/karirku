@@ -88,7 +88,7 @@ async function uploadResumeAction(formData: FormData) {
     redirect("/profile?cv=unsupported");
   }
 
-  const { prisma } = await import("@/core/db");
+  const { prisma } = await import("@devnolife/karirku-core/db");
   const data = Buffer.from(await file.arrayBuffer());
   await prisma.resumeFile.upsert({
     where: { userId: user.id },
@@ -148,7 +148,7 @@ export default async function ProfilePage({
   const user = await requireUser();
   const { cv } = await searchParams;
   const cvNotice = cv ? CV_NOTICE[cv] : undefined;
-  const { prisma } = await import("@/core/db");
+  const { prisma } = await import("@devnolife/karirku-core/db");
   const [profile, catalog, cvFile] = await Promise.all([
     getProfile(user.id),
     getSkillCatalog(),

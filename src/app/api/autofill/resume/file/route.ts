@@ -4,7 +4,7 @@
  */
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/core/db";
+import { prisma } from "@devnolife/karirku-core/db";
 import { CORS_HEADERS, corsJson, corsPreflight, unauthorized, userFromRequest } from "../../_lib";
 
 export async function OPTIONS() {

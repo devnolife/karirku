@@ -9,13 +9,13 @@
  *  - Dedupe unik per (user, job).
  */
 
-import { prisma } from "@/core/db";
-import { isProductionMode } from "@/core/mode";
+import { prisma } from "@devnolife/karirku-core/db";
+import { isProductionMode } from "@devnolife/karirku-core/mode";
 import {
   highestStageReached,
   statusLabel,
   type ApplicationStatusValue,
-} from "@/core/applications/status";
+} from "@devnolife/karirku-core/applications/status";
 import { markRecommendationInteraction } from "@/server/services/recommendation-interactions";
 
 const EXTERNAL_SOURCES = new Set(["greenhouse", "lever", "ashby", "kalibrr", "import", "http"]);

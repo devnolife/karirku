@@ -6,7 +6,7 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/core/db";
+import { prisma } from "@devnolife/karirku-core/db";
 import { markRecommendationInteraction } from "@/server/services/recommendation-interactions";
 
 export const dynamic = "force-dynamic";

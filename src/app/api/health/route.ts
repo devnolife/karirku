@@ -1,5 +1,5 @@
-import { prisma } from "@/core/db";
-import { redis } from "@/core/redis";
+import { prisma } from "@devnolife/karirku-core/db";
+import { redis } from "@devnolife/karirku-core/redis";
 import { NextResponse } from "next/server";
 
 interface ServiceStatus {

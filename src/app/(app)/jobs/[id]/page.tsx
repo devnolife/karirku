@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import type { CSSProperties, ReactNode } from "react";
 import { requireUser } from "@/lib/auth";
 import { getJobDetail } from "@/server/queries/jobs";
-import { parseLocation, locationFlag } from "@/core/location";
-import { describeJobSource } from "@/core/source";
+import { parseLocation, locationFlag } from "@devnolife/karirku-core/location";
+import { describeJobSource } from "@devnolife/karirku-core/source";
 import { RecommendationOpenTracker } from "@/components/RecommendationOpenTracker";
 import { ApplyButton } from "@/components/ApplyButton";
 

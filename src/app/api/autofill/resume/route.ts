@@ -7,7 +7,7 @@
  * selain itu menampilkan tombol unduh manual (sesuai error handling spec).
  */
 
-import { prisma } from "@/core/db";
+import { prisma } from "@devnolife/karirku-core/db";
 import { corsJson, corsPreflight, unauthorized, userFromRequest } from "../_lib";
 
 export async function OPTIONS() {

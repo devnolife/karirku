@@ -1,4 +1,4 @@
-import { hunterDb, gmailStatus } from "@/core/hunter";
+import { hunterDb, gmailStatus } from "@devnolife/karirku-core/hunter";
 import { ActionButton } from "./actions-client";
 
 export const dynamic = "force-dynamic";
@@ -84,7 +84,7 @@ export default function HunterOverview() {
             <div>
               <div className="font-semibold">Gmail API</div>
               <div className="text-sm text-slate-400">
-                {gmail.authorized ? "authorized — email tracking active" : gmail.configured ? "configured, run `node hunter/run.js gmail-auth`" : "not configured — see hunter/email/gmail.js header"}
+                {gmail.authorized ? "authorized — email tracking active" : gmail.configured ? "configured, run `pnpm hunter gmail-auth` in karirku-core" : "not configured — see karirku-core hunter/email/gmail.js"}
               </div>
             </div>
           </div>

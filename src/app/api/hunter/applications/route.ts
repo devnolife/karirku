@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { hunterDb } from "@/core/hunter";
+import { hunterDb } from "@devnolife/karirku-core/hunter";
 import { authorizeHunterApi } from "@/lib/hunter-access";
 
 export const dynamic = "force-dynamic";

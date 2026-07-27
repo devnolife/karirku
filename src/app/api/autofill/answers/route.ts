@@ -5,7 +5,7 @@
  */
 
 import { z } from "zod";
-import { upsertSavedAnswer } from "@/core/autofill/answers";
+import { upsertSavedAnswer } from "@devnolife/karirku-core/autofill/answers";
 import { corsJson, corsPreflight, unauthorized, userFromRequest } from "../_lib";
 
 const BodySchema = z.object({

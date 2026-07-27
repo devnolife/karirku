@@ -11,7 +11,7 @@
  * Tidak menurunkan proficiency yang sudah lebih tinggi dari sumber lain.
  */
 
-import { prisma } from "@/core/db";
+import { prisma } from "@devnolife/karirku-core/db";
 
 type GithubRepo = {
   name: string;

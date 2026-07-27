@@ -2,10 +2,10 @@
  * Agregasi untuk panel admin — semua dari DB / BullMQ (bukan mock).
  */
 
-import { prisma } from "@/core/db";
-import { isProductionMode } from "@/core/mode";
+import { prisma } from "@devnolife/karirku-core/db";
+import { isProductionMode } from "@devnolife/karirku-core/mode";
 import { FEATURE_HUNTER_AUTO_APPLY } from "@/lib/entitlements";
-import type { UserRole } from "@/core/roles";
+import type { UserRole } from "@devnolife/karirku-core/roles";
 
 export type PlatformStats = {
   totalUsers: number;
@@ -228,7 +228,7 @@ export async function getAdminJobSources(): Promise<AdminJobSourceRow[]> {
 /** Statistik antrian BullMQ (real). Aman kalau Redis tidak tersedia → 0. */
 export async function getQueueStats(): Promise<QueueStat[]> {
   if (!isProductionMode()) {
-    // Demo: jangan import @/core/queue sama sekali — modul itu membuka
+    // Demo: jangan import @devnolife/karirku-core/queue sama sekali — modul itu membuka
     // koneksi Redis saat load. Nama antrian di-hardcode selaras QUEUE_NAMES.
     return ["scraper", "enrich", "embed", "market-intel"].map((name) => ({
       name,
@@ -239,7 +239,7 @@ export async function getQueueStats(): Promise<QueueStat[]> {
     }));
   }
 
-  const { allQueues } = await import("@/core/queue");
+  const { allQueues } = await import("@devnolife/karirku-core/queue");
   try {
     return await Promise.all(
       allQueues.map(async (q) => {

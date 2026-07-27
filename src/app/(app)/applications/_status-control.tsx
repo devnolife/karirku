@@ -5,7 +5,7 @@ import {
   APPLICATION_STATUSES,
   statusLabel,
   type ApplicationStatusValue,
-} from "@/core/applications/status";
+} from "@devnolife/karirku-core/applications/status";
 import { updateApplicationStatusAction } from "@/server/actions/applications";
 
 export function ApplicationStatusControl({

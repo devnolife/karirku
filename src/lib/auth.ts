@@ -19,10 +19,10 @@ import { randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
-import { prisma } from "@/core/db";
-import { isProductionMode } from "@/core/mode";
-import { homeForRole, isValidRole, type UserRole } from "@/core/roles";
-import { looksLikeEmail, normalizeIdentifier } from "@/core/username";
+import { prisma } from "@devnolife/karirku-core/db";
+import { isProductionMode } from "@devnolife/karirku-core/mode";
+import { homeForRole, isValidRole, type UserRole } from "@devnolife/karirku-core/roles";
+import { looksLikeEmail, normalizeIdentifier } from "@devnolife/karirku-core/username";
 
 export const SESSION_COOKIE = "authjs.session-token";
 export const ROLE_COOKIE = "cw_role";
@@ -124,7 +124,7 @@ export async function signInAs(role: UserRole): Promise<boolean> {
   });
   if (!user) {
     throw new Error(
-      `signInAs: tidak ada user real untuk role "${role}". Jalankan \`pnpm db:seed\`.`,
+      `signInAs: tidak ada user real untuk role "${role}". Jalankan \`pnpm db:seed\` di repo karirku-core.`,
     );
   }
 

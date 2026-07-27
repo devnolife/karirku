@@ -4,9 +4,9 @@
  * di lowongan yang cocok (data real), bukan hardcoded.
  */
 
-import { prisma } from "@/core/db";
-import { isProductionMode } from "@/core/mode";
-import { skillCoverageScore } from "@/core/match/score";
+import { prisma } from "@devnolife/karirku-core/db";
+import { isProductionMode } from "@devnolife/karirku-core/mode";
+import { skillCoverageScore } from "@devnolife/karirku-core/match/score";
 import type { SkillTone, SkillView } from "@/lib/view-models";
 import {
   loadUserContext,

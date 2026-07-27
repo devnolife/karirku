@@ -4,8 +4,8 @@
  * lintas query agar tidak round-trip berkali-kali.
  */
 
-import { prisma } from "@/core/db";
-import { isProductionMode } from "@/core/mode";
+import { prisma } from "@devnolife/karirku-core/db";
+import { isProductionMode } from "@devnolife/karirku-core/mode";
 import { getActiveGoal, type UserGoal } from "./goal";
 
 export type UserSkillItem = {

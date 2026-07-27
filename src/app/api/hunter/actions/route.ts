@@ -4,7 +4,7 @@ import {
   releaseHunter,
   reserveHunter,
   spawnHunter,
-} from "@/core/hunter";
+} from "@devnolife/karirku-core/hunter";
 import { authorizeHunterApi } from "@/lib/hunter-access";
 
 export const dynamic = "force-dynamic";

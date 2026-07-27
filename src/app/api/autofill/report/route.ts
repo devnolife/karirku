@@ -6,7 +6,7 @@
  */
 
 import { z } from "zod";
-import { prisma } from "@/core/db";
+import { prisma } from "@devnolife/karirku-core/db";
 import { corsJson, corsPreflight, unauthorized, userFromRequest } from "../_lib";
 
 const ReportSchema = z.object({

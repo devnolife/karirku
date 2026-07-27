@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import type { UserRole } from "@/core/roles";
+import type { UserRole } from "@devnolife/karirku-core/roles";
 import { signInAction, signInWithIdentifierAction } from "./actions";
 
 /**

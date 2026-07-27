@@ -1,11 +1,11 @@
 import { createHash, randomBytes } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/core/db";
+import { prisma } from "@devnolife/karirku-core/db";
 import {
   GMAIL_READONLY_SCOPE,
   gmailOAuthClient,
-} from "@/core/gmail/oauth";
+} from "@devnolife/karirku-core/gmail/oauth";
 
 export const GMAIL_STATE_COOKIE = "gmail_oauth_state";
 

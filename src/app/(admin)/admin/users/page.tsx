@@ -1,6 +1,6 @@
 import { getAdminUsers } from "@/server/queries/admin";
 import { toggleAutoApplyEntitlementAction } from "@/server/actions/admin";
-import { ROLE_LABEL } from "@/core/roles";
+import { ROLE_LABEL } from "@devnolife/karirku-core/roles";
 import { PageHead, StatusDot } from "../../_ui";
 
 export default async function AdminUsersPage() {

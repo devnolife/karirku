@@ -1,9 +1,9 @@
 import { createHash, randomUUID } from "node:crypto";
-import { prisma } from "@/core/db";
+import { prisma } from "@devnolife/karirku-core/db";
 import {
   RECOMMENDATION_SCORE_VERSION,
   type ScoreV2Components,
-} from "@/core/match/v2";
+} from "@devnolife/karirku-core/match/v2";
 
 export type ShadowCandidate = {
   jobId: string;

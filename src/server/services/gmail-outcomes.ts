@@ -1,9 +1,9 @@
 import { createHash } from "node:crypto";
 import { google } from "googleapis";
-import { prisma } from "@/core/db";
-import { decryptSecret, encryptSecret } from "@/core/security/secrets";
-import { gmailOAuthClient } from "@/core/gmail/oauth";
-import type { ApplicationStatusValue } from "@/core/applications/status";
+import { prisma } from "@devnolife/karirku-core/db";
+import { decryptSecret, encryptSecret } from "@devnolife/karirku-core/security/secrets";
+import { gmailOAuthClient } from "@devnolife/karirku-core/gmail/oauth";
+import type { ApplicationStatusValue } from "@devnolife/karirku-core/applications/status";
 
 type Classification = {
   status: ApplicationStatusValue;

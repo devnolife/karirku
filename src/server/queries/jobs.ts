@@ -3,16 +3,16 @@
  * dari tabel jobs) memakai match engine. Mengembalikan top-N untuk ditampilkan.
  */
 
-import { prisma } from "@/core/db";
-import { isProductionMode } from "@/core/mode";
-import { skillCoverageScore } from "@/core/match/score";
-import { compositeScore } from "@/core/match/composite";
+import { prisma } from "@devnolife/karirku-core/db";
+import { isProductionMode } from "@devnolife/karirku-core/mode";
+import { skillCoverageScore } from "@devnolife/karirku-core/match/score";
+import { compositeScore } from "@devnolife/karirku-core/match/composite";
 import {
   listingFreshnessScore,
   preferenceFitScore,
   recommendationDisplayVersion,
   scoreRecommendationV2,
-} from "@/core/match/v2";
+} from "@devnolife/karirku-core/match/v2";
 import type { JobView } from "@/lib/view-models";
 import { loadUserContext } from "./context";
 import { getAppliedJobIds } from "./applications";
@@ -24,14 +24,14 @@ import {
 } from "./readiness";
 import type { UserReadinessSignals } from "./readiness";
 import type { UserContext } from "./context";
-import type { SkillMatchResult } from "@/core/match/score";
-import { classifyJobRegion, regionRank, parseLocation, type JobRegion } from "@/core/location";
-import { describeJobSource } from "@/core/source";
+import type { SkillMatchResult } from "@devnolife/karirku-core/match/score";
+import { classifyJobRegion, regionRank, parseLocation, type JobRegion } from "@devnolife/karirku-core/location";
+import { describeJobSource } from "@devnolife/karirku-core/source";
 import { logShadowImpressions } from "@/server/services/recommendation-shadow";
 import {
   normalizeRole,
   percentile,
-} from "@/core/workers/market-intel-helpers";
+} from "@devnolife/karirku-core/workers/market-intel-helpers";
 
 /**
  * Kemiripan semantik (pgvector) antara embedding profil user dan tiap lowongan.

@@ -16,7 +16,7 @@ import {
   type ExtractedJob,
   type ImportMode,
   type ImportOrigin,
-} from "@/core/apply-assistant/types";
+} from "@devnolife/karirku-core/apply-assistant/types";
 
 type Step = "input" | "review" | "draft";
 

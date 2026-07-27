@@ -3,8 +3,8 @@
  * (missing) dari skill-gap user. Fallback: course gratis/populer.
  */
 
-import { prisma } from "@/core/db";
-import { isProductionMode } from "@/core/mode";
+import { prisma } from "@devnolife/karirku-core/db";
+import { isProductionMode } from "@devnolife/karirku-core/mode";
 import type { CourseView } from "@/lib/view-models";
 import { getSkillGap } from "./skills";
 

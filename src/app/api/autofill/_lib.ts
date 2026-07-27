@@ -8,13 +8,13 @@
  */
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/core/db";
+import { prisma } from "@devnolife/karirku-core/db";
 import {
   bearerFromRequest,
   hashToken,
   tokenRecordIsActive,
   verifyToken,
-} from "@/core/autofill/token";
+} from "@devnolife/karirku-core/autofill/token";
 
 export const CORS_HEADERS: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",

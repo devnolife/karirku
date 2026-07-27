@@ -5,7 +5,7 @@ import { getJobMatches, getRoleMarket } from "@/server/queries/jobs";
 import { PageHeader, JobRow, MarketChart } from "../_dash/parts";
 import { Empty } from "@/components/ui/empty";
 import { JobSearchForm } from "@/components/JobSearchForm";
-import type { JobRegion } from "@/core/location";
+import type { JobRegion } from "@devnolife/karirku-core/location";
 
 const REGION_TABS: { key: string; label: string; region?: JobRegion }[] = [
   { key: "all", label: "Semua" },

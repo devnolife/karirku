@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
-# Karir.ai — one-shot dev setup
+# Karir.ai — one-shot dev setup for the web app.
+#
+# Infrastructure (Postgres, Redis, MinIO, Ollama), the Prisma schema and the
+# BullMQ workers all live in the engine repo, devnolife/karirku-core. This
+# script sets up the web app and delegates the rest to that repo, which it
+# expects to be checked out as a sibling directory.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
+WEB_DIR="$PWD"
+CORE_DIR="${KARIRKU_CORE_DIR:-$WEB_DIR/../karirku-core}"
 
 echo "🚀 Karir.ai dev setup"
 echo
@@ -19,8 +26,15 @@ if [ ! -f .env.local ]; then
   fi
 fi
 
-echo "🐳 Starting docker services..."
-docker compose up -d
+if [ ! -d "$CORE_DIR" ]; then
+  echo "❌ Engine repo not found at $CORE_DIR"
+  echo "   git clone https://github.com/devnolife/karirku-core.git $CORE_DIR"
+  echo "   …or set KARIRKU_CORE_DIR to point at your checkout."
+  exit 1
+fi
+
+echo "🐳 Starting docker services (from $CORE_DIR)..."
+(cd "$CORE_DIR" && docker compose up -d)
 
 echo "⏳ Waiting for Postgres..."
 for i in {1..30}; do
@@ -30,20 +44,23 @@ for i in {1..30}; do
   sleep 1
 done
 
-echo "📦 Installing dependencies..."
+echo "🔧 Preparing the engine (migrations, seed, Prisma client, build)..."
+(
+  cd "$CORE_DIR"
+  pnpm install
+  pnpm db:deploy || pnpm db:migrate --name init
+  pnpm db:seed
+  pnpm build
+)
+
+echo "📦 Installing web dependencies..."
 pnpm install
 
-echo "🔧 Running Prisma migrations..."
-pnpm prisma migrate deploy || pnpm prisma migrate dev --name init
-
-echo "🌱 Seeding skill taxonomy..."
-pnpm db:seed
-
 echo "🤖 Pulling Ollama models (ini bisa ~5 menit pertama kali)..."
-./scripts/pull-models.sh
+(cd "$CORE_DIR" && ./scripts/pull-models.sh)
 
 echo
 echo "✅ Setup selesai!"
-echo "   pnpm dev      → jalankan Next.js"
-echo "   pnpm worker   → jalankan BullMQ workers (terminal terpisah)"
-echo "   pnpm ai:smoke → test koneksi AI"
+echo "   pnpm dev                       → jalankan Next.js (repo ini)"
+echo "   (cd $CORE_DIR && pnpm worker)  → jalankan BullMQ workers"
+echo "   (cd $CORE_DIR && pnpm ai:smoke)→ test koneksi AI"

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { GUIDES } from "@/core/content/guides";
+import { GUIDES } from "@devnolife/karirku-core/content/guides";
 
 export function generateStaticParams() {
   return GUIDES.map((g) => ({ slug: g.slug }));

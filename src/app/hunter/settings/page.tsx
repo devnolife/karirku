@@ -1,4 +1,4 @@
-import { hunterDb } from "@/core/hunter";
+import { hunterDb } from "@devnolife/karirku-core/hunter";
 import { SettingsForm } from "./settings-form";
 
 export const dynamic = "force-dynamic";

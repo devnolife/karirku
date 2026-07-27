@@ -2,7 +2,7 @@ import { requireUser } from "@/lib/auth";
 import { getRoadmap } from "@/server/queries/roadmap";
 import { hasAnyPath } from "@/server/services/learning-path";
 import { getActiveGoal } from "@/server/queries/goal";
-import { roadmapShUrl } from "@/core/content/roadmap-reference";
+import { roadmapShUrl } from "@devnolife/karirku-core/content/roadmap-reference";
 import { PageHeader, MilestoneRow } from "../_dash/parts";
 import { Empty } from "@/components/ui/empty";
 import { RegenerateRoadmapButton } from "@/components/RegenerateRoadmapButton";

@@ -1,17 +1,17 @@
 "use server";
 
 import { requireUser } from "@/lib/auth";
-import { prisma } from "@/core/db";
+import { prisma } from "@devnolife/karirku-core/db";
 import { revalidatePath } from "next/cache";
-import { cleanRichText } from "@/core/html";
-import { hostFromUrl } from "@/core/source";
+import { cleanRichText } from "@devnolife/karirku-core/html";
+import { hostFromUrl } from "@devnolife/karirku-core/source";
 import { getProfile } from "@/server/queries/profile";
 import {
   extractJobFromText,
   extractJobFromImage,
   draftApplicationMessage,
-} from "@/core/ai/apply-assistant";
-import type { JobPostingExtraction } from "@/core/ai/schemas";
+} from "@devnolife/karirku-core/ai/apply-assistant";
+import type { JobPostingExtraction } from "@devnolife/karirku-core/ai/schemas";
 import type {
   AnalyzeResult,
   ApplyChannel,
@@ -20,7 +20,7 @@ import type {
   ExtractedJob,
   ImportMode,
   SaveResult,
-} from "@/core/apply-assistant/types";
+} from "@devnolife/karirku-core/apply-assistant/types";
 
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 

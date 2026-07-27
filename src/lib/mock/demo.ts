@@ -7,7 +7,7 @@
  */
 
 import type { SessionUser } from "@/lib/auth";
-import type { UserRole } from "@/core/roles";
+import type { UserRole } from "@devnolife/karirku-core/roles";
 import type {
   CourseView,
   JobView,

@@ -4,10 +4,10 @@
  */
 
 import { z } from "zod";
-import { prisma } from "@/core/db";
-import { mapForm } from "@/core/autofill/engine";
-import { getSavedAnswers } from "@/core/autofill/answers";
-import { getProfileData } from "@/core/autofill/profile";
+import { prisma } from "@devnolife/karirku-core/db";
+import { mapForm } from "@devnolife/karirku-core/autofill/engine";
+import { getSavedAnswers } from "@devnolife/karirku-core/autofill/answers";
+import { getProfileData } from "@devnolife/karirku-core/autofill/profile";
 import { corsJson, corsPreflight, unauthorized, userFromRequest } from "../_lib";
 
 const FieldSchema = z.object({

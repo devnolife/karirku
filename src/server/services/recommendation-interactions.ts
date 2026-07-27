@@ -1,4 +1,4 @@
-import { prisma } from "@/core/db";
+import { prisma } from "@devnolife/karirku-core/db";
 
 export type RecommendationInteraction =
   | "open"
