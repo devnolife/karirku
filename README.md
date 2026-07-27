@@ -345,6 +345,61 @@ Urutan rilis yang aman saat schema berubah:
 Build web butuh token registry dengan `read:packages` (`NODE_AUTH_TOKEN` /
 `npm config set //npm.pkg.github.com/:_authToken`).
 
+## Memisahkan web dan engine ke VM berbeda
+
+Bisa, dan hampir semuanya cuma soal env var — karena semua yang dipakai web
+dari core adalah klien jaringan: Prisma bicara TCP ke Postgres, BullMQ ke
+Redis, modul AI lewat HTTP ke Ollama, upload lewat HTTP ke S3/MinIO. Sisanya
+(`match/*`, `roles`, `mode`, `location`, `content/*`) logika murni tanpa I/O
+yang ikut ter-bundle saat build.
+
+### Env per VM
+
+| Variabel | VM web | VM engine | Catatan |
+| --- | --- | --- | --- |
+| `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `GITHUB_CLIENT_*` | ✅ | — | auth hanya urusan web |
+| `DATABASE_URL` | ✅ | ✅ | arahkan ke host Postgres, bukan `localhost` |
+| `REDIS_URL` | ✅ | ✅ | web ikut enqueue job |
+| `OLLAMA_BASE_URL`, `OLLAMA_API_KEY`, `AI_MODEL_*` | ✅ | ✅ | web memanggil AI langsung di beberapa route |
+| `S3_*` | ✅ | ✅ | penyimpanan berkas |
+| `OAUTH_TOKEN_ENCRYPTION_KEY`, `AUTOFILL_TOKEN_SECRET` | ✅ | ✅ | **nilainya wajib identik di kedua VM** |
+| `GOOGLE_CLIENT_*` | ✅ | ✅ | OAuth Gmail |
+| `TESSERACT_BIN`, `FIRECRAWL_SERVICE_URL` | — | ✅ | OCR & scraping cuma jalan di engine |
+| `HUNTER_*` | — | ✅ | lihat batasan di bawah |
+
+Jebakan paling gampang terlewat: `OAUTH_TOKEN_ENCRYPTION_KEY` dan
+`AUTOFILL_TOKEN_SECRET` harus **sama persis** di kedua VM. Kalau beda, token
+yang dienkripsi satu sisi tidak bisa didekripsi sisi lain, dan gejalanya baru
+muncul saat runtime.
+
+Pastikan juga Postgres/Redis mendengarkan di alamat yang bisa dijangkau VM web
+(bukan `127.0.0.1`) dan dibatasi lewat firewall/VPC, bukan dibuka ke internet.
+
+### Satu batasan: Hunter
+
+Hunter tidak bisa dipisah, karena web memakainya secara lokal:
+
+- `src/app/api/hunter/actions/route.ts` memanggil `spawnHunter()` — men-spawn
+  proses Node di mesin yang sama.
+- 10 file membaca `hunterDb()`, yaitu berkas **SQLite lokal** (`HUNTER_DB`).
+
+Jadi kalau web dipindah ke VM sendiri, halaman `/hunter/*` akan gagal saat
+runtime. Kabar baiknya, ketergantungan ini **terisolasi penuh** di
+`src/app/hunter/**` dan `src/app/api/hunter/**` — tidak ada layout, nav, atau
+komponen global yang menyentuhnya. Pilihannya:
+
+1. **Biarkan Hunter di VM engine** dan jangan layani rute `/hunter/*` dari VM
+   web. Karena terisolasi, ini tidak butuh perubahan kode sama sekali.
+2. **Proxy lewat control API core** — `karirku-core` sudah menyediakan
+   `/api/hunter/status`, `/api/hunter/runs`, dan `/api/hunter/actions`
+   (lihat `CORE_URL` + `CORE_API_KEY` di bawah). Route Hunter di sini perlu
+   diubah memanggil endpoint itu, dan core perlu tambahan endpoint untuk
+   settings/applications/accounts/jobs.
+
+Catatan kecil: `isOcrAvailable()` di halaman apply-assistant akan mengembalikan
+`false` di VM web karena tesseract tidak terpasang di sana — hanya memengaruhi
+tampilan, tidak menggagalkan apa pun.
+
 ## Mengendalikan engine dari jarak jauh
 
 Web app memakai core secara **in-process**, jadi kalau web dan engine ada di
