@@ -340,6 +340,31 @@ Urutan rilis yang aman saat schema berubah:
 Build web butuh token registry dengan `read:packages` (`NODE_AUTH_TOKEN` /
 `npm config set //npm.pkg.github.com/:_authToken`).
 
+## Mengendalikan engine dari jarak jauh
+
+Web app memakai core secara **in-process**, jadi kalau web dan engine ada di
+mesin yang sama tidak perlu apa-apa lagi. Untuk mengoperasikan engine dari luar
+mesin itu — pause queue, memicu scrape, menjalankan Hunter — core punya HTTP
+control API sendiri:
+
+```bash
+# di mesin engine (repo karirku-core)
+pnpm serve --public    # http://<ip>:4310
+pnpm serve --tunnel    # https://<sub>.trycloudflare.com, tanpa buka port
+```
+
+Lalu dari mana pun:
+
+```bash
+export CORE_URL=http://<ip>:4310
+export CORE_API_KEY=<kunci yang dicetak serve.sh>
+cd ../karirku-core && pnpm ctl status
+```
+
+Semua endpoint kecuali `/health` butuh `Authorization: Bearer <key>`, dan
+server **menolak start** kalau di-bind ke luar loopback tanpa `CORE_API_KEYS`.
+Daftar endpoint lengkap ada di README `karirku-core`.
+
 ## Lisensi
 
 Private — internal Karir.ai.
