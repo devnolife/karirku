@@ -27,6 +27,49 @@ devnolife/karirku  (Next.js app)  ──depends on──▶  @devnolife/karirku-
 | Control API | `src/server/` | HTTP surface for driving the engine remotely (`pnpm serve`) |
 | Hunter | `hunter/` + `src/hunter.ts` | CommonJS job-automation engine, spawned as a child process |
 
+## Why the database lives here, not in the web app
+
+A reasonable question, especially next to guru-pintar, where the layout is the
+opposite: Prisma sits in `saas-gurupintar/`, and the Go `core-llm` service has
+no database code at all.
+
+The difference is what the two engines *are*:
+
+| | guru-pintar `core-llm` | `karirku-core` |
+| --- | --- | --- |
+| Shape | text in → text out | data pipeline |
+| Owns data? | no — nothing to persist | yes — it *produces* the job corpus |
+
+This package scrapes job postings, embeds them into pgvector, enriches them and
+aggregates market statistics. Six tables — `Job`, `JobSource`, `CompanyProfile`,
+`SkillTaxonomy`, `Course`, `RoleMarketStat` — are written by the engine and only
+read by the web app. Schema ownership follows the writer, so they belong here,
+and once they are here the migrations have to be here too: Prisma expects a
+single owner, and splitting the schema across two repos means two generated
+clients drifting out of sync.
+
+Moving everything to the web app would also force the scraper, the BullMQ
+workers and Hunter to move with it, since they cannot function without the
+database. Those are long-running Node processes; putting them in a Next.js repo
+is exactly the split this project moved *away* from.
+
+### What the engine actually touches
+
+It is still worth keeping the blast radius small, because `pnpm serve` can put
+this package on a public network:
+
+- **Owns** the six engine tables above.
+- **Reads** `Profile` and `UserSkill` for matching and embeddings, and
+  `Application` for Hunter — genuinely required, no way around it.
+- **Never touches** `Account`, `Session`, `VerificationToken` or `OAuthState`.
+  Credentials and auth state are the web app's business alone.
+
+The control API reflects that: no endpoint returns profile content, `/api/hunter/runs`
+selects an explicit column list rather than `SELECT *`, and the embed endpoint
+takes an opaque row id rather than any text. If you ever need to harden this
+further, the next step is a dedicated Postgres role for the engine with no grants
+on the auth tables — not a repo reshuffle.
+
 ## Install
 
 The package is published to GitHub Packages, so consumers need a registry
