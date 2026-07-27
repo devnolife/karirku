@@ -31,3 +31,6 @@ pnpm-debug.log*
 *.pem
 .idea
 .vscode
+
+# pack artifacts
+*.tgz

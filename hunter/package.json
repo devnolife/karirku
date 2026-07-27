@@ -1,0 +1,4 @@
+{
+  "//": "The hunter engine is executable CommonJS so it can run directly with `node hunter/run.js`, with no build step. The parent package is \"type\": \"module\", so this file scopes the whole subtree back to CommonJS.",
+  "type": "commonjs"
+}
