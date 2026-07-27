@@ -24,7 +24,12 @@ devnolife/karirku  ──depends on──▶  @devnolife/karirku-core
 Konsekuensi praktis:
 
 - **Database dimiliki core.** `prisma migrate`, `db:seed`, dan `prisma studio`
-  dijalankan dari repo core, bukan dari sini.
+  dijalankan dari repo core, bukan dari sini. Alasannya: engine yang
+  *menghasilkan* data lowongan (scraper, embedding, market stats), jadi
+  kepemilikan schema mengikuti penulisnya — penjelasan lengkap ada di bagian
+  "Why the database lives here" pada README core. Ini berbeda dari guru-pintar,
+  di mana Prisma ada di frontend karena service Go-nya murni teks-masuk-teks-keluar
+  dan tidak menyimpan apa pun.
 - **Worker dijalankan dari core** (`pnpm worker`), bukan dari sini.
 - Repo ini mengimpor engine lewat subpath publik saja, mis.
   `@devnolife/karirku-core/db`. ESLint memblokir impor ke `dist/`, `src/`, atau
