@@ -1,0 +1,31 @@
+KE      : hr.recruitment@gsicorp.co.id
+CC      : zaha@gsicorp.co.id
+SUBJEK  : Lamaran AI Engineer - Andi Agung Dwi Arya - Portofolio GitHub
+
+LAMPIRAN : tidak wajib — HR hanya minta GitHub.
+           (Opsional: boleh lampirkan CV & FDP dari folder ini kalau mau lebih lengkap;
+            jika dilampirkan, tambahkan kembali kalimat: "CV terbaru dan Formulir Data
+            Pelamar (FDP) turut saya lampirkan kembali pada email ini.")
+
+------------------------------------------------------------------
+ISI EMAIL:
+------------------------------------------------------------------
+Yth. Tim HR Rekrutmen PT Gunung Samudera Internasional,
+
+Terima kasih atas informasinya. Sesuai permintaan, berikut saya lampirkan tautan GitHub saya beserta berkas lamaran untuk posisi AI Engineer:
+
+GitHub: https://github.com/devnolife (205+ repositori original)
+
+Beberapa portofolio yang relevan:
+1. fokusngajar.id (LIVE) - platform edukasi berbasis AI; saya membangun backend LLM/RAG-nya dengan Go (ingestion PDF, chunking, embedding, retrieval, rate limiting).
+2. Saku Sultan - aplikasi e-wallet React Native/Expo, live di App Store & Play Store:
+   - Play Store: https://play.google.com/store/apps/details?id=com.saku_sultan
+   - App Store: https://apps.apple.com/id/app/saku-sultan/id6444094885
+3. SINTEKMu (LIVE) - dashboard enterprise Fakultas Teknik Unismuh: https://simtekmu.teknik.unismuh.ac.id
+4. Backend AI/FastAPI: github.com/devnolife/aethra, github.com/devnolife/amertasign-llm
+
+Saya berdomisili di Makassar dan siap mengikuti tahapan rekrutmen berikutnya.
+
+Hormat saya,
+Andi Agung Dwi Arya
+GitHub: https://github.com/devnolife

@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORBIT // Python Launchpad — Taiwan Mobile Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
+<style>
+  :root{
+    --ink:#070a10;--panel:#0e131c;--panel-2:#131a26;--line:#1e2735;
+    --txt:#d6deea;--dim:#7a8699;--amber:#ffb000;--amber-soft:#ffce5c;
+    --cyan:#39d4c8;--green:#5cd67a;--red:#ff5c6c;--violet:#9b8cff;--blue:#5aa9ff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(255,176,0,.08), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(57,212,200,.07), transparent 55%),
+      var(--ink);
+    color:var(--txt);font-family:'Sora',sans-serif;line-height:1.55;min-height:100vh;overflow-x:hidden
+  }
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:46px 46px;opacity:.16;mask-image:radial-gradient(circle at 50% 25%,#000,transparent 78%)}
+  .wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:0 22px 120px}
+  ::selection{background:var(--amber);color:#1a1200}
+
+  header{padding:34px 0 10px;display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
+  .brand .tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.32em;color:var(--amber);text-transform:uppercase}
+  .brand h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(26px,4vw,42px);line-height:1;letter-spacing:-.02em;margin-top:2px}
+  .brand h1 span{color:var(--amber)}
+  .brand .sub{color:var(--dim);font-size:13px;font-family:'JetBrains Mono',monospace;margin-top:6px}
+  .count{background:linear-gradient(160deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:14px 18px;min-width:240px;box-shadow:0 20px 50px -30px rgba(255,176,0,.4)}
+  .count .lbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
+  .count .clock{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:28px;color:var(--amber-soft);margin-top:2px}
+  .count .when{font-size:11.5px;color:var(--dim);margin-top:3px}
+
+  .topbar{display:flex;align-items:center;gap:14px;margin:22px 0 8px}
+  .topbar .track{flex:1;height:8px;background:var(--panel-2);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+  .topbar .fill{height:100%;width:0;background:linear-gradient(90deg,var(--amber),var(--amber-soft));border-radius:99px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+  .topbar .pct{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--amber);font-weight:700;min-width:42px;text-align:right}
+
+  nav.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0 18px;position:sticky;top:0;background:linear-gradient(var(--ink),rgba(7,10,16,.82));backdrop-filter:blur(10px);padding:10px 0;z-index:30;border-bottom:1px solid var(--line)}
+  .tab{font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:.03em;background:var(--panel);border:1px solid var(--line);color:var(--dim);padding:9px 14px;border-radius:9px;cursor:pointer;transition:.18s;white-space:nowrap}
+  .tab:hover{color:var(--txt);border-color:#33405a}
+  .tab.active{background:var(--amber);color:#1a1200;border-color:var(--amber);font-weight:700}
+
+  section.view{display:none;animation:rise .45s cubic-bezier(.2,.8,.2,1)}
+  section.view.active{display:block}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  h2.title{font-family:'Syne',sans-serif;font-weight:800;font-size:24px;letter-spacing:-.01em;margin:6px 0 4px;display:flex;align-items:center;gap:10px}
+  h2.title .dot{width:9px;height:9px;border-radius:50%;background:var(--amber);box-shadow:0 0 14px var(--amber)}
+  .lede{color:var(--dim);font-size:14px;margin-bottom:20px;max-width:74ch}
+
+  .days{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+  .day{background:linear-gradient(165deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:20px;position:relative;overflow:hidden;transition:.2s}
+  .day::before{content:"";position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--amber),transparent)}
+  .day:hover{transform:translateY(-3px);border-color:#33405a}
+  .day .dnum{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--amber);text-transform:uppercase}
+  .day h3{font-family:'Syne',sans-serif;font-weight:700;font-size:19px;margin:4px 0 6px}
+  .day .date{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);margin-bottom:12px}
+  .day ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+  .day li{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;cursor:pointer;color:var(--txt);user-select:none}
+  .day li .box{flex-shrink:0;width:17px;height:17px;border:1.5px solid #3a4660;border-radius:5px;margin-top:2px;display:grid;place-items:center;font-size:11px;transition:.15s}
+  .day li.done .box{background:var(--amber);border-color:var(--amber);color:#1a1200}
+  .day li.done span{color:var(--dim);text-decoration:line-through}
+  .day .focus{margin-top:14px;font-size:11.5px;font-family:'JetBrains Mono',monospace;color:var(--cyan);background:rgba(57,212,200,.08);border:1px solid rgba(57,212,200,.2);padding:7px 10px;border-radius:8px}
+
+  .filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+  .chip{font-family:'JetBrains Mono',monospace;font-size:11.5px;background:var(--panel);border:1px solid var(--line);color:var(--dim);padding:7px 12px;border-radius:8px;cursor:pointer;transition:.15s;text-transform:capitalize}
+  .chip:hover{color:var(--txt);border-color:#33405a}
+  .chip.on{border-color:var(--amber);color:var(--amber);background:rgba(255,176,0,.08)}
+
+  .pill{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--panel);border:1px solid var(--line);padding:7px 12px;border-radius:8px;color:var(--dim)}
+  .pill b{color:var(--amber)}
+  .btn{font-family:'JetBrains Mono',monospace;font-size:12.5px;cursor:pointer;background:var(--panel-2);border:1px solid var(--line);color:var(--txt);padding:9px 15px;border-radius:9px;transition:.18s}
+  .btn:hover{border-color:var(--amber);color:var(--amber)}
+  .btn.primary{background:var(--amber);color:#1a1200;border-color:var(--amber);font-weight:700}
+  .btn.primary:hover{background:var(--amber-soft)}
+  .quizbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+
+  .qcard{background:linear-gradient(165deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:16px}
+  .qmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim)}
+  .qmeta .topic{color:var(--violet);letter-spacing:.1em;text-transform:uppercase}
+  .qtext{font-size:15.5px;margin-bottom:14px;font-weight:500}
+  pre.code{background:#060910;border:1px solid var(--line);border-radius:10px;padding:15px 16px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;color:#cdd7e6;margin-bottom:16px;white-space:pre}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{display:flex;gap:11px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer;transition:.15s;font-family:'JetBrains Mono',monospace;font-size:13.5px}
+  .opt:hover{border-color:#3a4660}
+  .opt .key{width:24px;height:24px;border-radius:6px;background:var(--panel-2);border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:700;flex-shrink:0}
+  .opt.correct{border-color:var(--green);background:rgba(92,214,122,.1)}
+  .opt.correct .key{background:var(--green);color:#04120a;border-color:var(--green)}
+  .opt.wrong{border-color:var(--red);background:rgba(255,92,108,.1)}
+  .opt.wrong .key{background:var(--red);color:#1a0408;border-color:var(--red)}
+  .opt.disabled{pointer-events:none;opacity:.9}
+  .explain{margin-top:16px;border-left:3px solid var(--amber);background:rgba(255,176,0,.06);padding:13px 16px;border-radius:0 10px 10px 0;font-size:13.5px;display:none}
+  .explain.show{display:block;animation:rise .3s}
+  .explain b{color:var(--amber-soft)}
+  .kbdhint{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);margin-left:auto}
+  .qnav{display:flex;justify-content:space-between;gap:10px;margin-top:8px}
+  .result{text-align:center;padding:46px 20px}
+  .result .big{font-family:'Syne',sans-serif;font-weight:800;font-size:60px;color:var(--amber)}
+  .result p{color:var(--dim);margin:8px 0 18px}
+
+  .chal{background:linear-gradient(165deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:16px}
+  .chal .chead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+  .chal h3{font-family:'Syne',sans-serif;font-weight:700;font-size:18px}
+  .badge{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:4px 9px;border-radius:6px;text-transform:uppercase;letter-spacing:.08em}
+  .badge.easy{background:rgba(92,214,122,.14);color:var(--green);border:1px solid rgba(92,214,122,.3)}
+  .badge.med{background:rgba(255,176,0,.14);color:var(--amber);border:1px solid rgba(255,176,0,.3)}
+  .badge.hard{background:rgba(255,92,108,.14);color:var(--red);border:1px solid rgba(255,92,108,.3)}
+  .chal .ptopic{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--violet);text-transform:uppercase;letter-spacing:.08em}
+  .chal .prompt{font-size:14px;margin:8px 0}
+  .chal .ex{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--dim);background:#060910;border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:8px 0;white-space:pre-wrap}
+  .reveal-body{display:none;margin-top:12px}
+  .reveal-body.show{display:block;animation:rise .3s}
+  .reveal-body .hint{font-size:13px;color:var(--cyan);background:rgba(57,212,200,.07);border:1px solid rgba(57,212,200,.2);padding:10px 13px;border-radius:8px;margin-bottom:10px}
+
+  .lesson{background:linear-gradient(165deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:14px}
+  .lesson h3{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;margin-bottom:6px;display:flex;align-items:center;gap:9px}
+  .lesson .tp{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--violet);text-transform:uppercase;letter-spacing:.1em}
+  .lesson p{font-size:14px;color:var(--txt);margin:8px 0}
+  .lesson .tip{font-size:12.5px;color:var(--amber-soft);background:rgba(255,176,0,.06);border-left:3px solid var(--amber);padding:9px 13px;border-radius:0 8px 8px 0;margin-top:10px}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+  .info{background:linear-gradient(165deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:20px}
+  .info h3{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;margin-bottom:12px;display:flex;align-items:center;gap:9px}
+  .info ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .info li{font-size:13.5px;display:flex;gap:9px;align-items:flex-start}
+  .info li::before{content:"▸";color:var(--amber);flex-shrink:0}
+  .info li.no::before{content:"✕";color:var(--red)}
+  .info li.yes::before{content:"✓";color:var(--green)}
+  .cheat .row{display:flex;justify-content:space-between;gap:14px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13px}
+  .cheat .row:last-child{border-bottom:none}
+  .cheat code{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--amber-soft);background:#060910;padding:2px 7px;border-radius:5px;border:1px solid var(--line)}
+  .cheat .desc{color:var(--dim);text-align:right}
+
+  /* flashcards */
+  .flashwrap{max-width:600px;margin:0 auto}
+  .flashcard{perspective:1400px;height:280px;margin-bottom:18px;cursor:pointer}
+  .flashinner{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d}
+  .flashcard.flip .flashinner{transform:rotateY(180deg)}
+  .flashface{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;border:1px solid var(--line);padding:28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:linear-gradient(165deg,var(--panel-2),var(--panel))}
+  .flashface .lbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);position:absolute;top:16px;left:20px}
+  .flashface .q{font-family:'Syne',sans-serif;font-weight:700;font-size:21px;line-height:1.3}
+  .flashback{transform:rotateY(180deg)}
+  .flashback .a{font-size:15px;color:var(--txt)}
+  .flashback{border-color:rgba(255,176,0,.35)}
+  .flashtap{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);position:absolute;bottom:16px}
+  .flashctrl{display:flex;justify-content:space-between;align-items:center;gap:12px}
+
+  /* simulator */
+  .sim{background:linear-gradient(165deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:18px;padding:30px;text-align:center;max-width:560px;margin:0 auto}
+  .sim .timer{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:72px;color:var(--amber-soft);line-height:1;margin:10px 0}
+  .sim .timer.warn{color:var(--red);animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.5}}
+  .sim .mode{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+  .sim .ctrls{display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap}
+  .sim .presets{display:flex;gap:8px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+
+  /* stats */
+  .statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:22px}
+  .stat{background:linear-gradient(165deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:18px}
+  .stat .v{font-family:'Syne',sans-serif;font-weight:800;font-size:34px;color:var(--amber)}
+  .stat .k{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+  .tbars{background:linear-gradient(165deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:22px}
+  .tbar{margin-bottom:13px}
+  .tbar:last-child{margin-bottom:0}
+  .tbar .tl{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px;font-family:'JetBrains Mono',monospace}
+  .tbar .tl .tn{color:var(--txt);text-transform:capitalize}
+  .tbar .tl .tv{color:var(--dim)}
+  .tbar .tt{height:9px;background:var(--panel);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+  .tbar .tf{height:100%;border-radius:99px;transition:width .6s}
+
+  footer{margin-top:40px;text-align:center;color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:11.5px;border-top:1px solid var(--line);padding-top:22px}
+  .reset{background:none;border:none;color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;text-decoration:underline}
+  .reset:hover{color:var(--red)}
+  .kbd{font-family:'JetBrains Mono',monospace;font-size:11px;background:#060910;border:1px solid var(--line);padding:2px 7px;border-radius:5px;color:var(--amber-soft)}
+  /* live editor */
+  .editor{width:100%;min-height:160px;background:#05080e;border:1px solid var(--line);border-radius:10px;padding:14px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;color:#cdd7e6;resize:vertical;tab-size:4;margin:10px 0;white-space:pre}
+  .editor:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px rgba(255,176,0,.08)}
+  .crun{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+  .console{font-family:'JetBrains Mono',monospace;font-size:12.5px;white-space:pre-wrap;background:#05080e;border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:#9fb0c4;display:none;line-height:1.55}
+  .console.show{display:block;animation:rise .25s}
+  .console.pass{border-color:var(--green)}
+  .console.fail{border-color:var(--red)}
+  .console .ok{color:var(--green)}
+  .console .bad{color:var(--red)}
+  .pyhint{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);margin-top:6px}
+  .pystatus{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--amber-soft)}
+  .runspin{display:inline-block;width:12px;height:12px;border:2px solid var(--line);border-top-color:var(--amber);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:6px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="tag">ORBIT · Coding Test Readiness</div>
+      <h1>PYTHON <span>LAUNCHPAD</span></h1>
+      <div class="sub">Taiwan Mobile Indonesia // Andi Agung — UID 696C0228</div>
+    </div>
+    <div class="count">
+      <div class="lbl">T-minus to test</div>
+      <div class="clock" id="clock">--:--:--:--</div>
+      <div class="when">Kamis, 11 Jun 2026 · 13:00 WIB</div>
+    </div>
+  </header>
+
+  <div class="topbar">
+    <div class="track"><div class="fill" id="progFill"></div></div>
+    <div class="pct" id="progPct">0%</div>
+  </div>
+
+  <nav class="tabs">
+    <button class="tab active" data-v="brief">⌖ Briefing</button>
+    <button class="tab" data-v="plan">▤ Rencana 6 Hari</button>
+    <button class="tab" data-v="learn">▦ Materi</button>
+    <button class="tab" data-v="cheat">≣ Cheat Sheet</button>
+    <button class="tab" data-v="quiz">◈ Kuis Output</button>
+    <button class="tab" data-v="flash">⚿ Flashcards</button>
+    <button class="tab" data-v="coding">‹/› Coding</button>
+    <button class="tab" data-v="live">▶ Live Editor</button>
+    <button class="tab" data-v="sim">◷ Simulator</button>
+    <button class="tab" data-v="vibe">✦ Vibecoding</button>
+    <button class="tab" data-v="stats">◴ Statistik</button>
+  </nav>
+
+  <!-- BRIEFING -->
+  <section class="view active" id="brief">
+    <h2 class="title"><span class="dot"></span>Format Tes — Baca Dulu</h2>
+    <p class="lede">Total 75 menit, 2 sesi. Kamera & screen-share wajib aktif. Dual-monitor dilarang. Pakai Google Chrome, masuk sebagai Guest.</p>
+    <div class="grid2">
+      <div class="info"><h3><span>⌨️</span>Sesi 1 — Coding Test · 45 mnt</h3><ul>
+        <li><b>Bagian 1 — Kuis</b>: di Notion, <b>tanpa IDE</b>. Harus bisa prediksi output di kepala.</li>
+        <li><b>Bagian 2 — Coding</b>: boleh editor online (mis. jsfiddle).</li>
+        <li class="no">Tidak boleh cari jawaban di internet / baca dokumentasi.</li>
+        <li class="no">Tidak boleh pakai AI dalam bentuk apa pun.</li></ul></div>
+      <div class="info"><h3><span>✦</span>Sesi 2 — Vibecoding · 30 mnt</h3><ul>
+        <li class="yes">AI-assisted diperbolehkan (Claude, Cursor, Copilot).</li>
+        <li>Wajib <b>memahami & menjelaskan logika</b> kode.</li>
+        <li>Wajib <b>menguji (testing)</b> solusi — tunjukkan AI SDLC.</li>
+        <li>Dinilai: hasil + pemahaman + testing.</li></ul></div>
+      <div class="info"><h3><span>⚙️</span>Checklist Teknis (H-1)</h3><ul>
+        <li class="yes">Chrome ter-update, login Guest ke room M+.</li>
+        <li class="yes">Microphone, kamera, screen-share dites OK.</li>
+        <li class="yes">Matikan extension browser yang tidak perlu.</li>
+        <li class="yes">Internet stabil + backup tethering HP.</li>
+        <li class="yes">Masuk room 5–10 menit lebih awal.</li></ul></div>
+      <div class="info"><h3><span>🧠</span>Strategi Lolos</h3><ul>
+        <li>Latih <b>baca output di kepala</b> (tab Kuis) — ini sering bikin gugur.</li>
+        <li>Coding: tulis pseudo-code dulu, baru kode; cek edge case.</li>
+        <li>Vibecoding: minta AI tapi <b>review tiap baris</b> & siap ditanya "kenapa?".</li>
+        <li>Selalu <b>jelaskan sambil ngoding</b> (mereka lihat layar + dengar suara).</li></ul></div>
+    </div>
+  </section>
+
+  <!-- PLAN -->
+  <section class="view" id="plan">
+    <h2 class="title"><span class="dot"></span>Rencana Belajar 6 Hari</h2>
+    <p class="lede">Centang topik yang sudah dikuasai — progres tersimpan otomatis. Fokus: Python core + algoritma + latihan tanpa IDE.</p>
+    <div class="days" id="daysGrid"></div>
+  </section>
+
+  <!-- LEARN -->
+  <section class="view" id="learn">
+    <h2 class="title"><span class="dot"></span>Materi Inti Python</h2>
+    <p class="lede">Ringkasan konsep yang paling sering keluar di tes. Baca cepat, lalu uji diri di tab Kuis & Flashcards.</p>
+    <div id="learnHost"></div>
+  </section>
+
+  <!-- CHEAT -->
+  <section class="view" id="cheat">
+    <h2 class="title"><span class="dot"></span>Cheat Sheet Python</h2>
+    <p class="lede">Referensi cepat untuk dibaca H-1 (di tes nyata kamu TIDAK boleh buka ini — hafalkan polanya).</p>
+    <div class="grid2" id="cheatHost"></div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="view" id="quiz">
+    <h2 class="title"><span class="dot"></span>Kuis Prediksi Output</h2>
+    <p class="lede">Tebak output Python TANPA menjalankan — persis Bagian 1 (Notion, no IDE). Shortcut: tekan <span class="kbd">1-4</span> untuk jawab, <span class="kbd">→</span> lanjut.</p>
+    <div class="filters" id="quizFilters"></div>
+    <div class="quizbar">
+      <span class="pill">Soal <b id="qIdx">1</b>/<b id="qTotal">0</b></span>
+      <span class="pill">Benar <b id="qScore">0</b></span>
+      <button class="btn" id="qShuffle">⟲ Acak</button>
+      <button class="btn" id="qRestart">↺ Ulang</button>
+    </div>
+    <div id="quizHost"></div>
+  </section>
+
+  <!-- FLASH -->
+  <section class="view" id="flash">
+    <h2 class="title"><span class="dot"></span>Flashcards Konsep</h2>
+    <p class="lede">Klik kartu untuk membalik. Cocok untuk hafalan cepat istilah & jebakan Python.</p>
+    <div class="flashwrap">
+      <div class="flashcard" id="flashcard">
+        <div class="flashinner">
+          <div class="flashface"><div class="lbl">Pertanyaan</div><div class="q" id="flashQ"></div><div class="flashtap">klik untuk lihat jawaban</div></div>
+          <div class="flashface flashback"><div class="lbl">Jawaban</div><div class="a" id="flashA"></div><div class="flashtap">klik untuk balik</div></div>
+        </div>
+      </div>
+      <div class="flashctrl">
+        <button class="btn" id="flashPrev">← Prev</button>
+        <span class="pill">Kartu <b id="flashIdx">1</b>/<b id="flashTotal">0</b></span>
+        <button class="btn primary" id="flashNext">Next →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CODING -->
+  <section class="view" id="coding">
+    <h2 class="title"><span class="dot"></span>Latihan Coding (Bagian 2)</h2>
+    <p class="lede">Soal algoritma gaya tes. Tulis sendiri di editor online dulu, baru buka hint & solusi Python.</p>
+    <div class="filters" id="codingFilters"></div>
+    <div id="codingHost"></div>
+  </section>
+
+  <!-- LIVE EDITOR -->
+  <section class="view" id="live">
+    <h2 class="title"><span class="dot"></span>Live Python Editor</h2>
+    <p class="lede">Tulis & jalankan kode Python <b>langsung di browser</b> (ditenagai Pyodide). Saat pertama dijalankan, runtime Python diunduh sekali (~beberapa detik, butuh internet). Setelah itu instan. Latihan nyata sebelum tes!</p>
+    <div class="info" style="margin-bottom:14px">
+      <textarea class="editor" id="liveEditor" spellcheck="false" style="min-height:240px"># Tulis Python di sini, lalu klik Jalankan ▶
+def greet(name):
+    return f"Halo, {name}!"
+
+print(greet("Andi"))
+
+# coba juga loop & list
+nums = [4, 1, 7, 3]
+print("terurut:", sorted(nums))
+print("jumlah:", sum(nums))</textarea>
+      <div class="crun">
+        <button class="btn primary" id="liveRun">▶ Jalankan</button>
+        <button class="btn" id="liveClear">↺ Bersihkan Output</button>
+        <span class="pystatus" id="liveStatus"></span>
+      </div>
+      <div class="console" id="liveConsole"></div>
+      <div class="pyhint">Tip: gunakan <span class="kbd">print()</span> untuk menampilkan hasil · tekan <span class="kbd">Tab</span> untuk indentasi 4 spasi · <span class="kbd">Ctrl+Enter</span> untuk menjalankan.</div>
+    </div>
+  </section>
+
+  <!-- SIMULATOR -->
+  <section class="view" id="sim">
+    <h2 class="title"><span class="dot"></span>Simulator Timer Tes</h2>
+    <p class="lede">Latih dengan tekanan waktu nyata. Pilih durasi sesuai sesi lalu kerjakan soal dari tab Kuis/Coding.</p>
+    <div class="sim">
+      <div class="mode" id="simMode">CODING TEST</div>
+      <div class="timer" id="simTimer">45:00</div>
+      <div class="presets">
+        <button class="chip on" data-min="45">45m · Coding</button>
+        <button class="chip" data-min="30">30m · Vibecoding</button>
+        <button class="chip" data-min="10">10m · Sprint</button>
+        <button class="chip" data-min="5">5m · Quick</button>
+      </div>
+      <div class="ctrls">
+        <button class="btn primary" id="simStart">▶ Mulai</button>
+        <button class="btn" id="simPause">⏸ Jeda</button>
+        <button class="btn" id="simReset">↺ Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIBECODING -->
+  <section class="view" id="vibe">
+    <h2 class="title"><span class="dot"></span>Persiapan Vibecoding (Sesi 2)</h2>
+    <p class="lede">AI diperbolehkan — tapi yang dinilai adalah PEMAHAMAN & TESTING-mu. Latih alur ini sampai jadi refleks.</p>
+    <div class="grid2">
+      <div class="info"><h3><span>🔄</span>Workflow AI SDLC (ucapkan saat ngoding)</h3><ul>
+        <li><b>1. Clarify</b> — ulangi requirement & sebut asumsi.</li>
+        <li><b>2. Plan</b> — pecah jadi fungsi kecil; sebut input/output.</li>
+        <li><b>3. Prompt</b> — minta 1 fungsi spesifik, bukan "buatkan semua".</li>
+        <li><b>4. Review</b> — baca tiap baris, sesuaikan dengan spec.</li>
+        <li><b>5. Test</b> — test case: normal, edge, invalid.</li>
+        <li><b>6. Explain</b> — jelaskan Big-O & alasan pendekatan.</li></ul></div>
+      <div class="info"><h3><span>💬</span>Kalimat Penyelamat (saat ditanya)</h3><ul>
+        <li>"Fungsi ini O(n) karena saya iterasi list sekali pakai hashmap."</li>
+        <li>"Saya pilih dict untuk lookup O(1) dibanding list O(n)."</li>
+        <li>"Edge case: input kosong, duplikat, dan None."</li>
+        <li>"Verifikasi: 3 test — typical, boundary, invalid."</li>
+        <li>"Kalau scale besar, saya ganti ke generator agar hemat memori."</li></ul></div>
+      <div class="info"><h3><span>🧪</span>Template Test Cepat (Python)</h3>
+        <pre class="code">def solve(x):
+    return x * 2
+
+# test: normal / edge / invalid
+assert solve(3) == 6
+assert solve(0) == 0
+assert solve(-2) == -4
+print("semua test lulus ✓")</pre></div>
+      <div class="info"><h3><span>⚠️</span>Jebakan yang Harus Dihindari</h3><ul>
+        <li class="no">Copy-paste AI tanpa baca → ketahuan saat ditanya.</li>
+        <li class="no">Diam saat ngoding → mereka mau dengar reasoning.</li>
+        <li class="no">Lupa testing → nilai "testing" hilang.</li>
+        <li class="no">Over-engineering → kerjakan yang diminta, simpel & jalan dulu.</li></ul></div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="view" id="stats">
+    <h2 class="title"><span class="dot"></span>Statistik Latihan</h2>
+    <p class="lede">Pantau performa kuismu. Topik dengan akurasi rendah = prioritas belajar.</p>
+    <div class="statgrid" id="statCards"></div>
+    <div class="tbars" id="topicBars"></div>
+  </section>
+
+  <footer>
+    <div>PYTHON LAUNCHPAD · dibuat untuk persiapan tes Taiwan Mobile Indonesia · semoga lolos 🚀</div>
+    <div style="margin-top:8px"><button class="reset" id="hardReset">reset semua progres & statistik</button></div>
+  </footer>
+</div>
+
+<script>
+/* ===================== DATA ===================== */
+const DAYS=[
+ {d:"Hari 1",date:"Kamis, 5 Jun",focus:"Fokus: baca output di kepala",t:["Tipe data: int, float, str, bool, None","Operator: //, %, **, is vs ==","Truthiness & konversi tipe","Latihan: 12 soal Kuis (topik integer/boolean)"]},
+ {d:"Hari 2",date:"Jumat, 6 Jun",focus:"Fokus: string & list",t:["String slicing s[a:b:c] & method","List: append/insert/pop/slice/sort","Mutability: copy vs reference","Coding: Reverse Words, Two Sum, Palindrome"]},
+ {d:"Hari 3",date:"Sabtu, 7 Jun",focus:"Fokus: dict, set, comprehension",t:["dict: get/items/setdefault; counting","set: union/intersection, dedup","List/dict comprehension + kondisi","Coding: Anagram, First Unique, Group Anagrams"]},
+ {d:"Hari 4",date:"Minggu, 8 Jun",focus:"Fokus: fungsi & jebakan",t:["args/kwargs, default mutable trap","Closure, scope, lambda","Generator & yield","Latihan: 12 soal Kuis (function/generator)"]},
+ {d:"Hari 5",date:"Senin, 9 Jun",focus:"Fokus: algoritma inti",t:["Two-pointer & sliding window","Hashmap untuk O(n)","Recursion & dasar Big-O","Coding: Valid Parentheses, Merge Intervals, Binary Search"]},
+ {d:"Hari 6",date:"Selasa, 10 Jun",focus:"Fokus: simulasi penuh",t:["Simulator 45m: kuis+coding tanpa AI","Simulator 30m: vibecoding + jelaskan logika","Review semua jawaban salah (tab Statistik)","Cek teknis: Chrome, kamera, mic, screen-share"]},
+];
+
+const LESSONS=[
+ {tp:"strings",t:"String & Slicing",b:"String itu <b>immutable</b> — tiap operasi menghasilkan string baru. Slicing <code>s[start:stop:step]</code>: stop eksklusif, step bisa negatif untuk membalik.",code:'s = "PYTHON"\ns[1:4]    # "YTH"  (idx 1,2,3)\ns[::-1]   # "NOHTYP" (balik)\ns[-2:]    # "ON" (2 terakhir)\ns.upper().split("O")  # chaining',tip:"Reverse string paling cepat: s[::-1]. Hilangkan spasi berlebih: ' '.join(s.split())."},
+ {tp:"lists",t:"List & Mutability",b:"List <b>mutable</b>. <code>b = a</code> hanya menyalin <b>referensi</b> (objek sama). Untuk salinan nyata pakai <code>a.copy()</code> atau <code>a[:]</code>.",code:'a = [1,2,3]\nb = a; b.append(4)   # a juga [1,2,3,4]!\nc = a[:]; c.append(5) # a tidak berubah\na.sort()             # ubah di tempat\nsorted(a)            # kembalikan list baru',tip:"sort() mengubah list & return None. sorted() return list baru. Jangan tertukar!"},
+ {tp:"dict",t:"Dict & Counting",b:"Akses aman pakai <code>.get(key, default)</code> agar tidak KeyError. Pola hitung frekuensi sangat sering keluar.",code:'d = {"x":1}\nd.get("y", 0)        # 0, tidak error\n\n# counting pattern\ncnt = {}\nfor c in "aab":\n    cnt[c] = cnt.get(c,0)+1   # {a:2,b:1}\n\nfrom collections import Counter\nCounter("aab")       # cara singkat',tip:"Counter(s) & Counter(a)==Counter(b) = cara cepat cek anagram."},
+ {tp:"set",t:"Set",b:"Set = koleksi unik tanpa urutan. Bagus untuk dedup & cek keanggotaan O(1).",code:'{1,2,2,3}            # {1,2,3}\nset([1,1,2])         # buang duplikat\n{1,2,3} & {2,3,4}    # irisan {2,3}\n{1,2} | {2,3}        # gabungan {1,2,3}\n2 in {1,2,3}         # True (cepat)',tip:"len(set(list)) == len(list) → cek ada duplikat atau tidak."},
+ {tp:"comprehension",t:"Comprehension",b:"Cara ringkas membuat list/dict/set. Format: <code>[expr for x in iter if cond]</code>.",code:'[x*x for x in range(4)]        # [0,1,4,9]\n[x for x in range(6) if x%2==0]# [0,2,4]\n{x:x**2 for x in range(3)}     # {0:0,1:1,2:4}\n{c for c in "aab"}             # {a,b}',tip:"Comprehension lebih cepat & Pythonic daripada loop + append."},
+ {tp:"function",t:"Fungsi & Jebakan",b:"Default argument <b>mutable</b> (list/dict) dibuat SEKALI saat definisi → bisa 'mengingat' antar panggilan. Jebakan klasik di tes!",code:'def f(x, lst=[]):     # BAHAYA\n    lst.append(x); return lst\nf(1)  # [1]\nf(2)  # [1,2]  <-- bukan [2]!\n\ndef g(x, lst=None):   # BENAR\n    if lst is None: lst=[]\n    lst.append(x); return lst',tip:"Selalu pakai None sebagai default untuk argumen mutable."},
+ {tp:"generator",t:"Generator & yield",b:"Generator menghasilkan nilai satu per satu (lazy) → hemat memori untuk data besar. Pakai <code>yield</code>.",code:'def gen(n):\n    for i in range(n):\n        yield i*i\n\ng = gen(3)\nnext(g)   # 0\nlist(gen(3))  # [0,1,4]\n\n# generator expression\nsum(x*x for x in range(1000))',tip:"Untuk dataset besar, generator > list (tidak load semua ke memori)."},
+ {tp:"oop",t:"OOP Dasar",b:"Class punya <code>__init__</code> (constructor) & <code>self</code> (instance). Method bisa override.",code:'class Dog:\n    def __init__(self, name):\n        self.name = name\n    def speak(self):\n        return f"{self.name} woof"\n\nd = Dog("Rex")\nd.speak()   # "Rex woof"',tip:"f-string f\"{var}\" = cara cepat & terbaca untuk format string."},
+ {tp:"integer",t:"Angka & Float",b:"Float biner tidak presisi sempurna. <code>0.1+0.2 != 0.3</code>. Gunakan round() atau math.isclose().",code:'7 // 2     # 3 (floor div)\n7 % 2      # 1 (sisa)\n2 ** 10    # 1024 (pangkat)\n0.1+0.2 == 0.3   # False!\nround(0.1+0.2, 2) == 0.3  # True',tip:"Jangan pernah bandingkan float pakai == langsung."},
+ {tp:"bigo",t:"Big-O Penting",b:"Tahu kompleksitas struktur data. Ditanya saat vibecoding & memengaruhi pilihan solusi.",code:'# list:  in -> O(n),  index -> O(1)\n# dict/set: in -> O(1) rata2\n# sort -> O(n log n)\n# nested loop -> O(n^2)\n# Pakai dict/set untuk lookup cepat!',tip:"Kalau ada nested loop cari pasangan → coba ganti hashmap jadi O(n)."},
+];
+
+const CHEAT=[
+ {h:"📝 String",rows:[["s[i:j:k]","slice, k=step"],["s[::-1]","balik string"],["s.split(',')","pisah jadi list"],["' '.join(lst)","gabung list→string"],["s.strip()","buang spasi tepi"],["s.replace(a,b)","ganti substring"],["s.upper()/lower()","ubah case"],["s.find(x)","indeks atau -1"],["f\"{x}\"","f-string format"]]},
+ {h:"📋 List",rows:[["a.append(x)","tambah di akhir"],["a.insert(i,x)","sisip di indeks i"],["a.pop()/pop(i)","ambil & hapus"],["a.sort()","urut di tempat"],["sorted(a)","list baru terurut"],["a[::-1]","balik list"],["a.index(x)","cari indeks"],["x in a","cek ada (O(n))"],["len(a)","panjang"]]},
+ {h:"🗂️ Dict & Set",rows:[["d.get(k,def)","akses aman"],["d.items()","pasangan (k,v)"],["d.keys()/values()","kunci/nilai"],["d.setdefault(k,0)","default jika kosong"],["{k:v for..}","dict comp"],["s1 & s2","irisan set"],["s1 | s2","gabungan set"],["set(lst)","dedup"],["x in d","O(1) lookup"]]},
+ {h:"🔁 Loop & Builtin",rows:[["range(a,b,c)","barisan angka"],["enumerate(a)","(indeks, nilai)"],["zip(a,b)","gabung paralel"],["map(f,a)","terapkan fungsi"],["filter(f,a)","saring"],["sum/min/max(a)","agregasi"],["any/all(a)","cek truthiness"],["abs/round(x)","mutlak/bulat"],["sorted(a,key=)","urut custom"]]},
+ {h:"⏱️ Big-O",rows:[["list in","O(n)"],["dict/set in","O(1)"],["list index","O(1)"],["sort","O(n log n)"],["nested loop","O(n²)"],["binary search","O(log n)"]]},
+ {h:"⚠️ Jebakan",rows:[["def f(x,lst=[])","mutable default!"],["b=a (list)","referensi sama"],["0.1+0.2==0.3","False (float)"],["a is b vs a==b","identitas vs nilai"],["int('3')+'4'","TypeError"],["sort() return","None, bukan list"]]},
+];
+
+const QUIZ=[
+ {topic:"slicing",q:"Output kode ini?",code:'s = "PYTHON"\nprint(s[1:4])',opts:["YTH","PYT","YTHO","THO"],a:0,ex:"<b>s[1:4]</b> ambil indeks 1,2,3 (4 eksklusif) → <b>YTH</b>."},
+ {topic:"slicing",q:"Output slice mundur?",code:'print("hello"[::-1])',opts:["hello","olleh","hlo","leh"],a:1,ex:"<b>[::-1]</b> membalik string → <b>olleh</b>."},
+ {topic:"slicing",q:"Output ambil 2 terakhir?",code:'a=[1,2,3,4,5]\nprint(a[-2:])',opts:["[4,5]","[5]","[3,4,5]","[1,2]"],a:0,ex:"<b>a[-2:]</b> = 2 elemen terakhir → <b>[4,5]</b>."},
+ {topic:"slicing",q:"Output step 2?",code:'print("abcdef"[::2])',opts:["abc","ace","bdf","abcdef"],a:1,ex:"step 2 dari awal → indeks 0,2,4 = <b>ace</b>."},
+ {topic:"integer",q:"Hasilnya?",code:'print(7 // 2, 7 % 2)',opts:["3 1","3.5 1","3 0","4 1"],a:0,ex:"<b>//</b> floor div = 3, <b>%</b> sisa = 1 → <b>3 1</b>."},
+ {topic:"integer",q:"Output pangkat?",code:'print(2 ** 5)',opts:["10","25","32","7"],a:2,ex:"<b>2**5</b> = 2 pangkat 5 = <b>32</b>."},
+ {topic:"integer",q:"Float presisi?",code:'print(0.1 + 0.2 == 0.3)',opts:["True","False","Error","0.3"],a:1,ex:"0.1+0.2 = 0.30000000000000004 → <b>False</b>. Pakai round()/isclose()."},
+ {topic:"integer",q:"Floor div negatif?",code:'print(-7 // 2)',opts:["-3","-4","-3.5","3"],a:1,ex:"Floor membulatkan ke bawah (lebih kecil) → -3.5 jadi <b>-4</b>."},
+ {topic:"boolean",q:"Truthiness?",code:'print(bool([]), bool([0]), bool(""))',opts:["True True True","False True False","False False False","True False True"],a:1,ex:"Kosong=False, [0] tak kosong=True, ''=False → <b>False True False</b>."},
+ {topic:"boolean",q:"and/or short-circuit?",code:'print(0 or "hi")\nprint(1 and "bye")',opts:["hi / bye","0 / 1","hi / 1","False / bye"],a:0,ex:"<b>or</b> kembalikan operand truthy pertama (hi). <b>and</b> kembalikan terakhir bila semua truthy (bye)."},
+ {topic:"identity",q:"is vs ==?",code:'a=[1,2]; b=[1,2]\nprint(a==b, a is b)',opts:["True True","True False","False False","False True"],a:1,ex:"<b>==</b> nilai sama (True), <b>is</b> objek beda → <b>True False</b>."},
+ {topic:"mutability",q:"Isi list?",code:'a=[1,2,3]; b=a\nb.append(4)\nprint(a)',opts:["[1,2,3]","[1,2,3,4]","[4]","Error"],a:1,ex:"<b>b=a</b> salin referensi, objek sama → <b>[1,2,3,4]</b>."},
+ {topic:"mutability",q:"Pakai copy?",code:'a=[1,2]; b=a[:]\nb.append(9)\nprint(a, b)',opts:["[1,2] [1,2,9]","[1,2,9] [1,2,9]","[1,2,9] [1,2]","Error"],a:0,ex:"<b>a[:]</b> buat salinan baru → a tetap [1,2], b jadi [1,2,9]."},
+ {topic:"dict",q:".get default?",code:'d={"x":1}\nprint(d.get("y",0))',opts:["None","0","KeyError","1"],a:1,ex:"key 'y' tak ada → kembalikan default <b>0</b>."},
+ {topic:"dict",q:"Counting?",code:'d={}\nfor c in "aab": d[c]=d.get(c,0)+1\nprint(d)',opts:["{'a':2,'b':1}","{'a':1,'b':1}","{'a':3}","Error"],a:0,ex:"Hitung frekuensi: a=2, b=1 → <b>{'a':2,'b':1}</b>."},
+ {topic:"dict",q:"Akses key hilang?",code:'d={"a":1}\nprint(d["b"])',opts:["None","0","KeyError","''"],a:2,ex:"Akses langsung key yang tak ada → <b>KeyError</b>. Pakai .get() agar aman."},
+ {topic:"set",q:"Panjang set?",code:'print(len({1,2,2,3,3,3}))',opts:["6","3","2","1"],a:1,ex:"Set buang duplikat → {1,2,3} = <b>3</b>."},
+ {topic:"set",q:"Irisan?",code:'print({1,2,3} & {2,3,4})',opts:["{1,2,3,4}","{2,3}","{1,4}","{}"],a:1,ex:"<b>&</b> = irisan → elemen yang ada di keduanya = <b>{2,3}</b>."},
+ {topic:"comprehension",q:"List comp + filter?",code:'print([x*x for x in range(4) if x%2==0])',opts:["[0,1,4,9]","[0,4]","[1,9]","[0,2]"],a:1,ex:"Genap dari 0,1,2,3 → 0,2; kuadrat → <b>[0,4]</b>."},
+ {topic:"comprehension",q:"Dict comp?",code:'print({x:x**2 for x in range(3)})',opts:["{0:0,1:1,2:4}","{0,1,4}","[0,1,4]","{1:1,2:4}"],a:0,ex:"key→kuadrat → <b>{0:0,1:1,2:4}</b>."},
+ {topic:"string",q:"Ulang & gabung?",code:'print("ab"*3 + "c")',opts:["abababc","ababab c","abc3","Error"],a:0,ex:"'ab'*3='ababab' lalu +'c' → <b>abababc</b>."},
+ {topic:"string",q:"split & len?",code:'print(len("a,b,,c".split(",")))',opts:["3","4","2","5"],a:1,ex:"split → ['a','b','','c'] termasuk kosong = <b>4</b>."},
+ {topic:"string",q:"Chaining?",code:'print("  Hi There ".strip().lower())',opts:["hi there","Hi There","  hi there","hithere"],a:0,ex:"strip() buang spasi tepi, lower() kecilkan → <b>hi there</b>."},
+ {topic:"string",q:"join?",code:'print("-".join(["a","b","c"]))',opts:["abc","a-b-c","-a-b-c","[a,b,c]"],a:1,ex:"join sisipkan '-' antar elemen → <b>a-b-c</b>."},
+ {topic:"tuple",q:"Unpacking *?",code:'a,*b=[1,2,3,4]\nprint(a,b)',opts:["1 [2,3,4]","1 2","[1] [2,3,4]","1 (2,3,4)"],a:0,ex:"<b>*b</b> tampung sisa sebagai list → <b>1 [2,3,4]</b>."},
+ {topic:"tuple",q:"Swap?",code:'a,b=1,2\na,b=b,a\nprint(a,b)',opts:["1 2","2 1","2 2","Error"],a:1,ex:"Tuple swap menukar nilai → <b>2 1</b>."},
+ {topic:"sort",q:"sorted key=abs?",code:'print(sorted([-3,1,-2], key=abs))',opts:["[-3,-2,1]","[1,-2,-3]","[-2,1,-3]","[1,-2,-3]"],a:1,ex:"Urut by |x|: 1,2,3 tapi nilai asli tetap → <b>[1,-2,-3]</b>."},
+ {topic:"sort",q:"sort() return?",code:'a=[3,1,2]\nx=a.sort()\nprint(x)',opts:["[1,2,3]","None","[3,1,2]","Error"],a:1,ex:"<b>sort()</b> ubah di tempat & return <b>None</b>! Pakai sorted() untuk dapat list."},
+ {topic:"function",q:"Default mutable?",code:'def f(x,lst=[]):\n    lst.append(x); return lst\nprint(f(1)); print(f(2))',opts:["[1] [2]","[1] [1,2]","[1,2] [1,2]","Error"],a:1,ex:"Default [] dibuat sekali & dipakai ulang → <b>[1] lalu [1,2]</b>."},
+ {topic:"function",q:"Closure?",code:'def outer():\n    x=10\n    def inner(): return x+1\n    return inner\nprint(outer()())',opts:["10","11","Error","None"],a:1,ex:"inner ingat x dari outer → 10+1 = <b>11</b>."},
+ {topic:"function",q:"args/kwargs?",code:'def f(*a,**k):\n    return len(a), len(k)\nprint(f(1,2,x=3))',opts:["(2, 1)","(3, 0)","(1, 2)","Error"],a:0,ex:"*a tampung 2 posisi (1,2), **k tampung 1 keyword (x) → <b>(2,1)</b>."},
+ {topic:"function",q:"lambda?",code:'f = lambda x: x*3\nprint(f(4))',opts:["12","7","x*3","Error"],a:0,ex:"lambda = fungsi anonim, f(4)=4*3 → <b>12</b>."},
+ {topic:"generator",q:"Generator?",code:'def g():\n    yield 1; yield 2\nprint(list(g()))',opts:["[1,2]","1","[1]","<generator>"],a:0,ex:"list() konsumsi generator → <b>[1,2]</b>."},
+ {topic:"generator",q:"next()?",code:'g=(x*x for x in range(3))\nprint(next(g), next(g))',opts:["0 1","0 4","1 4","0 0"],a:0,ex:"Generator expr: 0,1,4. next dua kali → <b>0 1</b>."},
+ {topic:"loop",q:"enumerate?",code:'for i,c in enumerate("ab"):\n    print(i,c, end=" ")',opts:["0 a 1 b","a b","1 a 2 b","0 1"],a:0,ex:"enumerate beri (indeks,nilai) → <b>0 a 1 b</b>."},
+ {topic:"loop",q:"range step?",code:'print(list(range(1,10,3)))',opts:["[1,4,7]","[1,2,3]","[1,4,7,10]","[3,6,9]"],a:0,ex:"mulai 1, step 3, <10 → <b>[1,4,7]</b>."},
+ {topic:"loop",q:"zip?",code:'print(list(zip([1,2],[3,4])))',opts:["[(1,3),(2,4)]","[1,2,3,4]","[(1,2),(3,4)]","[[1,3],[2,4]]"],a:0,ex:"zip pasangkan paralel → <b>[(1,3),(2,4)]</b>."},
+ {topic:"exception",q:"try/except?",code:'try:\n    print(1/0)\nexcept ZeroDivisionError:\n    print("err")',opts:["0","err","inf","crash"],a:1,ex:"1/0 picu ZeroDivisionError → tertangkap, cetak <b>err</b>."},
+ {topic:"exception",q:"Konversi gagal?",code:'print(int("3") + 4)',opts:["7","34","'34'","Error"],a:0,ex:"int('3')=3, 3+4 → <b>7</b>. (Tapi '3'+4 akan error TypeError)."},
+ {topic:"oop",q:"Class method?",code:'class C:\n    def __init__(s,x): s.x=x\n    def d(s): return s.x*2\nprint(C(5).d())',opts:["5","10","25","Error"],a:1,ex:"x=5, d() return 5*2 → <b>10</b>."},
+ {topic:"string",q:"in operator?",code:'print("cat" in "concatenate")',opts:["True","False","3","Error"],a:0,ex:"substring 'cat' ada di 'con<b>cat</b>enate' → <b>True</b>."},
+ {topic:"list",q:"Nested index?",code:'m=[[1,2],[3,4]]\nprint(m[1][0])',opts:["1","2","3","4"],a:2,ex:"m[1]=[3,4], [0]=<b>3</b>."},
+ {topic:"list",q:"extend vs append?",code:'a=[1,2]\na.append([3,4])\nprint(len(a))',opts:["2","3","4","Error"],a:1,ex:"append tambah [3,4] sebagai 1 elemen → len <b>3</b>."},
+ {topic:"comprehension",q:"Nested comp?",code:'print([x+y for x in "ab" for y in "12"])',opts:["['a1','a2','b1','b2']","['a1','b2']","['ab','12']","Error"],a:0,ex:"Loop bersarang → <b>['a1','a2','b1','b2']</b>."},
+ {topic:"dict",q:"Iterasi dict?",code:'d={"a":1,"b":2}\nprint(list(d))',opts:["['a','b']","[1,2]","[('a',1),('b',2)]","['a',1,'b',2]"],a:0,ex:"Iterasi dict = iterasi <b>keys</b> → <b>['a','b']</b>."},
+];
+
+const FLASH=[
+ {q:"Bedanya == dan is?",a:"== bandingkan NILAI. is bandingkan IDENTITAS objek (alamat memori). Dua list isi sama: == True, is False."},
+ {q:"Cara reverse string Python?",a:"s[::-1] — slice dengan step -1."},
+ {q:"Kenapa def f(x, lst=[]) berbahaya?",a:"Default mutable dibuat SEKALI saat definisi & dipakai ulang antar panggilan. Pakai lst=None lalu cek di dalam fungsi."},
+ {q:"sort() vs sorted()?",a:"sort() ubah list di tempat & return None. sorted() return list baru tanpa mengubah asli."},
+ {q:"Kompleksitas 'x in list' vs 'x in set'?",a:"list: O(n) (linear scan). set/dict: O(1) rata-rata (hashing). Pakai set/dict untuk lookup cepat."},
+ {q:"Apa itu list comprehension?",a:"Cara ringkas buat list: [expr for x in iterable if cond]. Lebih cepat & Pythonic dari loop+append."},
+ {q:"Kenapa 0.1+0.2 != 0.3?",a:"Float disimpan biner, tak presisi. Hasil = 0.30000000000000004. Bandingkan pakai round() atau math.isclose()."},
+ {q:"Apa yang dilakukan .get(key, default)?",a:"Akses dict dengan aman: kembalikan default jika key tidak ada, alih-alih KeyError."},
+ {q:"Bedanya append() dan extend()?",a:"append(x) tambah x sebagai SATU elemen. extend(iter) tambah tiap elemen iterable satu per satu."},
+ {q:"Apa itu generator & kapan dipakai?",a:"Fungsi dengan yield yang hasilkan nilai lazy (satu per satu). Hemat memori untuk data besar."},
+ {q:"Cara cek dua string anagram?",a:"Counter(a) == Counter(b), atau sorted(a) == sorted(b)."},
+ {q:"Apa output enumerate('ab')?",a:"Pasangan (indeks, nilai): (0,'a'), (1,'b'). Berguna saat butuh indeks dalam loop."},
+ {q:"7 // 2 dan 7 % 2 hasilnya?",a:"// floor division = 3. % modulo (sisa) = 1."},
+ {q:"Truthiness: bool([]) dan bool([0])?",a:"bool([]) = False (kosong). bool([0]) = True (ada elemen, walau isinya 0)."},
+ {q:"a, *b = [1,2,3,4] → a, b?",a:"a=1, b=[2,3,4]. Operand *b menampung sisa sebagai list."},
+ {q:"Struktur dasar try/except?",a:"try: kode berisiko / except JenisError: penanganan. Mencegah program crash saat error."},
+ {q:"Apa itu closure?",a:"Fungsi dalam yang 'mengingat' variabel dari fungsi luar meski fungsi luar sudah selesai."},
+ {q:"Big-O nested loop cari pasangan?",a:"O(n²). Sering bisa dioptimasi jadi O(n) pakai hashmap (dict/set)."},
+ {q:"Cara dedup list jaga unik?",a:"list(set(lst)) — tapi urutan hilang. Untuk jaga urutan: list(dict.fromkeys(lst))."},
+ {q:"f-string itu apa?",a:'String dengan f"{var}" untuk menyisipkan nilai variabel/ekspresi langsung. Cepat & terbaca.'},
+ {q:"Two-pointer dipakai untuk apa?",a:"Teknik 2 indeks bergerak (mis. dari ujung) untuk array terurut: cari pasangan, palindrome, dll. O(n)."},
+ {q:"Kenapa pakai dict untuk Two Sum?",a:"Simpan {nilai: indeks}; cek (target - n) sudah ada → O(n), lebih cepat dari nested loop O(n²)."},
+];
+
+const CODING=[
+ {title:"Two Sum",diff:"easy",topic:"hashmap",prompt:"Diberi list angka & target, kembalikan indeks dua angka yang jumlahnya = target.",ex:"two_sum([2,7,11,15], 9) → [0,1]",hint:"Pakai dict {nilai: indeks}. Untuk tiap n, cek apakah (target-n) sudah ada. O(n).",sol:'def two_sum(nums, target):\n    seen = {}\n    for i, n in enumerate(nums):\n        if target - n in seen:\n            return [seen[target - n], i]\n        seen[n] = i\n    return []'},
+ {title:"Reverse Words",diff:"easy",topic:"string",prompt:"Balik urutan kata dalam kalimat & hilangkan spasi berlebih.",ex:"reverse_words('  hello   world ') → 'world hello'",hint:"split() tanpa argumen buang spasi berlebih, lalu reverse & join.",sol:'def reverse_words(s):\n    return " ".join(s.split()[::-1])'},
+ {title:"Palindrome Check",diff:"easy",topic:"string",prompt:"Cek apakah string palindrome (abaikan kapital).",ex:"is_pal('Level') → True",hint:"Bandingkan string lowercase dengan kebalikannya: s==s[::-1].",sol:'def is_pal(s):\n    s = s.lower()\n    return s == s[::-1]'},
+ {title:"Count Vowels",diff:"easy",topic:"string",prompt:"Hitung jumlah huruf vokal dalam string.",ex:"count_vowels('hello') → 2",hint:"Iterasi & cek apakah char ada di 'aeiou'. Atau sum(c in 'aeiou' for c in s).",sol:'def count_vowels(s):\n    return sum(c in "aeiou" for c in s.lower())'},
+ {title:"FizzBuzz",diff:"easy",topic:"loop",prompt:"1..n: kelipatan 3='Fizz', 5='Buzz', keduanya='FizzBuzz', selain itu angkanya.",ex:"fizzbuzz(5) → ['1','2','Fizz','4','Buzz']",hint:"Cek %15 dulu (atau %3 dan %5 bersama), lalu %3, lalu %5.",sol:'def fizzbuzz(n):\n    out=[]\n    for i in range(1,n+1):\n        if i%15==0: out.append("FizzBuzz")\n        elif i%3==0: out.append("Fizz")\n        elif i%5==0: out.append("Buzz")\n        else: out.append(str(i))\n    return out'},
+ {title:"Valid Anagram",diff:"easy",topic:"hashmap",prompt:"Cek apakah dua string anagram.",ex:"is_anagram('listen','silent') → True",hint:"Bandingkan frekuensi huruf: Counter(a)==Counter(b).",sol:'from collections import Counter\ndef is_anagram(a, b):\n    return Counter(a) == Counter(b)'},
+ {title:"Remove Duplicates",diff:"easy",topic:"set",prompt:"Hapus duplikat dari list, pertahankan urutan kemunculan.",ex:"dedup([1,2,1,3,2]) → [1,2,3]",hint:"Pakai dict.fromkeys (jaga urutan) atau set + cek manual.",sol:'def dedup(lst):\n    return list(dict.fromkeys(lst))'},
+ {title:"Move Zeroes",diff:"med",topic:"array",prompt:"Pindahkan semua 0 ke akhir, pertahankan urutan elemen non-nol.",ex:"move_zeroes([0,1,0,3,12]) → [1,3,12,0,0]",hint:"Kumpulkan non-nol dulu, lalu tambahkan nol sebanyak yang dibuang.",sol:'def move_zeroes(nums):\n    nz = [x for x in nums if x != 0]\n    return nz + [0]*(len(nums)-len(nz))'},
+ {title:"First Unique Char",diff:"med",topic:"hashmap",prompt:"Kembalikan indeks karakter pertama yang tidak berulang, atau -1.",ex:"first_uniq('leetcode') → 0",hint:"Hitung frekuensi dengan Counter, lalu iterasi cari count==1.",sol:'from collections import Counter\ndef first_uniq(s):\n    cnt = Counter(s)\n    for i,c in enumerate(s):\n        if cnt[c]==1: return i\n    return -1'},
+ {title:"Valid Parentheses",diff:"med",topic:"stack",prompt:"Cek apakah string kurung '()[]{}' seimbang & urutannya benar.",ex:"is_valid('([])') → True ; is_valid('([)]') → False",hint:"Pakai stack. Push kurung buka; saat tutup, cek cocok dengan top.",sol:'def is_valid(s):\n    pairs={")":"(","]":"[","}":"{"}\n    st=[]\n    for c in s:\n        if c in "([{": st.append(c)\n        else:\n            if not st or st.pop()!=pairs[c]: return False\n    return not st'},
+ {title:"Group Anagrams",diff:"med",topic:"hashmap",prompt:"Kelompokkan kata yang saling anagram.",ex:"group(['eat','tea','tan','ate']) → [['eat','tea','ate'],['tan']]",hint:"Key = string yang sudah di-sort; kelompokkan dalam dict.",sol:'from collections import defaultdict\ndef group(words):\n    d=defaultdict(list)\n    for w in words:\n        d["".join(sorted(w))].append(w)\n    return list(d.values())'},
+ {title:"Binary Search",diff:"med",topic:"search",prompt:"Cari indeks target di list TERURUT, atau -1. O(log n).",ex:"bsearch([1,3,5,7,9], 7) → 3",hint:"Dua pointer lo/hi, ambil mid; sesuaikan lo atau hi tiap langkah.",sol:'def bsearch(a, t):\n    lo, hi = 0, len(a)-1\n    while lo <= hi:\n        mid = (lo+hi)//2\n        if a[mid]==t: return mid\n        elif a[mid]<t: lo=mid+1\n        else: hi=mid-1\n    return -1'},
+ {title:"Missing Number",diff:"med",topic:"math",prompt:"List berisi 0..n dengan satu angka hilang. Cari angka itu.",ex:"missing([3,0,1]) → 2",hint:"Jumlah 0..n = n*(n+1)/2. Kurangi dengan sum(list).",sol:'def missing(nums):\n    n = len(nums)\n    return n*(n+1)//2 - sum(nums)'},
+ {title:"Max Subarray (Kadane)",diff:"hard",topic:"dp",prompt:"Cari jumlah subarray kontigu terbesar.",ex:"max_sub([-2,1,-3,4,-1,2,1,-5,4]) → 6",hint:"Kadane: cur=max(n, cur+n); best=max(best, cur). O(n).",sol:'def max_sub(nums):\n    cur=best=nums[0]\n    for n in nums[1:]:\n        cur=max(n, cur+n)\n        best=max(best, cur)\n    return best'},
+ {title:"Merge Intervals",diff:"hard",topic:"sorting",prompt:"Gabungkan interval yang tumpang tindih.",ex:"merge([[1,3],[2,6],[8,10]]) → [[1,6],[8,10]]",hint:"Sort by start. Jika start ≤ end terakhir di hasil, gabung (max end).",sol:'def merge(intervals):\n    intervals.sort(key=lambda x:x[0])\n    out=[]\n    for s,e in intervals:\n        if out and s<=out[-1][1]:\n            out[-1][1]=max(out[-1][1], e)\n        else:\n            out.append([s,e])\n    return out'},
+ {title:"Fibonacci (memo)",diff:"hard",topic:"dp",prompt:"Hitung Fibonacci ke-n secara efisien (hindari rekursi naif O(2^n)).",ex:"fib(10) → 55",hint:"Pakai memoization (dict cache) atau iterasi dua variabel.",sol:'def fib(n):\n    a, b = 0, 1\n    for _ in range(n):\n        a, b = b, a+b\n    return a'},
+];
+
+/* stub starter + test cases (call expr, expected literal) per challenge */
+const CODE_TESTS={
+ "Two Sum":{stub:'def two_sum(nums, target):\n    # tulis kodemu di sini\n    pass',cases:[{call:"two_sum([2,7,11,15], 9)",exp:"[0, 1]"},{call:"two_sum([3,2,4], 6)",exp:"[1, 2]"},{call:"two_sum([3,3], 6)",exp:"[0, 1]"}]},
+ "Reverse Words":{stub:'def reverse_words(s):\n    pass',cases:[{call:"reverse_words('  hello   world ')",exp:"'world hello'"},{call:"reverse_words('a b c')",exp:"'c b a'"}]},
+ "Palindrome Check":{stub:'def is_pal(s):\n    pass',cases:[{call:"is_pal('Level')",exp:"True"},{call:"is_pal('hello')",exp:"False"},{call:"is_pal('Anna')",exp:"True"}]},
+ "Count Vowels":{stub:'def count_vowels(s):\n    pass',cases:[{call:"count_vowels('hello')",exp:"2"},{call:"count_vowels('xyz')",exp:"0"},{call:"count_vowels('AEIou')",exp:"5"}]},
+ "FizzBuzz":{stub:'def fizzbuzz(n):\n    pass',cases:[{call:"fizzbuzz(5)",exp:"['1', '2', 'Fizz', '4', 'Buzz']"},{call:"fizzbuzz(3)",exp:"['1', '2', 'Fizz']"}]},
+ "Valid Anagram":{stub:'def is_anagram(a, b):\n    pass',cases:[{call:"is_anagram('listen','silent')",exp:"True"},{call:"is_anagram('a','b')",exp:"False"}]},
+ "Remove Duplicates":{stub:'def dedup(lst):\n    pass',cases:[{call:"dedup([1,2,1,3,2])",exp:"[1, 2, 3]"},{call:"dedup([5,5,5])",exp:"[5]"}]},
+ "Move Zeroes":{stub:'def move_zeroes(nums):\n    pass',cases:[{call:"move_zeroes([0,1,0,3,12])",exp:"[1, 3, 12, 0, 0]"},{call:"move_zeroes([0,0,1])",exp:"[1, 0, 0]"}]},
+ "First Unique Char":{stub:'def first_uniq(s):\n    pass',cases:[{call:"first_uniq('leetcode')",exp:"0"},{call:"first_uniq('aabb')",exp:"-1"},{call:"first_uniq('loveleetcode')",exp:"2"}]},
+ "Valid Parentheses":{stub:'def is_valid(s):\n    pass',cases:[{call:"is_valid('([])')",exp:"True"},{call:"is_valid('([)]')",exp:"False"},{call:"is_valid('(((')",exp:"False"}]},
+ "Group Anagrams":{stub:'def group(words):\n    pass',cases:[{call:"sorted([sorted(g) for g in group(['eat','tea','tan','ate'])])",exp:"[['ate', 'eat', 'tea'], ['tan']]"}]},
+ "Binary Search":{stub:'def bsearch(a, t):\n    pass',cases:[{call:"bsearch([1,3,5,7,9], 7)",exp:"3"},{call:"bsearch([1,2,3], 4)",exp:"-1"},{call:"bsearch([2,4,6], 2)",exp:"0"}]},
+ "Missing Number":{stub:'def missing(nums):\n    pass',cases:[{call:"missing([3,0,1])",exp:"2"},{call:"missing([0,1])",exp:"2"},{call:"missing([0])",exp:"1"}]},
+ "Max Subarray (Kadane)":{stub:'def max_sub(nums):\n    pass',cases:[{call:"max_sub([-2,1,-3,4,-1,2,1,-5,4])",exp:"6"},{call:"max_sub([1])",exp:"1"},{call:"max_sub([-1,-2,-3])",exp:"-1"}]},
+ "Merge Intervals":{stub:'def merge(intervals):\n    pass',cases:[{call:"merge([[1,3],[2,6],[8,10]])",exp:"[[1, 6], [8, 10]]"},{call:"merge([[1,4],[4,5]])",exp:"[[1, 5]]"}]},
+ "Fibonacci (memo)":{stub:'def fib(n):\n    pass',cases:[{call:"fib(10)",exp:"55"},{call:"fib(0)",exp:"0"},{call:"fib(1)",exp:"1"}]},
+};
+
+/* ===================== STATE ===================== */
+const LS="tm-python-prep-v2";
+let state=JSON.parse(localStorage.getItem(LS)||"{}");
+state.done=state.done||{};            // plan checkboxes
+state.qstats=state.qstats||{};        // topic -> {right, total}
+function save(){localStorage.setItem(LS,JSON.stringify(state));}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* ===================== TABS ===================== */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.v).classList.add('active');
+    if(t.dataset.v==='stats') renderStats();
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+});
+
+/* ===================== COUNTDOWN ===================== */
+const TARGET=new Date("2026-06-11T13:00:00+07:00").getTime();
+function tick(){
+  let diff=Math.max(0,TARGET-Date.now());
+  const d=Math.floor(diff/86400000);diff-=d*86400000;
+  const h=Math.floor(diff/3600000);diff-=h*3600000;
+  const m=Math.floor(diff/60000);diff-=m*60000;
+  const s=Math.floor(diff/1000);const p=n=>String(n).padStart(2,'0');
+  document.getElementById('clock').textContent=`${p(d)}d ${p(h)}:${p(m)}:${p(s)}`;
+}
+setInterval(tick,1000);tick();
+
+/* ===================== PLAN ===================== */
+function renderDays(){
+  const host=document.getElementById('daysGrid');host.innerHTML='';
+  DAYS.forEach((day,di)=>{
+    const el=document.createElement('div');el.className='day';
+    el.innerHTML=`<div class="dnum">${day.d}</div><h3>${day.t.length} target</h3><div class="date">${day.date}</div>`;
+    const ul=document.createElement('ul');
+    day.t.forEach((topic,ti)=>{
+      const key=`${di}-${ti}`;const li=document.createElement('li');
+      if(state.done[key])li.classList.add('done');
+      li.innerHTML=`<span class="box">${state.done[key]?'✓':''}</span><span>${topic}</span>`;
+      li.onclick=()=>{state.done[key]=!state.done[key];save();renderDays();updateProgress();};
+      ul.appendChild(li);
+    });
+    el.appendChild(ul);
+    const f=document.createElement('div');f.className='focus';f.textContent=day.focus;el.appendChild(f);
+    host.appendChild(el);
+  });
+}
+function updateProgress(){
+  const total=DAYS.reduce((a,d)=>a+d.t.length,0);
+  const done=Object.values(state.done).filter(Boolean).length;
+  const pct=Math.round(done/total*100);
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progPct').textContent=pct+'%';
+}
+
+/* ===================== LEARN ===================== */
+function renderLearn(){
+  const host=document.getElementById('learnHost');host.innerHTML='';
+  LESSONS.forEach(l=>{
+    const el=document.createElement('div');el.className='lesson';
+    el.innerHTML=`<div class="tp">${l.tp}</div><h3>${l.t}</h3><p>${l.b}</p><pre class="code">${esc(l.code)}</pre><div class="tip">💡 ${l.tip}</div>`;
+    host.appendChild(el);
+  });
+}
+
+/* ===================== CHEAT ===================== */
+function renderCheat(){
+  const host=document.getElementById('cheatHost');host.innerHTML='';
+  CHEAT.forEach(sec=>{
+    const el=document.createElement('div');el.className='info cheat';
+    el.innerHTML=`<h3>${sec.h}</h3>`+sec.rows.map(r=>`<div class="row"><code>${esc(r[0])}</code><span class="desc">${r[1]}</span></div>`).join('');
+    host.appendChild(el);
+  });
+}
+
+/* ===================== QUIZ ===================== */
+let quizTopic='all',quizList=[],qPos=0,qScore=0,qAnswered=false;
+function buildFilters(){
+  const topics=['all',...new Set(QUIZ.map(q=>q.topic))];
+  const host=document.getElementById('quizFilters');host.innerHTML='';
+  topics.forEach(tp=>{
+    const c=document.createElement('div');c.className='chip'+(tp===quizTopic?' on':'');
+    c.textContent=tp==='all'?'semua':tp;
+    c.onclick=()=>{quizTopic=tp;buildFilters();applyQuizFilter();};
+    host.appendChild(c);
+  });
+}
+function applyQuizFilter(){
+  quizList=QUIZ.map((q,i)=>({q,i})).filter(o=>quizTopic==='all'||o.q.topic===quizTopic);
+  qPos=0;qScore=0;renderQuiz();
+}
+const LET=['A','B','C','D','E'];
+function renderQuiz(){
+  document.getElementById('qTotal').textContent=quizList.length;
+  document.getElementById('qIdx').textContent=Math.min(qPos+1,quizList.length);
+  document.getElementById('qScore').textContent=qScore;
+  const host=document.getElementById('quizHost');
+  if(qPos>=quizList.length){
+    const pct=quizList.length?qScore/quizList.length:0;
+    host.innerHTML=`<div class="qcard result"><div class="big">${qScore}/${quizList.length}</div>
+      <p>${pct>=0.8?'Mantap! Kamu siap untuk Bagian 1. 🚀':pct>=0.6?'Bagus, poles soal yang salah. 💪':'Ulangi & baca tiap penjelasan. Kamu bisa! 📚'}</p>
+      <button class="btn primary" onclick="restartQuiz()">↺ Ulangi</button></div>`;
+    return;
+  }
+  const q=quizList[qPos].q;qAnswered=false;
+  host.innerHTML=`<div class="qcard">
+    <div class="qmeta"><span class="topic">${q.topic}</span><span class="kbdhint">tekan 1-${q.opts.length} untuk jawab</span></div>
+    <div class="qtext">${q.q}</div>
+    ${q.code?`<pre class="code">${esc(q.code)}</pre>`:''}
+    <div class="opts">${q.opts.map((o,i)=>`<div class="opt" data-i="${i}"><span class="key">${LET[i]}</span><span>${esc(o)}</span></div>`).join('')}</div>
+    <div class="explain" id="exp"><b>Penjelasan:</b> ${q.ex}</div>
+    <div class="qnav"><button class="btn" id="qPrev">← Sebelumnya</button><button class="btn primary" id="qNext">Lanjut →</button></div>
+  </div>`;
+  host.querySelectorAll('.opt').forEach(opt=>opt.onclick=()=>answer(+opt.dataset.i,q));
+  document.getElementById('qNext').onclick=()=>{qPos++;renderQuiz();};
+  document.getElementById('qPrev').onclick=()=>{if(qPos>0){qPos--;renderQuiz();}};
+}
+function answer(pick,q){
+  if(qAnswered)return;qAnswered=true;
+  const host=document.getElementById('quizHost');
+  host.querySelectorAll('.opt').forEach(o=>{
+    o.classList.add('disabled');const oi=+o.dataset.i;
+    if(oi===q.a)o.classList.add('correct');
+    else if(oi===pick)o.classList.add('wrong');
+  });
+  const ok=pick===q.a;if(ok)qScore++;
+  document.getElementById('qScore').textContent=qScore;
+  document.getElementById('exp').classList.add('show');
+  const st=state.qstats[q.topic]||{right:0,total:0};
+  st.total++;if(ok)st.right++;state.qstats[q.topic]=st;save();
+}
+function restartQuiz(){qPos=0;qScore=0;renderQuiz();}
+window.restartQuiz=restartQuiz;
+document.getElementById('qShuffle').onclick=()=>{quizList.sort(()=>Math.random()-0.5);qPos=0;qScore=0;renderQuiz();};
+document.getElementById('qRestart').onclick=()=>{applyQuizFilter();};
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('quiz').classList.contains('active'))return;
+  if(e.key>='1'&&e.key<='5'){const i=+e.key-1;const q=quizList[qPos]&&quizList[qPos].q;if(q&&i<q.opts.length)answer(i,q);}
+  if(e.key==='ArrowRight'){qPos++;renderQuiz();}
+  if(e.key==='ArrowLeft'&&qPos>0){qPos--;renderQuiz();}
+});
+
+/* ===================== FLASHCARDS ===================== */
+let flashPos=0;
+function renderFlash(){
+  document.getElementById('flashTotal').textContent=FLASH.length;
+  document.getElementById('flashIdx').textContent=flashPos+1;
+  document.getElementById('flashQ').textContent=FLASH[flashPos].q;
+  document.getElementById('flashA').textContent=FLASH[flashPos].a;
+  document.getElementById('flashcard').classList.remove('flip');
+}
+document.getElementById('flashcard').onclick=()=>document.getElementById('flashcard').classList.toggle('flip');
+document.getElementById('flashNext').onclick=()=>{flashPos=(flashPos+1)%FLASH.length;renderFlash();};
+document.getElementById('flashPrev').onclick=()=>{flashPos=(flashPos-1+FLASH.length)%FLASH.length;renderFlash();};
+
+/* ===================== CODING ===================== */
+let codeTopic='all';
+function buildCodeFilters(){
+  const diffs=['all','easy','med','hard'];
+  const host=document.getElementById('codingFilters');host.innerHTML='';
+  diffs.forEach(d=>{
+    const c=document.createElement('div');c.className='chip'+(d===codeTopic?' on':'');
+    c.textContent=d==='all'?'semua':d==='med'?'medium':d;
+    c.onclick=()=>{codeTopic=d;buildCodeFilters();renderCoding();};
+    host.appendChild(c);
+  });
+}
+function renderCoding(){
+  const host=document.getElementById('codingHost');host.innerHTML='';
+  CODING.filter(c=>codeTopic==='all'||c.diff===codeTopic).forEach((c,i)=>{
+    const el=document.createElement('div');el.className='chal';
+    const cls=c.diff==='easy'?'easy':c.diff==='med'?'med':'hard';
+    const lbl=c.diff==='easy'?'EASY':c.diff==='med'?'MEDIUM':'HARD';
+    const test=CODE_TESTS[c.title];
+    const stub=test?test.stub:('# '+c.title);
+    el.innerHTML=`<div class="chead"><div><div class="ptopic">${c.topic}</div><h3>${c.title}</h3></div><span class="badge ${cls}">${lbl}</span></div>
+      <div class="prompt">${c.prompt}</div>
+      <div class="ex">${esc(c.ex)}</div>
+      <textarea class="editor" data-ed spellcheck="false">${esc(stub)}</textarea>
+      <div class="crun">
+        <button class="btn primary" data-act="run">▶ Jalankan Test</button>
+        <button class="btn" data-act="hint">💡 Hint</button>
+        <button class="btn" data-act="sol">‹/› Solusi</button>
+        <button class="btn" data-act="reset">↺ Reset Kode</button>
+        <span class="pystatus" data-status></span>
+      </div>
+      <div class="console" data-con></div>
+      <div class="reveal-body" data-body><div class="hint" data-hint><b>Hint:</b> ${c.hint}</div><pre class="code" data-sol style="display:none">${esc(c.sol)}</pre></div>`;
+    const body=el.querySelector('[data-body]'),hint=el.querySelector('[data-hint]'),sol=el.querySelector('[data-sol]');
+    const ed=el.querySelector('[data-ed]'),con=el.querySelector('[data-con]'),status=el.querySelector('[data-status]');
+    el.querySelector('[data-act="hint"]').onclick=()=>{body.classList.add('show');hint.style.display='block';sol.style.display='none';};
+    el.querySelector('[data-act="sol"]').onclick=()=>{body.classList.add('show');hint.style.display='block';sol.style.display='block';};
+    el.querySelector('[data-act="reset"]').onclick=()=>{ed.value=stub;con.classList.remove('show');};
+    enableTab(ed);
+    el.querySelector('[data-act="run"]').onclick=()=>runChallenge(c,ed,con,status);
+    host.appendChild(el);
+  });
+}
+
+/* indentation helper: Tab inserts 4 spaces */
+function enableTab(ta){
+  ta.addEventListener('keydown',e=>{
+    if(e.key==='Tab'){e.preventDefault();const s=ta.selectionStart,en=ta.selectionEnd;
+      ta.value=ta.value.slice(0,s)+'    '+ta.value.slice(en);ta.selectionStart=ta.selectionEnd=s+4;}
+  });
+}
+
+/* ===================== PYODIDE RUNTIME ===================== */
+let pyodide=null,pyLoading=null;
+function loadPy(onProgress){
+  if(pyodide)return Promise.resolve(pyodide);
+  if(pyLoading)return pyLoading;
+  onProgress&&onProgress('Mengunduh runtime Python (sekali saja)…');
+  pyLoading=loadPyodide().then(py=>{pyodide=py;return py;});
+  return pyLoading;
+}
+async function pyRun(code){
+  const py=await loadPy();
+  let out='';
+  py.setStdout({batched:t=>{out+=t+'\n';}});
+  py.setStderr({batched:t=>{out+=t+'\n';}});
+  await py.runPythonAsync(code);
+  return out;
+}
+
+async function runChallenge(c,ed,con,status){
+  const test=CODE_TESTS[c.title];
+  con.className='console show';con.innerHTML='<span class="runspin"></span>menyiapkan & menjalankan…';
+  status.textContent='';
+  try{
+    await loadPy(m=>{con.innerHTML='<span class="runspin"></span>'+m;});
+  }catch(e){con.className='console show fail';con.innerHTML='<span class="bad">Gagal memuat Python. Cek koneksi internet.</span>';return;}
+  if(!test){
+    // no test cases — just run user code
+    try{const out=await pyRun(ed.value);con.className='console show';con.textContent=out||'(tidak ada output)';}
+    catch(e){con.className='console show fail';con.innerHTML='<span class="bad">'+esc(String(e.message||e))+'</span>';}
+    return;
+  }
+  // build a harness that runs each case & compares to expected
+  const casesJson=JSON.stringify(test.cases);
+  const harness=`
+import json
+_results=[]
+${ed.value}
+_cases=json.loads(r'''${casesJson}''')
+for _c in _cases:
+    try:
+        _got=eval(_c["call"])
+        _exp=eval(_c["exp"])
+        _ok=(_got==_exp)
+        _results.append((_ok, _c["call"], repr(_got), _c["exp"]))
+    except Exception as _e:
+        _results.append((False, _c["call"], "ERROR: "+str(_e), _c["exp"]))
+print(json.dumps([[bool(a),b,c,d] for a,b,c,d in _results]))
+`;
+  try{
+    const raw=await pyRun(harness);
+    const line=raw.trim().split('\n').filter(x=>x.trim()).pop();
+    const res=JSON.parse(line);
+    let pass=0;const rows=res.map(([ok,call,got,exp])=>{
+      if(ok)pass++;
+      return `${ok?'<span class="ok">✓ PASS</span>':'<span class="bad">✗ FAIL</span>'}  ${esc(call)}\n        → dapat: ${esc(got)}${ok?'':'   harusnya: '+esc(exp)}`;
+    }).join('\n');
+    const all=pass===res.length;
+    con.className='console show '+(all?'pass':'fail');
+    con.innerHTML=rows+`\n\n${all?'<span class="ok">🎉 SEMUA '+res.length+' TEST LULUS!</span>':'<span class="bad">'+pass+'/'+res.length+' test lulus — perbaiki & coba lagi.</span>'}`;
+    status.textContent=all?'✅ Lulus':'⚠️ '+pass+'/'+res.length;
+    // record coding progress
+    state.coding=state.coding||{};if(all)state.coding[c.title]=true;save();
+  }catch(e){
+    con.className='console show fail';
+    con.innerHTML='<span class="bad">Error pada kode kamu:\n'+esc(String(e.message||e))+'</span>';
+    status.textContent='⚠️ error';
+  }
+}
+
+/* ===================== SIMULATOR ===================== */
+let simSecs=45*60,simInt=null,simRunning=false;
+function fmt(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function paintSim(){const t=document.getElementById('simTimer');t.textContent=fmt(simSecs);t.classList.toggle('warn',simSecs<=60&&simSecs>0);}
+document.querySelectorAll('#sim .chip').forEach(c=>{
+  c.onclick=()=>{
+    document.querySelectorAll('#sim .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');
+    clearInterval(simInt);simRunning=false;simSecs=+c.dataset.min*60;const m=+c.dataset.min;
+    document.getElementById('simMode').textContent=m===45?'CODING TEST':m===30?'VIBECODING':'SPRINT';paintSim();
+  };
+});
+document.getElementById('simStart').onclick=()=>{
+  if(simRunning)return;simRunning=true;
+  simInt=setInterval(()=>{
+    if(simSecs>0){simSecs--;paintSim();}
+    else{clearInterval(simInt);simRunning=false;document.getElementById('simTimer').textContent='00:00';
+      alert('⏰ Waktu habis! Di tes nyata, pastikan submit sebelum ini.');}
+  },1000);
+};
+document.getElementById('simPause').onclick=()=>{clearInterval(simInt);simRunning=false;};
+document.getElementById('simReset').onclick=()=>{clearInterval(simInt);simRunning=false;const on=document.querySelector('#sim .chip.on');simSecs=(+(on?on.dataset.min:45))*60;paintSim();};
+
+/* ===================== STATS ===================== */
+function renderStats(){
+  const topics=Object.keys(state.qstats);
+  let totalA=0,totalR=0;
+  topics.forEach(t=>{totalA+=state.qstats[t].total;totalR+=state.qstats[t].right;});
+  const acc=totalA?Math.round(totalR/totalA*100):0;
+  const planTotal=DAYS.reduce((a,d)=>a+d.t.length,0);
+  const planDone=Object.values(state.done).filter(Boolean).length;
+  document.getElementById('statCards').innerHTML=`
+    <div class="stat"><div class="v">${totalA}</div><div class="k">Soal dikerjakan</div></div>
+    <div class="stat"><div class="v">${acc}%</div><div class="k">Akurasi total</div></div>
+    <div class="stat"><div class="v">${totalR}</div><div class="k">Jawaban benar</div></div>
+    <div class="stat"><div class="v">${planDone}/${planTotal}</div><div class="k">Target rencana</div></div>`;
+  const bars=document.getElementById('topicBars');
+  if(!topics.length){bars.innerHTML='<p style="color:var(--dim);font-size:14px">Belum ada data. Kerjakan kuis dulu untuk melihat akurasi per topik. 🎯</p>';return;}
+  bars.innerHTML='<h3 style="font-family:Syne;font-weight:700;font-size:16px;margin-bottom:16px">Akurasi per Topik</h3>'+
+    topics.sort((a,b)=>(state.qstats[a].right/state.qstats[a].total)-(state.qstats[b].right/state.qstats[b].total)).map(t=>{
+      const s=state.qstats[t];const p=Math.round(s.right/s.total*100);
+      const col=p>=80?'var(--green)':p>=50?'var(--amber)':'var(--red)';
+      return `<div class="tbar"><div class="tl"><span class="tn">${t}</span><span class="tv">${s.right}/${s.total} · ${p}%</span></div><div class="tt"><div class="tf" style="width:${p}%;background:${col}"></div></div></div>`;
+    }).join('');
+}
+
+/* ===================== RESET ===================== */
+document.getElementById('hardReset').onclick=()=>{
+  if(confirm('Hapus semua progres & statistik?')){state={done:{},qstats:{}};save();renderDays();updateProgress();renderStats();}
+};
+
+/* ===================== LIVE EDITOR ===================== */
+function initLive(){
+  const ed=document.getElementById('liveEditor'),con=document.getElementById('liveConsole'),status=document.getElementById('liveStatus');
+  enableTab(ed);
+  async function run(){
+    con.className='console show';con.innerHTML='<span class="runspin"></span>menjalankan…';status.textContent='';
+    try{await loadPy(m=>{con.innerHTML='<span class="runspin"></span>'+m;});}
+    catch(e){con.className='console show fail';con.innerHTML='<span class="bad">Gagal memuat Python. Cek koneksi internet.</span>';return;}
+    try{const out=await pyRun(ed.value);con.className='console show';con.textContent=out||'(selesai — tidak ada output, gunakan print())';status.textContent='✅ selesai';}
+    catch(e){con.className='console show fail';con.innerHTML='<span class="bad">'+esc(String(e.message||e))+'</span>';status.textContent='⚠️ error';}
+  }
+  document.getElementById('liveRun').onclick=run;
+  document.getElementById('liveClear').onclick=()=>{con.classList.remove('show');con.textContent='';status.textContent='';};
+  ed.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')run();});
+}
+
+/* ===================== INIT ===================== */
+renderDays();updateProgress();renderLearn();renderCheat();
+buildFilters();applyQuizFilter();renderFlash();buildCodeFilters();renderCoding();paintSim();initLive();
+</script>
+</body>
+</html>

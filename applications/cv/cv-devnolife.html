@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Andi Agung Dwi Arya — CV</title>
+<style>
+  :root {
+    --blue: #2d68f8;
+    --blue-deep: #15327a;
+    --yellow: #ffc80b;
+    --ink: #0b1e4b;
+    --muted: #5b6783;
+    --line: #e4e8f2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @page { size: A4; margin: 0; }
+  html, body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    font-size: 11px;
+    line-height: 1.55;
+    background: #fff;
+  }
+  .page {
+    width: 210mm;
+    height: 297mm;
+    overflow: hidden;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 64mm 1fr;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .side {
+    background: var(--ink);
+    color: #fff;
+    padding: 12mm 9mm;
+  }
+  .photo {
+    width: 34mm;
+    height: 34mm;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 28%;
+    border: 3px solid var(--yellow);
+    margin-bottom: 12px;
+    display: block;
+  }
+  .name {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.5px;
+  }
+  .name .u { color: var(--yellow); }
+  .role {
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--yellow);
+  }
+  .tagline {
+    margin-top: 6px;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.55);
+  }
+  .side h2 {
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--yellow);
+    margin: 13px 0 7px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  }
+  .contact div { margin-bottom: 6px; color: rgba(255, 255, 255, 0.85); }
+  .contact .lbl {
+    display: block;
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.45);
+  }
+  .skillgroup { margin-bottom: 9px; }
+  .skillgroup .gt {
+    font-size: 9px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 5px;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .chip {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 2px 8px;
+    font-size: 8.5px;
+    font-weight: 600;
+  }
+  .chip.y { background: var(--yellow); color: var(--ink); border-color: var(--yellow); }
+  .statline { display: flex; justify-content: space-between; margin-bottom: 5px; }
+  .statline b { color: var(--yellow); font-size: 13px; font-weight: 800; }
+  .statline span { color: rgba(255, 255, 255, 0.7); font-size: 8.5px; text-align: right; max-width: 30mm; }
+
+  /* ---------- Main ---------- */
+  .main { padding: 12mm 11mm; }
+  .main h2 {
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--blue);
+    margin: 0 0 10px;
+  }
+  .main section { margin-bottom: 17px; }
+  .summary { color: #313c5a; font-size: 10.8px; line-height: 1.65; }
+
+  .job { margin-bottom: 10px; position: relative; padding-left: 13px; }
+  .job::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 4px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--yellow);
+    border: 1.5px solid var(--blue);
+  }
+  .job .jt { font-size: 12px; font-weight: 800; }
+  .job .jm { font-size: 9.5px; color: var(--muted); font-weight: 600; margin: 1px 0 4px; }
+  .job ul { list-style: none; }
+  .job li { position: relative; padding-left: 11px; margin-bottom: 5px; color: #313c5a; }
+  .job li::before { content: "▸"; position: absolute; left: 0; color: var(--blue); font-size: 8px; top: 1px; }
+
+  .proj { display: flex; justify-content: space-between; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--line); }
+  .proj:last-child { border-bottom: none; }
+  .proj .pn { font-weight: 700; }
+  .proj .pd { color: var(--muted); font-size: 9.5px; }
+  .proj .pl { color: var(--blue); font-size: 9px; font-weight: 600; white-space: nowrap; }
+
+  .edu .eduitem { margin-bottom: 9px; }
+  .edu .et { font-weight: 700; }
+  .edu .em { color: var(--muted); font-size: 9px; }
+  .edu .eh { color: var(--blue); font-weight: 700; font-size: 9px; margin-top: 1px; }
+</style>
+</head>
+<body>
+  <div class="page">
+    <!-- Sidebar -->
+    <aside class="side">
+      <img class="photo" src="foto.jpeg" alt="Andi Agung Dwi Arya" />
+      <div class="name">Andi Agung<br />Dwi Arya<span class="u">_</span></div>
+      <div class="role">Full-Stack &amp; Mobile Engineer</div>
+      <div class="tagline">// developer, no life</div>
+
+      <h2>Contact</h2>
+      <div class="contact">
+        <div><span class="lbl">Location</span>Makassar, Indonesia</div>
+        <div><span class="lbl">GitHub</span>github.com/devnolife</div>
+        <div><span class="lbl">X (Twitter)</span>@devnolife</div>
+      </div>
+
+      <h2>Skills</h2>
+      <div class="skillgroup">
+        <div class="gt">Front-end</div>
+        <div class="chips">
+          <span class="chip y">TypeScript</span><span class="chip">Next.js</span>
+          <span class="chip">React</span><span class="chip">Tailwind</span>
+        </div>
+      </div>
+      <div class="skillgroup">
+        <div class="gt">Mobile</div>
+        <div class="chips">
+          <span class="chip">React Native</span><span class="chip">Expo</span>
+        </div>
+      </div>
+      <div class="skillgroup">
+        <div class="gt">Back-end</div>
+        <div class="chips">
+          <span class="chip">Node.js</span><span class="chip">NestJS</span>
+          <span class="chip">Go</span><span class="chip">REST API</span>
+        </div>
+      </div>
+      <div class="skillgroup">
+        <div class="gt">AI / Data</div>
+        <div class="chips">
+          <span class="chip">Python</span><span class="chip">NLP</span>
+          <span class="chip">LLM</span><span class="chip">OCR</span><span class="chip">OpenCV</span>
+        </div>
+      </div>
+      <div class="skillgroup">
+        <div class="gt">Database</div>
+        <div class="chips">
+          <span class="chip">PostgreSQL</span><span class="chip">Prisma</span>
+          <span class="chip">MongoDB</span><span class="chip">Redis</span>
+        </div>
+      </div>
+      <div class="skillgroup">
+        <div class="gt">Infra &amp; Messaging</div>
+        <div class="chips">
+          <span class="chip">Docker</span><span class="chip">RabbitMQ</span>
+          <span class="chip">Kafka</span><span class="chip">CI/CD</span>
+        </div>
+      </div>
+
+      <h2>By the Numbers</h2>
+      <div class="statline"><b>212</b><span>original repositories</span></div>
+      <div class="statline"><b>200+</b><span>products shipped</span></div>
+      <div class="statline"><b>16 mo</b><span>longest single build</span></div>
+      <div class="statline"><b>5+ yrs</b><span>building daily</span></div>
+
+      <h2>Languages</h2>
+      <div class="contact">
+        <div>Bahasa Indonesia — Native</div>
+        <div>English — Professional</div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <section>
+        <h2>Profile</h2>
+        <p class="summary">
+          Full-stack software engineer with 5+ years building and shipping production-grade web,
+          SaaS, mobile, and AI products. I work across TypeScript/Next.js, React Native,
+          Node/NestJS/Go, and Python for AI &amp; NLP. 200+ projects shipped end-to-end — including a
+          digital e-wallet live on Google Play &amp; the App Store (10K+ installs, 4.7★). I build
+          products that last and stay with them after launch — most run 12–16 months in production.
+          Founder of devnolife studio.
+        </p>
+      </section>
+
+      <section>
+        <h2>Experience</h2>
+        <div class="job">
+          <div class="jt">Founder &amp; Full-Stack Engineer</div>
+          <div class="jm">devnolife studio (Freelance) · 2020 – Present · Makassar</div>
+          <ul>
+            <li>Shipped 200+ projects end-to-end across full-stack web, SaaS dashboards, mobile apps, and AI/NLP — from scoping and architecture to deployment and long-term maintenance.</li>
+            <li><b>Saku Sultan</b> — built &amp; shipped a digital e-wallet to Google Play &amp; the App Store (10K+ installs, 4.7★): React Native/Expo app, Go (Gin) backend with RabbitMQ job queues &amp; Kafka transaction event streams, plus an admin dashboard. Passed both Apple &amp; Google review.</li>
+            <li><b>fokusngajar.id</b> — production Go backend (chi v5) powering a live AI product: LLM/RAG pipeline (PDF ingestion → chunking → embeddings → retrieval), rate limiting, metrics, multi-stage Docker builds.</li>
+            <li><b>SINTEKMu</b> — faculty information system with 6 role levels; live in production at Fakultas Teknik Unismuh (580+ commits).</li>
+            <li><b>Turnitin platform</b> — OCR + semantic-similarity (NLP) plagiarism detection with a complex role-based Next.js dashboard.</li>
+            <li><b>PemiluDigital</b> — end-to-end e-voting with real-time tallying, RBAC, and a full audit trail.</li>
+            <li><b>SaaS GuruPintar</b> — multi-tenant AI platform generating lesson plans &amp; teaching materials for teachers.</li>
+            <li><b>WhatsApp platforms</b> — SaaS messaging dashboard, WhatsApp API gateway, and TOTP/OTP delivery used across client projects.</li>
+            <li>Own the whole lifecycle solo: requirements, UI/UX, database design, API, deployment, and 12–16 months of post-launch support per product.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2>Selected Projects</h2>
+        <div class="proj"><span><span class="pn">Saku Sultan</span> <span class="pd">— e-wallet, React Native + Go + RabbitMQ/Kafka</span></span><span class="pl">Play &amp; App Store</span></div>
+        <div class="proj"><span><span class="pn">SINTEKMu</span> <span class="pd">— faculty system, 6 roles, live</span></span><span class="pl">simtekmu.teknik.unismuh.ac.id</span></div>
+        <div class="proj"><span><span class="pn">fokusngajar.id</span> <span class="pd">— Go LLM/RAG backend, live</span></span><span class="pl">fokusngajar.id</span></div>
+        <div class="proj"><span><span class="pn">WhatsApp SaaS Dashboard</span> <span class="pd">— inbox &amp; messaging admin</span></span><span class="pl">github.com/devnolife/saas-whatsapp-dashboard</span></div>
+        <div class="proj"><span><span class="pn">WhatsApp API</span> <span class="pd">— OTP, notifications, bots</span></span><span class="pl">github.com/devnolife/whatsapp-api</span></div>
+        <div class="proj"><span><span class="pn">Turnitin Dashboard</span> <span class="pd">— role-based Next.js dashboard</span></span><span class="pl">github.com/devnolife/turnitin-dashboard-nextjs</span></div>
+        <div class="proj"><span><span class="pn">LPKA Management</span> <span class="pd">— RBAC, 135 commits</span></span><span class="pl">Next.js · Prisma</span></div>
+        <div class="proj"><span><span class="pn">Magic IDE</span> <span class="pd">— browser Python IDE</span></span><span class="pl">github.com/devnolife/magic-ide</span></div>
+        <div class="proj"><span><span class="pn">LLM Wizard Research</span> <span class="pd">— neuro-symbolic AI</span></span><span class="pl">github.com/devnolife/llm-wizard-research</span></div>
+      </section>
+
+      <section class="edu">
+        <h2>Education</h2>
+        <div class="eduitem">
+          <div class="et">M.Kom. — Informatics Engineering <span style="font-weight:600;color:var(--muted)">(in progress)</span></div>
+          <div class="em">Universitas Hasanuddin (UNHAS), Makassar</div>
+        </div>
+        <div class="eduitem">
+          <div class="et">S.Kom. — Informatics Engineering</div>
+          <div class="em">Universitas Muhammadiyah Makassar · GPA 3.92 / 4.00</div>
+          <div class="eh">★ Best Graduate, Faculty of Engineering</div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

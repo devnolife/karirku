@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Persiapan Interview User — AI Engineer @ GSI Corp</title>
+<style>
+  :root{
+    --bg:#0f1419; --card:#1a2129; --card2:#212a35; --line:#2d3a48;
+    --txt:#e8edf2; --mut:#8fa3b5; --acc:#4fc3f7; --gold:#ffd54f;
+    --grn:#81c784; --red:#e57373; --pur:#b39ddb;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.65;padding-bottom:80px}
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px}
+  header{background:linear-gradient(135deg,#1a2b3d,#0f1419);border-bottom:2px solid var(--acc);padding:36px 0 28px;margin-bottom:28px}
+  header h1{font-size:1.7rem;color:var(--acc)}
+  header .sub{color:var(--mut);margin-top:6px;font-size:.95rem}
+  .badge{display:inline-block;background:#2c3e50;color:var(--gold);border:1px solid var(--gold);border-radius:20px;padding:2px 12px;font-size:.8rem;margin:8px 6px 0 0}
+  nav{position:sticky;top:0;background:rgba(15,20,25,.97);border-bottom:1px solid var(--line);z-index:10;padding:10px 0;margin-bottom:24px}
+  nav .wrap{display:flex;flex-wrap:wrap;gap:8px}
+  nav a{color:var(--mut);text-decoration:none;font-size:.82rem;padding:4px 10px;border:1px solid var(--line);border-radius:16px}
+  nav a:hover{color:var(--acc);border-color:var(--acc)}
+  section{margin-bottom:36px}
+  h2{color:var(--gold);font-size:1.25rem;border-left:4px solid var(--gold);padding-left:12px;margin-bottom:16px}
+  h3{color:var(--acc);font-size:1.02rem;margin:18px 0 8px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:14px}
+  .q{background:var(--card2);border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden}
+  .q summary{cursor:pointer;padding:14px 18px;font-weight:600;color:var(--txt);list-style:none;display:flex;gap:10px}
+  .q summary::before{content:"❓";flex-shrink:0}
+  .q[open] summary{border-bottom:1px solid var(--line);color:var(--acc)}
+  .q .body{padding:14px 18px}
+  .say{background:#1b2e1b;border-left:4px solid var(--grn);border-radius:0 8px 8px 0;padding:12px 16px;margin:10px 0;color:#c8e6c9;font-size:.95rem}
+  .say::before{content:"🗣️ Bilang begini:";display:block;font-weight:700;color:var(--grn);margin-bottom:6px;font-size:.82rem}
+  .warn{background:#332417;border-left:4px solid var(--red);border-radius:0 8px 8px 0;padding:12px 16px;margin:10px 0;color:#ffcdd2;font-size:.92rem}
+  .warn::before{content:"⚠️ Hati-hati:";display:block;font-weight:700;color:var(--red);margin-bottom:4px;font-size:.82rem}
+  .tip{background:#241a33;border-left:4px solid var(--pur);border-radius:0 8px 8px 0;padding:12px 16px;margin:10px 0;color:#d1c4e9;font-size:.92rem}
+  .tip::before{content:"💡 Insight:";display:block;font-weight:700;color:var(--pur);margin-bottom:4px;font-size:.82rem}
+  ul,ol{padding-left:22px;margin:8px 0}
+  li{margin-bottom:6px}
+  b{color:var(--gold)}
+  code{background:#101820;border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-size:.88em;color:var(--acc)}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.92rem}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}
+  th{background:var(--card2);color:var(--acc)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:700px){.grid2{grid-template-columns:1fr}}
+  .check{list-style:none;padding-left:0}
+  .check li{padding-left:30px;position:relative}
+  .check li::before{content:"☐";position:absolute;left:4px;color:var(--acc);font-size:1.1rem}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>🎯 Interview User — AI Engineer @ GSI Corp</h1>
+    <div class="sub">Selasa, 21 Juli 2026 · 14.00 WITA · Head Office GSI, Jl. A. P. Pettarani No.80, Makassar · <b style="color:var(--red)">BAWA LAPTOP</b></div>
+    <span class="badge">⛏️ Perusahaan Tambang, bukan IT!</span>
+    <span class="badge">💼 Freelance + WFA</span>
+    <span class="badge">🐍 Python AI/ML</span>
+  </div>
+</header>
+
+<nav><div class="wrap">
+  <a href="#perusahaan">1. Perusahaan</a>
+  <a href="#maunya">2. Yang Mereka Cari</a>
+  <a href="#jualan">3. Poin Jualanmu</a>
+  <a href="#tanya-teknis">4. Pertanyaan Teknis</a>
+  <a href="#tanya-bisnis">5. Pertanyaan Bisnis</a>
+  <a href="#tanya-umum">6. Pertanyaan Umum</a>
+  <a href="#balik">7. Tanya Balik</a>
+  <a href="#checklist">8. Checklist</a>
+</div></nav>
+
+<div class="wrap">
+
+<!-- ============ 1 ============ -->
+<section id="perusahaan">
+<h2>1. GSI itu Perusahaan Apa?</h2>
+<div class="card">
+  <p><b>PT Gunung Samudera Internasional (GSI Group)</b> — berdiri 2018, HQ Makassar. Ini <b>BUKAN perusahaan teknologi</b>. Bisnis intinya:</p>
+  <ul>
+    <li>⛏️ <b>Kontraktor pertambangan nikel</b> — dari eksplorasi, eksploitasi, infrastruktur tambang, sampai jual ke smelter (punya izin IUJP)</li>
+    <li>🏗️ <b>Jasa konstruksi</b> infrastruktur pertambangan</li>
+    <li>🚜 <b>Penyewaan alat berat</b></li>
+    <li>👷 <b>Penyediaan tenaga kerja</b> (manpower/outsourcing) untuk industri tambang</li>
+    <li>🛢️ <b>Distribusi pelumas industri</b> (anak usaha: PT Gunung Samudera Lubricants)</li>
+  </ul>
+  <div class="tip">Ini <b>fakta paling penting</b> untuk interview besok: kamu kemungkinan besar AI Engineer <b>pertama atau salah satu yang pertama</b> di sana. "User"-mu bukan CTO tech company — kemungkinan kepala divisi IT/operasional/digitalisasi. Mereka mau <b>membawa AI ke operasional tambang</b>, bukan bikin produk AI untuk dijual. Bahasamu harus bahasa BISNIS, bukan jargon.</div>
+  <div class="warn">Jangan pamer istilah teknis berlebihan (transformer, attention, LoRA, dsb) ke orang non-AI. Yang menang di interview seperti ini adalah yang bisa menjelaskan AI dengan analogi bisnis sederhana + kasih contoh use case nyata untuk INDUSTRI MEREKA.</div>
+</div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section id="maunya">
+<h2>2. Dari Requirement — Yang Sebenarnya Mereka Inginkan</h2>
+<div class="card">
+  <table>
+    <tr><th>Yang tertulis</th><th>Artinya buat mereka</th></tr>
+    <tr><td>Research &amp; evaluate latest AI/LLM technologies <b>for business applications</b></td><td>"Kami tidak tahu AI apa yang cocok — tolong kamu yang menilai dan merekomendasikan."</td></tr>
+    <tr><td>Develop <b>PoCs, prototypes,</b> and production-ready solutions</td><td>Mulai dari eksperimen kecil, cepat, murah. Bukan proyek raksasa. Mereka mau bukti dulu.</td></tr>
+    <tr><td>Integrate AI with <b>existing systems and business processes</b></td><td>Mereka sudah punya sistem (ERP, HRIS, laporan tambang, dokumen). AI harus nyambung ke situ, bukan sistem baru dari nol.</td></tr>
+    <tr><td>Collaborate with cross-functional teams</td><td>Kamu akan banyak bicara dengan orang NON-teknis: operasional, HR, keuangan, HSE (safety).</td></tr>
+    <tr><td>Monitor, optimize, maintain + <b>documentation</b></td><td>Bukan bikin lalu tinggal. Harus ada monitoring &amp; dokumentasi (mereka trauma vendor yang hilang).</td></tr>
+    <tr><td>Responsible AI &amp; explainability</td><td>Keputusan AI harus bisa dijelaskan — penting di industri berisiko tinggi (tambang = safety &amp; audit).</td></tr>
+    <tr><td><b>Freelance + WFA</b></td><td>Ini kontrak project-based/retainer, bukan karyawan tetap. Bagus buatmu: cocok dengan pola kerjamu, dan bisa nego rate per proyek/bulanan.</td></tr>
+  </table>
+  <div class="tip">Requirement "2–4 tahun AI/ML" sementara kamu pasang "5 tahun software engineer" — itu justru pas. Posisi ini butuh orang yang bisa <b>membangun sistem utuh</b> (integrasi, deployment, monitoring), bukan researcher. AI engineer murni yang tidak bisa integrasi sistem justru gagal di sini.</div>
+</div>
+
+<h3>Use case AI yang paling mungkin mereka bayangkan (siapkan ide!)</h3>
+<div class="card">
+  <ol>
+    <li><b>Document AI / RAG internal</b> — chatbot yang menjawab dari dokumen perusahaan: SOP tambang, kontrak, laporan produksi, regulasi IUJP. <i>(Ini persis core-llm/fokusngajar-mu!)</i></li>
+    <li><b>Otomasi laporan</b> — laporan produksi harian/mingguan tambang di-generate otomatis dari data mentah.</li>
+    <li><b>AI untuk HR/manpower</b> — screening CV pelamar tambang, matching tenaga kerja ke proyek (bisnis manpower mereka besar).</li>
+    <li><b>Predictive maintenance alat berat</b> — prediksi kapan excavator/dump truck perlu servis dari data pemakaian. (Jujur kalau ditanya: ini ML klasik + butuh data sensor; kamu mulai dari analisis data yang ada.)</li>
+    <li><b>Monitoring safety (HSE)</b> — analisis foto/laporan insiden, deteksi APD via kamera (computer vision — jujur: bisa PoC dengan model siap pakai/YOLO, bukan keahlian utamamu tapi bisa dieksekusi).</li>
+    <li><b>Analisis dokumen tender/kontrak</b> — ekstraksi poin penting dari kontrak konstruksi.</li>
+  </ol>
+</div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section id="jualan">
+<h2>3. Poin Jualan PALING PENTING Untukmu</h2>
+<div class="card">
+  <p>Urutan senjata dari yang paling kuat:</p>
+  <ol>
+    <li><b>fokusngajar.id + core-llm</b> 🥇 — kamu sudah membangun &amp; MENJALANKAN backend AI produksi: Go, pipeline RAG (PDF masuk → dipotong → embedding → retrieval → jawaban), integrasi OpenAI, rate limiting, metrics, Docker. <b>LIVE dipakai orang.</b> Ini persis "production-ready AI solution" yang mereka minta.</li>
+    <li><b>InterOpera take-home</b> 🥈 — bukti kamu paham <b>deployment &amp; evaluasi model</b>: canary deployment, auto-eval, promote/rollback model. Ini menjawab "monitor &amp; optimize AI model performance".</li>
+    <li><b>Saku Sultan</b> 🥉 — bukti bisa deliver produk utuh sampai production (App Store + Play Store, fintech). Menjawab keraguan "freelancer bisa selesaikan proyek?"</li>
+    <li><b>SINTEKMu</b> — bukti bisa integrasi dengan proses bisnis organisasi besar (multi-peran: dekan, dosen, keuangan, lab). Persis seperti integrasi ke proses bisnis GSI.</li>
+    <li><b>Aethra / amertasign-llm</b> — Python FastAPI untuk AI, menjawab requirement "Proficient in Python".</li>
+  </ol>
+  <div class="say">Saya 5 tahun sebagai software engineer full-stack, dan 2 tahun terakhir fokus membangun sistem AI yang benar-benar dipakai di produksi. Contohnya fokusngajar.id — platform edukasi yang backend AI-nya saya bangun sendiri: dokumen PDF diproses jadi basis pengetahuan, lalu AI menjawab pertanyaan pengguna berdasarkan dokumen itu, bukan mengarang. Pola yang sama persis bisa diterapkan di GSI — misalnya untuk SOP tambang, dokumen kontrak, atau laporan produksi.</div>
+  <div class="tip">Kalimat pamungkas yang membedakanmu dari kandidat lain: <b>"Saya bukan hanya bisa bikin model AI — saya bisa mengintegrasikannya ke sistem yang sudah berjalan, men-deploy-nya, dan memastikan tetap jalan. Karena latar saya software engineer, bukan hanya data scientist."</b></div>
+</div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section id="tanya-teknis">
+<h2>4. Pertanyaan Teknis yang Mungkin Ditanya</h2>
+
+<details class="q"><summary>Apa itu AI/LLM? Jelaskan dengan bahasa sederhana. (tes komunikasi!)</summary><div class="body">
+  <div class="say">LLM itu seperti karyawan baru yang sudah membaca jutaan buku — pintar bicara dan menulis, tapi belum tahu apa-apa tentang perusahaan kita. Tugas saya sebagai AI engineer adalah "memberi dia akses ke dokumen perusahaan" dengan cara yang aman dan terkontrol, supaya jawabannya berdasarkan data kita, bukan karangan.</div>
+</div></details>
+
+<details class="q"><summary>Apa itu RAG? Kenapa tidak fine-tuning saja?</summary><div class="body">
+  <div class="say">RAG (Retrieval-Augmented Generation) itu: sebelum AI menjawab, sistem mencari dulu potongan dokumen yang relevan, lalu AI menjawab BERDASARKAN potongan itu. Analoginya: ujian open-book vs menghafal. RAG = open-book: lebih murah, datanya bisa di-update kapan saja cukup ganti dokumennya, dan jawabannya bisa ditelusuri sumbernya — penting untuk audit. Fine-tuning = menghafal: mahal, tiap ada data baru harus latih ulang, dan susah dijelaskan kenapa jawabannya begitu. Untuk kebutuhan dokumen perusahaan seperti SOP dan kontrak, RAG hampir selalu pilihan yang tepat. Saya sudah menjalankan pipeline RAG di produksi di fokusngajar.id.</div>
+  <div class="tip">Bonus point: ceritakan pengalaman InterOpera — kamu pernah bikin sistem evaluasi yang otomatis MENOLAK model hasil fine-tune karena akurasinya menurun. Itu bukti nyata kamu paham risiko fine-tuning.</div>
+</div></details>
+
+<details class="q"><summary>Bagaimana kamu menangani AI yang menjawab ngawur (hallucination)?</summary><div class="body">
+  <ul>
+    <li><b>Grounding</b>: jawaban wajib bersumber dari dokumen (RAG) — kalau tidak ada di dokumen, AI dilatih menjawab "tidak ada informasinya".</li>
+    <li><b>Sitasi</b>: tampilkan sumber/halaman dokumen di tiap jawaban, jadi user bisa verifikasi.</li>
+    <li><b>Evaluasi rutin</b>: set pertanyaan uji + jawaban benar, dijalankan otomatis tiap ada perubahan (pengalaman InterOpera).</li>
+    <li><b>Guardrail</b>: batasi topik, validasi output sebelum ditampilkan.</li>
+    <li><b>Human in the loop</b> untuk keputusan penting — AI menyarankan, manusia memutuskan. (Sangat relevan untuk industri tambang/safety!)</li>
+  </ul>
+</div></details>
+
+<details class="q"><summary>Apa itu Responsible AI &amp; explainability? (ADA DI REQUIREMENT — pasti ditanya)</summary><div class="body">
+  <div class="say">Responsible AI artinya AI yang bisa dipertanggungjawabkan: jelas datanya dari mana, keputusannya bisa dijelaskan, tidak bocorkan data sensitif, dan ada manusia yang mengawasi. Di industri seperti pertambangan ini krusial — misal AI merekomendasikan penempatan tenaga kerja atau menilai laporan safety, kita harus bisa menjelaskan KENAPA, untuk audit dan keadilan. Praktik saya: selalu pakai pendekatan yang traceable (RAG dengan sitasi sumber), logging semua keputusan AI, data perusahaan tidak dipakai untuk melatih model publik, dan keputusan berisiko tinggi selalu lewat persetujuan manusia.</div>
+</div></details>
+
+<details class="q"><summary>Python-mu sejauh apa? Framework AI apa yang kamu pakai?</summary><div class="body">
+  <div class="say">Python saya pakai untuk backend AI dan data processing — utamanya FastAPI + Pydantic (contoh repo publik: aethra, amertasign-llm), pandas untuk olah data, dan integrasi OpenAI API. Untuk pipeline RAG saya pernah pakai kombinasi embedding model + vector database seperti Qdrant. Selain Python saya juga kuat di Go untuk backend AI performa tinggi — core-llm yang menggerakkan fokusngajar.id itu Go.</div>
+  <div class="warn">Jujur kalau ditanya PyTorch/TensorFlow deep-learning training dari nol: "Fokus saya di applied AI — memanfaatkan dan mengintegrasikan model (LLM, embedding, model siap pakai) menjadi solusi bisnis production-ready, bukan riset melatih model dari nol. Untuk kebutuhan bisnis GSI, pendekatan applied ini yang paling cepat memberi hasil."</div>
+</div></details>
+
+<details class="q"><summary>Cloud apa yang kamu kuasai? Bagaimana deploy AI-mu?</summary><div class="body">
+  <div class="say">Saya deploy di VPS Linux dan layanan cloud: Docker (multi-stage build), nginx, monitoring metrics, CI/CD. Backend AI fokusngajar.id saya kelola sendiri end-to-end di produksi. Saya juga terbiasa Vercel untuk frontend dan pernah menyusun sistem canary deployment untuk model AI — versi baru diuji otomatis dulu di sebagian traffic, kalau bagus dipromosikan, kalau jelek di-rollback otomatis.</div>
+</div></details>
+
+<details class="q"><summary>Bagaimana kontrol biaya AI? (pertanyaan favorit orang bisnis)</summary><div class="body">
+  <ul>
+    <li>Pilih model sesuai tugas — tugas ringan pakai model murah, tugas berat baru model mahal (bisa hemat 10-20x)</li>
+    <li>Rate limiting per user (saya implement dengan x/time di core-llm)</li>
+    <li>Caching jawaban untuk pertanyaan berulang</li>
+    <li>Batasi panjang konteks — kirim hanya potongan dokumen relevan, bukan semua</li>
+    <li>Monitoring penggunaan token per fitur, jadi ketahuan mana yang boros</li>
+  </ul>
+  <div class="say">Di fokusngajar.id saya pasang rate limiting dan pemilihan model per jenis tugas, jadi biaya API tetap terkendali meski pengguna bertambah.</div>
+</div></details>
+
+<details class="q"><summary>Kalau kami minta PoC chatbot dokumen internal, berapa lama dan butuh apa?</summary><div class="body">
+  <div class="say">Untuk PoC: 1–2 minggu. Yang saya butuhkan: contoh dokumen (misal 10–20 SOP/laporan), satu grup user uji coba, dan keputusan soal privasi — mau pakai API cloud (cepat, data keluar dengan enkripsi &amp; perjanjian no-training) atau model lokal/self-hosted (data tidak keluar sama sekali, cocok untuk dokumen sensitif). Deliverable PoC: chatbot yang bisa dipakai tim uji + laporan akurasi + estimasi biaya kalau di-scale. Dari situ baru kita putuskan lanjut ke produksi atau tidak.</div>
+  <div class="tip">Jawaban terstruktur seperti ini (timeline + kebutuhan + deliverable + keputusan) yang membedakan engineer senior dari junior di mata user bisnis.</div>
+</div></details>
+
+<details class="q"><summary>Bisa computer vision? (misal deteksi APD/helm di area tambang)</summary><div class="body">
+  <div class="say">Bukan spesialisasi utama saya, tapi bisa dieksekusi — untuk deteksi objek seperti APD sudah ada model siap pakai (YOLO dan sejenisnya) yang tinggal di-fine-tune dengan foto dari lapangan. Pendekatan saya realistis: mulai PoC dengan model pre-trained, ukur akurasinya dengan data GSI sendiri, baru putuskan investasi lebih jauh. Saya tidak akan menjanjikan akurasi sebelum lihat datanya.</div>
+</div></details>
+
+<details class="q"><summary>Live coding / diminta demo di laptop</summary><div class="body">
+  <ul>
+    <li>Demo utama: <b>fokusngajar.id</b> (live, buka di browser) + tunjukkan arsitektur core-llm &amp; interopera-platform di GitHub</li>
+    <li>Kalau disuruh coding: kemungkinan Python sederhana — parsing data, hit API, logika bisnis. Tenang, kerjakan sambil <b>berpikir keras (thinking out loud)</b> — user menilai cara berpikirmu, bukan cuma hasilnya</li>
+    <li>Kalau boleh pakai tools sendiri, bilang jujur: "sehari-hari saya pakai AI assistant untuk mempercepat, tapi saya paham setiap baris yang dihasilkan" — justru nilai plus untuk posisi AI Engineer</li>
+  </ul>
+</div></details>
+</section>
+
+<!-- ============ 5 ============ -->
+<section id="tanya-bisnis">
+<h2>5. Pertanyaan Bisnis / Use Case (dari sisi "User")</h2>
+
+<details class="q"><summary>Menurut kamu, AI bisa dipakai untuk apa di perusahaan tambang seperti kami?</summary><div class="body">
+  <p>INI PERTANYAAN PALING PENTING. Jawab terstruktur, mulai dari yang paling cepat memberi hasil:</p>
+  <div class="say">Saya bagi tiga berdasarkan kecepatan hasil. <b>Cepat (1–2 bulan)</b>: asisten dokumen internal — SOP, kontrak, regulasi bisa ditanya lewat chat; dan otomasi laporan produksi. <b>Menengah (3–6 bulan)</b>: AI untuk proses HR/manpower — screening pelamar, matching tenaga kerja ke proyek; analisis dokumen tender. <b>Jangka panjang</b>: predictive maintenance alat berat dan monitoring safety berbasis kamera — ini butuh pengumpulan data dulu. Saran saya mulai dari asisten dokumen, karena datanya sudah ada, risikonya rendah, dan hasilnya langsung terasa oleh banyak divisi.</div>
+</div></details>
+
+<details class="q"><summary>Berapa biaya membangun solusi AI? Mahal tidak?</summary><div class="body">
+  <div class="say">Tidak semahal yang dibayangkan kalau pendekatannya benar. PoC asisten dokumen misalnya, biaya berjalannya bisa mulai dari ratusan ribu sampai beberapa juta rupiah per bulan untuk API — tergantung pemakaian. Yang mahal itu kalau langsung bangun besar tanpa validasi. Makanya saya selalu mulai PoC kecil, ukur hasilnya, baru scale. Dan satu hal: saya punya lisensi tooling development sendiri, jadi tidak ada biaya tambahan untuk itu.</div>
+</div></details>
+
+<details class="q"><summary>Data perusahaan kami sensitif. Aman tidak pakai AI?</summary><div class="body">
+  <div class="say">Pertanyaan yang tepat. Ada tiga tingkat: (1) pakai API enterprise yang punya perjanjian data tidak dipakai untuk training — cukup untuk mayoritas kasus; (2) dokumen sangat sensitif bisa difilter/di-mask dulu sebelum ke AI; (3) paling ketat: model self-hosted di server sendiri — data tidak pernah keluar. Saya bisa implementasikan ketiganya, dan pemilihan tingkatnya kita putuskan bersama per jenis dokumen.</div>
+</div></details>
+
+<details class="q"><summary>Bagaimana kami tahu proyek AI-nya berhasil? (ukuran sukses)</summary><div class="body">
+  <div class="say">Sebelum mulai, kita sepakati metrik: misal akurasi jawaban di atas X% dari set pertanyaan uji, waktu pencarian dokumen turun dari sekian menit jadi sekian detik, atau jam kerja admin yang dihemat per minggu. Tiap PoC saya tutup dengan laporan berisi angka-angka itu, jadi keputusan lanjut/tidaknya berdasarkan data, bukan perasaan.</div>
+</div></details>
+</section>
+
+<!-- ============ 6 ============ -->
+<section id="tanya-umum">
+<h2>6. Pertanyaan Umum / HR-style yang Mungkin Diulang User</h2>
+
+<details class="q"><summary>Ceritakan tentang dirimu (opening — hafalkan versi 60 detik ini)</summary><div class="body">
+  <div class="say">Saya Andi, software engineer 5 tahun dari Makassar, dua tahun terakhir fokus di AI engineering. Karya yang paling menggambarkan saya ada tiga: fokusngajar.id — platform edukasi live yang backend AI-nya (pipeline RAG dengan Go) saya bangun dan operasikan sendiri; Saku Sultan — aplikasi e-wallet yang live di App Store dan Play Store; dan SINTEKMu — sistem informasi terintegrasi Fakultas Teknik Unismuh yang dipakai untuk operasional harian kampus. Saya terbiasa kerja end-to-end: dari riset, prototype, sampai deployment dan maintenance. Saya tertarik posisi ini karena GSI mau membawa AI ke industri riil — dan itu persis pola kerja saya: AI yang benar-benar dipakai, bukan sekadar demo.</div>
+</div></details>
+
+<details class="q"><summary>Kenapa mau kerja di perusahaan tambang, bukan perusahaan tech?</summary><div class="body">
+  <div class="say">Justru karena dampaknya lebih terasa. Di perusahaan tech, AI engineer itu satu dari seratus. Di GSI, penerapan AI pertama bisa mengubah cara kerja banyak divisi sekaligus. Dan sebagai orang Makassar, senang bisa berkontribusi di perusahaan besar yang tumbuh dari sini.</div>
+</div></details>
+
+<details class="q"><summary>Kamu freelance — bagaimana komitmenmu? Bisa dipegang?</summary><div class="body">
+  <div class="say">Track record saya yang menjawab: Saku Sultan saya kawal dari nol sampai live di dua app store dan masih maintain sampai sekarang; fokusngajar.id saya operasikan harian di produksi. Cara kerja saya dengan klien: milestone jelas, progress report rutin, dan dokumentasi lengkap supaya sistem tetap bisa jalan meski suatu saat bukan saya yang pegang. Justru karena freelance, reputasi adalah aset utama saya — tidak mungkin saya kerjakan setengah-setengah.</div>
+</div></details>
+
+<details class="q"><summary>Soal tarif/gaji (freelance — jangan sebut angka mati!)</summary><div class="body">
+  <div class="say">Untuk model freelance, saya fleksibel mengikuti skema yang nyaman untuk GSI — bisa per proyek dengan milestone, atau retainer bulanan. Supaya angkanya pas, saya perlu tahu dulu scope-nya: berapa use case yang mau digarap dan timeline-nya. Kalau boleh tahu, bagaimana gambaran kebutuhan dan budget yang sudah dialokasikan?</div>
+  <div class="warn">JANGAN sebut angka duluan. Kalau didesak, kasih range: retainer bulanan mulai dari dua digit juta tergantung scope (floor Rp 10 jt untuk komitmen ringan; makin besar scope makin naik). Ingat aturan lamamu: baca range mereka dulu, jangan menawar di bawah minimum sendiri.</div>
+</div></details>
+
+<details class="q"><summary>Kelemahanmu apa?</summary><div class="body">
+  <div class="say">Saya bukan researcher ML yang melatih model dari nol — fokus saya applied AI: memilih, mengintegrasikan, dan mengoperasikan solusi AI di produksi. Kalau suatu saat GSI butuh riset model custom yang dalam, saya akan bilang jujur dan sarankan kolaborasi dengan spesialis, sementara saya pegang arsitektur dan integrasinya.</div>
+</div></details>
+</section>
+
+<!-- ============ 7 ============ -->
+<section id="balik">
+<h2>7. Pertanyaan BALIK ke Mereka (wajib tanya 2–3, ini bikin kesan kuat)</h2>
+<div class="card">
+  <ol>
+    <li>"Proses apa di GSI yang sekarang paling banyak makan waktu manual — yang paling ingin Bapak/Ibu otomasi duluan?" <i>(langsung mengarah ke PoC pertama)</i></li>
+    <li>"Apakah sudah ada tim IT internal yang akan jadi rekan kerja saya, dan sistem apa saja yang sudah berjalan (ERP/HRIS)?" <i>(menunjukkan kamu mikir integrasi)</i></li>
+    <li>"Untuk peran freelance WFA ini, bagaimana ekspektasi ritme kerjanya — project-based per PoC, atau retainer berkelanjutan?"</li>
+    <li>"Apakah ada kebijakan data internal yang perlu saya patuhi sejak awal — misal dokumen yang tidak boleh keluar server perusahaan?" <i>(menunjukkan Responsible AI bukan cuma teori bagimu)</i></li>
+  </ol>
+</div>
+</section>
+
+<!-- ============ 8 ============ -->
+<section id="checklist">
+<h2>8. Checklist Hari-H</h2>
+<div class="grid2">
+<div class="card">
+  <h3>🎒 Sebelum berangkat</h3>
+  <ul class="check">
+    <li>Laptop full charge + charger</li>
+    <li>Hotspot HP aktif (jangan andalkan WiFi kantor)</li>
+    <li>Login GitHub; buka tab: core-llm, interopera-platform, aethra, sakti-dashboard</li>
+    <li>Buka fokusngajar.id &amp; simtekmu.teknik.unismuh.ac.id — pastikan live</li>
+    <li>CV cetak 2 lembar (jaga-jaga)</li>
+    <li>Berangkat max 13.00 — target tiba 13.30 WITA</li>
+  </ul>
+</div>
+<div class="card">
+  <h3>🧠 Mindset</h3>
+  <ul class="check">
+    <li>Mereka perusahaan TAMBANG — bicara bahasa bisnis, bukan jargon</li>
+    <li>3 kata kunci: <b>PoC cepat → ukur → scale</b></li>
+    <li>Selalu kaitkan jawaban ke proyek nyata (fokusngajar, InterOpera, Saku Sultan, SINTEKMu)</li>
+    <li>Jujur untuk yang bukan keahlianmu + kasih jalan keluarnya</li>
+    <li>Jangan sebut angka gaji duluan</li>
+    <li>Tanya balik minimal 2 pertanyaan</li>
+  </ul>
+</div>
+</div>
+</section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,167 @@
+==================================================================
+PENJELASAN DIRI — Andi Agung Dwi Arya
+Full-Stack Developer · AI/ML Engineer
+GitHub: github.com/devnolife · X: @devnolife · Makassar, Indonesia
+==================================================================
+
+
+------------------------------------------------------------------
+VERSI SINGKAT (Bio / Headline — cocok untuk kolom "Tentang Saya")
+------------------------------------------------------------------
+
+Full-Stack Developer & AI/ML Engineer asal Makassar dengan pengalaman
+5+ tahun membangun produk digital. Saya sudah menulis 205 repositori
+original (80 TypeScript, 39 JavaScript, 36 Python) dan menggarap 200+
+proyek nyata di bidang web app, SaaS, AI/NLP, dan tooling developer.
+Spesialisasi saya: aplikasi full-stack berbasis Next.js / Node.js /
+Prisma serta NLP Bahasa Indonesia. Saya terbiasa mengerjakan sistem
+kompleks jangka panjang — beberapa di antaranya berjalan di produksi
+selama 12–16 bulan. Dari ide kasar sampai produk yang andal, saya
+kerjakan end-to-end dan saya dampingi untuk jangka panjang.
+
+
+------------------------------------------------------------------
+VERSI LENGKAP (Profil / Deskripsi Project)
+------------------------------------------------------------------
+
+Halo, saya Andi Agung Dwi Arya — seorang Full-Stack Developer dan
+AI/ML Engineer independen yang berbasis di Makassar, Indonesia.
+
+Selama lebih dari 5 tahun ngoding setiap hari, saya telah membangun
+205 repositori original dan menyelesaikan 200+ proyek nyata yang
+mencakup aplikasi web, SaaS, kecerdasan buatan (AI), serta perkakas
+untuk developer. Kekuatan utama saya ada pada sistem yang kompleks dan
+berumur panjang: platform deteksi plagiarisme full-stack, backend
+e-voting/pemilu digital, SaaS multi-tenant, dan sistem manajemen
+institusi — beberapa di antaranya saya rawat di produksi selama 12
+hingga 16 bulan.
+
+Saya merancang dan membangun aplikasi web kelas produksi, dashboard
+SaaS, dan tool berbasis AI secara menyeluruh — mulai dari skema
+database sampai antarmuka (UI) yang rapi. Saya senang mengubah ide
+yang masih samar menjadi produk yang andal, dan mendampinginya untuk
+jangka panjang.
+
+
+KEAHLIAN UTAMA (Core Stack)
+- TypeScript ............ Expert
+- JavaScript / Node.js .. Expert
+- React / Next.js ....... Expert
+- Python (AI/ML) ........ Advanced
+- React Native / Expo ... Advanced
+- Go .................... Working
+
+TOOLS & FRAMEWORK
+Prisma, Express, NestJS, Flask, Tailwind CSS, shadcn/ui, NativeWind,
+JWT Auth, REST API, PostgreSQL, Docker, CI/CD, Vercel, Git.
+
+AI · DATA · COMPUTER VISION
+IndoBERT, mT5, TextRank, TF-IDF, Cosine Similarity, Hyperopt, OCR,
+OpenCV, Pandas, Hadoop/HDFS, LLM API, Steganografi.
+
+
+LAYANAN YANG SAYA TAWARKAN
+1. Full-Stack Web & SaaS
+   Next.js, React, Node.js, TypeScript & Prisma — dashboard, sistem
+   autentikasi, REST API, dan SaaS multi-tenant.
+2. Solusi AI & NLP
+   Peringkasan teks, parafrase, deteksi plagiarisme semantik, dan
+   integrasi LLM (khususnya untuk Bahasa Indonesia).
+3. OCR & Otomatisasi Dokumen
+   Scan, ekstraksi, dan pembuatan otomatis dokumen, sertifikat,
+   laporan, hingga karya tulis akademik.
+4. WhatsApp API & Bot
+   Otomatisasi pesan, notifikasi, OTP, dan dashboard admin SaaS di
+   atas WhatsApp.
+5. Computer Vision & Multimedia
+   Pengolahan citra, segmentasi, face-swap, dan pipeline media
+   berbasis Python.
+6. Aplikasi Mobile
+   Aplikasi lintas platform dengan React Native & Expo Router serta
+   styling NativeWind.
+
+
+PROYEK UNGGULAN
+- PemiluDigital (E-Voting) — Platform pemilu digital full-stack;
+  backend TypeScript (~224 MB, codebase terbesar saya) + panel admin,
+  data pemilih, penghitungan real-time, RBAC, dan audit. (~1 tahun)
+- Turnitin Plagiarism Platform — Sistem deteksi plagiarisme berbasis
+  OCR (backend REST + dashboard); build terlama ~500 hari. (~16 bln)
+- SaaS GuruPintar — SaaS multi-tenant untuk produk edukasi; auth,
+  langganan, dan dashboard admin selama 475 hari. (~16 bln)
+- SAKTI Dashboard — Dashboard operasional enterprise (~97 MB) dengan
+  data view & pelaporan; produksi 450 hari. (15 bln, LIVE)
+- LPKA Management System — Platform manajemen institusi dengan relasi
+  data kompleks; produksi 367 hari. (12 bln)
+- APRO Makassar — Platform web produksi jangka panjang; 345 hari.
+  (11 bln, LIVE)
+- Certi-Gen Distributor — Generasi & distribusi sertifikat massal via
+  email dan WhatsApp; 352 hari. (12 bln)
+- Generate No-Surat — Sistem penomoran surat & otomatisasi dokumen
+  untuk institusi; 334 hari. (11 bln)
+- WhatsApp API Service — Lapisan otomatisasi & integrasi pesan
+  (notifikasi, OTP, bot); 328 hari. (11 bln)
+- Generate Document API — Layanan REST untuk pembuatan dokumen
+  berbasis template; 296 hari. (10 bln)
+- ARDEV Platform — Produk web produksi; 293 hari. (10 bln, LIVE)
+- Magic IDE — Lingkungan pengembangan eksperimental di browser; proyek
+  R&D 254 hari. (8 bln)
+
+
+PERJALANAN KARIER
+- 2021–2022 — Memulai: mulai ngoding setiap hari; fondasi PHP,
+  JavaScript & Python; aplikasi pertama dan klien awal.
+- 2023 — Fondasi (14 proyek): boilerplate CRUD & REST, JWT auth,
+  dashboard pertama. Open-source crud-node-prisma (kini 21 bintang).
+- 2024 — Produk & Otomatisasi (45 proyek): dashboard SaaS, generator
+  dokumen & sertifikat, otomatisasi WhatsApp, starter Next.js.
+- 2025 — AI, Vision & Riset (131 proyek): NLP Bahasa Indonesia
+  (peringkasan, parafrase), computer vision, OCR, steganografi, dan
+  keamanan dokumen.
+- 2026 — Shipping Skala Besar (49+ proyek): aplikasi produksi — LMS,
+  e-commerce, capstone, payment & platform edukasi.
+
+
+ANGKA-ANGKA
+- 205 proyek original
+- Build terlama ~16 bulan
+- 5+ tahun membangun setiap hari
+- Codebase terbesar 224 MB
+
+
+PENDIDIKAN
+Informatika / Teknik — Universitas Muhammadiyah Makassar.
+
+BAHASA
+Indonesia · English.
+
+KONTAK
+- GitHub : github.com/devnolife
+- X      : @devnolife
+- Lokasi : Makassar, Indonesia
+
+Tersedia untuk pekerjaan freelance & kontrak.
+
+
+==================================================================
+SHORT ENGLISH VERSION (optional — for international clients)
+==================================================================
+
+I'm Andi Agung Dwi Arya, an independent Full-Stack Developer and
+AI/ML Engineer based in Makassar, Indonesia. Over 5+ years of daily
+coding I've authored 205 original repositories (80 TS, 39 JS, 36
+Python) and shipped 200+ real projects across web, AI, and developer
+tooling.
+
+I build production-grade web applications, SaaS dashboards, and
+AI-powered tools end-to-end — from database schema to polished UI. My
+strongest work is in long-running, complex systems: full-stack
+plagiarism-detection platforms, digital-election backends,
+multi-tenant SaaS, and institutional management systems — several
+maintained in production for 12–16 months each.
+
+Core stack: Next.js / Node.js / Prisma / TypeScript, plus Python for
+Indonesian-language NLP and computer vision. I turn vague ideas into
+reliable products and stay with them for the long haul.
+
+Available for freelance & contract work · github.com/devnolife

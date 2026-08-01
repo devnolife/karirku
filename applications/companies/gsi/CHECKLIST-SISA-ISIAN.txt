@@ -1,0 +1,79 @@
+STATUS FINAL (17 Jul 2026, 14:35 WITA): FORM SUDAH ~100% TERISI OTOMATIS.
+Data pribadi diekstrak dari scan "Formulir aplikasi pelamar.pdf" (form Harrisma lama):
+KTP 7305022110000001, alamat Takalar/Gowa, Islam, 21/10/2000, belum menikah,
+HP 0851/0815, keluarga lengkap (Subaedy, Andi Nurhayati, 4 saudara), SMAN 1 Takalar,
+S1 Unismuh 3.92, riwayat kerja 4 blok (devnolife, Saku Sultan, Unismuh, DPRD Sinjai),
+referensi Muhyiddin A M Hayat 0811-4100-444, gaji harapan 15-20jt, pas foto terpasang.
+
+TERSISA UNTUK KAMU (2 menit sebelum export PDF):
+1. AB228/AF228 : pernah sakit keras/operasi? (Ya/Tidak) - form lama ambigu, isi sendiri
+2. AB229/AF229 : pernah psikotes? untuk apa? (mis. "Ya - seleksi kerja sebelumnya")
+3. Review sekilas semua halaman (terutama gaji AB238: kuisi 15-20jt berdasar
+   ekspektasi 20jt di form lama; ubah bila mau)
+4. Buka di Excel -> File -> Export -> PDF
+   nama: FDP_Andi Agung Dwi Arya_AI Engineer.pdf
+5. Kirim via WA HR GSI: FDP pdf + CV_Andi Agung Dwi Arya.pdf (2 file terpisah)
+   DEADLINE: SABTU 18 JULI 2026 12:00 WITA
+
+── ARSIP CATATAN LAMA (sudah tidak berlaku, semua sudah terisi otomatis) ──
+
+CARA: buka file di Excel, isi sel berikut, lalu Save As / Export PDF
+dengan nama: FDP_Andi Agung Dwi Arya_AI Engineer.pdf
+Kirim juga: CV_Andi Agung Dwi Arya.pdf (sudah siap di folder yang sama)
+
+── DATA PRIBADI (halaman 1) ──
+L13  : No. KTP (16 digit)
+L15  : Alamat sesuai KTP
+L17  : Alamat domisili sekarang / POH
+L19  : Agama
+L25  : Tanggal lahir (DD/MM/YYYY)   → W25 area "Umur:" isi angka umur
+L27  : Status perkawinan (Belum Kawin / Kawin)
+L31  : No. HP / WA aktif
+
+── SIM (baris 36) — isi masa berlaku, atau strip "-" kalau tidak punya ──
+G36  : SIM A    S36 : SIM B    AE36 : SIM C    AP36 : SIO
+
+── TEMPAT TINGGAL & KENDARAAN (baris 39-41) ──
+B41  : dropdown, pilih: RUMAH PRIBADI / RUMAH ORANG TUA / RUMAH SEWA / RUMAH KELUARGA
+AB41 : jenis kendaraan (mis. Motor)   AL41 : merk   AS41 : milik (Sendiri/Orang Tua)
+
+── KELUARGA (baris 48-59; kolom H=nama, T=JK dropdown, Y=jabatan, AG=perusahaan, AO=ket) ──
+H48  : nama Ayah + pekerjaannya (Y48/AG48)
+H49  : nama Ibu  + pekerjaannya
+H50+ : saudara (jika ada)
+H56/H57 : istri/suami (jika sudah menikah), H58+ : anak
+
+── PENDIDIKAN DASAR (opsional tapi bagus diisi: baris 74-76) ──
+G74/Q74/Y74/AG74/AL74/AQ74 : SD (nama, -, kota, thn masuk, thn lulus, LULUS)
+G75... : SMP     G76... : SMA/SMK (kalau SMK pakai baris 77)
+AG82/AL82 : tahun masuk S2 UNHAS (mis. 2025 / kosongkan "Sampai")
+
+── TRAINING/SERTIFIKASI (baris 94-101, kalau ada) ──
+B94: nama pelatihan | O94: penyelenggara | Y94: lama | AF94: tahun | AJ94: Ada/Tidak Ada | AP94: dibiayai oleh
+
+── ORGANISASI (baris 111-113, kalau ada) ──
+
+── RIWAYAT PEKERJAAN blok 1 (sudah kuisi devnolife studio 2021-sekarang) ──
+V124  : nama atasan/klien referensi (dropdown R124: HRD/ATASAN sudah bisa dipilih)
+AG125 : telp/HP referensi (WAJIB kata formnya)
+→ Saran: pakai kontak klien terlama (mis. pihak Fakultas Teknik Unismuh / Saku Sultan)
+Blok 2 (baris 130-139) opsional: bisa diisi engagement Saku Sultan terpisah:
+  P130: Saku Sultan (kontrak) | B131: 2021 | I131: 2026 | AO130: Full-Stack & Mobile Engineer
+
+── REFERENSI (baris 212-215: B=nama, Q=jabatan, AC=hubungan, AM=no.telp) ──
+Minimal 1: klien/atasan proyek yang bisa dihubungi
+
+── PERTANYAAN yang kubiarkan kosong (jawab sesuai fakta pribadimu) ──
+AB228/AF228 : pernah sakit keras/operasi? (Ya/Tidak + jelaskan)
+AB229/AF229 : pernah psikotes? untuk apa?
+
+── SUDAH TERISI (review saja) ──
+Posisi, nama, JK, tempat lahir Makassar, email, S1 Unismuh 2018-2022 LULUS + S2 UNHAS,
+prestasi Lulusan Terbaik IPK 3.92, bahasa (ID sangat baik, EN baik/sangat baik),
+kerja devnolife studio 2021-sekarang + jobdesk lengkap (AI/LLM, fintech, dll),
+struktur organisasi, 15 pertanyaan (termasuk: perusahaan lain yg dilamar = Pro Integrate
+& ATech; gaji harapan Rp 12-15 jt nego; bersedia ditempatkan luar kota/malam/percobaan),
+tanda tangan "Makassar, 17 Juli 2026" + nama, dan PAS FOTO (foto.jpeg) sudah terpasang.
+
+CATATAN GAJI: kuisi 12-15jt karena range AI Engineer GSI tak dicantumkan;
+kalau kamu mau angka lain, edit AB238 sebelum export PDF.
