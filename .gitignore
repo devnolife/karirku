@@ -72,3 +72,7 @@ skills-lock.json
 
 # graphify knowledge-graph cache (generated, local only)
 /graphify-out/
+
+# Python bytecode (generated)
+__pycache__/
+*.py[cod]
