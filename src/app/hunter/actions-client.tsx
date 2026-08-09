@@ -34,12 +34,12 @@ export function ActionButton({
       };
       setMsg(
         res.ok
-          ? `▶ queued${data.pid ? ` (pid ${data.pid})` : ""}`
-          : `✗ ${data.message ?? data.error ?? `HTTP ${res.status}`}`,
+          ? `[QUEUED]${data.pid ? ` pid ${data.pid}` : ""}`
+          : `[FAIL] ${data.message ?? data.error ?? `HTTP ${res.status}`}`,
       );
       if (res.ok) setTimeout(() => router.refresh(), 4000);
     } catch (e) {
-      setMsg("✗ " + (e as Error).message);
+      setMsg("[FAIL] " + (e as Error).message);
     } finally {
       setBusy(false);
     }
@@ -51,13 +51,13 @@ export function ActionButton({
         onClick={run}
         disabled={busy}
         className={
-          "px-3 py-1.5 rounded-md text-sm font-semibold bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition " +
+          "border border-[#FF6B1A] bg-[#FF6B1A] px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#0D0F0C] transition-colors duration-150 ease-out hover:bg-[#FF8140] hover:border-[#FF8140] active:scale-[0.97] disabled:opacity-40 " +
           className
         }
       >
         {busy ? "…" : label}
       </button>
-      {msg && <span className="text-xs text-slate-400">{msg}</span>}
+      {msg && <span className="[font-family:var(--font-hunter-mono)] text-[11px] text-[#8A9088]">{msg}</span>}
     </span>
   );
 }
@@ -91,7 +91,7 @@ export function JobStatusButton({
     <button
       onClick={run}
       disabled={busy}
-      className={"px-2 py-1 rounded text-xs font-medium disabled:opacity-50 transition " + className}
+      className={"border px-2 py-1 [font-family:var(--font-hunter-mono)] text-[10px] uppercase tracking-[0.1em] transition-colors duration-150 ease-out active:scale-[0.97] disabled:opacity-40 " + className}
     >
       {busy ? "…" : label}
     </button>
@@ -104,7 +104,7 @@ export function ApplyButton({ jobId }: { jobId: number }) {
       action="apply"
       body={{ jobId }}
       label="Apply"
-      className="!px-2 !py-1 !text-xs bg-emerald-600 hover:bg-emerald-500"
+      className="!px-2 !py-1 !text-[10px] !bg-transparent !text-[#5FBF6E] !border-[#2C4A31] hover:!bg-[#142116]"
     />
   );
 }

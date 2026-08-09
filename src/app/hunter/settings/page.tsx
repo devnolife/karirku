@@ -12,13 +12,15 @@ export default function SettingsPage() {
   for (const r of rows) settings[r.key] = r.value;
 
   return (
-    <div className="space-y-5 max-w-2xl">
-      <h1 className="text-2xl font-extrabold">Settings</h1>
+    <div className="max-w-2xl space-y-8">
+      <div className="border-b border-[#262B24] pb-5">
+        <h1 className="text-3xl font-black uppercase tracking-tight">Settings</h1>
+      </div>
       <SettingsForm initial={settings} />
-      <div className="text-xs text-slate-500 space-y-1">
-        <p>• Salary rule (hard-coded in apply-engine): never offer below a job&apos;s stated minimum; floor {settings.salary_floor_juta || "10"} jt if unstated.</p>
-        <p>• Unknown screening questions are skipped with a reason — never guessed.</p>
-        <p>• LinkedIn &amp; Upwork are scan-only (apply is bot-blocked / needs Connects).</p>
+      <div className="space-y-1 [font-family:var(--font-hunter-mono)] text-[11px] leading-relaxed text-[#4C5349]">
+        <p>&gt; salary rule (hard-coded in apply-engine): never offer below a job&apos;s stated minimum; floor {settings.salary_floor_juta || "10"} jt if unstated.</p>
+        <p>&gt; unknown screening questions are skipped with a reason — never guessed.</p>
+        <p>&gt; linkedin &amp; upwork are scan-only (apply is bot-blocked / needs connects).</p>
       </div>
     </div>
   );

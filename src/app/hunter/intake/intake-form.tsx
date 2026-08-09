@@ -45,14 +45,14 @@ export function IntakeForm() {
       const data = (await res.json()) as { pid?: number; message?: string; error?: string };
       if (!res.ok) throw new Error(data.message ?? data.error ?? `HTTP ${res.status}`);
       setMsg(
-        `▶ Diproses di background (pid ${data.pid}). Job akan muncul di Jobs Queue setelah ekstraksi + evaluasi LLM selesai (bisa beberapa menit).`,
+        `[QUEUED] pid ${data.pid} — job muncul di Jobs Queue setelah ekstraksi + evaluasi LLM selesai (bisa beberapa menit).`,
       );
       setUrl("");
       setText("");
       setFile(null);
       setTimeout(() => router.refresh(), 5000);
     } catch (e) {
-      setMsg("✗ " + (e as Error).message);
+      setMsg("[FAIL] " + (e as Error).message);
     } finally {
       setBusy(false);
     }
@@ -63,8 +63,10 @@ export function IntakeForm() {
       key={m}
       onClick={() => setMode(m)}
       className={
-        "px-3 py-1.5 rounded-md text-sm font-medium transition " +
-        (mode === m ? "bg-amber-500 text-slate-950" : "bg-slate-800 text-slate-300 hover:bg-slate-700")
+        "border px-3 py-1.5 [font-family:var(--font-hunter-mono)] text-[10px] uppercase tracking-[0.12em] transition-colors duration-150 ease-out " +
+        (mode === m
+          ? "border-[#FF6B1A] bg-[#FF6B1A] text-[#0D0F0C]"
+          : "border-[#262B24] text-[#8A9088] hover:border-[#4C5349] hover:text-[#E6E4DC]")
       }
     >
       {label}
@@ -77,15 +79,15 @@ export function IntakeForm() {
     (mode === "image" && !!file);
 
   return (
-    <div className="space-y-4 rounded-xl border border-slate-800 bg-slate-900/60 p-5">
-      <div className="flex gap-2">{[tab("url", "🔗 URL"), tab("image", "🖼 Gambar"), tab("text", "📋 Teks")]}</div>
+    <div className="space-y-4 border border-[#262B24] p-5">
+      <div className="flex gap-1.5">{[tab("url", "URL"), tab("image", "Image"), tab("text", "Text")]}</div>
 
       {mode === "url" && (
         <input
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="https://perusahaan.com/careers/backend-engineer"
-          className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+          className="w-full border border-[#262B24] bg-[#0A0C09] px-3 py-2 [font-family:var(--font-hunter-mono)] text-sm text-[#E6E4DC] placeholder:text-[#4C5349] focus:border-[#FF6B1A] focus:outline-none"
         />
       )}
       {mode === "text" && (
@@ -94,7 +96,7 @@ export function IntakeForm() {
           onChange={(e) => setText(e.target.value)}
           rows={10}
           placeholder="Tempel deskripsi / requirement lowongan di sini…"
-          className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm font-mono"
+          className="w-full border border-[#262B24] bg-[#0A0C09] px-3 py-2 [font-family:var(--font-hunter-mono)] text-sm text-[#E6E4DC] placeholder:text-[#4C5349] focus:border-[#FF6B1A] focus:outline-none"
         />
       )}
       {mode === "image" && (
@@ -103,10 +105,10 @@ export function IntakeForm() {
             type="file"
             accept="image/png,image/jpeg,image/webp,image/gif"
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            className="text-sm text-slate-300"
+            className="text-sm text-[#8A9088] file:mr-3 file:border file:border-[#262B24] file:bg-transparent file:px-3 file:py-1.5 file:[font-family:var(--font-hunter-mono)] file:text-[10px] file:uppercase file:tracking-[0.12em] file:text-[#8A9088]"
           />
-          <p className="text-xs text-slate-500">
-            Screenshot requirement (png/jpg/webp/gif, maks 8 MB). Dibaca via vision LLM lokal.
+          <p className="[font-family:var(--font-hunter-mono)] text-[11px] text-[#4C5349]">
+            screenshot requirement (png/jpg/webp/gif, maks 8 MB) — dibaca via vision LLM lokal.
           </p>
         </div>
       )}
@@ -116,18 +118,18 @@ export function IntakeForm() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Judul (opsional — dideteksi otomatis)"
-          className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+          className="border border-[#262B24] bg-[#0A0C09] px-3 py-2 text-sm text-[#E6E4DC] placeholder:text-[#4C5349] focus:border-[#FF6B1A] focus:outline-none"
         />
         <input
           value={company}
           onChange={(e) => setCompany(e.target.value)}
           placeholder="Perusahaan (opsional)"
-          className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+          className="border border-[#262B24] bg-[#0A0C09] px-3 py-2 text-sm text-[#E6E4DC] placeholder:text-[#4C5349] focus:border-[#FF6B1A] focus:outline-none"
         />
       </div>
 
-      <label className="flex items-center gap-2 text-sm text-slate-400">
-        <input type="checkbox" checked={noDocs} onChange={(e) => setNoDocs(e.target.checked)} />
+      <label className="flex items-center gap-2 text-sm text-[#8A9088]">
+        <input type="checkbox" checked={noDocs} onChange={(e) => setNoDocs(e.target.checked)} className="accent-[#FF6B1A]" />
         Hanya evaluasi (skip tailor CV &amp; cover letter)
       </label>
 
@@ -135,12 +137,12 @@ export function IntakeForm() {
         <button
           onClick={submit}
           disabled={busy || !canSubmit}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 transition"
+          className="border border-[#FF6B1A] bg-[#FF6B1A] px-4 py-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#0D0F0C] transition-colors duration-150 ease-out hover:border-[#FF8140] hover:bg-[#FF8140] active:scale-[0.97] disabled:opacity-40"
         >
-          {busy ? "…" : "🚀 Proses & Siapkan Lamaran"}
+          {busy ? "…" : "Proses & Siapkan Lamaran"}
         </button>
       </div>
-      {msg && <p className="text-sm text-slate-300">{msg}</p>}
+      {msg && <p className="[font-family:var(--font-hunter-mono)] text-xs text-[#8A9088]">{msg}</p>}
     </div>
   );
 }

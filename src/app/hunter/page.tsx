@@ -4,9 +4,9 @@ import { ActionButton } from "./actions-client";
 export const dynamic = "force-dynamic";
 
 const STATUS_DOT: Record<string, string> = {
-  ok: "bg-emerald-400",
-  expired: "bg-red-400",
-  unknown: "bg-slate-500",
+  ok: "bg-[#5FBF6E]",
+  expired: "bg-[#E05B4C]",
+  unknown: "bg-[#4C5349]",
 };
 
 export default function HunterOverview() {
@@ -26,64 +26,74 @@ export default function HunterOverview() {
     .all() as { type: string; platform: string | null; ok: number | null; finished_at: string | null }[];
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <h1 className="text-2xl font-extrabold">Overview</h1>
-        <div className="flex gap-2 flex-wrap">
+    <div className="space-y-12">
+      <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[#262B24] pb-5">
+        <h1 className="text-3xl font-black uppercase tracking-tight">Overview</h1>
+        <div className="flex flex-wrap gap-2">
           <ActionButton action="scan" label="Scan All" />
-          <ActionButton action="sync-email" label="Sync Email" className="bg-violet-600 hover:bg-violet-500" />
+          <ActionButton
+            action="sync-email"
+            label="Sync Email"
+            className="!bg-transparent !text-[#FF6B1A] hover:!bg-[#1A130C] hover:!text-[#FF8140]"
+          />
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 divide-x divide-[#262B24] border-y border-[#262B24] md:grid-cols-4">
         {[
           { label: "Jobs found", value: totalJobs },
-          { label: "New (unreviewed)", value: newJobs },
+          { label: "New / unreviewed", value: newJobs },
           { label: "Applications", value: totalApps },
           { label: "Got replies", value: replied },
         ].map((s) => (
-          <div key={s.label} className="rounded-xl bg-slate-900 border border-slate-800 p-4">
-            <div className="text-3xl font-extrabold text-amber-400">{s.value}</div>
-            <div className="text-sm text-slate-400 mt-1">{s.label}</div>
+          <div key={s.label} className="px-5 py-6">
+            <div className="[font-family:var(--font-hunter-mono)] text-5xl font-semibold tabular-nums text-[#E6E4DC]">
+              {s.value}
+            </div>
+            <div className="mt-2 text-[10px] font-medium uppercase tracking-[0.16em] text-[#8A9088]">
+              {s.label}
+            </div>
           </div>
         ))}
       </div>
 
       <section>
-        <h2 className="text-lg font-semibold mb-3">Connected accounts</h2>
-        <div className="grid md:grid-cols-2 gap-3">
+        <h2 className="mb-4 [font-family:var(--font-hunter-mono)] text-[11px] uppercase tracking-[0.2em] text-[#4C5349]">
+          01 / Connected accounts
+        </h2>
+        <div className="grid gap-px bg-[#262B24] border border-[#262B24] md:grid-cols-2">
           {accounts.map((a) => (
-            <div key={String(a.platform)} className="rounded-xl bg-slate-900 border border-slate-800 p-4 flex items-start gap-3">
-              <span className={`mt-1.5 h-2.5 w-2.5 rounded-full shrink-0 ${STATUS_DOT[String(a.login_status)] || STATUS_DOT.unknown}`} />
+            <div key={String(a.platform)} className="flex items-start gap-3 bg-[#0D0F0C] p-4">
+              <span className={`mt-1.5 h-2 w-2 shrink-0 ${STATUS_DOT[String(a.login_status)] || STATUS_DOT.unknown}`} />
               <div className="min-w-0">
-                <div className="font-semibold capitalize">
+                <div className="font-bold capitalize">
                   {String(a.platform)}{" "}
                   {a.can_auto_apply ? (
-                    <span className="text-xs font-medium text-emerald-400 ml-1">auto-apply</span>
+                    <span className="ml-1 [font-family:var(--font-hunter-mono)] text-[10px] uppercase tracking-wider text-[#5FBF6E]">[auto-apply]</span>
                   ) : (
-                    <span className="text-xs font-medium text-slate-500 ml-1">scan-only</span>
+                    <span className="ml-1 [font-family:var(--font-hunter-mono)] text-[10px] uppercase tracking-wider text-[#4C5349]">[scan-only]</span>
                   )}
                 </div>
-                <div className="text-sm text-slate-400 truncate">
+                <div className="mt-0.5 truncate [font-family:var(--font-hunter-mono)] text-xs text-[#8A9088]">
                   {a.profile_url ? (
-                    <a href={String(a.profile_url)} target="_blank" className="hover:text-amber-400">
+                    <a href={String(a.profile_url)} target="_blank" className="underline-offset-2 hover:text-[#FF6B1A] hover:underline">
                       {String(a.username)}
                     </a>
                   ) : (
                     String(a.username)
                   )}
                   {" · "}
-                  <span className={String(a.login_status) === "expired" ? "text-red-400" : ""}>{String(a.login_status)}</span>
+                  <span className={String(a.login_status) === "expired" ? "text-[#E05B4C]" : ""}>{String(a.login_status)}</span>
                 </div>
-                <div className="text-xs text-slate-500 mt-1">{String(a.notes || "")}</div>
+                <div className="mt-1 text-xs text-[#4C5349]">{String(a.notes || "")}</div>
               </div>
             </div>
           ))}
-          <div className="rounded-xl bg-slate-900 border border-slate-800 p-4 flex items-start gap-3">
-            <span className={`mt-1.5 h-2.5 w-2.5 rounded-full shrink-0 ${gmail.authorized ? "bg-emerald-400" : "bg-amber-400"}`} />
+          <div className="flex items-start gap-3 bg-[#0D0F0C] p-4">
+            <span className={`mt-1.5 h-2 w-2 shrink-0 ${gmail.authorized ? "bg-[#5FBF6E]" : "bg-[#FF6B1A]"}`} />
             <div>
-              <div className="font-semibold">Gmail API</div>
-              <div className="text-sm text-slate-400">
+              <div className="font-bold">Gmail API</div>
+              <div className="mt-0.5 [font-family:var(--font-hunter-mono)] text-xs text-[#8A9088]">
                 {gmail.authorized ? "authorized — email tracking active" : gmail.configured ? "configured, run `pnpm hunter gmail-auth` in karirku-core" : "not configured — see karirku-core hunter/email/gmail.js"}
               </div>
             </div>
@@ -92,17 +102,19 @@ export default function HunterOverview() {
       </section>
 
       <section>
-        <h2 className="text-lg font-semibold mb-3">Recent runs</h2>
-        <div className="rounded-xl bg-slate-900 border border-slate-800 divide-y divide-slate-800">
-          {lastRuns.length === 0 && <div className="p-4 text-sm text-slate-500">No runs yet — hit Scan All.</div>}
+        <h2 className="mb-4 [font-family:var(--font-hunter-mono)] text-[11px] uppercase tracking-[0.2em] text-[#4C5349]">
+          02 / Recent runs
+        </h2>
+        <div className="border border-[#262B24] [font-family:var(--font-hunter-mono)]">
+          {lastRuns.length === 0 && <div className="p-4 text-xs text-[#4C5349]">no runs yet — hit Scan All.</div>}
           {lastRuns.map((r, i) => (
-            <div key={i} className="px-4 py-2.5 flex items-center gap-3 text-sm">
-              <span className={r.ok === 1 ? "text-emerald-400" : r.ok === 0 ? "text-red-400" : "text-amber-400"}>
-                {r.ok === 1 ? "✓" : r.ok === 0 ? "✗" : "…"}
+            <div key={i} className="flex items-center gap-3 border-b border-[#1A1D18] px-4 py-2 text-xs last:border-b-0 hover:bg-[#141712]">
+              <span className={r.ok === 1 ? "text-[#5FBF6E]" : r.ok === 0 ? "text-[#E05B4C]" : "text-[#FF6B1A]"}>
+                {r.ok === 1 ? "OK" : r.ok === 0 ? "ERR" : ".."}
               </span>
-              <span className="font-medium">{r.type}</span>
-              <span className="text-slate-500">{r.platform}</span>
-              <span className="ml-auto text-slate-500 text-xs">{r.finished_at || "running"}</span>
+              <span className="text-[#E6E4DC]">{r.type}</span>
+              <span className="text-[#4C5349]">{r.platform}</span>
+              <span className="ml-auto tabular-nums text-[#4C5349]">{r.finished_at || "running"}</span>
             </div>
           ))}
         </div>
