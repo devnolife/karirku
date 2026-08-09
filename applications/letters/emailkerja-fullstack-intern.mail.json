@@ -1,0 +1,15 @@
+{
+  "id": "emailkerja-fullstack-intern",
+  "from": "andi_agung@student.unismuh.ac.id",
+  "to": "lowongan@emailkerja.com",
+  "subject": "Fullstack Intern – Andi Agung Dwi Arya",
+  "attachments": ["applications/cv/CV-Andi-Agung-Dwi-Arya.pdf"],
+  "track": {
+    "platform": "email",
+    "external_id": "emailkerja-fullstack-intern",
+    "title": "Full-Stack Developer Intern (Remote)",
+    "company": "emailkerja.com (tidak disebut di posting)",
+    "url": "mailto:lowongan@emailkerja.com"
+  },
+  "body": "Halo tim,\n\nSaya Andi Agung Dwi Arya, full-stack developer dari Makassar yang terbiasa bekerja full remote. Saya tertarik dengan lowongan Full-Stack Developer Intern yang kalian buka.\n\nSaya mau jujur di depan supaya tidak membuang waktu kita berdua: pengalaman saya sudah 5+ tahun ngoding harian dengan 205+ repositori original, jadi kemungkinan besar saya ada di atas level intern. Saya tetap mengirim lamaran ini karena tertarik dengan produknya dan dengan tim yang benar-benar bekerja remote. Kalau ternyata ada slot full-time atau kontrak yang lebih pas, saya senang sekali dipertimbangkan ke sana; kalau jalur intern yang tersedia sekarang, saya juga tidak keberatan mulai dari situ.\n\nYang sudah saya kirim ke produksi:\n\n1. Saku Sultan - dompet digital React Native/Expo yang LIVE di App Store dan Play Store. Saya engineer-nya (bukan founder). Backend Go (Gin + pgx), RabbitMQ untuk job queue/notifikasi/webhook, Kafka untuk event stream transaksi, plus dashboard admin.\n   Play Store: https://play.google.com/store/apps/details?id=com.saku_sultan\n   App Store: https://apps.apple.com/id/app/saku-sultan/id6444094885\n\n2. SINTEKMu - dashboard operasional Fakultas Teknik Unismuh yang dipakai harian: https://simtekmu.teknik.unismuh.ac.id\n\n3. Backend Go + RAG - chi v5, pipeline PDF -> chunking -> embedding -> retrieval, rate limiting, metrics, Docker multi-stage; menggerakkan fokusngajar.id. Reponya privat, tapi dengan senang hati saya demokan lewat call.\n\nStack harian saya: TypeScript/Next.js/React, Node.js, Prisma, PostgreSQL, Python (FastAPI), Go, React Native/Expo, Docker.\n\nGitHub: https://github.com/devnolife\nBeberapa repo publik yang relevan: saas-whatsapp-dashboard (dashboard SaaS di atas WhatsApp), turnitin-dashboard-nextjs (dashboard Next.js kompleks dengan role + state management), whatsapp-api.\n\nCV saya terlampir dalam PDF. Terima kasih sudah membaca sampai sini - saya senang kalau ada kesempatan ngobrol.\n\nCatatan kecil: email ini terkirim dari alamat kampus saya. Untuk balasan, mohon diarahkan ke andiagung193@gmail.com - alamat itu yang tercantum di CV saya dan yang saya pantau setiap hari.\n\nSalam,\nAndi Agung Dwi Arya\nFull-Stack & AI/ML Engineer - Makassar (UTC+8)\nandiagung193@gmail.com | WhatsApp +62 851 7107 9607\ngithub.com/devnolife"
+}

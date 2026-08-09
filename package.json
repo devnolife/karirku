@@ -12,7 +12,13 @@
     "test": "tsx --test tests/entitlements/*.test.ts tests/gmail/*.test.ts tests/hunter/*.test.ts tests/match/*.test.ts",
     "recommendation:evaluate": "tsx scripts/evaluate-recommendations.ts",
     "ext:build": "node extension/build.mjs",
-    "ext:typecheck": "tsc --noEmit -p extension/tsconfig.json"
+    "ext:typecheck": "tsc --noEmit -p extension/tsconfig.json",
+    "ai:eval": "node ai/eval-job.mjs",
+    "ai:intake": "node ai/intake.mjs",
+    "ai:tailor": "node ai/tailor-cv.mjs",
+    "ai:cover": "node ai/cover-letter.mjs",
+    "ai:gap": "node ai/jd-skill-gap.mjs",
+    "ai:sim": "node ai/jd-similarity.mjs"
   },
   "dependencies": {
     "@devnolife/karirku-core": "^0.1.0",
