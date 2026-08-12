@@ -1,0 +1,10 @@
+{
+  "from": "andiagung193@gmail.com",
+  "to": "contact@amagi.io",
+  "subject": "Lamaran: Software Developer (Node.js, Remote) — Andi Agung Dwi Arya",
+  "body": "Kepada Tim Rekrutmen AMAGI,\n\nSaya Andi Agung Dwi Arya, full-stack engineer dari Makassar dengan 5+ tahun pengalaman harian membangun aplikasi produksi — melamar untuk posisi Software Developer (Node.js, Remote) yang Anda iklankan di Indeed.\n\nNode.js adalah keahlian inti saya. Beberapa bukti paling relevan:\n\n1. Backend produksi jangka panjang: platform deteksi plagiarisme berbasis OCR (REST API Node.js + dashboard) yang saya bangun dan rawat selama ~16 bulan, serta WhatsApp API Service (github.com/devnolife/whatsapp-api) untuk notifikasi, OTP, dan bot yang dipakai produksi selama 11 bulan.\n\n2. Fintech live: saya engineer di balik Saku Sultan, e-wallet yang tayang di Google Play (com.saku_sultan) dan App Store — mobile React Native/Expo, backend transaksi dengan job queue dan event streaming, plus dashboard admin.\n\n3. Otomasi dokumen: Generate Document API (github.com/devnolife/generate-document-api) — layanan REST Node.js untuk pembuatan dokumen berbasis template, dan Certi-Gen (github.com/devnolife/certi-gen-distributor) untuk generasi + distribusi sertifikat massal via email/WhatsApp.\n\nSaya terbiasa kerja remote, komunikatif, dan menetap di zona WITA (UTC+8). Total 205 repositori original di github.com/devnolife (80 TypeScript, 39 JavaScript). Pendidikan S1 Teknik Informatika (IPK 3.92, lulusan terbaik fakultas), S2 sedang berjalan.\n\nEkspektasi gaji: Rp 13-16 juta sesuai range yang dicantumkan. CV terlampir — saya siap untuk tes teknis atau wawancara kapan pun.\n\nHormat saya,\nAndi Agung Dwi Arya\nandiagung193@gmail.com | +62 851 7107 9607\ngithub.com/devnolife\n",
+  "attachments": [
+    "applications/cv/tailored/2095-amagi.pdf"
+  ],
+  "jobId": 2095
+}

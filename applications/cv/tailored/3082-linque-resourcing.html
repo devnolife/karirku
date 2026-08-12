@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Andi Agung Dwi Arya — Resume (ATS)</title>
+<!--
+  VERSI ATS — dioptimalkan untuk dibaca mesin (Applicant Tracking System).
+  Aturan yang dipegang di file ini:
+    - Satu kolom. Tidak ada sidebar/tabel/text-box -> urutan baca tidak teracak.
+    - Kontak sebagai teks biasa (email + nomor HP WAJIB ada dan bisa di-select).
+    - Heading standar: WORK EXPERIENCE / TECHNICAL SKILLS / EDUCATION.
+    - Font sistem, tanpa ikon/emoji, tanpa header-footer halaman.
+    - Tanggal ditulis satu baris utuh supaya tidak terpotong saat diekstrak.
+  Versi desain untuk mata manusia tetap ada di resume.html / cv-devnolife.html.
+-->
+<style>
+  @page { size: A4; margin: 14mm 15mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Calibri, Arial, Helvetica, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.4;
+    color: #000;
+    background: #fff;
+    /* Ligatur "fi"/"fl" jadi satu glyph (U+FB01) saat teks diekstrak, sehingga
+       "fintech" tidak cocok dengan pencarian keyword ATS. Matikan. */
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "clig" 0, "dlig" 0;
+  }
+  header { margin-bottom: 10pt; }
+  h1 { font-size: 20pt; font-weight: 700; letter-spacing: .2pt; }
+  .title { font-size: 11.5pt; font-weight: 600; margin-top: 1pt; }
+  .contact { font-size: 10pt; margin-top: 4pt; }
+  .contact div { margin-bottom: 1pt; }
+  h2 {
+    font-size: 11pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .4pt;
+    border-bottom: 1px solid #000;
+    padding-bottom: 2pt;
+    margin: 12pt 0 6pt;
+  }
+  h3 { font-size: 10.5pt; font-weight: 700; }
+  .job { margin-bottom: 8pt; page-break-inside: avoid; }
+  .meta { font-size: 10pt; font-style: italic; margin-bottom: 2pt; }
+  ul { margin: 2pt 0 0 16pt; }
+  li { margin-bottom: 1.5pt; }
+  p { margin-bottom: 4pt; }
+  .skills p { margin-bottom: 3pt; }
+  .proj { margin-bottom: 5pt; page-break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Andi Agung Dwi Arya</h1>
+  <div class="title">Full-Stack Developer | AI/ML Engineer</div>
+  <div class="contact">
+    <div>Email: andiagung193@gmail.com | Phone/WhatsApp: +62 851 7107 9607</div>
+    <div>Location: Makassar, South Sulawesi, Indonesia | Open to remote</div>
+    <div>GitHub: github.com/devnolife | X: x.com/devnolife</div>
+    <div>Languages: Indonesian (native), English (professional working proficiency)</div>
+  </div>
+</header>
+
+<h2>Professional Summary</h2>
+<p>Software engineer with 5+ years of daily development experience and strong proficiency in
+TypeScript, Next.js, React, and Python, plus production experience integrating LLM APIs and building
+AI-assisted developer tooling (including a Go-based LLM/RAG backend in production). Solid computer
+science foundation from a B.Eng. in Informatics Engineering (GPA 3.92, Best Graduate) and an M.Sc. in
+progress. Author of 205 original repositories (80 TypeScript, 36 Python), with deep experience
+delivering B2B and SaaS products end to end for clients and institutions: turning requirements into
+technical specifications, database schema, REST API, front-end, deployment, and CI/CD, with several
+systems maintained in production for 12-16 months each.</p>
+
+<h2>Work Experience</h2>
+
+<div class="job">
+  <h3>Fullstack Engineer &mdash; Metito Indonesia</h3>
+  <div class="meta">Contract | June 2025 &ndash; June 2026 | Indonesia</div>
+  <ul>
+    <li>Delivered full-stack features end to end, from database schema and REST API to production front-end.</li>
+    <li>Built applications and internal systems supporting water and wastewater treatment operations across Indonesia (metito.id).</li>
+  </ul>
+</div>
+
+<div class="job">
+  <h3>Fullstack Developer &mdash; PT Ide Kreatif Asia (Saku Sultan)</h3>
+  <div class="meta">December 2022 &ndash; January 2025 | Indonesia</div>
+  <ul>
+    <li>Engineered a production fintech e-wallet published on Google Play and the Apple App Store, reaching 10,000+ installs and a 4.7-star rating.</li>
+    <li>Implemented the internal admin dashboard for operations and transaction monitoring.</li>
+    <li>Built backend services in Go, using RabbitMQ for job queues, notifications, and webhooks, and Kafka for transaction event streaming.</li>
+    <li>Developed the cross-platform mobile application in React Native and Expo, including EAS build and store submission, passing both Apple and Google review.</li>
+  </ul>
+</div>
+
+<div class="job">
+  <h3>Fullstack Developer &mdash; Universitas Muhammadiyah Makassar</h3>
+  <div class="meta">Contract | July 2022 &ndash; January 2025 | Makassar, Indonesia</div>
+  <ul>
+    <li>Built SINTEKMu, the Faculty of Engineering information system, live in production at simtekmu.teknik.unismuh.ac.id.</li>
+    <li>Implemented role-based access control across 6 distinct user levels, with complex relational data and reporting.</li>
+    <li>Maintained and iterated on the platform continuously, contributing 580+ commits.</li>
+  </ul>
+</div>
+
+<div class="job">
+  <h3>Software Engineer &mdash; DPRD Provinsi, Kota Sinjai</h3>
+  <div class="meta">Project-based | October 2023 &ndash; March 2024 | Sinjai, Indonesia</div>
+  <ul>
+    <li>Developed a real-time election vote-monitoring application, delivered to specification and on schedule.</li>
+  </ul>
+</div>
+
+<div class="job">
+  <h3>Full-Stack &amp; AI/ML Engineer &mdash; devnolife studio (Independent)</h3>
+  <div class="meta">2021 &ndash; Present | Makassar, Indonesia</div>
+  <ul>
+    <li>Delivered 200+ shipped projects for clients and institutions across web, SaaS, mobile, and AI, turning vague client ideas into scoped, specified, and shipped products.</li>
+    <li>Built a production LLM/RAG backend in Go (chi v5, PDF ingestion, chunking, embedding, retrieval) powering fokusngajar.id, with rate limiting, metrics, and multi-stage Docker builds.</li>
+    <li>Specialized in Indonesian-language NLP: text summarization, paraphrasing, and semantic plagiarism detection using algorithms such as TextRank, TF-IDF, and cosine similarity.</li>
+    <li>Works daily with AI coding assistants (GitHub Copilot license holder) and LLM APIs integrated into production tooling.</li>
+  </ul>
+</div>
+
+<h2>Technical Skills</h2>
+<div class="skills">
+  <p><strong>Languages:</strong> TypeScript (expert), Python (advanced), JavaScript (expert), Go / Golang (working), SQL, HTML, CSS, SCSS</p>
+  <p><strong>Front-End:</strong> Next.js, React, Tailwind CSS, shadcn/ui, Redux, responsive web design</p>
+  <p><strong>AI, Data &amp; Vision:</strong> LLM APIs, RAG pipelines, IndoBERT, mT5, TextRank, TF-IDF, cosine similarity, OCR, OpenCV, Pandas, NLP (Bahasa Indonesia)</p>
+  <p><strong>Back-End:</strong> Node.js, Express, NestJS, Python (FastAPI, Flask), Go / Golang (chi, Gin), REST API, JWT authentication, Prisma ORM</p>
+  <p><strong>Databases &amp; Messaging:</strong> PostgreSQL, MongoDB, Redis, RabbitMQ, Apache Kafka</p>
+  <p><strong>Mobile:</strong> React Native, Expo, Expo Router, NativeWind, EAS Build, App Store and Play Store submission</p>
+  <p><strong>DevOps &amp; Tools:</strong> Git, Docker, CI/CD, Vercel, Linux, Postman</p>
+</div>
+
+<h2>Key Projects</h2>
+
+<div class="proj">
+  <h3>Turnitin-Style Plagiarism Detection Platform</h3>
+  <div class="meta">Approximately 16 months | Node.js, SCSS, OCR</div>
+  <p>Full-stack OCR-based plagiarism detection system with REST backend and analytics dashboard,
+  built on NLP algorithms including TF-IDF and cosine similarity. Longest continuously maintained
+  build at approximately 500 days. Front-end: github.com/devnolife/turnitinApp-frontend</p>
+</div>
+
+<div class="proj">
+  <h3>SaaS GuruPintar &mdash; Multi-Tenant Education SaaS</h3>
+  <div class="meta">Approximately 16 months | TypeScript</div>
+  <p>Multi-tenant SaaS platform for an education product, covering authentication, subscription
+  billing, and administrative dashboards.</p>
+</div>
+
+<div class="proj">
+  <h3>PemiluDigital &mdash; Digital Election Platform</h3>
+  <div class="meta">Approximately 1 year | TypeScript, SCSS</div>
+  <p>Full-stack digital election system with voter data management, real-time vote tallying, role-based
+  access control, and auditing. Largest codebase authored to date at approximately 224 MB.</p>
+</div>
+
+<div class="proj">
+  <h3>SAKTI Dashboard &mdash; Enterprise Operations Dashboard</h3>
+  <div class="meta">15 months | TypeScript, in production</div>
+  <p>Enterprise operations dashboard (approximately 97 MB) with rich data views and reporting,
+  running in production for 450+ days.</p>
+</div>
+
+<div class="proj">
+  <h3>Magic IDE</h3>
+  <div class="meta">8 months | TypeScript</div>
+  <p>Experimental in-browser development environment; long-running R&amp;D project in developer
+  tooling. github.com/devnolife/magic-ide</p>
+</div>
+
+<div class="proj">
+  <h3>WhatsApp API Service</h3>
+  <div class="meta">11 months | JavaScript, Node.js</div>
+  <p>Messaging automation and integration layer providing notifications, OTP delivery, and bot
+  workflows. github.com/devnolife/whatsapp-api</p>
+</div>
+
+<h2>Education</h2>
+
+<div class="job">
+  <h3>Master of Science (S2), Informatics Engineering</h3>
+  <div class="meta">Universitas Hasanuddin (UNHAS), Makassar | In progress</div>
+</div>
+
+<div class="job">
+  <h3>Bachelor of Engineering (S1), Informatics Engineering</h3>
+  <div class="meta">Universitas Muhammadiyah Makassar | GPA 3.92 / 4.00</div>
+  <ul>
+    <li>Best Graduate, Faculty of Engineering.</li>
+  </ul>
+</div>
+
+</body>
+</html>

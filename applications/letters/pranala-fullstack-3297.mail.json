@@ -1,0 +1,19 @@
+{
+  "id": "pranala-fullstack-3297",
+  "from": "andiagung193@gmail.com",
+  "to": "hiringpranalasolusidigital@gmail.com",
+  "subject": "Lamaran Fullstack Developer – Andi Agung Dwi Arya",
+  "attachments": [
+    "applications/cv/tailored/3297-pranala-solusi-digital.pdf",
+    "data/portfolio-3297-pranala.pdf"
+  ],
+  "track": {
+    "platform": "email",
+    "external_id": "pranala-fullstack-3297",
+    "job_id": 3297,
+    "title": "Fullstack Developer",
+    "company": "Pranala Solusi Digital",
+    "url": "mailto:hiringpranalasolusidigital@gmail.com"
+  },
+  "body": "Kepada Tim Rekrutmen Pranala Solusi Digital,\n\nSaya Andi Agung Dwi Arya (devnolife), Full-Stack Engineer asal Makassar, tertarik melamar posisi Fullstack Developer. Kebutuhan Anda — membangun dashboard, API, dan sistem internal yang stabil serta platform reusable seperti POS dan HRIS — persis jenis pekerjaan yang saya kerjakan lima tahun terakhir: sistem panjang umur yang saya rawat 12–16 bulan di produksi, bukan sekadar proyek sekali jadi.\n\nBeberapa bukti yang relevan:\n\n1. SAKTI/SINTEKMu — sistem informasi fakultas dengan akses berbasis peran, live di https://simtekmu.teknik.unismuh.ac.id. Contoh nyata dashboard internal yang dipakai user operasional setiap hari.\n\n2. Saku Sultan — dompet digital React Native/Expo yang saya bangun sebagai engineer, tayang di Play Store dan App Store. Backend-nya Go (Gin + pgx) dengan RabbitMQ dan Kafka; menuntut keamanan, stabilitas, dan alur bisnis yang ketat — sama seperti kebutuhan modul POS/HRIS.\n   Play Store: https://play.google.com/store/apps/details?id=com.saku_sultan\n   App Store: https://apps.apple.com/id/app/saku-sultan/id6444094885\n\n3. UMKM Payment — platform pemesanan makanan untuk UMKM (mirip POS): monorepo web admin/seller/buyer (Next.js) + mobile (Expo) dengan backend Go. https://github.com/devnolife/umkm-payment\n\n4. Platform plagiarisme berbasis OCR — REST backend + dashboard review, proyek terlama saya (~16 bulan). Frontend publik: https://github.com/devnolife/turnitinApp-frontend\n\nStack harian saya: TypeScript, Next.js, React, Node.js/NestJS, Prisma, PostgreSQL, Go, dan Python untuk AI/NLP. Saya terbiasa bekerja lintas fungsi bersama product owner, QA, dan user internal — menerjemahkan flow bisnis menjadi fitur yang benar-benar terpakai.\n\nSaya juga punya backend Go produksi lain (LLM/RAG service) yang reponya privat, namun bisa saya demokan saat interview.\n\nCV dan dokumen portfolio saya lampirkan dalam PDF; portfolio lengkap juga tersedia di https://github.com/devnolife (205+ repositori original).\n\nSenang jika bisa berdiskusi lebih lanjut mengenai kebutuhan tim Anda.\n\nHormat saya,\nAndi Agung Dwi Arya\ngithub.com/devnolife\n"
+}

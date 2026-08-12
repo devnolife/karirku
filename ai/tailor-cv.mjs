@@ -15,7 +15,7 @@
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
-import { chat, config, formatUsage } from './lib/llm-client.mjs';
+import { chat, config, formatUsage, shutdownLlm } from './lib/llm-client.mjs';
 import { loadProfile } from './lib/profile.mjs';
 import { getDb, getJob } from './lib/db.mjs';
 import { htmlToPdf } from './lib/pdf.mjs';
@@ -98,4 +98,4 @@ ${baseHtml}`,
   getDb().close();
 }
 
-main().catch(err => { console.error(err.message); process.exit(1); });
+main().catch(err => { console.error(err.message); process.exitCode = 1; }).finally(() => shutdownLlm());

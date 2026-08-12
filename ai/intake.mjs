@@ -15,7 +15,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { chat, config } from './lib/llm-client.mjs';
+import { chat, config, shutdownLlm } from './lib/llm-client.mjs';
 import { getDb, insertJob } from './lib/db.mjs';
 
 function arg(name) {
@@ -140,4 +140,4 @@ async function main() {
   console.log(`\nSelesai. Lihat /hunter/jobs (job #${jobId}) atau data/ai-reports/.`);
 }
 
-main().catch(err => { console.error(err.message); process.exit(1); });
+main().catch(err => { console.error(err.message); process.exitCode = 1; }).finally(() => shutdownLlm());

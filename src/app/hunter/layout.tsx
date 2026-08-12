@@ -23,6 +23,7 @@ export const metadata: Metadata = {
 const NAV = [
   { href: "/hunter", label: "Overview" },
   { href: "/hunter/jobs", label: "Jobs Queue" },
+  { href: "/hunter/ai", label: "AI Eval" },
   { href: "/hunter/intake", label: "Intake" },
   { href: "/hunter/applications", label: "Applications" },
   { href: "/hunter/settings", label: "Settings" },

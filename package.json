@@ -34,6 +34,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@github/copilot-sdk": "^1.0.9",
     "@tailwindcss/postcss": "^4",
     "@types/chrome": "^0.2.2",
     "@types/node": "^20",
@@ -43,6 +44,7 @@
     "esbuild": "^0.28.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
+    "playwright-core": "^1.62.1",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5"

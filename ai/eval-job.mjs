@@ -12,7 +12,7 @@
 
 import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { chat, config, formatUsage } from './lib/llm-client.mjs';
+import { chat, config, formatUsage, shutdownLlm } from './lib/llm-client.mjs';
 import { profileContext } from './lib/profile.mjs';
 import { getDb, getJob, getUnevaluatedJobs, saveEvaluation } from './lib/db.mjs';
 import { classifyTier } from './classify-tier.mjs';
@@ -134,4 +134,4 @@ async function main() {
   getDb().close();
 }
 
-main().catch(err => { console.error(err.message); process.exit(1); });
+main().catch(err => { console.error(err.message); process.exitCode = 1; }).finally(() => shutdownLlm());
