@@ -1,4 +1,4 @@
-import { hunterDb } from "@devnolife/karirku-core/hunter";
+import { prisma } from "@devnolife/karirku-core/db";
 import { authorizeHunterApi } from "@/lib/hunter-access";
 
 export const dynamic = "force-dynamic";
@@ -7,9 +7,13 @@ export async function GET() {
   const access = await authorizeHunterApi();
   if (!access.ok) return access.response;
 
-  const runs = hunterDb()
-    .getDb()
-    .prepare(`SELECT id, type, platform, ok, stats_json, started_at, finished_at FROM runs ORDER BY id DESC LIMIT 50`)
-    .all();
+  const runs = await prisma.hunterRun.findMany({
+    select: {
+      id: true, type: true, platform: true, ok: true,
+      statsJson: true, startedAt: true, finishedAt: true,
+    },
+    orderBy: { id: "desc" },
+    take: 50,
+  });
   return Response.json({ runs });
 }

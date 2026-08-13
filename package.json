@@ -54,8 +54,7 @@
       "@prisma/client",
       "@prisma/engines",
       "prisma",
-      "esbuild",
-      "better-sqlite3"
+      "esbuild"
     ],
     "overrides": {
       "@devnolife/karirku-core": "link:../karirku-core"

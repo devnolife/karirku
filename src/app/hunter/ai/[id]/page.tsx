@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { hunterDb } from "@devnolife/karirku-core/hunter";
+import { prisma } from "@devnolife/karirku-core/db";
 import { AiEvalButton } from "../actions-client";
 
 export const dynamic = "force-dynamic";
@@ -16,29 +16,18 @@ export default async function AiReportPage({
   const jobId = Number(id);
   if (!Number.isInteger(jobId) || jobId <= 0) notFound();
 
-  const job = hunterDb()
-    .getDb()
-    .prepare(
-      `SELECT id, title, company, url, llm_score, llm_tier, llm_report_path, llm_evaluated_at
-       FROM jobs WHERE id = ?`,
-    )
-    .get(jobId) as
-    | {
-      id: number;
-      title: string;
-      company: string | null;
-      url: string;
-      llm_score: number | null;
-      llm_tier: string | null;
-      llm_report_path: string | null;
-      llm_evaluated_at: string | null;
-    }
-    | undefined;
-  if (!job || !job.llm_report_path) notFound();
+  const job = await prisma.hunterJob.findUnique({
+    where: { id: jobId },
+    select: {
+      id: true, title: true, company: true, url: true,
+      llmScore: true, llmTier: true, llmReportPath: true, llmEvaluatedAt: true,
+    },
+  });
+  if (!job || !job.llmReportPath) notFound();
 
   // Path disimpan relatif dari root project; tolak path yang keluar dari data/ai-reports.
   const reportsDir = path.resolve(process.cwd(), "data", "ai-reports");
-  const resolved = path.resolve(process.cwd(), job.llm_report_path);
+  const resolved = path.resolve(process.cwd(), job.llmReportPath);
   if (!resolved.startsWith(reportsDir)) notFound();
 
   let md: string;
@@ -65,9 +54,9 @@ export default async function AiReportPage({
             ) : null}
           </h1>
           <div className="mt-1 [font-family:var(--font-hunter-mono)] text-xs text-[#8A9088]">
-            score {job.llm_score?.toFixed(1) ?? "—"}/5
-            {job.llm_tier ? ` · tier:${job.llm_tier}` : ""}
-            {job.llm_evaluated_at ? ` · ${job.llm_evaluated_at.slice(0, 16).replace("T", " ")}` : ""}
+            score {job.llmScore?.toFixed(1) ?? "—"}/5
+            {job.llmTier ? ` · tier:${job.llmTier}` : ""}
+            {job.llmEvaluatedAt ? ` · ${job.llmEvaluatedAt.toISOString().slice(0, 16).replace("T", " ")}` : ""}
             {" · "}
             <a href={job.url} target="_blank" className="text-[#FF6B1A] underline-offset-2 hover:underline">
               lowongan ↗

@@ -13,16 +13,49 @@ export type HunterAccessResult =
   | { ok: false; response: Response };
 
 /**
+ * Email pemilik Hunter, atau null bila belum dikonfigurasi.
+ *
+ * Dibaca dari `process.env` saat dipanggil, bukan di-cache saat modul dimuat,
+ * agar validasi env terpusat (`assertWebEnv`) tetap satu-satunya sumber
+ * kebenaran soal bentuk nilainya.
+ */
+export function hunterOwnerEmail(): string | null {
+  const raw = process.env.HUNTER_OWNER_EMAIL?.trim().toLowerCase();
+  return raw ? raw : null;
+}
+
+/**
+ * Hunter bukan fitur multi-user: profil kandidat, cover letter, jawaban
+ * screening, dan sesi browser yang dipakainya milik satu orang, dan datanya
+ * berisi riwayat lamaran serta email pribadi. Karena itu `role=admin` saja
+ * tidak cukup — admin lain tidak boleh ikut membacanya.
+ *
+ * Tanpa `HUNTER_OWNER_EMAIL`, kebijakan jatuh kembali ke admin-only. Ini
+ * disengaja: memaksa env baru akan mengunci pemilik keluar dari alatnya sendiri
+ * saat deploy, dan itu kegagalan yang lebih buruk daripada mempertahankan
+ * perilaku lama pada instalasi satu-admin.
+ */
+export function isHunterOwner(
+  email: string | null | undefined,
+  owner: string | null = hunterOwnerEmail(),
+): boolean {
+  if (!owner) return true;
+  return typeof email === "string" && email.toLowerCase() === owner;
+}
+
+/**
  * Pure policy used by the API guard and unit tests.
- * Hunter is intentionally a single-operator, admin-only tool.
+ * Hunter is intentionally a single-operator tool.
  */
 export function hunterAccessStatus(
-  user: Pick<SessionUser, "role"> | null,
+  user: Pick<SessionUser, "role"> & { email?: string | null } | null,
   options: HunterAccessOptions = {},
   hasAutoApply = false,
+  owner: string | null = hunterOwnerEmail(),
 ): 200 | 401 | 403 {
   if (!user) return 401;
   if (user.role !== "admin") return 403;
+  if (!isHunterOwner(user.email, owner)) return 403;
   if (options.requireAutoApply && !hasAutoApply) return 403;
   return 200;
 }
@@ -33,11 +66,13 @@ export async function authorizeHunterApi(
 ): Promise<HunterAccessResult> {
   const session = await auth();
   const user = session?.user ?? null;
+  const owner = hunterOwnerEmail();
+  const allowed = user?.role === "admin" && isHunterOwner(user.email, owner);
   const autoApply =
-    user?.role === "admin" && options.requireAutoApply
+    allowed && options.requireAutoApply
       ? await hasEntitlement(user.id, FEATURE_HUNTER_AUTO_APPLY)
       : false;
-  const status = hunterAccessStatus(user, options, autoApply);
+  const status = hunterAccessStatus(user, options, autoApply, owner);
 
   if (status === 401) {
     return {
@@ -49,10 +84,9 @@ export async function authorizeHunterApi(
     };
   }
   if (status === 403) {
-    const message =
-      options.requireAutoApply && user?.role === "admin"
-        ? "Entitlement Hunter Auto-Apply belum aktif."
-        : "Hunter hanya dapat diakses admin.";
+    const message = !allowed
+      ? "Hunter adalah alat pribadi pemilik instance ini."
+      : "Entitlement Hunter Auto-Apply belum aktif.";
     return {
       ok: false,
       response: Response.json({ error: "forbidden", message }, { status }),

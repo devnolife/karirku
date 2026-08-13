@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { hunterDb } from "@devnolife/karirku-core/hunter";
+import { prisma } from "@devnolife/karirku-core/db";
 import { ActionButton } from "../actions-client";
 
 export const dynamic = "force-dynamic";
@@ -20,23 +20,21 @@ export default async function Applications({
   const sp = await searchParams;
   const reply = sp.reply || "";
 
-  const where = reply ? "WHERE a.reply_status = ?" : "";
-  const params = reply ? [reply] : [];
-  const apps = hunterDb()
-    .getDb()
-    .prepare(
-      `SELECT a.id, a.platform, a.title, a.company, a.url, a.channel, a.applied_at,
-              a.salary_offered, a.reply_status, a.last_reply_at, a.last_reply_snippet, j.url AS job_url
-       FROM applications a LEFT JOIN jobs j ON j.id = a.job_id ${where}
-       ORDER BY a.applied_at DESC LIMIT 300`
-    )
-    .all(...params) as Record<string, string | number | null>[];
-
-  const counts = hunterDb()
-    .getDb()
-    .prepare(`SELECT reply_status, COUNT(*) n FROM applications GROUP BY reply_status`)
-    .all() as { reply_status: string; n: number }[];
-  const total = counts.reduce((s, c) => s + c.n, 0);
+  const [apps, counts] = await Promise.all([
+    prisma.hunterApplication.findMany({
+      where: reply ? { replyStatus: reply } : {},
+      select: {
+        id: true, platform: true, title: true, company: true, url: true,
+        channel: true, appliedAt: true, salaryOffered: true, replyStatus: true,
+        lastReplyAt: true, lastReplySnippet: true,
+        job: { select: { url: true } },
+      },
+      orderBy: { appliedAt: "desc" },
+      take: 300,
+    }),
+    prisma.hunterApplication.groupBy({ by: ["replyStatus"], _count: { _all: true } }),
+  ]);
+  const total = counts.reduce((s, c) => s + c._count._all, 0);
 
   return (
     <div className="space-y-8">
@@ -67,7 +65,7 @@ export default async function Applications({
           all {total}
         </Link>
         {["silent", "replied", "interview", "offer", "rejected"].map((s) => {
-          const n = counts.find((c) => c.reply_status === s)?.n || 0;
+          const n = counts.find((c) => c.replyStatus === s)?._count._all || 0;
           return (
             <Link
               key={s}
@@ -90,9 +88,9 @@ export default async function Applications({
             className="flex items-start gap-4 border-b border-[#1A1D18] p-4 transition-colors duration-150 ease-out last:border-b-0 hover:bg-[#141712]"
           >
             <div className="min-w-0 flex-1">
-              {a.url || a.job_url ? (
+              {a.url || a.job?.url ? (
                 <a
-                  href={String(a.url || a.job_url)}
+                  href={String(a.url || a.job?.url)}
                   target="_blank"
                   className="font-bold leading-snug underline-offset-2 hover:text-[#FF6B1A] hover:underline"
                 >
@@ -104,20 +102,20 @@ export default async function Applications({
               <div className="mt-1 [font-family:var(--font-hunter-mono)] text-xs text-[#8A9088]">
                 {String(a.platform)}
                 {a.company ? ` · ${a.company}` : ""}
-                {a.salary_offered ? ` · asked ${a.salary_offered}` : ""}
+                {a.salaryOffered ? ` · asked ${a.salaryOffered}` : ""}
                 {" · "}
                 <span className="text-[#4C5349]">
-                  {String(a.applied_at).slice(0, 10)} ({String(a.channel)})
+                  {String(a.appliedAt).slice(0, 10)} ({String(a.channel)})
                 </span>
               </div>
-              {a.last_reply_snippet ? (
-                <div className="mt-1 truncate text-xs italic text-[#4C5349]">“{String(a.last_reply_snippet)}”</div>
+              {a.lastReplySnippet ? (
+                <div className="mt-1 truncate text-xs italic text-[#4C5349]">“{String(a.lastReplySnippet)}”</div>
               ) : null}
             </div>
             <span
-              className={`shrink-0 [font-family:var(--font-hunter-mono)] text-[11px] font-semibold uppercase tracking-wider ${BADGE[String(a.reply_status)] || BADGE.silent}`}
+              className={`shrink-0 [font-family:var(--font-hunter-mono)] text-[11px] font-semibold uppercase tracking-wider ${BADGE[String(a.replyStatus)] || BADGE.silent}`}
             >
-              [{String(a.reply_status)}]
+              [{String(a.replyStatus)}]
             </span>
           </div>
         ))}

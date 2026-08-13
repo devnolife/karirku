@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { IBM_Plex_Mono, Archivo } from "next/font/google";
 import { getSession } from "@/lib/auth";
+import { isHunterOwner } from "@/lib/hunter-access";
 
 const mono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -30,13 +31,14 @@ const NAV = [
 ];
 
 export default async function HunterLayout({ children }: { children: React.ReactNode }) {
-  // Hunter is a single-operator internal tool (raw SQLite, no per-user
-  // scoping — see docs/PRD-hunter.md §3). Restrict to admin so other real
-  // users in this now-multi-tenant app can't reach someone else's personal
-  // job-hunt data. Multi-tenant premium access is sub-project #2 (see
+  // Hunter adalah alat satu-operator: profil kandidat, cover letter, jawaban
+  // screening, dan sesi browser yang dipakainya milik satu orang, dan datanya
+  // berisi riwayat lamaran serta email pribadi. Peran admin saja tidak cukup —
+  // admin lain di instance ini tidak boleh ikut membacanya.
+  // Akses multi-tenant adalah sub-project #2 (lihat
   // docs/superpowers/specs/2026-07-06-hunter-premium-foundation-design.md).
   const session = await getSession();
-  if (session.user.role !== "admin") {
+  if (session.user.role !== "admin" || !isHunterOwner(session.user.email)) {
     redirect("/dashboard");
   }
 

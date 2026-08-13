@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { hunterDb } from "@devnolife/karirku-core/hunter";
+import { prisma } from "@devnolife/karirku-core/db";
 import { ApplyButton, JobStatusButton, ActionButton } from "../actions-client";
 
 export const dynamic = "force-dynamic";
@@ -13,19 +13,19 @@ export default async function JobsQueue({
   const platform = sp.platform || "";
   const status = sp.status || "new";
 
-  const where: string[] = [];
-  const params: unknown[] = [];
-  if (platform) { where.push("platform = ?"); params.push(platform); }
-  if (status) { where.push("status = ?"); params.push(status); }
-
-  const jobs = hunterDb()
-    .getDb()
-    .prepare(
-      `SELECT id, platform, title, company, url, salary_min, salary_max, currency, remote, match_score, status, skip_reason
-       FROM jobs ${where.length ? "WHERE " + where.join(" AND ") : ""}
-       ORDER BY match_score DESC, found_at DESC LIMIT 150`
-    )
-    .all(...params) as Record<string, string | number | null>[];
+  const jobs = await prisma.hunterJob.findMany({
+    where: {
+      ...(platform ? { platform } : {}),
+      ...(status ? { status } : {}),
+    },
+    select: {
+      id: true, platform: true, title: true, company: true, url: true,
+      salaryMin: true, salaryMax: true, currency: true, remote: true,
+      matchScore: true, status: true, skipReason: true,
+    },
+    orderBy: [{ matchScore: "desc" }, { foundAt: "desc" }],
+    take: 150,
+  });
 
   const filters = (name: string, value: string, current: string, label: string) => {
     const q = new URLSearchParams({ platform, status });
@@ -35,8 +35,8 @@ export default async function JobsQueue({
         key={name + value}
         href={`/hunter/jobs?${q.toString()}`}
         className={`border px-2.5 py-1 [font-family:var(--font-hunter-mono)] text-[10px] uppercase tracking-[0.1em] transition-colors duration-150 ease-out ${current === value
-            ? "border-[#FF6B1A] bg-[#FF6B1A] text-[#0D0F0C]"
-            : "border-[#262B24] text-[#8A9088] hover:border-[#4C5349] hover:text-[#E6E4DC]"
+          ? "border-[#FF6B1A] bg-[#FF6B1A] text-[#0D0F0C]"
+          : "border-[#262B24] text-[#8A9088] hover:border-[#4C5349] hover:text-[#E6E4DC]"
           }`}
       >
         {label}
@@ -73,7 +73,7 @@ export default async function JobsQueue({
           <div className="p-6 [font-family:var(--font-hunter-mono)] text-xs text-[#4C5349]">nothing here.</div>
         )}
         {jobs.map((j) => {
-          const score = Number(j.match_score) || 0;
+          const score = Number(j.matchScore) || 0;
           const scoreColor = score >= 60 ? "text-[#5FBF6E]" : score >= 30 ? "text-[#FF6B1A]" : "text-[#4C5349]";
           const barColor = score >= 60 ? "bg-[#5FBF6E]" : score >= 30 ? "bg-[#FF6B1A]" : "bg-[#4C5349]";
           return (
@@ -100,12 +100,12 @@ export default async function JobsQueue({
                 <div className="mt-1 [font-family:var(--font-hunter-mono)] text-xs text-[#8A9088]">
                   {String(j.platform)}
                   {j.company ? ` · ${j.company}` : ""}
-                  {j.salary_min ? ` · ${j.currency === "USD" ? "$" : "Rp "}${j.salary_min}${j.salary_max ? "–" + j.salary_max : ""}${j.currency === "USD" ? "" : " jt"}` : ""}
+                  {j.salaryMin ? ` · ${j.currency === "USD" ? "$" : "Rp "}${j.salaryMin}${j.salaryMax ? "–" + j.salaryMax : ""}${j.currency === "USD" ? "" : " jt"}` : ""}
                   {j.remote ? " · remote" : ""}
                 </div>
-                {j.skip_reason ? (
+                {j.skipReason ? (
                   <div className="mt-1 [font-family:var(--font-hunter-mono)] text-[11px] text-[#E05B4C]/80">
-                    skip: {String(j.skip_reason)}
+                    skip: {String(j.skipReason)}
                   </div>
                 ) : null}
               </div>

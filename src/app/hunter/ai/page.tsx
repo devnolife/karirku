@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { hunterDb } from "@devnolife/karirku-core/hunter";
+import { prisma } from "@devnolife/karirku-core/db";
 import { AiEvalButton } from "./actions-client";
 
 export const dynamic = "force-dynamic";
@@ -12,14 +12,14 @@ type EvalRow = {
   url: string;
   location: string | null;
   remote: number;
-  salary_min: number | null;
-  salary_max: number | null;
+  salaryMin: number | null;
+  salaryMax: number | null;
   currency: string | null;
   status: string;
-  llm_score: number | null;
-  llm_tier: string | null;
-  llm_report_path: string | null;
-  llm_evaluated_at: string | null;
+  llmScore: number | null;
+  llmTier: string | null;
+  llmReportPath: string | null;
+  llmEvaluatedAt: string | null;
 };
 
 function verdict(score: number): { label: string; color: string; bg: string } {
@@ -35,58 +35,58 @@ export default async function AiEvalDashboard({
 }) {
   const sp = await searchParams;
   const view = sp.v || "all";
-  const db = hunterDb().getDb();
-
-  const rows = db
-    .prepare(
-      `SELECT id, platform, title, company, url, location, remote, salary_min, salary_max, currency,
-              status, llm_score, llm_tier, llm_report_path, llm_evaluated_at
-       FROM jobs WHERE llm_score IS NOT NULL
-       ORDER BY llm_score DESC, llm_evaluated_at DESC LIMIT 200`,
-    )
-    .all() as unknown as EvalRow[];
-
-  const pending = db
-    .prepare(`SELECT COUNT(*) n FROM jobs WHERE status = 'new' AND llm_score IS NULL`)
-    .get() as { n: number };
+  const [rows, pendingCount] = await Promise.all([
+    prisma.hunterJob.findMany({
+      where: { llmScore: { not: null } },
+      select: {
+        id: true, platform: true, title: true, company: true, url: true,
+        location: true, remote: true, salaryMin: true, salaryMax: true,
+        currency: true, status: true, llmScore: true, llmTier: true,
+        llmReportPath: true, llmEvaluatedAt: true,
+      },
+      orderBy: [{ llmScore: "desc" }, { llmEvaluatedAt: "desc" }],
+      take: 200,
+    }),
+    prisma.hunterJob.count({ where: { status: "new", llmScore: null } }),
+  ]);
+  const pending = { n: pendingCount };
 
   const evaluated = rows.length;
-  const avg = evaluated ? rows.reduce((s, r) => s + (r.llm_score ?? 0), 0) / evaluated : 0;
-  const applyCount = rows.filter((r) => (r.llm_score ?? 0) >= 4).length;
-  const reviewCount = rows.filter((r) => (r.llm_score ?? 0) >= 3 && (r.llm_score ?? 0) < 4).length;
+  const avg = evaluated ? rows.reduce((s, r) => s + (r.llmScore ?? 0), 0) / evaluated : 0;
+  const applyCount = rows.filter((r) => (r.llmScore ?? 0) >= 4).length;
+  const reviewCount = rows.filter((r) => (r.llmScore ?? 0) >= 3 && (r.llmScore ?? 0) < 4).length;
 
   // distribusi skor 1..5 (bucket per 0.5 supaya bar-nya informatif)
   const buckets = Array.from({ length: 9 }, (_, i) => 1 + i * 0.5); // 1, 1.5 … 5
   const dist = buckets.map((b) => ({
     b,
-    n: rows.filter((r) => (r.llm_score ?? 0) >= b && (r.llm_score ?? 0) < b + 0.5).length,
+    n: rows.filter((r) => (r.llmScore ?? 0) >= b && (r.llmScore ?? 0) < b + 0.5).length,
   }));
   const maxDist = Math.max(1, ...dist.map((d) => d.n));
 
   // tier breakdown
   const tiers = ["intern", "entry", "mid", "senior"].map((t) => ({
     t,
-    n: rows.filter((r) => (r.llm_tier ?? "").toLowerCase() === t).length,
+    n: rows.filter((r) => (r.llmTier ?? "").toLowerCase() === t).length,
   }));
 
   const filtered =
     view === "apply"
-      ? rows.filter((r) => (r.llm_score ?? 0) >= 4)
+      ? rows.filter((r) => (r.llmScore ?? 0) >= 4)
       : view === "review"
-        ? rows.filter((r) => (r.llm_score ?? 0) >= 3 && (r.llm_score ?? 0) < 4)
+        ? rows.filter((r) => (r.llmScore ?? 0) >= 3 && (r.llmScore ?? 0) < 4)
         : view === "skip"
-          ? rows.filter((r) => (r.llm_score ?? 0) < 3)
+          ? rows.filter((r) => (r.llmScore ?? 0) < 3)
           : rows;
 
   const tab = (value: string, label: string, count: number) => (
     <Link
       key={value}
       href={`/hunter/ai?v=${value}`}
-      className={`border px-2.5 py-1 [font-family:var(--font-hunter-mono)] text-[10px] uppercase tracking-[0.1em] transition-colors duration-150 ease-out ${
-        view === value
+      className={`border px-2.5 py-1 [font-family:var(--font-hunter-mono)] text-[10px] uppercase tracking-[0.1em] transition-colors duration-150 ease-out ${view === value
           ? "border-[#FF6B1A] bg-[#FF6B1A] text-[#0D0F0C]"
           : "border-[#262B24] text-[#8A9088] hover:border-[#4C5349] hover:text-[#E6E4DC]"
-      }`}
+        }`}
     >
       {label} ×{count}
     </Link>
@@ -121,9 +121,8 @@ export default async function AiEvalDashboard({
         ].map((s) => (
           <div key={s.label} className="px-5 py-6">
             <div
-              className={`[font-family:var(--font-hunter-mono)] text-5xl font-semibold tabular-nums ${
-                s.accent ? "text-[#5FBF6E]" : "text-[#E6E4DC]"
-              }`}
+              className={`[font-family:var(--font-hunter-mono)] text-5xl font-semibold tabular-nums ${s.accent ? "text-[#5FBF6E]" : "text-[#E6E4DC]"
+                }`}
             >
               {s.value}
             </div>
@@ -203,7 +202,7 @@ export default async function AiEvalDashboard({
             </div>
           )}
           {filtered.map((j) => {
-            const score = j.llm_score ?? 0;
+            const score = j.llmScore ?? 0;
             const v = verdict(score);
             return (
               <div
@@ -230,19 +229,19 @@ export default async function AiEvalDashboard({
                     {j.platform}
                     {j.company ? ` · ${j.company}` : ""}
                     {j.location ? ` · ${j.location}` : ""}
-                    {j.salary_min
-                      ? ` · ${j.currency === "USD" ? "$" : "Rp "}${j.salary_min}${j.salary_max ? "–" + j.salary_max : ""}${j.currency === "USD" ? "" : " jt"}`
+                    {j.salaryMin
+                      ? ` · ${j.currency === "USD" ? "$" : "Rp "}${j.salaryMin}${j.salaryMax ? "–" + j.salaryMax : ""}${j.currency === "USD" ? "" : " jt"}`
                       : ""}
                     {j.remote ? " · remote" : ""}
-                    {j.llm_tier ? ` · tier:${j.llm_tier}` : ""}
+                    {j.llmTier ? ` · tier:${j.llmTier}` : ""}
                   </div>
                   <div className="mt-1 [font-family:var(--font-hunter-mono)] text-[11px] text-[#4C5349]">
                     status:{j.status}
-                    {j.llm_evaluated_at ? ` · eval:${j.llm_evaluated_at.slice(0, 16).replace("T", " ")}` : ""}
+                    {j.llmEvaluatedAt ? ` · eval:${j.llmEvaluatedAt.toISOString().slice(0, 16).replace("T", " ")}` : ""}
                   </div>
                 </div>
                 <div className="flex shrink-0 flex-col items-end gap-1.5">
-                  {j.llm_report_path ? (
+                  {j.llmReportPath ? (
                     <Link
                       href={`/hunter/ai/${j.id}`}
                       className="border border-[#262B24] px-2.5 py-1 [font-family:var(--font-hunter-mono)] text-[10px] uppercase tracking-[0.1em] text-[#8A9088] transition-colors hover:border-[#4C5349] hover:text-[#E6E4DC]"

@@ -1,0 +1,187 @@
+# Production stack for Karir.ai.
+#
+#   docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+#
+# The engine (@devnolife/karirku-core) is built from the sibling checkout, so
+# both repos must be cloned next to each other:
+#
+#   karirku/
+#     karirku-core/   ← engine
+#     web/            ← this repo
+#
+# Ollama is behind the `ai` profile. On a GPU-less VPS you almost certainly want
+# to point OLLAMA_BASE_URL at a machine that has one instead of running it here:
+#   docker compose ... --profile ai up -d      # to run it locally anyway
+
+name: karirku
+
+x-core-image: &core-image
+  image: karirku-core:${IMAGE_TAG:-latest}
+  build:
+    context: ../karirku-core
+    target: runtime
+
+x-engine-env: &engine-env
+  NODE_ENV: production
+  DATABASE_URL: postgresql://${POSTGRES_USER:?set POSTGRES_USER}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:?set POSTGRES_DB}?schema=public
+  REDIS_URL: redis://redis:6379
+  OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://ollama:11434/v1}
+  OLLAMA_API_KEY: ${OLLAMA_API_KEY:-ollama}
+  AI_MODEL_LLM: ${AI_MODEL_LLM:-gemma3:27b}
+  AI_MODEL_FAST: ${AI_MODEL_FAST:-qwen2.5:7b-instruct}
+  AI_MODEL_EMBED: ${AI_MODEL_EMBED:-nomic-embed-text}
+  OAUTH_TOKEN_ENCRYPTION_KEY: ${OAUTH_TOKEN_ENCRYPTION_KEY:?set OAUTH_TOKEN_ENCRYPTION_KEY}
+  AUTOFILL_TOKEN_SECRET: ${AUTOFILL_TOKEN_SECRET:?set AUTOFILL_TOKEN_SECRET}
+  GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+  GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+  S3_ENDPOINT: ${S3_ENDPOINT:-http://minio:9000}
+  S3_REGION: ${S3_REGION:-us-east-1}
+  S3_ACCESS_KEY: ${S3_ACCESS_KEY:?set S3_ACCESS_KEY}
+  S3_SECRET_KEY: ${S3_SECRET_KEY:?set S3_SECRET_KEY}
+  S3_BUCKET: ${S3_BUCKET:-karirku}
+  FIRECRAWL_SERVICE_URL: ${FIRECRAWL_SERVICE_URL:-}
+  RECOMMENDATION_DISPLAY_VERSION: ${RECOMMENDATION_DISPLAY_VERSION:-v1}
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    # Not published to the host: only containers on this network need it.
+    expose:
+      - "5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    # Persist queue state: an unexpected restart should not drop scheduled jobs.
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:?set S3_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:?set S3_SECRET_KEY}
+    volumes:
+      - minio-data:/data
+    expose:
+      - "9000"
+      - "9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ai"]
+    restart: unless-stopped
+    volumes:
+      - ollama-models:/root/.ollama
+    expose:
+      - "11434"
+    # Requires nvidia-container-toolkit on the host.
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  # Schema is applied by a one-shot container, never by the app on boot: two web
+  # replicas starting at once must not race each other through the same migration.
+  migrate:
+    image: karirku-core-migrate:${IMAGE_TAG:-latest}
+    build:
+      context: ../karirku-core
+      target: migrate
+    restart: "no"
+    environment:
+      <<: *engine-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  worker:
+    <<: *core-image
+    restart: unless-stopped
+    environment:
+      <<: *engine-env
+    volumes:
+      - engine-data:/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    # Browser automation needs more shared memory than Docker's 64 MB default.
+    shm_size: "1gb"
+
+  web:
+    image: karirku-web:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      args:
+        CORE_IMAGE: karirku-core:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    environment:
+      <<: *engine-env
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:?set NEXTAUTH_SECRET}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:?set NEXTAUTH_URL}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:?set GITHUB_CLIENT_ID}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:?set GITHUB_CLIENT_SECRET}
+      NEWSLETTER_WEBHOOK_URL: ${NEWSLETTER_WEBHOOK_URL:-}
+      AI_PROVIDER: ${AI_PROVIDER:-ollama}
+      GITHUB_MODELS_TOKEN: ${GITHUB_MODELS_TOKEN:-}
+      AUTOFILL_USE_LLM: ${AUTOFILL_USE_LLM:-}
+      RECOMMENDATION_SHADOW_SAMPLE_RATE: ${RECOMMENDATION_SHADOW_SAMPLE_RATE:-0.2}
+    volumes:
+      - engine-data:/data
+    # Bound to loopback: TLS termination belongs to a reverse proxy in front.
+    ports:
+      - "${WEB_BIND:-127.0.0.1}:${WEB_PORT:-3030}:3030"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  postgres-data:
+  redis-data:
+  minio-data:
+  ollama-models:
+  engine-data:

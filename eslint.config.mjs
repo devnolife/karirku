@@ -54,6 +54,14 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Ad-hoc operational scripts (CommonJS probes, one-off scrapers). They are
+    // never bundled into the app, so the app's module rules do not apply.
+    "_*.js",
+    "scripts/**/*.js",
+    "scripts/**/*.cjs",
+    "applications/**",
+    "graphify-out/**",
+    "extension/dist/**",
   ]),
 ]);
 

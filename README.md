@@ -326,6 +326,74 @@ edit `src/ai/models.ts` **dan** `prisma/schema.prisma` (semua `vector(768)` →
 
 ## Deploy
 
+### Dengan Docker (direkomendasikan)
+
+Seluruh stack produksi dijalankan dari repo ini lewat
+[`docker-compose.prod.yml`](./docker-compose.prod.yml). Kedua repo harus
+di-clone bersebelahan, karena engine dibuild dari checkout tetangga:
+
+```
+karirku/
+  karirku-core/   ← engine
+  web/            ← repo ini
+```
+
+```bash
+cd web
+cp .env.production.example .env.production
+
+# Isi semua secret. Empat nilai berikut wajib dan harus berbeda satu sama lain:
+for k in POSTGRES_PASSWORD NEXTAUTH_SECRET OAUTH_TOKEN_ENCRYPTION_KEY AUTOFILL_TOKEN_SECRET S3_SECRET_KEY; do
+  echo "$k=$(openssl rand -base64 32)"
+done
+
+docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+```
+
+Yang terjadi saat `up`:
+
+1. Postgres, Redis, dan MinIO start dan menunggu sampai `healthy`.
+2. Container `migrate` jalan sekali (`prisma migrate deploy`) lalu keluar.
+   Migrasi **tidak** dijalankan oleh app saat boot, supaya dua replika web yang
+   start bersamaan tidak berebut migrasi yang sama.
+3. `web` dan `worker` start hanya setelah migrasi selesai sukses.
+
+Container web mem-*validasi seluruh env di boot*
+([`src/instrumentation.ts`](./src/instrumentation.ts)). Secret yang salah bikin
+container gagal start dengan daftar masalahnya, bukan jadi error 500 saat user
+pertama mencoba login.
+
+| Image | Isi | Perintah |
+| --- | --- | --- |
+| `karirku-web` | Next.js server | `next start -p 3030` |
+| `karirku-core` | BullMQ workers + Chromium (Playwright) + Tesseract | `node dist/workers/index.js` |
+| `karirku-core-migrate` | Prisma CLI saja, sekali pakai | `prisma migrate deploy` |
+
+Beberapa keputusan yang perlu diketahui sebelum mengubahnya:
+
+- **Port hanya di-bind ke `127.0.0.1`.** TLS diterminasi reverse proxy
+  (Caddy/Nginx) di depannya. `NEXTAUTH_URL` wajib `https://` — cookie sesi
+  di-set `Secure`, jadi login tidak akan pernah berhasil lewat plain HTTP.
+- **Postgres/Redis/MinIO tidak diekspos ke host** (`expose`, bukan `ports`).
+  Hanya container di network yang sama bisa menghubunginya.
+- **Ollama ada di profile `ai`** dan tidak ikut start secara default. Model 27B
+  butuh GPU; di VPS biasa arahkan `OLLAMA_BASE_URL` ke mesin ber-GPU, atau pakai
+  `AI_PROVIDER=github`. Untuk menjalankannya di sini: tambahkan `--profile ai`.
+- **Hunter tidak ada di image.** Ia attach lewat CDP ke profil Chrome yang sudah
+  login manual — tidak ada artinya di dalam container.
+
+Rilis berikutnya:
+
+```bash
+git -C ../karirku-core pull && git pull
+docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+```
+
+Set `IMAGE_TAG` per rilis (mis. `IMAGE_TAG=2026.08.13`) kalau ingin rollback
+cukup dengan menurunkan tag.
+
+### Tanpa Docker
+
 Dua repo → dua artefak yang di-deploy terpisah:
 
 | Artefak | Dari repo | Proses |
@@ -344,6 +412,20 @@ Urutan rilis yang aman saat schema berubah:
 
 Build web butuh token registry dengan `read:packages` (`NODE_AUTH_TOKEN` /
 `npm config set //npm.pkg.github.com/:_authToken`).
+
+### Checklist sebelum go-live
+
+- [ ] Semua secret di-generate ulang — tidak ada nilai dari `.env.example`.
+- [ ] `OAUTH_TOKEN_ENCRYPTION_KEY` ≠ `AUTOFILL_TOKEN_SECRET`, keduanya ≥ 32 karakter.
+      Mengganti yang pertama membuat semua token OAuth tersimpan tidak bisa
+      didekripsi lagi; user harus connect ulang.
+- [ ] `NEXTAUTH_URL` = domain publik, `https://`, dan sama persis dengan
+      callback URL di GitHub OAuth App.
+- [ ] Reverse proxy dengan TLS aktif di depan port `3030`.
+- [ ] Backup terjadwal untuk volume `postgres-data`.
+- [ ] `GET /api/health` mengembalikan `200`. Status `degraded` (Redis atau LLM
+      mati) tetap `200` karena halaman masih render — hanya database yang
+      menentukan `503`.
 
 ## Memisahkan web dan engine ke VM berbeda
 

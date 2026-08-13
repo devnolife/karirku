@@ -1,16 +1,18 @@
-import { hunterDb } from "@devnolife/karirku-core/hunter";
+import { prisma } from "@devnolife/karirku-core/db";
 import { IntakeForm } from "./intake-form";
 
 export const dynamic = "force-dynamic";
 
-export default function IntakePage() {
-  const recent = hunterDb()
-    .getDb()
-    .prepare(
-      `SELECT id, title, company, llm_score, llm_tier, llm_report_path, status, found_at
-       FROM jobs WHERE platform = 'intake' ORDER BY id DESC LIMIT 20`,
-    )
-    .all() as Record<string, unknown>[];
+export default async function IntakePage() {
+  const recent = await prisma.hunterJob.findMany({
+    where: { platform: "intake" },
+    select: {
+      id: true, title: true, company: true, llmScore: true,
+      llmTier: true, llmReportPath: true, status: true, foundAt: true,
+    },
+    orderBy: { id: "desc" },
+    take: 20,
+  });
 
   return (
     <div className="space-y-10">
@@ -50,8 +52,8 @@ export default function IntakePage() {
                   <td className="px-3 py-2 font-bold">{String(j.title)}</td>
                   <td className="px-3 py-2 text-[#8A9088]">{String(j.company ?? "—")}</td>
                   <td className="px-3 py-2 [font-family:var(--font-hunter-mono)] text-xs">
-                    {j.llm_score != null ? (
-                      <span className="font-semibold text-[#FF6B1A]">{Number(j.llm_score).toFixed(1)}</span>
+                    {j.llmScore != null ? (
+                      <span className="font-semibold text-[#FF6B1A]">{Number(j.llmScore).toFixed(1)}</span>
                     ) : (
                       <span className="text-[#4C5349]">[wait]</span>
                     )}

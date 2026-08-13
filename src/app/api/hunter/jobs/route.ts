@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { hunterDb } from "@devnolife/karirku-core/hunter";
+import { prisma } from "@devnolife/karirku-core/db";
 import { authorizeHunterApi } from "@/lib/hunter-access";
 
 export const dynamic = "force-dynamic";
@@ -35,19 +35,15 @@ export async function GET(request: NextRequest) {
     return Response.json({ error: "minScore harus 0-100" }, { status: 400 });
   }
 
-  const where: string[] = [];
-  const params: unknown[] = [];
-  if (platform) { where.push("platform = ?"); params.push(platform); }
-  if (status) { where.push("status = ?"); params.push(status); }
-  if (score !== null) {
-    where.push("match_score >= ?");
-    params.push(score);
-  }
-
-  const sql = `SELECT * FROM jobs ${where.length ? "WHERE " + where.join(" AND ") : ""}
-    ORDER BY match_score DESC, found_at DESC LIMIT ?`;
-  params.push(limit);
-  const jobs = hunterDb().getDb().prepare(sql).all(...params);
+  const jobs = await prisma.hunterJob.findMany({
+    where: {
+      ...(platform ? { platform } : {}),
+      ...(status ? { status } : {}),
+      ...(score !== null ? { matchScore: { gte: score } } : {}),
+    },
+    orderBy: [{ matchScore: "desc" }, { foundAt: "desc" }],
+    take: limit,
+  });
   return Response.json({ jobs });
 }
 
@@ -69,6 +65,6 @@ export async function PATCH(request: NextRequest) {
       { status: 400 },
     );
   }
-  hunterDb().getDb().prepare(`UPDATE jobs SET status = ? WHERE id = ?`).run(status, id);
+  await prisma.hunterJob.update({ where: { id }, data: { status } });
   return Response.json({ ok: true });
 }
