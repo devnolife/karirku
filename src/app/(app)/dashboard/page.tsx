@@ -88,7 +88,7 @@ async function JobseekerOverview() {
           <Kpi label="Milestone selesai" value={r.weeksDone} unit={`/${r.weeksTotal}`} caption={`${r.weeksTotal} minggu total`} tone="iris" />
         </StaggerItem>
         <StaggerItem>
-          <Kpi label="Match terbaik" value={bestJob?.matchPct ?? 0} unit="%" caption={bestJob ? bestJob.company : "belum ada"} tone="magenta" />
+          <Kpi label="Match terbaik" value={bestJob ? `${bestJob.matchPct}%` : "-"} caption={bestJob ? bestJob.company : "belum ada match"} tone="magenta" />
         </StaggerItem>
         <StaggerItem>
           <Kpi label="Coverage skill" value={gap.coveragePct} unit="%" caption="vs role target" tone="mint" />

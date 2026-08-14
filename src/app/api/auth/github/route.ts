@@ -35,6 +35,10 @@ export async function GET(req: NextRequest) {
     sameSite: "lax",
     path: "/",
     maxAge: 600,
+    // Tanpa `secure`, cookie state ikut terkirim lewat HTTP polos dan bisa
+    // dibaca penyadap jaringan — yang membuat pemeriksaan CSRF-nya tidak ada
+    // artinya. Di dev (http://localhost) flag ini harus mati agar alurnya jalan.
+    secure: req.nextUrl.protocol === "https:",
   });
   return res;
 }

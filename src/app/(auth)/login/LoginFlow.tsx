@@ -16,11 +16,13 @@ const ROLE_OPTIONS: {
   desc: string;
   username: string;
 }[] = [
-  { role: "jobseeker", title: "Jobseeker", desc: "Roadmap belajar, skill-gap, & job match.", username: "dimas" },
-  { role: "freelancer", title: "Freelancer", desc: "Portofolio, project match, & proposal.", username: "sari" },
-  { role: "company", title: "Company", desc: "Posting lowongan & AI screening kandidat.", username: "nara" },
-  { role: "admin", title: "Admin", desc: "Kelola users, jobs, courses, & pipeline.", username: "admin" },
-];
+    { role: "jobseeker", title: "Jobseeker", desc: "Roadmap belajar, skill-gap, & job match.", username: "dimas" },
+    { role: "freelancer", title: "Freelancer", desc: "Portofolio, project match, & proposal.", username: "sari" },
+    { role: "company", title: "Company", desc: "Posting lowongan & AI screening kandidat.", username: "nara" },
+    // Admin sengaja tidak ada di sini: pemilih role adalah jalur demo tanpa
+    // verifikasi, sedangkan admin bisa menjalankan Hunter dan membaca data
+    // pribadi. Sesi admin hanya lahir dari OAuth.
+  ];
 
 export function LoginFlow() {
   const [step, setStep] = useState<"credentials" | "role">("credentials");
@@ -33,11 +35,12 @@ export function LoginFlow() {
     return (
       <div className="act-rise">
         <p className="mt-4 text-[15px] leading-relaxed text-[var(--act-charcoal)]">
-          Masuk pakai <strong>email atau username</strong> (mis.{" "}
+          Masuk lewat <strong>GitHub</strong> untuk akun sungguhan. Kolom di bawah
+          adalah <strong>jalur demo</strong> (mis.{" "}
           <code className="rounded bg-[var(--act-mist)] px-1 py-0.5 text-[13px]">
-            admin
+            dimas
           </code>
-          ). Versi demo — password tidak divalidasi.
+          ) — tanpa verifikasi, jadi jangan pakai untuk data asli.
         </p>
 
         <form
@@ -68,24 +71,20 @@ export function LoginFlow() {
               required
               autoFocus
               autoComplete="username"
-              placeholder="admin atau kamu@email.com"
+              placeholder="kamu@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="act-field mt-2"
             />
           </label>
 
-          <label className="block">
-            <span className="act-eyebrow !text-[11px]">Password</span>
-            <input
-              type="password"
-              name="password"
-              required
-              autoComplete="current-password"
-              placeholder="••••••••"
-              className="act-field mt-2"
-            />
-          </label>
+          {/*
+            Tidak ada kolom password: aplikasi ini tidak menyimpan password dan
+            tidak memverifikasinya. Menampilkan kolom password yang diabaikan
+            server akan membuat pengguna mengira akunnya terlindungi padahal
+            tidak — dan mendorong mereka mengetikkan password asli mereka ke
+            form yang membuangnya.
+          */}
 
           {error && (
             <p role="alert" className="text-sm text-[#b91c1c]">
@@ -102,6 +101,22 @@ export function LoginFlow() {
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
               <path d="M5 12h14M13 5l7 7-7 7" />
             </svg>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              // Navigasi penuh (bukan <Link>) karena tujuannya adalah route
+              // handler yang membalas redirect ke GitHub; router klien Next
+              // tidak bisa mengikuti redirect lintas-origin itu.
+              window.location.href = "/api/auth/github";
+            }}
+            className="inline-flex h-[52px] w-full items-center justify-center gap-3 rounded-full border border-[rgba(15,23,42,0.12)] bg-[#0f172a] text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          >
+            <svg viewBox="0 0 16 16" className="h-5 w-5" fill="currentColor" aria-hidden>
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
+            </svg>
+            Masuk dengan GitHub
           </button>
 
           <button

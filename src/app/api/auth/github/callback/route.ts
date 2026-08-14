@@ -3,6 +3,7 @@
  * buat sesi, lalu sync skill dari bahasa repo publik (best-effort).
  */
 
+import { timingSafeEqual } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
 import { prisma } from "@devnolife/karirku-core/db";
 import { createSessionForUser } from "@/lib/auth";
@@ -17,6 +18,14 @@ type GithubUser = {
   email: string | null;
   avatar_url: string | null;
 };
+
+/** Perbandingan panjang-konstan agar waktu balasan tidak membocorkan isi state. */
+function stateMatches(received: string, expected: string): boolean {
+  const a = Buffer.from(received);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(a, b);
+}
 
 function failRedirect(origin: string, reason: string) {
   const url = new URL("/login", origin);
@@ -33,7 +42,7 @@ export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get("code");
   const state = req.nextUrl.searchParams.get("state");
   const expectedState = req.cookies.get(STATE_COOKIE)?.value;
-  if (!code || !state || !expectedState || state !== expectedState) {
+  if (!code || !state || !expectedState || !stateMatches(state, expectedState)) {
     return failRedirect(origin, "github_state");
   }
 

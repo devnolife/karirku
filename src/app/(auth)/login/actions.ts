@@ -27,9 +27,14 @@ export async function signInWithIdentifierAction(
 
   const result = await signInWithIdentifier(identifier);
   if (!result) {
+    // Pesannya sengaja tidak membedakan "tidak ada" dari "akun admin":
+    // membedakannya akan memberi tahu penyerang bahwa sebuah username adalah
+    // admin, dan itu justru menunjukkan sasaran yang paling berharga.
     return {
       ok: false,
-      error: "Akun tidak ditemukan. Pilih role di bawah untuk masuk mode demo.",
+      error:
+        "Akun tidak ditemukan atau perlu masuk lewat GitHub. " +
+        "Pilih role di bawah untuk masuk mode demo.",
     };
   }
 

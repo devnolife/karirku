@@ -1,9 +1,35 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { AppSidebarNav, type NavGroup } from "./_sidebar";
 import { SidebarPromo } from "./_promo";
+
+/** Peta route → kelas tema warna (didefinisikan di globals.css). */
+const THEME_BY_PREFIX: [prefix: string, theme: string][] = [
+  ["/company", "theme-company"],
+  ["/dashboard", "theme-dashboard"],
+  ["/profile", "theme-profile"],
+  ["/skills", "theme-skills"],
+  ["/roadmap", "theme-roadmap"],
+  ["/jobs", "theme-jobs"],
+  ["/apply-assistant", "theme-assistant"],
+  ["/applications", "theme-applications"],
+  ["/learn", "theme-learn"],
+  ["/onboarding", "theme-goal"],
+  ["/guides", "theme-guides"],
+  ["/projects", "theme-projects"],
+  ["/proposals", "theme-proposals"],
+  ["/interview", "theme-interview"],
+];
+
+function themeFor(pathname: string): string {
+  const hit = THEME_BY_PREFIX.find(
+    ([prefix]) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+  return hit?.[1] ?? "theme-default";
+}
 
 export function AppShell({
   roleLabel,
@@ -19,20 +45,23 @@ export function AppShell({
   children: React.ReactNode;
 }) {
   const [collapsed, setCollapsed] = useState(false);
+  const pathname = usePathname();
   const flatItems = groups.flatMap((g) => g.items);
 
   return (
-    <div className="studio-shell act-sans flex h-screen w-full justify-center text-[var(--act-ink)]">
+    <div
+      className={`studio-shell act-sans flex h-screen w-full justify-center text-[var(--act-ink)] ${themeFor(pathname)}`}
+    >
       <div className="flex h-full w-full max-w-[1560px]">
         <aside
           className={
             "studio-sidebar hidden flex-none flex-col transition-[width] duration-300 ease-out lg:flex " +
-            (collapsed ? "w-[76px] px-3" : "w-[264px] p-5")
+            (collapsed ? "w-[76px] px-3 py-5" : "w-[264px] p-5")
           }
         >
           <Link
             href="/dashboard"
-            className={"flex items-center gap-2.5 " + (collapsed ? "justify-center" : "px-1")}
+            className={"flex flex-none items-center gap-2.5 " + (collapsed ? "justify-center" : "px-1")}
           >
             <Wordmark />
             {!collapsed && (
@@ -47,11 +76,11 @@ export function AppShell({
           </div>
 
           {!collapsed && (
-            <div className="mt-4">
+            <div className="mt-4 flex-none">
               <SidebarPromo />
             </div>
           )}
-          <div className="mt-5 border-t border-[rgba(4,39,24,0.08)] pt-4">
+          <div className="mt-5 flex-none border-t border-[rgba(4,39,24,0.08)] pt-4">
             {collapsed ? (
               <div className="flex flex-col items-center gap-2">
                 <Avatar name={user.name} />
@@ -97,7 +126,7 @@ export function AppShell({
               </button>
             </form>
           </header>
-          <div className="flex-none border-b border-[rgba(4,39,24,0.08)] bg-[#F9FCF9] px-4 py-2.5 lg:hidden">
+          <div className="flex-none border-b border-[rgba(15,43,61,0.08)] bg-[#FBFCFD] px-4 py-2.5 lg:hidden">
             <div className="flex gap-2 overflow-x-auto">
               <MobileTabs items={flatItems} />
             </div>
@@ -127,13 +156,6 @@ export function AppShell({
                 <Ico.Bell />
                 <span className="sr-only">Notifikasi</span>
               </button>
-              <div className="ml-1 flex items-center gap-2.5 border-l border-[rgba(15,23,42,0.08)] pl-3">
-                <Avatar name={user.name} />
-                <div className="hidden min-w-0 leading-tight sm:block">
-                  <div className="truncate text-[13px] font-semibold text-[var(--act-ink)]">{user.name}</div>
-                  <div className="truncate text-[11px] text-[var(--act-graphite)]">{user.email}</div>
-                </div>
-              </div>
             </div>
           </header>
 

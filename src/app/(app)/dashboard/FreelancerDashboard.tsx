@@ -39,11 +39,11 @@ export async function FreelancerOverview() {
           <div className="act-bezel">
             <div
               className="act-bezel-core p-5"
-              style={{ "--core-bg": "radial-gradient(130% 140% at 50% 0%, var(--act-sky-100), var(--act-wash-sky) 90%)" } as React.CSSProperties}
+              style={{ "--core-bg": "radial-gradient(130% 140% at 50% 0%, var(--act-blue-50), var(--act-mist-200) 90%)" } as React.CSSProperties}
             >
               <span className="act-kicker">Kesiapan profil</span>
               <div className="mt-2 flex items-baseline gap-1">
-                <span className="act-display text-5xl text-[var(--act-blue)]">{f.readiness}</span>
+                <span className="act-display text-5xl text-[var(--act-ocean-900)]">{f.readiness}</span>
                 <span className="text-xl font-semibold text-[var(--act-graphite)]">%</span>
               </div>
               <div className="mt-4 grid grid-cols-2 gap-3 border-t border-[rgba(15,23,42,0.08)] pt-4">
@@ -59,7 +59,7 @@ export async function FreelancerOverview() {
       <section className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <Kpi label="Total earnings" value={`Rp ${(f.earningsIdr / 1_000_000).toFixed(1)} jt`} caption="lifetime" tone="blue" />
         <Kpi label="Proposal won" value={won} caption={`dari ${meta.proposals.length} kirim`} tone="mint" />
-        <Kpi label="Match terbaik" value={`${topProject?.matchPct ?? 0}%`} caption={`${projects.length} project baru`} tone="iris" />
+        <Kpi label="Match terbaik" value={topProject ? `${topProject.matchPct}%` : "-"} caption={projects.length > 0 ? `${projects.length} project baru` : "belum ada project"} tone="iris" />
         <Kpi label="Rating" value={f.rating} caption={`${f.reviews} ulasan`} tone="magenta" />
       </section>
 
@@ -68,7 +68,12 @@ export async function FreelancerOverview() {
         <PreviewCard href="/projects" kicker="Project match" title="Project paling cocok" tone="blue">
           {topProject ? (
             <div className="flex items-center gap-4">
-              <div className="act-display text-4xl text-[var(--act-blue)]">{topProject.matchPct}<span className="text-lg">%</span></div>
+              <div
+                className={`act-display text-4xl ${topProject.matchPct > 0 ? "text-[var(--act-blue-900)]" : "text-[var(--act-stone)]"}`}
+              >
+                {topProject.matchPct}
+                <span className="text-lg">%</span>
+              </div>
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-[var(--act-ink)]">{topProject.title}</p>
                 <p className="truncate text-xs text-[var(--act-graphite)]">{topProject.client} · {topProject.budget}</p>

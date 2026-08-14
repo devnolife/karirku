@@ -103,8 +103,15 @@ export async function getRole(): Promise<UserRole | null> {
 /**
  * Login sebagai user untuk sebuah role (dev/demo).
  * Mengembalikan `true` kalau user sudah menyelesaikan onboarding.
+ *
+ * Menolak role `admin`: pemilih role adalah jalur demo tanpa verifikasi apa
+ * pun, sedangkan admin bisa menjalankan Hunter, mengirim lamaran, dan membaca
+ * data pribadi. Sesi admin hanya boleh lahir dari OAuth.
  */
 export async function signInAs(role: UserRole): Promise<boolean> {
+  if (role === "admin") {
+    throw new Error("signInAs: sesi admin harus melalui OAuth, bukan pemilih role.");
+  }
   const jar = await cookies();
   const expires = new Date(Date.now() + SESSION_TTL_MS);
   const base = { sameSite: "lax" as const, path: "/", expires };
@@ -164,6 +171,11 @@ async function demoUserByIdentifier(identifier: string): Promise<SessionUser | n
  * Mengembalikan role + status onboarding saat identifier cocok dengan user
  * nyata (sesi dibuat), atau `null` kalau tidak ditemukan — pemanggil yang
  * memutuskan fallback-nya.
+ *
+ * PENTING: alur ini tidak memverifikasi kredensial apa pun; mengetahui sebuah
+ * username sudah cukup untuk masuk. Itu dapat diterima untuk akun demo, tetapi
+ * tidak untuk admin — admin dapat menjalankan Hunter, mengirim lamaran, dan
+ * membaca data pribadi. Karena itu admin wajib lewat OAuth.
  */
 export async function signInWithIdentifier(
   identifier: string,
@@ -171,6 +183,7 @@ export async function signInWithIdentifier(
   if (!isProductionMode()) {
     const user = await demoUserByIdentifier(identifier);
     if (!user) return null;
+    if (user.role === "admin") return null;
     await signInAs(user.role);
     return { role: user.role, onboarded: true };
   }
@@ -179,6 +192,8 @@ export async function signInWithIdentifier(
   if (!user) return null;
 
   const role = user.role as UserRole;
+  if (role === "admin") return null;
+
   await createSessionForUser(user.id, role, user.onboardedAt);
   return {
     role,
@@ -217,11 +232,11 @@ export async function createSessionForUser(
     onboardedAt !== undefined
       ? onboardedAt
       : (
-          await prisma.user.findUnique({
-            where: { id: userId },
-            select: { onboardedAt: true },
-          })
-        )?.onboardedAt ?? null;
+        await prisma.user.findUnique({
+          where: { id: userId },
+          select: { onboardedAt: true },
+        })
+      )?.onboardedAt ?? null;
 
   const jar = await cookies();
   const base = { sameSite: "lax" as const, path: "/", expires };

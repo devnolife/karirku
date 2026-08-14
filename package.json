@@ -9,7 +9,7 @@
     "start": "next start -p 3030",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test tests/entitlements/*.test.ts tests/gmail/*.test.ts tests/hunter/*.test.ts tests/match/*.test.ts",
+    "test": "tsx --test tests/auth/*.test.ts tests/entitlements/*.test.ts tests/gmail/*.test.ts tests/hunter/*.test.ts tests/match/*.test.ts",
     "recommendation:evaluate": "tsx scripts/evaluate-recommendations.ts",
     "ext:build": "node extension/build.mjs",
     "ext:typecheck": "tsc --noEmit -p extension/tsconfig.json",
