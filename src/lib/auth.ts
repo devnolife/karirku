@@ -101,57 +101,39 @@ export async function getRole(): Promise<UserRole | null> {
 }
 
 /**
- * Login sebagai user untuk sebuah role (dev/demo).
- * Mengembalikan `true` kalau user sudah menyelesaikan onboarding.
+ * Login sebagai fixture demo untuk sebuah role. **Hanya mode demo.**
  *
- * Menolak role `admin`: pemilih role adalah jalur demo tanpa verifikasi apa
- * pun, sedangkan admin bisa menjalankan Hunter, mengirim lamaran, dan membaca
- * data pribadi. Sesi admin hanya boleh lahir dari OAuth.
+ * Fungsi ini tidak memverifikasi kredensial apa pun, jadi di mode produksi ia
+ * akan setara pintu belakang: siapa pun yang bisa memanggilnya dapat menjadi
+ * user mana pun. Karena itu ia menolak berjalan saat DATABASE_URL di-set —
+ * login sungguhan wajib lewat `signInWithPassword` atau OAuth.
  */
 export async function signInAs(role: UserRole): Promise<boolean> {
   if (role === "admin") {
     throw new Error("signInAs: sesi admin harus melalui OAuth, bukan pemilih role.");
   }
+  if (isProductionMode()) {
+    throw new Error(
+      "signInAs: hanya untuk mode demo. Pakai signInWithPassword atau OAuth.",
+    );
+  }
+
   const jar = await cookies();
   const expires = new Date(Date.now() + SESSION_TTL_MS);
   const base = { sameSite: "lax" as const, path: "/", expires };
 
-  if (!isProductionMode()) {
-    // Demo: token cookie murni, tanpa baris DB. Fixture demo selalu dianggap
-    // sudah onboarding karena datanya sudah lengkap.
-    jar.set(SESSION_COOKIE, `${DEMO_TOKEN_PREFIX}${role}`, { ...base, httpOnly: true });
-    jar.set(ROLE_COOKIE, role, { ...base, httpOnly: false });
-    jar.set(ONBOARDED_COOKIE, "1", { ...base, httpOnly: false });
-    return true;
-  }
-
-  const user = await prisma.user.findFirst({
-    where: { role },
-    orderBy: { createdAt: "asc" },
-  });
-  if (!user) {
-    throw new Error(
-      `signInAs: tidak ada user real untuk role "${role}". Jalankan \`pnpm db:seed\` di repo karirku-core.`,
-    );
-  }
-
-  await createSessionForUser(user.id, user.role as UserRole, user.onboardedAt);
-  return !roleNeedsOnboarding(user.role as UserRole) || !!user.onboardedAt;
+  // Demo: token cookie murni, tanpa baris DB. Fixture demo selalu dianggap
+  // sudah onboarding karena datanya sudah lengkap.
+  jar.set(SESSION_COOKIE, `${DEMO_TOKEN_PREFIX}${role}`, { ...base, httpOnly: true });
+  jar.set(ROLE_COOKIE, role, { ...base, httpOnly: false });
+  jar.set(ONBOARDED_COOKIE, "1", { ...base, httpOnly: false });
+  return true;
 }
 
 /**
  * Cari user berdasarkan identifier login: email ATAU username.
  * Username disimpan lowercase, jadi input dinormalisasi dulu.
  */
-async function findUserByIdentifier(identifier: string) {
-  const value = normalizeIdentifier(identifier);
-  if (!value) return null;
-
-  return prisma.user.findFirst({
-    where: looksLikeEmail(value) ? { email: value } : { username: value },
-  });
-}
-
 /** Sesi demo (tanpa DB): cocokkan identifier ke DEMO_USERS. */
 async function demoUserByIdentifier(identifier: string): Promise<SessionUser | null> {
   const value = normalizeIdentifier(identifier);
@@ -166,39 +148,22 @@ async function demoUserByIdentifier(identifier: string): Promise<SessionUser | n
 }
 
 /**
- * Login memakai email ATAU username.
+ * Login fixture demo memakai email/username. **Hanya mode demo.**
  *
- * Mengembalikan role + status onboarding saat identifier cocok dengan user
- * nyata (sesi dibuat), atau `null` kalau tidak ditemukan — pemanggil yang
- * memutuskan fallback-nya.
- *
- * PENTING: alur ini tidak memverifikasi kredensial apa pun; mengetahui sebuah
- * username sudah cukup untuk masuk. Itu dapat diterima untuk akun demo, tetapi
- * tidak untuk admin — admin dapat menjalankan Hunter, mengirim lamaran, dan
- * membaca data pribadi. Karena itu admin wajib lewat OAuth.
+ * Versi lama fungsi ini juga melayani mode produksi tanpa memverifikasi apa
+ * pun — mengetahui sebuah username sudah cukup untuk masuk sebagai pemiliknya.
+ * Jalur itu dihapus; produksi memakai `signInWithPassword`.
  */
-export async function signInWithIdentifier(
+export async function signInDemo(
   identifier: string,
 ): Promise<{ role: UserRole; onboarded: boolean } | null> {
-  if (!isProductionMode()) {
-    const user = await demoUserByIdentifier(identifier);
-    if (!user) return null;
-    if (user.role === "admin") return null;
-    await signInAs(user.role);
-    return { role: user.role, onboarded: true };
-  }
+  if (isProductionMode()) return null;
 
-  const user = await findUserByIdentifier(identifier);
-  if (!user) return null;
+  const user = await demoUserByIdentifier(identifier);
+  if (!user || user.role === "admin") return null;
 
-  const role = user.role as UserRole;
-  if (role === "admin") return null;
-
-  await createSessionForUser(user.id, role, user.onboardedAt);
-  return {
-    role,
-    onboarded: !roleNeedsOnboarding(role) || !!user.onboardedAt,
-  };
+  await signInAs(user.role);
+  return { role: user.role, onboarded: true };
 }
 
 /** Halaman tujuan setelah login: onboarding dulu untuk user baru. */

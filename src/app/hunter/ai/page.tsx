@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@devnolife/karirku-core/db";
+import { getSession } from "@/lib/auth";
 import { AiEvalButton } from "./actions-client";
 
 export const dynamic = "force-dynamic";
@@ -35,9 +36,12 @@ export default async function AiEvalDashboard({
 }) {
   const sp = await searchParams;
   const view = sp.v || "all";
+  const { user } = await getSession();
+  const userId = user.id;
+
   const [rows, pendingCount] = await Promise.all([
     prisma.hunterJob.findMany({
-      where: { llmScore: { not: null } },
+      where: { userId, llmScore: { not: null } },
       select: {
         id: true, platform: true, title: true, company: true, url: true,
         location: true, remote: true, salaryMin: true, salaryMax: true,
@@ -47,7 +51,7 @@ export default async function AiEvalDashboard({
       orderBy: [{ llmScore: "desc" }, { llmEvaluatedAt: "desc" }],
       take: 200,
     }),
-    prisma.hunterJob.count({ where: { status: "new", llmScore: null } }),
+    prisma.hunterJob.count({ where: { userId, status: "new", llmScore: null } }),
   ]);
   const pending = { n: pendingCount };
 
@@ -84,8 +88,8 @@ export default async function AiEvalDashboard({
       key={value}
       href={`/hunter/ai?v=${value}`}
       className={`border px-2.5 py-1 [font-family:var(--font-hunter-mono)] text-[10px] uppercase tracking-[0.1em] transition-colors duration-150 ease-out ${view === value
-          ? "border-[#FF6B1A] bg-[#FF6B1A] text-[#0D0F0C]"
-          : "border-[#262B24] text-[#8A9088] hover:border-[#4C5349] hover:text-[#E6E4DC]"
+        ? "border-[#FF6B1A] bg-[#FF6B1A] text-[#0D0F0C]"
+        : "border-[#262B24] text-[#8A9088] hover:border-[#4C5349] hover:text-[#E6E4DC]"
         }`}
     >
       {label} ×{count}

@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { IBM_Plex_Mono, Archivo } from "next/font/google";
 import { getSession } from "@/lib/auth";
-import { isHunterOwner } from "@/lib/hunter-access";
 
 const mono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -31,16 +29,11 @@ const NAV = [
 ];
 
 export default async function HunterLayout({ children }: { children: React.ReactNode }) {
-  // Hunter adalah alat satu-operator: profil kandidat, cover letter, jawaban
-  // screening, dan sesi browser yang dipakainya milik satu orang, dan datanya
-  // berisi riwayat lamaran serta email pribadi. Peran admin saja tidak cukup —
-  // admin lain di instance ini tidak boleh ikut membacanya.
-  // Akses multi-tenant adalah sub-project #2 (lihat
-  // docs/superpowers/specs/2026-07-06-hunter-premium-foundation-design.md).
-  const session = await getSession();
-  if (session.user.role !== "admin" || !isHunterOwner(session.user.email)) {
-    redirect("/dashboard");
-  }
+  // Sejak tabel hunter ber-scope `userId`, tiap user punya kredensial platform,
+  // kolam lowongan, dan riwayat lamarannya sendiri. Isolasi ditegakkan di
+  // query, jadi cukup memastikan pemanggil sudah login; aksi yang menjalankan
+  // otomasi tetap dijaga entitlement di lapisan API.
+  await getSession();
 
   return (
     <div

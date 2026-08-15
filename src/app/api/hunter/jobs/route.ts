@@ -37,6 +37,7 @@ export async function GET(request: NextRequest) {
 
   const jobs = await prisma.hunterJob.findMany({
     where: {
+      userId: access.userId,
       ...(platform ? { platform } : {}),
       ...(status ? { status } : {}),
       ...(score !== null ? { matchScore: { gte: score } } : {}),
@@ -65,6 +66,15 @@ export async function PATCH(request: NextRequest) {
       { status: 400 },
     );
   }
-  await prisma.hunterJob.update({ where: { id }, data: { status } });
+  // updateMany + filter userId, bukan update by id: id-nya integer berurutan,
+  // jadi update by id saja memungkinkan siapa pun mengubah job milik user lain
+  // hanya dengan menebak angka.
+  const result = await prisma.hunterJob.updateMany({
+    where: { id, userId: access.userId },
+    data: { status },
+  });
+  if (result.count === 0) {
+    return Response.json({ error: "job tidak ditemukan" }, { status: 404 });
+  }
   return Response.json({ ok: true });
 }

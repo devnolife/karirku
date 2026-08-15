@@ -47,7 +47,10 @@ export async function GET() {
   const access = await authorizeHunterApi();
   if (!access.ok) return access.response;
 
-  const rows = await prisma.hunterSetting.findMany({ select: { key: true, value: true } });
+  const rows = await prisma.hunterSetting.findMany({
+    where: { userId: access.userId },
+    select: { key: true, value: true },
+  });
   const settings: Record<string, string> = {};
   for (const r of rows) settings[r.key] = r.value;
   return Response.json({ settings });
@@ -84,8 +87,8 @@ export async function PATCH(request: NextRequest) {
   const updated: string[] = [];
   for (const [key, value] of normalized) {
     await prisma.hunterSetting.upsert({
-      where: { key },
-      create: { key, value },
+      where: { userId_key: { userId: access.userId, key } },
+      create: { userId: access.userId, key, value },
       update: { value },
     });
     updated.push(key);

@@ -1,10 +1,15 @@
 import { prisma } from "@devnolife/karirku-core/db";
+import { getSession } from "@/lib/auth";
 import { SettingsForm } from "./settings-form";
 
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
-  const rows = await prisma.hunterSetting.findMany({ select: { key: true, value: true } });
+  const { user } = await getSession();
+  const rows = await prisma.hunterSetting.findMany({
+    where: { userId: user.id },
+    select: { key: true, value: true },
+  });
   const settings: Record<string, string> = {};
   for (const r of rows) settings[r.key] = r.value;
 

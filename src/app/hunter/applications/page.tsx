@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@devnolife/karirku-core/db";
+import { getSession } from "@/lib/auth";
 import { ActionButton } from "../actions-client";
 
 export const dynamic = "force-dynamic";
@@ -19,10 +20,12 @@ export default async function Applications({
 }) {
   const sp = await searchParams;
   const reply = sp.reply || "";
+  const { user } = await getSession();
+  const userId = user.id;
 
   const [apps, counts] = await Promise.all([
     prisma.hunterApplication.findMany({
-      where: reply ? { replyStatus: reply } : {},
+      where: { userId, ...(reply ? { replyStatus: reply } : {}) },
       select: {
         id: true, platform: true, title: true, company: true, url: true,
         channel: true, appliedAt: true, salaryOffered: true, replyStatus: true,
@@ -32,7 +35,11 @@ export default async function Applications({
       orderBy: { appliedAt: "desc" },
       take: 300,
     }),
-    prisma.hunterApplication.groupBy({ by: ["replyStatus"], _count: { _all: true } }),
+    prisma.hunterApplication.groupBy({
+      by: ["replyStatus"],
+      where: { userId },
+      _count: { _all: true },
+    }),
   ]);
   const total = counts.reduce((s, c) => s + c._count._all, 0);
 

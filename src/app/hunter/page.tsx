@@ -1,5 +1,6 @@
 import { prisma } from "@devnolife/karirku-core/db";
 import { gmailStatus } from "@devnolife/karirku-core/hunter";
+import { getSession } from "@/lib/auth";
 import { ActionButton } from "./actions-client";
 
 export const dynamic = "force-dynamic";
@@ -11,17 +12,30 @@ const STATUS_DOT: Record<string, string> = {
 };
 
 export default async function HunterOverview() {
+  const { user } = await getSession();
+  const userId = user.id;
+
   const [accounts, jobStats, appStats, lastRuns] = await Promise.all([
     prisma.hunterAccount.findMany({
+      where: { userId },
       select: {
         platform: true, username: true, profileUrl: true, canAutoApply: true,
         loginStatus: true, lastChecked: true, notes: true,
       },
       orderBy: [{ canAutoApply: "desc" }, { platform: "asc" }],
     }),
-    prisma.hunterJob.groupBy({ by: ["platform", "status"], _count: { _all: true } }),
-    prisma.hunterApplication.groupBy({ by: ["replyStatus"], _count: { _all: true } }),
+    prisma.hunterJob.groupBy({
+      by: ["platform", "status"],
+      where: { userId },
+      _count: { _all: true },
+    }),
+    prisma.hunterApplication.groupBy({
+      by: ["replyStatus"],
+      where: { userId },
+      _count: { _all: true },
+    }),
     prisma.hunterRun.findMany({
+      where: { userId },
       select: { type: true, platform: true, ok: true, finishedAt: true },
       orderBy: { id: "desc" },
       take: 8,

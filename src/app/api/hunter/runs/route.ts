@@ -8,6 +8,7 @@ export async function GET() {
   if (!access.ok) return access.response;
 
   const runs = await prisma.hunterRun.findMany({
+    where: { userId: access.userId },
     select: {
       id: true, type: true, platform: true, ok: true,
       statsJson: true, startedAt: true, finishedAt: true,

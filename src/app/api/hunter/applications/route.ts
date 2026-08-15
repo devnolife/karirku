@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
 
   const applications = await prisma.hunterApplication.findMany({
     where: {
+      userId: access.userId,
       ...(platform ? { platform } : {}),
       ...(replyStatus ? { replyStatus } : {}),
     },

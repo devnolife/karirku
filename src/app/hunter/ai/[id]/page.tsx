@@ -3,6 +3,7 @@ import path from "node:path";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@devnolife/karirku-core/db";
+import { getSession } from "@/lib/auth";
 import { AiEvalButton } from "../actions-client";
 
 export const dynamic = "force-dynamic";
@@ -16,8 +17,13 @@ export default async function AiReportPage({
   const jobId = Number(id);
   if (!Number.isInteger(jobId) || jobId <= 0) notFound();
 
-  const job = await prisma.hunterJob.findUnique({
-    where: { id: jobId },
+  const { user } = await getSession();
+
+  // findFirst + filter userId, bukan findUnique by id: id-nya integer
+  // berurutan, jadi tanpa filter siapa pun bisa membaca laporan job orang lain
+  // hanya dengan menebak angka di URL.
+  const job = await prisma.hunterJob.findFirst({
+    where: { id: jobId, userId: user.id },
     select: {
       id: true, title: true, company: true, url: true,
       llmScore: true, llmTier: true, llmReportPath: true, llmEvaluatedAt: true,

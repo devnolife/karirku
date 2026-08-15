@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@devnolife/karirku-core/db";
+import { getSession } from "@/lib/auth";
 import { ApplyButton, JobStatusButton, ActionButton } from "../actions-client";
 
 export const dynamic = "force-dynamic";
@@ -12,9 +13,11 @@ export default async function JobsQueue({
   const sp = await searchParams;
   const platform = sp.platform || "";
   const status = sp.status || "new";
+  const { user } = await getSession();
 
   const jobs = await prisma.hunterJob.findMany({
     where: {
+      userId: user.id,
       ...(platform ? { platform } : {}),
       ...(status ? { status } : {}),
     },

@@ -40,10 +40,9 @@ const webSchema = z.object({
   AI_PROVIDER: optional(z.enum(["ollama", "github", "auto"])),
   GITHUB_MODELS_TOKEN: optional(z.string().trim()),
 
-  // Hunter adalah alat satu-operator: profil, cover letter, dan sesi browser
-  // yang dipakainya milik satu orang. Dikunci ke email pemiliknya agar admin
-  // lain tidak ikut melihat riwayat lamaran dan email pribadi tersebut.
-  HUNTER_OWNER_EMAIL: optional(z.string().trim().email()),
+  // HUNTER_OWNER_EMAIL sudah tidak dipakai: sejak tabel hunter ber-scope
+  // userId, isolasi antar-user ditegakkan oleh filter di setiap query, bukan
+  // dengan mengunci seluruh fitur ke satu email pemilik.
 });
 
 export type WebEnv = z.infer<typeof webSchema>;

@@ -1,11 +1,13 @@
 import { prisma } from "@devnolife/karirku-core/db";
+import { getSession } from "@/lib/auth";
 import { IntakeForm } from "./intake-form";
 
 export const dynamic = "force-dynamic";
 
 export default async function IntakePage() {
+  const { user } = await getSession();
   const recent = await prisma.hunterJob.findMany({
-    where: { platform: "intake" },
+    where: { userId: user.id, platform: "intake" },
     select: {
       id: true, title: true, company: true, llmScore: true,
       llmTier: true, llmReportPath: true, status: true, foundAt: true,
