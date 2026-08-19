@@ -113,14 +113,6 @@
     "typescript": "^5",
     "typescript-eslint": "^8.47.0"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@prisma/client",
-      "@prisma/engines",
-      "prisma",
-      "better-sqlite3"
-    ]
-  },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   }

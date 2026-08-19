@@ -1,5 +1,5 @@
 // Access control for the Hunter API surface. The engine itself (arg
-// allowlisting, process locking) is tested in devnolife/karirku-core.
+// allowlisting, process locking) is tested in packages/core.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 

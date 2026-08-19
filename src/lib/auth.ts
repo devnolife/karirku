@@ -124,7 +124,7 @@ export async function signInAs(role: UserRole): Promise<boolean> {
   });
   if (!user) {
     throw new Error(
-      `signInAs: tidak ada user real untuk role "${role}". Jalankan \`pnpm db:seed\` di repo karirku-core.`,
+      `signInAs: tidak ada user real untuk role "${role}". Jalankan \`pnpm db:seed\` dari root workspace.`,
     );
   }
 

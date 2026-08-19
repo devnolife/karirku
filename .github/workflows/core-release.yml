@@ -1,8 +1,11 @@
-name: Release
+name: Release core
 
+# Publishes @devnolife/karirku-core (packages/core) to GitHub Packages.
+# The web app consumes it through the workspace link, so a release is only
+# needed for outside consumers.
 on:
   push:
-    tags: ["v*"]
+    tags: ["core-v*"]
 
 jobs:
   publish:
@@ -26,26 +29,25 @@ jobs:
 
       - run: pnpm db:generate
 
-      - run: pnpm lint
-
-      - run: pnpm typecheck
-
-      - run: pnpm test
-
-      - run: pnpm build
+      - run: pnpm core:lint
+      - run: pnpm core:typecheck
+      - run: pnpm core:test
+      - run: pnpm core:build
 
       # The tag must match the version in package.json, otherwise a mistagged
       # release would silently publish the wrong version.
       - name: Verify tag matches package version
+        working-directory: packages/core
         run: |
           PKG_VERSION="$(node -p "require('./package.json').version")"
-          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          TAG_VERSION="${GITHUB_REF_NAME#core-v}"
           if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
             echo "tag $TAG_VERSION does not match package.json version $PKG_VERSION" >&2
             exit 1
           fi
 
-      # prepack already ran build; skip it so we publish exactly what we tested.
+      # core:build already ran; skip prepack so we publish exactly what we tested.
       - run: pnpm publish --no-git-checks --ignore-scripts
+        working-directory: packages/core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

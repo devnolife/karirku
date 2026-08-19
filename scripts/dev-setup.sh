@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# Karir.ai — one-shot dev setup for the web app.
+# Karir.ai — one-shot dev setup.
 #
 # Infrastructure (Postgres, Redis, MinIO, Ollama), the Prisma schema and the
-# BullMQ workers all live in the engine repo, devnolife/karirku-core. This
-# script sets up the web app and delegates the rest to that repo, which it
-# expects to be checked out as a sibling directory.
+# BullMQ workers all live in the engine package, packages/core. This script
+# installs the whole workspace and drives the engine through pnpm filters.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
-WEB_DIR="$PWD"
-CORE_DIR="${KARIRKU_CORE_DIR:-$WEB_DIR/../karirku-core}"
+ROOT_DIR="$PWD"
+CORE_DIR="$ROOT_DIR/packages/core"
+CORE="pnpm --filter @devnolife/karirku-core"
 
 echo "🚀 Karir.ai dev setup"
 echo
@@ -26,12 +26,13 @@ if [ ! -f .env.local ]; then
   fi
 fi
 
-if [ ! -d "$CORE_DIR" ]; then
-  echo "❌ Engine repo not found at $CORE_DIR"
-  echo "   git clone https://github.com/devnolife/karirku-core.git $CORE_DIR"
-  echo "   …or set KARIRKU_CORE_DIR to point at your checkout."
-  exit 1
+if [ ! -f "$CORE_DIR/.env.local" ]; then
+  echo "📝 Creating packages/core/.env.local from its .env.example"
+  cp "$CORE_DIR/.env.example" "$CORE_DIR/.env.local"
 fi
+
+echo "📦 Installing workspace dependencies..."
+pnpm install
 
 echo "🐳 Starting docker services (from $CORE_DIR)..."
 (cd "$CORE_DIR" && docker compose up -d)
@@ -45,22 +46,16 @@ for i in {1..30}; do
 done
 
 echo "🔧 Preparing the engine (migrations, seed, Prisma client, build)..."
-(
-  cd "$CORE_DIR"
-  pnpm install
-  pnpm db:deploy || pnpm db:migrate --name init
-  pnpm db:seed
-  pnpm build
-)
-
-echo "📦 Installing web dependencies..."
-pnpm install
+$CORE db:deploy || $CORE db:migrate --name init
+$CORE db:seed
+pnpm core:build
 
 echo "🤖 Pulling Ollama models (ini bisa ~5 menit pertama kali)..."
 (cd "$CORE_DIR" && ./scripts/pull-models.sh)
 
 echo
 echo "✅ Setup selesai!"
-echo "   pnpm dev                       → jalankan Next.js (repo ini)"
-echo "   (cd $CORE_DIR && pnpm worker)  → jalankan BullMQ workers"
-echo "   (cd $CORE_DIR && pnpm ai:smoke)→ test koneksi AI"
+echo "   pnpm dev        → jalankan Next.js"
+echo "   pnpm worker     → jalankan BullMQ workers"
+echo "   pnpm hunter status → cek Hunter"
+echo "   $CORE ai:smoke  → test koneksi AI"

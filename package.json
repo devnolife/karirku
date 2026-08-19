@@ -5,11 +5,23 @@
   "packageManager": "pnpm@10.33.0",
   "scripts": {
     "dev": "node --max-old-space-size=2048 node_modules/next/dist/bin/next dev -p 3030",
-    "build": "next build",
+    "build": "pnpm run core:build && next build",
     "start": "next start -p 3030",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/entitlements/*.test.ts tests/gmail/*.test.ts tests/hunter/*.test.ts tests/match/*.test.ts",
+    "core:build": "pnpm --filter @devnolife/karirku-core build",
+    "core:lint": "pnpm --filter @devnolife/karirku-core lint",
+    "core:typecheck": "pnpm --filter @devnolife/karirku-core typecheck",
+    "core:test": "pnpm --filter @devnolife/karirku-core test",
+    "worker": "pnpm --filter @devnolife/karirku-core worker",
+    "serve": "pnpm --filter @devnolife/karirku-core serve:dev",
+    "hunter": "pnpm --filter @devnolife/karirku-core hunter",
+    "db:generate": "pnpm --filter @devnolife/karirku-core db:generate",
+    "db:migrate": "pnpm --filter @devnolife/karirku-core db:migrate",
+    "db:deploy": "pnpm --filter @devnolife/karirku-core db:deploy",
+    "db:seed": "pnpm --filter @devnolife/karirku-core db:seed",
+    "db:studio": "pnpm --filter @devnolife/karirku-core db:studio",
     "recommendation:evaluate": "tsx scripts/evaluate-recommendations.ts",
     "ext:build": "node extension/build.mjs",
     "ext:typecheck": "tsc --noEmit -p extension/tsconfig.json",
@@ -21,7 +33,7 @@
     "ai:sim": "node ai/jd-similarity.mjs"
   },
   "dependencies": {
-    "@devnolife/karirku-core": "^0.1.0",
+    "@devnolife/karirku-core": "workspace:*",
     "@phosphor-icons/react": "^2.1.10",
     "framer-motion": "^12.42.2",
     "googleapis": "^173.0.0",
@@ -56,9 +68,6 @@
       "prisma",
       "esbuild",
       "better-sqlite3"
-    ],
-    "overrides": {
-      "@devnolife/karirku-core": "link:../karirku-core"
-    }
+    ]
   }
 }

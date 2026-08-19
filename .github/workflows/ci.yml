@@ -20,13 +20,15 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Generates into ./generated/prisma; needs no database connection.
+      # Generates into packages/core/generated/prisma; needs no database.
       - run: pnpm db:generate
 
-      - run: pnpm lint
+      # Engine first: the app imports its dist/ and type declarations.
+      - run: pnpm core:lint
+      - run: pnpm core:typecheck
+      - run: pnpm core:test
+      - run: pnpm core:build
 
       - run: pnpm typecheck
-
       - run: pnpm test
-
-      - run: pnpm build
+      - run: pnpm exec next build

@@ -94,7 +94,7 @@ export default function HunterOverview() {
             <div>
               <div className="font-bold">Gmail API</div>
               <div className="mt-0.5 [font-family:var(--font-hunter-mono)] text-xs text-[#8A9088]">
-                {gmail.authorized ? "authorized — email tracking active" : gmail.configured ? "configured, run `pnpm hunter gmail-auth` in karirku-core" : "not configured — see karirku-core hunter/email/gmail.js"}
+                {gmail.authorized ? "authorized — email tracking active" : gmail.configured ? "configured, run `pnpm hunter gmail-auth`" : "not configured — see packages/core/hunter/email/gmail.js"}
               </div>
             </div>
           </div>

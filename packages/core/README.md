@@ -3,13 +3,18 @@
 Engine half of [Karirku](https://github.com/devnolife/karirku): LLM, OCR,
 matching, scraping, queues, workers, and all data access.
 
-This package is **framework-agnostic** — no Next.js, no React, no DOM. It is
-consumed by the web app (`devnolife/karirku`) and can also run standalone as a
-worker process. The dependency direction is one-way and enforced by ESLint:
+This package is **framework-agnostic** — no Next.js, no React, no DOM. It lives
+at `packages/core` in the Karirku monorepo, is consumed by the Next.js app at
+the workspace root, and can also run standalone as a worker process. The
+dependency direction is one-way and enforced by ESLint:
 
 ```
-devnolife/karirku  (Next.js app)  ──depends on──▶  @devnolife/karirku-core
+karirku (root, Next.js app)  ──depends on──▶  @devnolife/karirku-core (packages/core)
 ```
+
+Run its scripts from the workspace root with `pnpm --filter
+@devnolife/karirku-core <script>`, or through the root proxies (`pnpm worker`,
+`pnpm serve`, `pnpm hunter`, `pnpm db:*`, `pnpm core:build`).
 
 ## What lives here
 
@@ -45,13 +50,14 @@ aggregates market statistics. Six tables — `Job`, `JobSource`, `CompanyProfile
 `SkillTaxonomy`, `Course`, `RoleMarketStat` — are written by the engine and only
 read by the web app. Schema ownership follows the writer, so they belong here,
 and once they are here the migrations have to be here too: Prisma expects a
-single owner, and splitting the schema across two repos means two generated
+single owner, and splitting the schema across two packages means two generated
 clients drifting out of sync.
 
 Moving everything to the web app would also force the scraper, the BullMQ
 workers and Hunter to move with it, since they cannot function without the
-database. Those are long-running Node processes; putting them in a Next.js repo
-is exactly the split this project moved *away* from.
+database. Those are long-running Node processes; folding them into the Next.js
+package is exactly the split this project moved *away* from — the two halves now
+share a folder, but not a package boundary.
 
 ### What the engine actually touches
 
@@ -133,28 +139,17 @@ pnpm db:seed
 
 ### Working on core and web at the same time
 
-Publishing a version for every change is painful. Link the package locally
-instead — from the web repo:
+Nothing to set up: both halves live in one pnpm workspace, and the root app
+depends on this package with `"@devnolife/karirku-core": "workspace:*"`, so
+`node_modules/@devnolife/karirku-core` is a symlink to this directory.
+
+The app imports `dist/`, so rebuild after changing `src/`:
 
 ```bash
-# devnolife/karirku
-pnpm link ../karirku-core
+pnpm core:build   # from the workspace root
 ```
 
-…or add an override to the web app's `package.json`:
-
-```json
-{
-  "pnpm": {
-    "overrides": {
-      "@devnolife/karirku-core": "link:../karirku-core"
-    }
-  }
-}
-```
-
-Run `pnpm build` here after changing core code so the web app picks up the new
-`dist/`. Undo the link before shipping.
+`pnpm build` at the root does this for you before `next build`.
 
 ## Control API — driving the engine over the network
 

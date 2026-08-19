@@ -5,9 +5,9 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  // Architecture boundary: this repo is the Next.js app only. The engine
-  // (LLM, OCR, matching, scraper, queues, workers, data access) lives in
-  // devnolife/karirku-core and is consumed as @devnolife/karirku-core.
+  // Architecture boundary: the workspace root is the Next.js app only. The
+  // engine (LLM, OCR, matching, scraper, queues, workers, data access) lives
+  // in packages/core and is consumed as @devnolife/karirku-core.
   //
   // Reach for it through its published subpaths only — never through dist/,
   // src/, or generated/. Those are implementation details that can move
@@ -49,6 +49,8 @@ const eslintConfig = defineConfig([
   },
   // Override default ignores of eslint-config-next.
   globalIgnores([
+    // packages/core ships its own flat config; `pnpm core:lint` runs it.
+    "packages/**",
     // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",
