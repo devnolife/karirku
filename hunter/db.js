@@ -114,6 +114,7 @@ function migrate(db) {
   seed.run("jobstreet", "Andi Agung", "andi_agung@student.unismuh.ac.id", "https://id.jobstreet.com/id/profile/me", 1, "Quick Apply terbukti otomatis. Salary >= minimum lowongan.");
   seed.run("upwork", "lawcode", "andi_agung@student.unismuh.ac.id", "https://www.upwork.com/freelancers/~015f17cc227ea29874", 0, "Scan saja: apply butuh Connects + identity verification.");
   seed.run("linkedin", "andi-agung-63522b224", "andi_agung@student.unismuh.ac.id", "https://www.linkedin.com/in/andi-agung-63522b224/", 0, "Scan saja: Easy Apply diblokir untuk otomasi.");
+  seed.run("projectscoid", null, "andiagung193@gmail.com", "https://projects.co.id/", 1, "Bid otomatis via profil Chrome terpisah (login manual sekali: node hunter/run.js pco-login).");
   seed.run("gmail", "andi_agung", "andi_agung@student.unismuh.ac.id", null, 0, "Sumber email tracker (Gmail API OAuth, scope readonly).");
 
   // default settings (idempotent)
@@ -123,6 +124,9 @@ function migrate(db) {
   st.run("match_threshold", "60");           // skor minimum untuk auto-apply
   st.run("keywords", JSON.stringify(["full stack","react","next.js","react native","node","typescript","python","fastapi","mobile","frontend","backend","javascript","ai","llm"]));
   st.run("avoid_keywords", JSON.stringify(["wordpress","shopify","salesforce","magento",".net","c#","c++","angular","java ","kotlin","flutter only","unity","devops only"]));
+  st.run("pco_match_threshold", "45");        // skor minimum untuk auto-bid projects.co.id
+  st.run("pco_bid_floor_idr", "1000000");     // jangan bid di bawah ini (rupiah penuh)
+  st.run("pco_bid_position_pct", "35");       // posisi bid dalam rentang budget owner
 }
 
 // ---- helpers -------------------------------------------------------------

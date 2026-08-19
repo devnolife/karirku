@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 // hunter/run.js — CLI entrypoint for the Hunter engine.
 //
-//   node hunter/run.js scan [freelancer|jobstreet|linkedin|upwork|all]
+//   node hunter/run.js scan [freelancer|jobstreet|linkedin|upwork|projectscoid|all]
 //   node hunter/run.js apply --job <jobRowId>        one JobStreet quick-apply
 //   node hunter/run.js apply --auto [--limit N]      auto-apply best matches (jobstreet)
 //   node hunter/run.js bid --project <id> --amount <n> [--period d]  freelancer bid
+//   node hunter/run.js pco-login                     one-time manual login (profil terpisah)
+//   node hunter/run.js pco-scan [--pages N]          scan projects.co.id
+//   node hunter/run.js pco-bid --project <id> | --auto [--limit N] [--dry-run]
 //   node hunter/run.js sync-email [--days N]
 //   node hunter/run.js gmail-auth                    one-time OAuth
 //   node hunter/run.js import-applied                import JobStreet history
@@ -16,6 +19,7 @@ const jobstreet = require("./platforms/jobstreet");
 const linkedin = require("./platforms/linkedin");
 const upwork = require("./platforms/upwork");
 const remoteboards = require("./platforms/remoteboards");
+const projectscoid = require("./platforms/projectscoid");
 const gmail = require("./email/gmail");
 const { acquireLock, releaseLock } = require("./lock");
 
@@ -25,6 +29,9 @@ const MUTATING_COMMANDS = new Set([
   "scan",
   "apply",
   "bid",
+  "pco-login",
+  "pco-scan",
+  "pco-bid",
   "sync-email",
   "gmail-auth",
   "import-applied",
@@ -76,10 +83,13 @@ const logLines = [];
 const log = (...a) => { const s = a.join(" "); logLines.push(s); console.log(s); };
 
 async function scan(target) {
-  const scanners = { freelancer, jobstreet, linkedin, upwork, remoteboards };
-  const list = target && target !== "all" ? [target] : Object.keys(scanners);
+  const scanners = { freelancer, jobstreet, linkedin, upwork, remoteboards, projectscoid };
+  // projectscoid uses its own Chrome profile, so it only runs when asked for.
+  const all = ["freelancer", "jobstreet", "linkedin", "upwork", "remoteboards"];
+  const list = target && target !== "all" ? [target] : all;
   const stats = {};
   for (const name of list) {
+    if (!scanners[name]) { stats[name] = { error: "unknown platform" }; continue; }
     const runId = startRun("scan", name);
     try {
       stats[name] = await scanners[name].scan({ log });
@@ -146,6 +156,52 @@ async function applyAuto(limit) {
       });
       finishRun(runId, !!res.ok, res, logLines.join("\n"));
       console.log(JSON.stringify(res));
+      break;
+    }
+    case "pco-login": {
+      const res = await projectscoid.login({ waitMinutes: parseInt(flag("wait", "10"), 10), log });
+      console.log(JSON.stringify(res));
+      break;
+    }
+    case "pco-scan": {
+      const runId = startRun("scan", "projectscoid");
+      try {
+        const res = await projectscoid.scan({ pages: parseInt(flag("pages", "2"), 10), log });
+        finishRun(runId, true, res, logLines.join("\n"));
+        console.log("\n== PCO SCAN ==\n" + JSON.stringify(res, null, 1));
+      } catch (e) {
+        finishRun(runId, false, { error: e.message }, logLines.join("\n"));
+        console.error(e.message);
+        process.exitCode = 1;
+      }
+      break;
+    }
+    case "pco-bid": {
+      const dryRun = args.includes("--dry-run");
+      if (args.includes("--auto")) {
+        const runId = startRun("apply", "projectscoid");
+        const res = await projectscoid.bidAuto({
+          limit: parseInt(flag("limit", "3"), 10),
+          minScore: flag("min-score") ? parseInt(flag("min-score"), 10) : undefined,
+          dryRun, log,
+        });
+        finishRun(runId, res.some((r) => r.ok), res, logLines.join("\n"));
+        console.log("\n== PCO BID SUMMARY ==\n" + JSON.stringify(res, null, 1));
+      } else if (flag("project") || flag("job")) {
+        const runId = startRun("apply", "projectscoid");
+        const res = await projectscoid.bid({
+          jobRowId: flag("job") ? parseInt(flag("job"), 10) : undefined,
+          projectId: flag("project"),
+          amount: flag("amount") ? parseInt(flag("amount"), 10) : undefined,
+          days: flag("days") ? parseInt(flag("days"), 10) : undefined,
+          dryRun, log,
+        });
+        finishRun(runId, !!res.ok, res, logLines.join("\n"));
+        console.log(JSON.stringify(res, null, 1));
+      } else {
+        console.log("Usage: pco-bid --project <id> | --job <rowId> | --auto [--limit N] [--min-score N] [--dry-run]");
+        process.exitCode = 2;
+      }
       break;
     }
     case "sync-email": {

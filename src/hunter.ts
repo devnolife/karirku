@@ -95,6 +95,7 @@ const SCAN_PLATFORMS = new Set([
   "jobstreet",
   "linkedin",
   "upwork",
+  "projectscoid",
 ]);
 
 function integerInRange(
@@ -126,6 +127,19 @@ const ALLOWED_ACTIONS: Record<string, (body: Row) => string[] | null> = {
   "sync-email": (b) => {
     const days = integerInRange(b.days, 30, 1, 90);
     return days ? ["sync-email", "--days", String(days)] : null;
+  },
+  "pco-scan": (b) => {
+    const pages = integerInRange(b.pages, 2, 1, 10);
+    return pages ? ["pco-scan", "--pages", String(pages)] : null;
+  },
+  "pco-bid": (b) => {
+    const dry = b.dryRun ? ["--dry-run"] : [];
+    if (b.jobId !== undefined) {
+      const jobId = integerInRange(b.jobId, 0, 1, Number.MAX_SAFE_INTEGER);
+      return jobId ? ["pco-bid", "--job", String(jobId), ...dry] : null;
+    }
+    const limit = integerInRange(b.limit, 3, 1, 20);
+    return limit ? ["pco-bid", "--auto", "--limit", String(limit), ...dry] : null;
   },
   "import-applied": () => ["import-applied"],
   full: () => ["full"],

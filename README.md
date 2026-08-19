@@ -251,6 +251,34 @@ reachable through it.
 | `pnpm db:migrate` / `db:deploy` / `db:seed` / `db:studio` | Prisma workflows |
 | `pnpm scan` / `market:intel` / `ai:smoke` / `match:check` / `embed:all` / `ingest:live` | Engine one-off scripts |
 
+## Hunter: Projects.co.id
+
+Projects.co.id runs in **its own Chrome profile** (`~/.copilot/hunter/projectscoid-profile`,
+CDP port 9334) so the session belongs only to that account and never mixes with
+the older automation profile. Passwords are never scripted — log in by hand once
+and the cookie stays in that profile.
+
+```bash
+node hunter/run.js pco-login [--wait 10]                  # opens the login page, waits for you
+node hunter/run.js pco-scan [--pages 2]                   # scan dev-relevant categories, score, store
+node hunter/run.js pco-bid --auto --limit 3 --dry-run     # fill the bid form without submitting
+node hunter/run.js pco-bid --auto --limit 3               # place bids on the best matches
+node hunter/run.js pco-bid --project <externalId>         # one specific project
+```
+
+Scoring combines the shared keyword matcher with a Projects.co.id strength list
+(web, mobile, Python/Go, API, database, AI/LLM, scraping/automation, dashboards).
+Postings that are not development work — account trading, gambling, follower
+services — are marked `skipped` and never bid on. Bid amounts stay inside the
+owner's published budget at `pco_bid_position_pct` of the range, never below
+`pco_bid_floor_idr`, and each proposal names the strengths that actually matched.
+
+| Setting | Default | Meaning |
+| --- | --- | --- |
+| `pco_match_threshold` | `45` | minimum score for auto-bid |
+| `pco_bid_floor_idr` | `1000000` | never bid below this (full rupiah) |
+| `pco_bid_position_pct` | `35` | position inside the owner's budget range |
+
 ## Releasing
 
 Tag a version and let CI publish it:
