@@ -5,21 +5,35 @@ import assert from "node:assert/strict";
 
 import { hunterAccessStatus } from "@/lib/hunter-access";
 
-test("Hunter access hanya mengizinkan admin", () => {
+test("tanpa sesi ditolak", () => {
   assert.equal(hunterAccessStatus(null), 401);
-  assert.equal(hunterAccessStatus({ role: "jobseeker" }), 403);
-  assert.equal(hunterAccessStatus({ role: "freelancer" }), 403);
-  assert.equal(hunterAccessStatus({ role: "company" }), 403);
-  assert.equal(hunterAccessStatus({ role: "admin" }), 200);
+  assert.equal(hunterAccessStatus(null, { requireAutoApply: true }), 401);
 });
 
-test("auto-apply admin tetap memerlukan entitlement", () => {
+test("semua role yang sudah login boleh membaca hunter miliknya sendiri", () => {
+  for (const role of ["jobseeker", "freelancer", "company", "admin"] as const) {
+    assert.equal(
+      hunterAccessStatus({ role }),
+      200,
+      `${role} seharusnya boleh mengakses data hunter-nya sendiri`,
+    );
+  }
+});
+
+test("auto-apply tetap memerlukan entitlement", () => {
+  // Membaca data sendiri tidak berdampak keluar; menjalankan otomasi dan
+  // mengirim lamaran memakai sumber daya bersama dan menyentuh dunia luar.
   assert.equal(
-    hunterAccessStatus({ role: "admin" }, { requireAutoApply: true }, false),
+    hunterAccessStatus({ role: "jobseeker" }, { requireAutoApply: true }, false),
     403,
   );
   assert.equal(
-    hunterAccessStatus({ role: "admin" }, { requireAutoApply: true }, true),
+    hunterAccessStatus({ role: "jobseeker" }, { requireAutoApply: true }, true),
     200,
+  );
+  assert.equal(
+    hunterAccessStatus({ role: "admin" }, { requireAutoApply: true }, false),
+    403,
+    "admin pun tidak dikecualikan dari entitlement",
   );
 });

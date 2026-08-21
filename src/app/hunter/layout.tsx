@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { IBM_Plex_Mono, Archivo } from "next/font/google";
 import { getSession } from "@/lib/auth";
 
@@ -30,15 +29,11 @@ const NAV = [
 ];
 
 export default async function HunterLayout({ children }: { children: React.ReactNode }) {
-  // Hunter is a single-operator internal tool (raw SQLite, no per-user
-  // scoping — see docs/PRD-hunter.md §3). Restrict to admin so other real
-  // users in this now-multi-tenant app can't reach someone else's personal
-  // job-hunt data. Multi-tenant premium access is sub-project #2 (see
-  // docs/superpowers/specs/2026-07-06-hunter-premium-foundation-design.md).
-  const session = await getSession();
-  if (session.user.role !== "admin") {
-    redirect("/dashboard");
-  }
+  // Sejak tabel hunter ber-scope `userId`, tiap user punya kredensial platform,
+  // kolam lowongan, dan riwayat lamarannya sendiri. Isolasi ditegakkan di
+  // query, jadi cukup memastikan pemanggil sudah login; aksi yang menjalankan
+  // otomasi tetap dijaga entitlement di lapisan API.
+  await getSession();
 
   return (
     <div

@@ -1,13 +1,15 @@
-import { hunterDb } from "@devnolife/karirku-core/hunter";
+import { prisma } from "@devnolife/karirku-core/db";
+import { getSession } from "@/lib/auth";
 import { SettingsForm } from "./settings-form";
 
 export const dynamic = "force-dynamic";
 
-export default function SettingsPage() {
-  const rows = hunterDb().getDb().prepare(`SELECT key, value FROM settings`).all() as {
-    key: string;
-    value: string;
-  }[];
+export default async function SettingsPage() {
+  const { user } = await getSession();
+  const rows = await prisma.hunterSetting.findMany({
+    where: { userId: user.id },
+    select: { key: true, value: true },
+  });
   const settings: Record<string, string> = {};
   for (const r of rows) settings[r.key] = r.value;
 

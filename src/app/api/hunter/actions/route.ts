@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       { status: 400 },
     );
   }
-  const reservation = reserveHunter(action);
+  const reservation = await reserveHunter(action, access.userId);
   if (!reservation.ok) {
     const busy = reservation.lock;
     return Response.json(
@@ -41,10 +41,10 @@ export async function POST(request: NextRequest) {
     );
   }
   try {
-    const { pid } = spawnHunter(args, reservation.lock.ownerId);
+    const { pid } = spawnHunter(args, access.userId, reservation.lock.ownerId);
     return Response.json({ ok: true, pid, args }, { status: 202 });
   } catch (error) {
-    releaseHunter(reservation.lock.ownerId);
+    await releaseHunter(reservation.lock.ownerId, access.userId);
     console.error("[hunter] gagal menjalankan command:", error);
     return Response.json(
       { error: "spawn_failed", message: "Hunter tidak dapat dijalankan." },

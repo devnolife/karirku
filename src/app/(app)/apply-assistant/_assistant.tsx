@@ -194,7 +194,16 @@ export function ApplyAssistant({
 
       {step === "input" && (
         <section className="act-card-2 p-5 sm:p-7">
-          <div className="flex flex-wrap gap-2">
+          {/*
+            Segmented control di dalam satu track: bentuknya menegaskan bahwa
+            ketiganya adalah SATU pilihan yang saling meniadakan — berbeda dari
+            deretan pil terpisah yang terbaca seperti tiga tombol aksi.
+          */}
+          <div
+            role="tablist"
+            aria-label="Sumber lowongan"
+            className="inline-flex gap-1 rounded-xl bg-[rgba(15,43,61,0.05)] p-1"
+          >
             {MODE_TABS.map((t) => {
               const active = mode === t.value;
               const disabled = t.value === "image" && !ocrAvailable;
@@ -202,16 +211,22 @@ export function ApplyAssistant({
                 <button
                   key={t.value}
                   type="button"
+                  role="tab"
+                  aria-selected={active}
                   disabled={disabled}
                   onClick={() => setMode(t.value)}
-                  className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-                    active
-                      ? "bg-[#042718] text-white"
-                      : "border border-[rgba(4,39,24,0.14)] text-[#315644] hover:bg-[#F2FBF6]"
-                  } ${disabled ? "cursor-not-allowed opacity-40" : ""}`}
+                  className={
+                    "inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-[13px] font-semibold transition-colors " +
+                    (active
+                      ? "bg-white text-[var(--act-ink)] shadow-[0_1px_3px_rgba(15,43,61,0.14)]"
+                      : "text-[var(--act-graphite)] hover:text-[var(--act-ink)]") +
+                    (disabled ? " cursor-not-allowed opacity-40" : "")
+                  }
                   title={disabled ? "OCR tidak tersedia di server ini" : undefined}
                 >
-                  <Icon d={t.icon} />
+                  <span className={active ? "text-[var(--page-accent,var(--act-blue))]" : ""}>
+                    <Icon d={t.icon} />
+                  </span>
                   {t.label}
                 </button>
               );
@@ -221,14 +236,14 @@ export function ApplyAssistant({
           <div className="mt-6">
             {mode === "link" && (
               <label className="block">
-                <span className="text-sm font-semibold text-[#042718]">
+                <span className="text-sm font-semibold text-[var(--act-ink)]">
                   URL lowongan
                 </span>
                 <input
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="https://perusahaan.com/careers/frontend-engineer"
-                  className="act-field mt-2 !border-[rgba(4,39,24,0.12)] !bg-[#F9FCF9]"
+                  className="act-field mt-2 !border-[rgba(15,43,61,0.12)] !bg-[rgba(15,43,61,0.02)]"
                 />
                 <span className="mt-2 block text-xs text-[var(--act-graphite)]">
                   Tempel tautan lowongan publik. Halaman yang butuh login/JS mungkin
@@ -239,7 +254,7 @@ export function ApplyAssistant({
 
             {mode === "text" && (
               <label className="block">
-                <span className="text-sm font-semibold text-[#042718]">
+                <span className="text-sm font-semibold text-[var(--act-ink)]">
                   Deskripsi lowongan
                 </span>
                 <textarea
@@ -247,14 +262,14 @@ export function ApplyAssistant({
                   onChange={(e) => setText(e.target.value)}
                   rows={9}
                   placeholder="Tempel teks lowongan lengkap: posisi, perusahaan, kualifikasi, skill, kontak…"
-                  className="act-field mt-2 !h-auto !border-[rgba(4,39,24,0.12)] !bg-[#F9FCF9] py-3"
+                  className="act-field mt-2 !h-auto !border-[rgba(15,43,61,0.12)] !bg-[rgba(15,43,61,0.02)] py-3"
                 />
               </label>
             )}
 
             {mode === "image" && (
               <div>
-                <span className="text-sm font-semibold text-[#042718]">
+                <span className="text-sm font-semibold text-[var(--act-ink)]">
                   Gambar / screenshot poster lowongan
                 </span>
                 <div className="mt-2">
@@ -271,14 +286,14 @@ export function ApplyAssistant({
                       <img
                         src={imageDataUrl}
                         alt="Pratinjau lowongan"
-                        className="max-h-48 w-auto rounded-[14px] border border-[rgba(4,39,24,0.12)] object-contain"
+                        className="max-h-48 w-auto rounded-[14px] border border-[rgba(15,43,61,0.12)] object-contain"
                       />
                       <div className="text-sm text-[var(--act-graphite)]">
-                        <p className="font-semibold text-[#042718]">{imageName}</p>
+                        <p className="font-semibold text-[var(--act-ink)]">{imageName}</p>
                         <button
                           type="button"
                           onClick={() => fileRef.current?.click()}
-                          className="mt-1 font-semibold text-[var(--act-blue)] hover:underline"
+                          className="mt-1 font-semibold text-[var(--page-accent,var(--act-blue))] hover:underline"
                         >
                           Ganti gambar
                         </button>
@@ -288,10 +303,10 @@ export function ApplyAssistant({
                     <button
                       type="button"
                       onClick={() => fileRef.current?.click()}
-                      className="flex w-full flex-col items-center justify-center gap-2 rounded-[16px] border-2 border-dashed border-[rgba(4,39,24,0.18)] bg-[#F9FCF9] px-4 py-10 text-center transition-colors hover:border-[var(--act-blue)] hover:bg-[#F2FBF6]"
+                      className="flex w-full flex-col items-center justify-center gap-2 rounded-[16px] border-2 border-dashed border-[rgba(15,43,61,0.18)] bg-[rgba(15,43,61,0.02)] px-4 py-10 text-center transition-colors hover:border-[var(--page-accent,var(--act-blue))] hover:bg-[var(--page-tint,var(--act-blue-50))]"
                     >
                       <Icon d="M12 16V4M12 4l-4 4M12 4l4 4M4 20h16" big />
-                      <span className="text-sm font-semibold text-[#042718]">
+                      <span className="text-sm font-semibold text-[var(--act-ink)]">
                         Klik untuk pilih gambar
                       </span>
                       <span className="text-xs text-[var(--act-graphite)]">
@@ -311,7 +326,7 @@ export function ApplyAssistant({
               type="button"
               onClick={analyze}
               disabled={!canAnalyze || analyzing}
-              className="act-pill justify-center !bg-[#042718] !text-sm disabled:opacity-50"
+              className="act-pill justify-center !text-sm disabled:opacity-50"
             >
               {analyzing ? "Menganalisis lowongan…" : "Analisis lowongan →"}
             </button>
@@ -420,19 +435,19 @@ function ReviewStep({
 
         <div className="grid gap-4 sm:grid-cols-2">
           <LField label="Posisi">
-            <input value={job.title} onChange={(e) => set("title", e.target.value)} className="act-field !border-[rgba(4,39,24,0.12)] !bg-[#F9FCF9]" />
+            <input value={job.title} onChange={(e) => set("title", e.target.value)} className="act-field !border-[rgba(15,43,61,0.12)] !bg-[rgba(15,43,61,0.02)]" />
           </LField>
           <LField label="Perusahaan">
-            <input value={job.company} onChange={(e) => set("company", e.target.value)} className="act-field !border-[rgba(4,39,24,0.12)] !bg-[#F9FCF9]" />
+            <input value={job.company} onChange={(e) => set("company", e.target.value)} className="act-field !border-[rgba(15,43,61,0.12)] !bg-[rgba(15,43,61,0.02)]" />
           </LField>
           <LField label="Lokasi">
-            <input value={job.location} onChange={(e) => set("location", e.target.value)} className="act-field !border-[rgba(4,39,24,0.12)] !bg-[#F9FCF9]" />
+            <input value={job.location} onChange={(e) => set("location", e.target.value)} className="act-field !border-[rgba(15,43,61,0.12)] !bg-[rgba(15,43,61,0.02)]" />
           </LField>
           <LField label="Tipe / Level">
             <input
               value={[job.employmentType, job.level].filter(Boolean).join(" · ")}
               onChange={(e) => set("employmentType", e.target.value)}
-              className="act-field !border-[rgba(4,39,24,0.12)] !bg-[#F9FCF9]"
+              className="act-field !border-[rgba(15,43,61,0.12)] !bg-[rgba(15,43,61,0.02)]"
             />
           </LField>
         </div>
@@ -441,7 +456,7 @@ function ReviewStep({
           <input
             value={job.skills.join(", ")}
             onChange={(e) => set("skills", splitList(e.target.value, ","))}
-            className="act-field !border-[rgba(4,39,24,0.12)] !bg-[#F9FCF9]"
+            className="act-field !border-[rgba(15,43,61,0.12)] !bg-[rgba(15,43,61,0.02)]"
           />
         </LField>
 
@@ -450,7 +465,7 @@ function ReviewStep({
             value={job.requirements.join("\n")}
             onChange={(e) => set("requirements", splitList(e.target.value, "\n"))}
             rows={5}
-            className="act-field !h-auto !border-[rgba(4,39,24,0.12)] !bg-[#F9FCF9] py-3"
+            className="act-field !h-auto !border-[rgba(15,43,61,0.12)] !bg-[rgba(15,43,61,0.02)] py-3"
           />
         </LField>
 
@@ -459,16 +474,16 @@ function ReviewStep({
             value={job.description}
             onChange={(e) => set("description", e.target.value)}
             rows={5}
-            className="act-field !h-auto !border-[rgba(4,39,24,0.12)] !bg-[#F9FCF9] py-3"
+            className="act-field !h-auto !border-[rgba(15,43,61,0.12)] !bg-[rgba(15,43,61,0.02)] py-3"
           />
         </LField>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <LField label="Email lamaran (opsional)">
-            <input value={job.applyEmail} onChange={(e) => set("applyEmail", e.target.value)} placeholder="hr@perusahaan.com" className="act-field !border-[rgba(4,39,24,0.12)] !bg-[#F9FCF9]" />
+            <input value={job.applyEmail} onChange={(e) => set("applyEmail", e.target.value)} placeholder="hr@perusahaan.com" className="act-field !border-[rgba(15,43,61,0.12)] !bg-[rgba(15,43,61,0.02)]" />
           </LField>
           <LField label="Gaji (opsional)">
-            <input value={job.salaryText} onChange={(e) => set("salaryText", e.target.value)} placeholder="Rp 10–15 jt" className="act-field !border-[rgba(4,39,24,0.12)] !bg-[#F9FCF9]" />
+            <input value={job.salaryText} onChange={(e) => set("salaryText", e.target.value)} placeholder="Rp 10–15 jt" className="act-field !border-[rgba(15,43,61,0.12)] !bg-[rgba(15,43,61,0.02)]" />
           </LField>
         </div>
       </section>
@@ -482,8 +497,8 @@ function ReviewStep({
             </p>
           ) : (
             <>
-              <p className="mt-2 text-sm text-[#042718]">
-                <span className="text-2xl font-bold text-[var(--act-blue)]">
+              <p className="mt-2 text-sm text-[var(--act-ink)]">
+                <span className="text-2xl font-bold text-[var(--page-accent,var(--act-blue))]">
                   {matched.length}
                 </span>{" "}
                 skill kamu cocok dengan lowongan ini.
@@ -534,7 +549,7 @@ function ReviewStep({
               onChange={(e) => onExtraNote(e.target.value)}
               rows={2}
               placeholder="mis. bisa mulai segera, tertarik karena…"
-              className="act-field mt-2 !h-auto !border-[rgba(4,39,24,0.12)] !bg-[#F9FCF9] py-2 text-sm"
+              className="act-field mt-2 !h-auto !border-[rgba(15,43,61,0.12)] !bg-[rgba(15,43,61,0.02)] py-2 text-sm"
             />
           </label>
         </div>
@@ -546,7 +561,7 @@ function ReviewStep({
             type="button"
             onClick={onGenerate}
             disabled={drafting}
-            className="act-pill justify-center !bg-[#042718] !text-sm disabled:opacity-50"
+            className="act-pill justify-center !text-sm disabled:opacity-50"
           >
             {drafting ? "Menulis lamaran…" : "Buatkan pesan lamaran ✦"}
           </button>
@@ -614,11 +629,11 @@ function DraftStep({
         </div>
 
         {draft.subject && (
-          <div className="rounded-[14px] border border-[rgba(4,39,24,0.1)] bg-[#F9FCF9] px-4 py-3">
+          <div className="rounded-[14px] border border-[rgba(15,43,61,0.1)] bg-[rgba(15,43,61,0.02)] px-4 py-3">
             <span className="text-[11px] font-semibold uppercase tracking-wide text-[var(--act-graphite)]">
               Subjek
             </span>
-            <p className="mt-0.5 text-sm font-semibold text-[#042718]">
+            <p className="mt-0.5 text-sm font-semibold text-[var(--act-ink)]">
               {draft.subject}
             </p>
           </div>
@@ -628,7 +643,7 @@ function DraftStep({
           readOnly
           value={draft.message}
           rows={16}
-          className="act-field !h-auto w-full !border-[rgba(4,39,24,0.12)] !bg-white py-3 font-mono text-[13px] leading-6"
+          className="act-field !h-auto w-full !border-[rgba(15,43,61,0.12)] !bg-white py-3 font-mono text-[13px] leading-6"
         />
 
         {job.applyEmail && (
@@ -636,7 +651,7 @@ function DraftStep({
             Kirim ke:{" "}
             <a
               href={`mailto:${job.applyEmail}?subject=${encodeURIComponent(draft.subject)}&body=${encodeURIComponent(draft.message)}`}
-              className="font-semibold text-[var(--act-blue)] hover:underline"
+              className="font-semibold text-[var(--page-accent,var(--act-blue))] hover:underline"
             >
               {job.applyEmail}
             </a>
@@ -649,7 +664,7 @@ function DraftStep({
               href={job.applyUrl}
               target="_blank"
               rel="noreferrer noopener"
-              className="font-semibold text-[var(--act-blue)] hover:underline"
+              className="font-semibold text-[var(--page-accent,var(--act-blue))] hover:underline"
             >
               buka tautan ↗
             </a>
@@ -663,7 +678,7 @@ function DraftStep({
             <span className="act-kicker">Kekuatan yang ditonjolkan</span>
             <ul className="mt-3 space-y-2">
               {draft.highlights.map((h, i) => (
-                <li key={i} className="flex gap-2 text-sm text-[#042718]">
+                <li key={i} className="flex gap-2 text-sm text-[var(--act-ink)]">
                   <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--act-blue)]" />
                   {h}
                 </li>
@@ -677,7 +692,7 @@ function DraftStep({
             type="button"
             onClick={onSave}
             disabled={saving}
-            className="act-pill justify-center !bg-[#042718] !text-sm disabled:opacity-50"
+            className="act-pill justify-center !text-sm disabled:opacity-50"
           >
             {saving ? "Menyimpan…" : "Simpan ke Lamaran"}
           </button>
@@ -704,7 +719,7 @@ function DraftStep({
             Lowongan baru
           </button>
           {saveMsg && (
-            <p className="pt-1 text-center text-xs font-semibold text-[var(--act-blue)]">
+            <p className="pt-1 text-center text-xs font-semibold text-[var(--page-accent,var(--act-blue))]">
               {saveMsg}
             </p>
           )}
@@ -716,35 +731,78 @@ function DraftStep({
 
 /* ---------------- small pieces ---------------- */
 
+/**
+ * Indikator progres 3 langkah.
+ *
+ * Sengaja TIDAK berbentuk pil seperti pemilih input di bawahnya: keduanya dulu
+ * memakai pil gelap yang sama persis, sehingga penanda progres (tidak bisa
+ * diklik) tampak seperti tombol pilihan. Bentuk lingkaran bernomor + garis
+ * penghubung membacanya sebagai urutan, bukan pilihan.
+ */
 function Stepper({ step }: { step: Step }) {
   const items: { key: Step; label: string }[] = [
-    { key: "input", label: "1 · Input" },
-    { key: "review", label: "2 · Tinjau" },
-    { key: "draft", label: "3 · Pesan" },
+    { key: "input", label: "Input" },
+    { key: "review", label: "Tinjau" },
+    { key: "draft", label: "Pesan" },
   ];
   const order: Step[] = ["input", "review", "draft"];
   const idx = order.indexOf(step);
+
   return (
-    <div className="flex items-center gap-2 text-xs font-semibold">
+    <ol className="flex items-center gap-1.5" aria-label="Progres">
       {items.map((it, i) => {
         const done = i < idx;
         const active = i === idx;
         return (
-          <span
-            key={it.key}
-            className={`rounded-full px-3 py-1 ${
-              active
-                ? "bg-[#042718] text-white"
-                : done
-                  ? "bg-[rgba(25,143,56,0.12)] text-[var(--act-blue)]"
-                  : "border border-[rgba(4,39,24,0.12)] text-[var(--act-graphite)]"
-            }`}
-          >
-            {it.label}
-          </span>
+          <li key={it.key} className="flex items-center gap-1.5">
+            <span
+              className="flex items-center gap-2"
+              aria-current={active ? "step" : undefined}
+            >
+              <span
+                className={
+                  "grid h-6 w-6 flex-none place-items-center rounded-full text-[11px] font-bold transition-colors " +
+                  (active
+                    ? "bg-[var(--page-accent,var(--act-blue))] text-white"
+                    : done
+                      ? "bg-[color-mix(in_srgb,var(--page-accent,var(--act-blue))_16%,transparent)] text-[var(--page-accent,var(--act-blue))]"
+                      : "border border-[rgba(15,43,61,0.16)] text-[var(--act-stone)]")
+                }
+              >
+                {done ? (
+                  <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <path d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  i + 1
+                )}
+              </span>
+              <span
+                className={
+                  "text-[13px] font-semibold " +
+                  (active
+                    ? "text-[var(--act-ink)]"
+                    : done
+                      ? "text-[var(--page-accent,var(--act-blue))]"
+                      : "text-[var(--act-stone)]")
+                }
+              >
+                {it.label}
+              </span>
+            </span>
+            {i < items.length - 1 && (
+              <span
+                aria-hidden
+                className={
+                  "mx-1.5 h-px w-6 sm:w-10 " +
+                  (done ? "bg-[var(--page-accent,var(--act-blue))]" : "bg-[rgba(15,43,61,0.14)]")
+                }
+              />
+            )}
+          </li>
         );
       })}
-    </div>
+    </ol>
   );
 }
 
@@ -773,11 +831,10 @@ function OptionGroup({
               type="button"
               onClick={() => onChange(o.value)}
               title={o.hint}
-              className={`rounded-[10px] px-2 py-2 text-xs font-semibold transition-colors ${
-                active
-                  ? "bg-[#042718] text-white"
-                  : "border border-[rgba(4,39,24,0.12)] text-[#315644] hover:bg-[#F2FBF6]"
-              }`}
+              className={`rounded-[10px] px-2 py-2 text-xs font-semibold transition-colors ${active
+                  ? "bg-[var(--page-accent,var(--act-blue))] text-white"
+                  : "border border-[rgba(15,43,61,0.12)] text-[var(--act-charcoal)] hover:bg-[var(--page-tint,var(--act-blue-50))]"
+                }`}
             >
               {o.label}
             </button>
@@ -811,7 +868,7 @@ function Icon({ d, big }: { d: string; big?: boolean }) {
   return (
     <svg
       viewBox="0 0 24 24"
-      className={big ? "h-6 w-6 text-[var(--act-blue)]" : "h-4 w-4"}
+      className={big ? "h-6 w-6 text-[var(--page-accent,var(--act-blue))]" : "h-4 w-4"}
       fill="none"
       stroke="currentColor"
       strokeWidth="2"

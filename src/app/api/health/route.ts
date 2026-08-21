@@ -26,7 +26,7 @@ export async function GET() {
   const [database, redisStatus, ollama] = await Promise.all([
     timed(() => prisma.$queryRaw`SELECT 1`),
     timed(async () => {
-      await redis.connect().catch(() => {});
+      await redis.connect().catch(() => { });
       return redis.ping();
     }),
     timed(async () => {
@@ -37,14 +37,19 @@ export async function GET() {
     }),
   ]);
 
-  const allOk = database.ok && redisStatus.ok && ollama.ok;
+  // Only the database decides the status code. Redis and the LLM backend
+  // degrade features — queued work piles up, AI answers fall back — but pages
+  // still render, so reporting 503 would take a working deployment out of the
+  // load balancer over an optional dependency.
+  const healthy = database.ok;
+  const degraded = !redisStatus.ok || !ollama.ok;
 
   return NextResponse.json(
     {
-      status: allOk ? "ok" : "degraded",
+      status: !healthy ? "down" : degraded ? "degraded" : "ok",
       services: { database, redis: redisStatus, ollama },
       timestamp: new Date().toISOString(),
     },
-    { status: allOk ? 200 : 503 }
+    { status: healthy ? 200 : 503 }
   );
 }

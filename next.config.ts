@@ -2,7 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // Hunter engine loads better-sqlite3 (native addon) at runtime.
-  serverExternalPackages: ["better-sqlite3"],
   // Izinkan akses dev resources (HMR, streaming chunk) dari origin selain
   // localhost: IP jaringan lokal + host port-forward / tunnel VS Code & Codespaces.
   // Tanpa ini, buka app lewat origin lain bikin chunk gagal load → error boundary.

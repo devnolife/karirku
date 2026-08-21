@@ -51,23 +51,26 @@ export function Kpi({
   accent?: boolean;
 }) {
   const valueColor = {
-    blue: "text-[var(--act-blue)]",
-    iris: "text-[var(--act-iris)]",
-    mint: "text-[var(--act-teal)]",
-    magenta: "text-[var(--act-magenta)]",
+    blue: "text-[var(--act-blue-900)]",
+    iris: "text-[var(--act-ocean-900)]",
+    mint: "text-[var(--act-teal-900)]",
+    magenta: "text-[var(--act-mist-900)]",
   }[tone];
   const coreBg = {
-    blue: "radial-gradient(120% 130% at 50% 0%, #ffffff 30%, var(--act-sky-100) 130%)",
-    iris: "radial-gradient(120% 130% at 50% 0%, #ffffff 30%, #eceafa 130%)",
-    mint: "radial-gradient(120% 130% at 50% 0%, #ffffff 30%, #e2f1eb 130%)",
-    magenta: "radial-gradient(120% 130% at 50% 0%, #ffffff 30%, #f9eedb 130%)",
+    blue: "radial-gradient(120% 130% at 50% 0%, #ffffff 30%, var(--act-blue-50) 130%)",
+    iris: "radial-gradient(120% 130% at 50% 0%, #ffffff 30%, #E7EEF0 130%)",
+    mint: "radial-gradient(120% 130% at 50% 0%, #ffffff 30%, var(--act-green-50) 130%)",
+    magenta: "radial-gradient(120% 130% at 50% 0%, #ffffff 30%, #F2F0E6 130%)",
   }[tone];
+  // Nilai kosong (0 / "0%" / "-") tidak perlu ditonjolkan warna.
+  const isEmpty =
+    value === 0 || value === "0" || value === "0%" || value === "-" || value === null || value === undefined;
   return (
     <div className="act-bezel act-bezel-lift">
       <div className="act-bezel-core p-4" style={{ "--core-bg": coreBg } as React.CSSProperties}>
         <span className="act-kicker">{label}</span>
         <div className="mt-2 flex items-baseline gap-1">
-          <span className={`act-display text-4xl ${valueColor}`}>
+          <span className={`act-display text-4xl ${isEmpty ? "text-[var(--act-stone)]" : valueColor}`}>
             {accent ? "+" : ""}
             {typeof value === "number" ? <CountUp to={value} /> : value}
           </span>
@@ -425,10 +428,10 @@ export function PreviewCard({
   tone?: "blue" | "iris" | "magenta" | "mint";
 }) {
   const kickerColor = {
-    blue: "!text-[var(--act-blue)]",
-    iris: "!text-[var(--act-iris)]",
-    magenta: "!text-[var(--act-magenta)]",
-    mint: "!text-[var(--act-teal)]",
+    blue: "!text-[var(--act-blue-900)]",
+    iris: "!text-[var(--act-ocean-900)]",
+    magenta: "!text-[var(--act-mist-900)]",
+    mint: "!text-[var(--act-teal-900)]",
   }[tone];
   return (
     <Link href={href} className="act-bezel group block">

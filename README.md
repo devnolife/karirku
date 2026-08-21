@@ -350,6 +350,20 @@ Karena core kini package workspace, build web **tidak** lagi butuh token registr
 dibutuhkan kalau core diterbitkan ke GitHub Packages untuk konsumen lain
 (tag `v*` → workflow `core-release`).
 
+### Checklist sebelum go-live
+
+- [ ] Semua secret di-generate ulang — tidak ada nilai dari `.env.example`.
+- [ ] `OAUTH_TOKEN_ENCRYPTION_KEY` ≠ `AUTOFILL_TOKEN_SECRET`, keduanya ≥ 32 karakter.
+      Mengganti yang pertama membuat semua token OAuth tersimpan tidak bisa
+      didekripsi lagi; user harus connect ulang.
+- [ ] `NEXTAUTH_URL` = domain publik, `https://`, dan sama persis dengan
+      callback URL di GitHub OAuth App.
+- [ ] Reverse proxy dengan TLS aktif di depan port `3030`.
+- [ ] Backup terjadwal untuk volume `postgres-data`.
+- [ ] `GET /api/health` mengembalikan `200`. Status `degraded` (Redis atau LLM
+      mati) tetap `200` karena halaman masih render — hanya database yang
+      menentukan `503`.
+
 ## Memisahkan web dan engine ke VM berbeda
 
 Bisa. Sudah diuji: aplikasi di-boot tanpa satu pun env engine-lokal

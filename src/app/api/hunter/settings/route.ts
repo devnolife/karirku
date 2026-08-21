@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { hunterDb } from "@devnolife/karirku-core/hunter";
+import { prisma } from "@devnolife/karirku-core/db";
 import { authorizeHunterApi } from "@/lib/hunter-access";
 
 export const dynamic = "force-dynamic";
@@ -47,8 +47,10 @@ export async function GET() {
   const access = await authorizeHunterApi();
   if (!access.ok) return access.response;
 
-  const db = hunterDb().getDb();
-  const rows = db.prepare(`SELECT key, value FROM settings`).all() as { key: string; value: string }[];
+  const rows = await prisma.hunterSetting.findMany({
+    where: { userId: access.userId },
+    select: { key: true, value: true },
+  });
   const settings: Record<string, string> = {};
   for (const r of rows) settings[r.key] = r.value;
   return Response.json({ settings });
@@ -82,10 +84,13 @@ export async function PATCH(request: NextRequest) {
     normalized.push([key, value]);
   }
 
-  const { setSetting } = hunterDb();
   const updated: string[] = [];
   for (const [key, value] of normalized) {
-    setSetting(key, value);
+    await prisma.hunterSetting.upsert({
+      where: { userId_key: { userId: access.userId, key } },
+      create: { userId: access.userId, key, value },
+      update: { value },
+    });
     updated.push(key);
   }
   return Response.json({ ok: true, updated });
